@@ -1,0 +1,146 @@
+{
+  "id": "cpp-break",
+  "moduleId": "control-flow",
+  "title": "break",
+  "description": "Exiting a loop early with break — recap from switch, applied to for and while, plus how it behaves with nested loops.",
+  "objectives": [
+    "Use break to exit a loop before its condition would naturally become false",
+    "Understand break stops only the innermost loop",
+    "Recognize a classic search pattern that uses break",
+    "Know break also works in switch, as seen earlier"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: break in switch"
+    },
+    {
+      "type": "paragraph",
+      "text": "We already met break in the switch Statement topic, where it stopped execution from falling through into the next case. break works the same way in loops: it stops execution immediately."
+    },
+    {
+      "type": "heading",
+      "text": "2. break in a Loop"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 10; i++)\n    {\n        if (i == 4)\n        {\n            break;\n        }\n        cout << i << endl;\n    }\n\n    return 0;\n}",
+      "output": "1\n2\n3",
+      "retypePractice": true,
+      "retypeId": "cpp-break-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "i = 1, 2, 3 — condition i == 4 is false, so cout runs each time",
+        "i = 4 — condition i == 4 is true, break executes",
+        "The loop stops immediately — i never reaches 5 through 10, and 4 is never printed"
+      ]
+    },
+    {
+      "type": "definition",
+      "term": "break",
+      "text": "break immediately exits the loop (or switch) it's inside, skipping any remaining repetitions or code in that block."
+    },
+    {
+      "type": "heading",
+      "text": "3. A Classic Use: Searching"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int numbers[] = {4, 8, 15, 16, 23, 42};\nint target = 15;\nbool found = false;\n\nfor (int i = 0; i < 6; i++)\n{\n    if (numbers[i] == target)\n    {\n        found = true;\n        break; // no need to keep checking once it's found\n    }\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — arrays are covered in their own upcoming topic. The point here is the pattern: once we've found what we're looking for, there's no reason to keep looping through the rest. break avoids wasted work."
+    },
+    {
+      "type": "heading",
+      "text": "4. break Only Exits the Innermost Loop"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (int i = 1; i <= 2; i++)\n{\n    for (int j = 1; j <= 3; j++)\n    {\n        if (j == 2)\n        {\n            break; // exits only the inner (j) loop\n        }\n        cout << i << j << \" \";\n    }\n}"
+    },
+    {
+      "type": "note",
+      "text": "In nested loops, break stops only the loop it's directly written inside — here, the inner j loop. The outer i loop is unaffected and continues normally. Output: 11 21 (the inner loop prints once per outer iteration, then breaks at j == 2)."
+    },
+    {
+      "type": "heading",
+      "text": "5. break Works in while and do-while Too"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int i = 1;\n\nwhile (true) // deliberately infinite\n{\n    if (i > 3)\n    {\n        break;\n    }\n    cout << i << endl;\n    i++;\n}"
+    },
+    {
+      "type": "note",
+      "text": "while (true) alone would never stop — break is what actually ends it, once some internal condition says it's time. This pattern (loop forever, break out when ready) is common and not considered bad practice, as long as a break is guaranteed to eventually run."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Searching a bookshelf",
+      "text": "You're scanning a shelf book by book looking for one title. The moment you find it, you stop scanning — you don't keep checking the remaining books just because you technically hadn't finished the shelf. That's break: stop the repetition the instant its purpose is fulfilled."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Expecting break to exit all levels of a nested loop — it only exits the loop it's directly written inside.",
+        "Using break where continue was actually meant — break stops the whole loop, while continue (a separate topic) only skips the current repetition.",
+        "Forgetting to place break inside a condition — an unconditional break as the very first line of a loop body would make the loop run at most once, which is rarely the intent."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does break do inside a loop?",
+          "answer": "It immediately exits the loop, skipping any remaining repetitions, and continues execution after the loop."
+        },
+        {
+          "question": "In a nested loop, which loop does break exit?",
+          "answer": "Only the innermost loop that directly contains the break statement — outer loops are unaffected and continue normally."
+        },
+        {
+          "question": "Why is break commonly used in search patterns?",
+          "answer": "Once the target has been found, there's no need to keep checking the remaining elements, so break avoids unnecessary work."
+        }
+      ],
+      "thirtySecondAnswer": "break immediately exits the loop it's inside — for, while, or do-while — skipping any remaining repetitions, exactly like it stops fallthrough in a switch statement. It's commonly used in search patterns, where continuing to loop after finding the target would be wasted work. In nested loops, break only exits the innermost loop containing it; outer loops keep running unaffected."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember break",
+      "text": "break = stop right here, right now. Only breaks out of the one loop it's standing inside — outer loops don't even notice."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-break-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 10; i++)\n    {\n        if (i == 4)\n        {\n            break;\n        }\n        cout << i << endl;\n    }\n\n    return 0;\n}", "output": "1\n2\n3" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-break-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 10; i++)\n    {\n        if (i == 4)\n        {\n            break;\n        }\n        cout << i << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-break-basic"]
+  }
+}
