@@ -1,0 +1,172 @@
+{
+  "id": "cpp-parameters-arguments",
+  "moduleId": "functions",
+  "title": "Parameters and Arguments",
+  "description": "The precise difference between a parameter and an argument, default parameter values, and matching a function call correctly.",
+  "objectives": [
+    "Distinguish parameters (in the definition) from arguments (at the call site)",
+    "Match a function call's arguments to its parameters correctly",
+    "Use default parameter values",
+    "Understand why argument order and count must match the function's signature"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Parameter vs Argument"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b) // a and b are PARAMETERS\n{\n    return a + b;\n}\n\nint main()\n{\n    add(5, 3); // 5 and 3 are ARGUMENTS\n}"
+    },
+    {
+      "type": "table",
+      "headers": ["Term", "Where it lives", "Meaning"],
+      "rows": [
+        ["Parameter", "In the function's own definition/declaration", "A placeholder name for an expected input"],
+        ["Argument", "At the call site", "The actual value handed to the function for that call"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "These two words are often used loosely as if interchangeable, but the distinction is a common interview question: parameters are the placeholders a function declares; arguments are the real values supplied when it's called."
+    },
+    {
+      "type": "heading",
+      "text": "2. Arguments Must Match Parameters"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint multiply(int a, int b)\n{\n    return a * b;\n}\n\nint main()\n{\n    cout << multiply(4, 5) << endl;\n\n    return 0;\n}",
+      "output": "20",
+      "retypePractice": true,
+      "retypeId": "cpp-parameters-multiply"
+    },
+    {
+      "type": "note",
+      "text": "multiply(4, 5) — the first argument, 4, fills a; the second, 5, fills b. Arguments are matched to parameters by position, in order."
+    },
+    {
+      "type": "heading",
+      "text": "3. Wrong Count = Compilation Error"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "multiply(4);       // ERROR — missing an argument for b\nmultiply(4, 5, 6); // ERROR — too many arguments"
+    },
+    {
+      "type": "warning",
+      "text": "A function expecting two parameters must be called with exactly two arguments (unless default values are involved — see below). Too few or too many is a compilation error, not something silently ignored."
+    },
+    {
+      "type": "heading",
+      "text": "4. Argument Order Matters"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int divide(int numerator, int denominator)\n{\n    return numerator / denominator;\n}\n\ncout << divide(10, 2); // 5\ncout << divide(2, 10); // 0 — arguments swapped, wrong answer"
+    },
+    {
+      "type": "warning",
+      "text": "Arguments fill parameters strictly by position — the first argument always goes to the first parameter, regardless of what the values conceptually \"mean.\" Swapping the order of arguments swaps which value lands in which parameter."
+    },
+    {
+      "type": "heading",
+      "text": "5. Default Parameter Values"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int power(int base, int exponent = 2)\n{\n    int result = 1;\n    for (int i = 0; i < exponent; i++)\n    {\n        result *= base;\n    }\n    return result;\n}\n\ncout << power(5) << endl;     // exponent defaults to 2 → 25\ncout << power(5, 3) << endl;  // exponent explicitly 3 → 125"
+    },
+    {
+      "type": "definition",
+      "term": "Default parameter value",
+      "text": "A default parameter value is used automatically when the caller doesn't supply an argument for that parameter."
+    },
+    {
+      "type": "note",
+      "text": "power(5) is valid even though power technically has two parameters — exponent falls back to its default, 2, when no second argument is given. power(5, 3) overrides that default explicitly."
+    },
+    {
+      "type": "heading",
+      "text": "6. Default Values Must Come Last"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int power(int exponent = 2, int base); // ERROR — default before a non-default parameter"
+    },
+    {
+      "type": "warning",
+      "text": "Once a parameter has a default value, every parameter after it must also have one — a non-default parameter can't follow a default one. This makes sense given how calls work: the caller supplies arguments left to right, so a gap in the middle would be ambiguous."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A form with blank fields and pre-filled ones",
+      "text": "A parameter is like a labeled blank on a form — \"Name: ____\". An argument is what you actually write in that blank when filling it out. Some fields might come pre-filled with a common default (like a pre-checked checkbox), which you can leave as-is or override — exactly like a default parameter value."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using the terms parameter and argument interchangeably in an interview — they're related but distinct: parameter = the placeholder, argument = the real value.",
+        "Passing arguments in the wrong order — position matters, the first argument always fills the first parameter.",
+        "Calling a function with too few or too many arguments — a compilation error, unless the missing ones have default values.",
+        "Giving a non-default parameter after a default one — the language requires all defaulted parameters to be trailing."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between a parameter and an argument?",
+          "answer": "A parameter is the placeholder variable declared in a function's own definition or declaration; an argument is the actual value supplied at the call site for that parameter."
+        },
+        {
+          "question": "How are arguments matched to parameters?",
+          "answer": "By position — the first argument fills the first parameter, the second argument fills the second parameter, and so on, in order."
+        },
+        {
+          "question": "What is a default parameter value?",
+          "answer": "A value a parameter uses automatically when the caller doesn't provide an argument for it."
+        },
+        {
+          "question": "Can a non-default parameter follow a default parameter?",
+          "answer": "No — once a parameter has a default value, every parameter after it must also have a default value."
+        }
+      ],
+      "thirtySecondAnswer": "A parameter is the placeholder name a function declares for an expected input, while an argument is the actual value supplied when the function is called — arguments are matched to parameters by position, in order, and the count must match unless default values are involved. A default parameter value is used automatically when the caller omits that argument, letting a function be called with fewer arguments than it technically declares. Once a parameter has a default value, every parameter after it must have one too, since arguments are always supplied left to right."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Parameters and Arguments",
+      "text": "Parameter = the blank on the form. Argument = what you write in it. Default value = a pre-filled blank you can leave or override."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-parameters-multiply", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint multiply(int a, int b)\n{\n    return a * b;\n}\n\nint main()\n{\n    cout << multiply(4, 5) << endl;\n\n    return 0;\n}", "output": "20" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-parameters-multiply",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint multiply(int a, int b)\n{\n    return a * b;\n}\n\nint main()\n{\n    cout << multiply(4, 5) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-parameters-multiply"]
+  }
+}

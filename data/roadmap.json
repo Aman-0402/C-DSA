@@ -49,7 +49,8 @@
         { "id": "cpp-functions", "title": "Functions", "lesson": "cpp-functions" },
         { "id": "cpp-function-declaration", "title": "Function Declaration", "lesson": "cpp-function-declaration" },
         { "id": "cpp-function-definition", "title": "Function Definition", "lesson": "cpp-function-definition" },
-        { "id": "cpp-function-calling", "title": "Function Calling", "lesson": "cpp-function-calling" }
+        { "id": "cpp-function-calling", "title": "Function Calling", "lesson": "cpp-function-calling" },
+        { "id": "cpp-parameters-arguments", "title": "Parameters and Arguments", "lesson": "cpp-parameters-arguments" }
       ]
     }
   ]
