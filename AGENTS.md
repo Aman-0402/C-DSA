@@ -6,7 +6,7 @@ Instructions for any AI agent (Claude, Copilot, etc.) working in this repo.
 
 Frontend-only interactive learning platform for C++, Data Structures & Algorithms, and LeetCode prep. Built like a premium personal coding eBook + IDE, not a blog or plain docs site.
 
-**Content ownership rule:** the user supplies ALL learning content (topics, explanations, code, questions). The agent never invents lessons, practice questions, interview questions, or LeetCode problems unless explicitly asked. User-provided content is the source of truth.
+**Content generation rule (updated):** the user gives a topic name only. The agent writes the full lesson content itself — explanations, analogies, code examples, common mistakes, interview Q&A, memory tricks — matching the established teaching style of prior lessons (beginner-first, explicitly flags concepts "not learned yet" rather than front-loading unintroduced syntax, one topic per lesson, DSA/interview-oriented). Practice questions and LeetCode problems are still only added when the user explicitly asks or supplies them — do not invent graded practice/LeetCode content on your own.
 
 ## Tech Stack (frontend-only, no backend)
 
@@ -35,18 +35,17 @@ Frontend-only interactive learning platform for C++, Data Structures & Algorithm
 
 Keep JS modular — one concern per file. Never dump everything into one giant HTML/JS file. Reuse existing render functions instead of duplicating.
 
-## Content Workflow (every time user shares new content)
+## Content Workflow (every time user gives a topic name)
 
-1. Read the content fully.
-2. Analyze: topic, subtopics, explanations, definitions, syntax, examples, code, output, practice Qs, interview Qs, DSA concepts, LeetCode refs.
-3. Clean grammar/formatting only — never change technical meaning.
-4. Structure into the lesson JSON schema (see below).
-5. Pick UI components that fit THIS content — don't force every lesson into the same layout, don't add empty/irrelevant sections.
-6. Implement/extend HTML, CSS, JS, JSON.
-7. Wire into roadmap, sidebar, search, progress system.
-8. Add "Retype & Practice" under every C++ code example; add coding-challenge workspace for every practice question.
-9. Verify: navigation, responsive layout, localStorage, theme, editors, practice checker, progress, search, bookmarks, notes.
-10. Report: content analyzed, lessons added, files created/updated, interactive components added.
+1. Write the lesson content: explanations, definitions, syntax, examples, code, output, common mistakes, interview Qs — matching the depth/tone of prior lessons in `data/lessons/`.
+2. Only introduce concepts already covered in earlier lessons as "known" — flag anything not yet taught with a warning/note, same as existing lessons do.
+3. Structure into the lesson JSON schema (see below).
+4. Pick UI components that fit THIS content — don't force every lesson into the same layout, don't add empty/irrelevant sections.
+5. Implement/extend HTML, CSS, JS, JSON.
+6. Wire into roadmap, sidebar, search, progress system.
+7. Add "Retype & Practice" under every full C++ code example; add coding-challenge workspace only for practice questions the user explicitly asked for.
+8. Verify: navigation, responsive layout, localStorage, theme, editors, practice checker, progress, search, bookmarks, notes.
+9. Report: topic added, files created/updated, interactive components added.
 
 **Always produce a plan before implementing new content** (see Planning rule below), then wait for explicit go-ahead if the plan is non-trivial.
 
