@@ -94,7 +94,8 @@
         { "id": "cpp-static-keyword", "title": "static Keyword", "lesson": "cpp-static-keyword" },
         { "id": "cpp-encapsulation", "title": "Encapsulation", "lesson": "cpp-encapsulation" },
         { "id": "cpp-inheritance", "title": "Inheritance", "lesson": "cpp-inheritance" },
-        { "id": "cpp-polymorphism", "title": "Polymorphism", "lesson": "cpp-polymorphism" }
+        { "id": "cpp-polymorphism", "title": "Polymorphism", "lesson": "cpp-polymorphism" },
+        { "id": "cpp-function-overriding", "title": "Function Overriding", "lesson": "cpp-function-overriding" }
       ]
     }
   ]

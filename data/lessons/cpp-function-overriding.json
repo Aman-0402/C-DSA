@@ -1,0 +1,151 @@
+{
+  "id": "cpp-function-overriding",
+  "moduleId": "oop",
+  "title": "Function Overriding",
+  "description": "A derived class redefining a base class function with the exact same signature — and why overriding is not the same thing as overloading.",
+  "objectives": [
+    "Distinguish overriding (same signature) from overloading (different signatures)",
+    "Redefine a base class function in a derived class",
+    "Use the override keyword as a safety net",
+    "See why calling through a base pointer needs more than overriding alone"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Overriding vs Overloading — Don't Mix These Up"
+    },
+    {
+      "type": "table",
+      "headers": ["Function Overloading", "Function Overriding"],
+      "rows": [
+        ["Same name, DIFFERENT parameter lists", "Same name, SAME parameter list and return type"],
+        ["Happens within the same class", "Happens between a base class and a derived class"],
+        ["Compiler picks the version based on arguments", "The derived class's version replaces the base class's for that derived type"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "These two terms sound alike and are frequently confused, including in interviews. Overloading is same name, different signature, same class. Overriding is same name, same signature, base vs derived class."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Function Overriding?"
+    },
+    {
+      "type": "definition",
+      "term": "Function overriding",
+      "text": "Function overriding is when a derived class defines a function with the exact same name, parameters, and return type as one in its base class, replacing that function's behavior for objects of the derived type."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Animal\n{\npublic:\n    void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() // same name, same parameters — this OVERRIDES Animal's version\n    {\n        cout << \"Woof!\" << endl;\n    }\n};"
+    },
+    {
+      "type": "heading",
+      "text": "3. Overriding Works Directly on a Derived Object"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound()\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Dog d;\n    d.makeSound(); // calls Dog's version — no surprise here\n\n    return 0;\n}",
+      "output": "Woof!",
+      "retypePractice": true,
+      "retypeId": "cpp-function-overriding-dog"
+    },
+    {
+      "type": "note",
+      "text": "Called directly on a Dog object, this is straightforward: Dog::makeSound() simply exists and is used, replacing Animal::makeSound() for anything that's actually a Dog."
+    },
+    {
+      "type": "heading",
+      "text": "4. The override Keyword"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Dog : public Animal\n{\npublic:\n    void makeSond() override // TYPO — meant to override makeSound, but didn't\n    {\n        cout << \"Woof!\" << endl;\n    }\n};"
+    },
+    {
+      "type": "tip",
+      "text": "Writing override after a function's parameter list tells the compiler \"I intend for this to override a base class function.\" If the signature doesn't actually match anything in the base class — like this typo, makeSond instead of makeSound — the compiler reports an error immediately, instead of silently creating an unrelated new function and leaving the bug to be discovered much later."
+    },
+    {
+      "type": "heading",
+      "text": "5. What Happens Through a Base Class Pointer?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Animal *a = new Dog();\na->makeSound(); // WITHOUT virtual, this actually calls Animal's version, not Dog's!"
+    },
+    {
+      "type": "warning",
+      "text": "This is the catch overriding alone doesn't solve: without the virtual keyword on Animal's makeSound(), calling it through an Animal* actually uses Animal's version, even though a genuinely points at a Dog. This surprising behavior is exactly why Virtual Functions is the very next topic — it's the missing piece that makes overriding behave the way Polymorphism previewed."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A specific job description replacing a general one",
+      "text": "A general \"Employee\" job description might say \"greet the customer.\" A \"Receptionist\" job description, more specific, redefines exactly how that greeting happens for that particular role — same duty name, more specific instructions. When someone acts as a Receptionist directly, they follow the Receptionist version; the trickier question of what happens when you only know someone by their general \"Employee\" title is exactly what the next topic resolves."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing overriding with overloading — overriding requires an identical signature between base and derived; overloading requires different signatures within the same class.",
+        "Making a small typo in an intended override, creating an unrelated new function instead — the override keyword catches exactly this mistake at compile time.",
+        "Expecting a->makeSound() to always call the derived version just because overriding was written — without virtual on the base class's version, calling through a base pointer or reference uses the base version instead.",
+        "Forgetting the return type must also match exactly for a true override, not just the name and parameters."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is function overriding?",
+          "answer": "When a derived class defines a function with the exact same name, parameters, and return type as one in its base class, replacing that function's behavior for the derived type."
+        },
+        {
+          "question": "What is the difference between overriding and overloading?",
+          "answer": "Overloading is multiple functions sharing a name with different parameter lists within the same class; overriding is a derived class redefining a base class function with an identical signature."
+        },
+        {
+          "question": "What does the override keyword do?",
+          "answer": "It tells the compiler this function is intended to override a base class function, causing a compile-time error if no matching base function actually exists — catching typos and signature mismatches early."
+        },
+        {
+          "question": "Does overriding alone guarantee the derived version runs when called through a base class pointer?",
+          "answer": "No — without the base class function being marked virtual, calling through a base pointer or reference invokes the base class's version, regardless of the actual object's type."
+        }
+      ],
+      "thirtySecondAnswer": "Function overriding happens when a derived class defines a function with the exact same signature as one in its base class, replacing that behavior for the derived type — distinct from overloading, which is same name, different signatures, within one class. The override keyword is a safety net: it makes the compiler verify a matching base function actually exists, catching typos immediately instead of silently creating an unrelated function. Overriding alone, though, doesn't guarantee the derived version runs when called through a base class pointer — that requires the base class's function to also be declared virtual, which is exactly what the next topic covers."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Function Overriding",
+      "text": "Overloading = same name, different arguments, same class. Overriding = same name, same everything, base vs derived. override keyword = a typo detector."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-function-overriding-dog", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound()\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Dog d;\n    d.makeSound();\n\n    return 0;\n}", "output": "Woof!" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-function-overriding-dog",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound()\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Dog d;\n    d.makeSound();\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-function-overriding-dog"]
+  }
+}
