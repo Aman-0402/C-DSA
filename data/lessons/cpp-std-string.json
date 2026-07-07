@@ -1,0 +1,198 @@
+{
+  "id": "cpp-std-string",
+  "moduleId": "arrays-strings",
+  "title": "std::string",
+  "description": "Working with std::string in depth: concatenation, length(), indexing, comparison, substr(), find(), and reading a full line with getline.",
+  "objectives": [
+    "Declare and concatenate std::string values",
+    "Use length()/size(), indexing, substr(), and find()",
+    "Compare strings with ==",
+    "Read a full line of input (including spaces) with getline"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Declaring a string"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <string>\n\nstring name = \"Aman\";\nstring greeting;"
+    },
+    {
+      "type": "note",
+      "text": "string comes from the <string> header. Like any variable, it can be declared with an initial value or left empty and assigned later."
+    },
+    {
+      "type": "heading",
+      "text": "2. Concatenation with +"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string first = \"Aman\";\n    string last = \"Kumar\";\n\n    string fullName = first + \" \" + last;\n\n    cout << fullName << endl;\n\n    return 0;\n}",
+      "output": "Aman Kumar",
+      "retypePractice": true,
+      "retypeId": "cpp-std-string-concat"
+    },
+    {
+      "type": "note",
+      "text": "+ joins strings together — something a raw character array from the previous topics could never do without manual, careful copying."
+    },
+    {
+      "type": "heading",
+      "text": "3. length() / size()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string name = \"Aman\";\ncout << name.length(); // 4\ncout << name.size();   // 4 — identical to length()"
+    },
+    {
+      "type": "note",
+      "text": "length() and size() do exactly the same thing for a string — two names for the same operation, both commonly used."
+    },
+    {
+      "type": "heading",
+      "text": "4. Indexing with []"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string name = \"Aman\";\ncout << name[0]; // 'A'\ncout << name[3]; // 'n'"
+    },
+    {
+      "type": "note",
+      "text": "Just like an array (and just like the character array before it), a string is zero-indexed — name[0] is the first character, name[name.length() - 1] is the last."
+    },
+    {
+      "type": "heading",
+      "text": "5. Comparing Strings with =="
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string a = \"cat\";\nstring b = \"cat\";\nstring c = \"dog\";\n\ncout << (a == b); // 1 (true)\ncout << (a == c); // 0 (false)"
+    },
+    {
+      "type": "tip",
+      "text": "Comparing std::string values with == compares their actual text content, character by character — exactly the intuitive behavior you'd expect, unlike raw character arrays, which can't be compared this simply."
+    },
+    {
+      "type": "heading",
+      "text": "6. substr() — Extracting Part of a String"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string text = \"Hello World\";\nstring part = text.substr(6, 5); // starts at index 6, takes 5 characters\ncout << part; // World"
+    },
+    {
+      "type": "definition",
+      "term": "substr(start, length)",
+      "text": "substr(start, length) returns a new string containing length characters beginning at index start."
+    },
+    {
+      "type": "heading",
+      "text": "7. find() — Searching Inside a String"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string text = \"Hello World\";\ncout << text.find(\"World\"); // 6 — index where \"World\" begins\ncout << text.find(\"xyz\");   // a special \"not found\" value"
+    },
+    {
+      "type": "note",
+      "text": "find() returns the starting index of the first match, or a special value (string::npos) if the text isn't found at all — checking against that exact value is how \"not found\" is normally detected."
+    },
+    {
+      "type": "heading",
+      "text": "8. Reading a Full Line with getline"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string fullName;\n\n    cout << \"Enter your full name: \";\n    getline(cin, fullName);\n\n    cout << \"Hello, \" << fullName << \"!\" << endl;\n\n    return 0;\n}",
+      "retypePractice": true,
+      "retypeId": "cpp-std-string-getline"
+    },
+    {
+      "type": "warning",
+      "text": "Recall from Character Arrays and cout & cin: cin >> stops at the first whitespace, so it can never capture \"John Smith\" in one read. getline(cin, variable) is the fix — it reads an entire line, spaces and all, until the next newline."
+    },
+    {
+      "type": "heading",
+      "text": "9. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A word processor vs a typewriter with fixed-width paper",
+      "text": "A character array is like typing on paper of a fixed width — run out of room, and there's nothing more you can do. std::string is like a word processor: it reflows and grows as needed, and gives you built-in tools (find, cut a section, join documents) instead of making you manage every character by hand."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using cin >> to read a name that might contain spaces — use getline(cin, variable) instead.",
+        "Forgetting #include <string> — string comes from its own header.",
+        "Assuming find() returns -1 when nothing is found — it returns the special value string::npos, not -1.",
+        "Mixing up substr(start, length) with a start/end pair — the second argument is a length (count of characters), not an ending index."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How do you concatenate two std::string values?",
+          "answer": "Using the + operator, e.g. string fullName = first + \" \" + last;."
+        },
+        {
+          "question": "What's the difference between length() and size() for a string?",
+          "answer": "Nothing — they're two names for exactly the same operation, both returning the number of characters."
+        },
+        {
+          "question": "How do you compare two strings for equality?",
+          "answer": "Using ==, which compares the actual text content character by character."
+        },
+        {
+          "question": "What does substr(start, length) return?",
+          "answer": "A new string containing length characters starting at index start."
+        },
+        {
+          "question": "Why is getline used instead of cin >> for reading names?",
+          "answer": "Because cin >> stops at the first whitespace, so it can't capture text containing spaces; getline(cin, variable) reads an entire line instead."
+        }
+      ],
+      "thirtySecondAnswer": "std::string, from the <string> header, provides everything a raw character array lacks: + for concatenation, length()/size() to measure it, [] for zero-based indexing, == to compare actual text content, substr(start, length) to extract a piece, and find() to search inside it, returning string::npos if nothing matches. Since cin >> only reads up to the first whitespace, capturing a full line of text — including spaces — requires getline(cin, variable) instead."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember std::string",
+      "text": "+ joins. length()/size() measures. [] picks one character. == compares content. substr() cuts a piece. find() searches. getline() reads a whole line."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-std-string-concat", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string first = \"Aman\";\n    string last = \"Kumar\";\n\n    string fullName = first + \" \" + last;\n\n    cout << fullName << endl;\n\n    return 0;\n}", "output": "Aman Kumar" },
+    { "id": "cpp-std-string-getline", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string fullName;\n\n    cout << \"Enter your full name: \";\n    getline(cin, fullName);\n\n    cout << \"Hello, \" << fullName << \"!\" << endl;\n\n    return 0;\n}" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-std-string-concat",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string first = \"Aman\";\n    string last = \"Kumar\";\n\n    string fullName = first + \" \" + last;\n\n    cout << fullName << endl;\n\n    return 0;\n}"
+    },
+    {
+      "id": "cpp-std-string-getline",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string fullName;\n\n    cout << \"Enter your full name: \";\n    getline(cin, fullName);\n\n    cout << \"Hello, \" << fullName << \"!\" << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-std-string-concat", "cpp-std-string-getline"]
+  }
+}
