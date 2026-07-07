@@ -1,0 +1,141 @@
+{
+  "id": "cpp-set",
+  "moduleId": "stl",
+  "title": "set",
+  "description": "A collection of unique values, automatically kept sorted: insert, find, count, and erase — with duplicates silently ignored.",
+  "objectives": [
+    "Understand set as a collection of unique, automatically sorted values",
+    "Use insert(), find(), count(), and erase()",
+    "See that inserting a duplicate has no effect",
+    "Understand set's typical logarithmic-time performance"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Associative Containers"
+    },
+    {
+      "type": "paragraph",
+      "text": "STL Containers previewed set as \"a collection of unique values, automatically kept in sorted order.\" Let's see exactly what that means in practice."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is set?"
+    },
+    {
+      "type": "definition",
+      "term": "set",
+      "text": "set is a container that stores unique values, automatically kept in sorted order — inserting a value that already exists has no effect."
+    },
+    {
+      "type": "heading",
+      "text": "3. insert() — Sorted, No Duplicates"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <set>\n\nusing namespace std;\n\nint main()\n{\n    set<int> numbers;\n    numbers.insert(30);\n    numbers.insert(10);\n    numbers.insert(20);\n    numbers.insert(10); // duplicate — silently has no effect\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-set-basic"
+    },
+    {
+      "type": "warning",
+      "text": "This is a preview of the range-based for loop, for (int n : numbers), its own upcoming topic — for now, just read it as \"for each n in numbers.\" Notice two things: the output is sorted (10, 20, 30), even though insertion order was 30, 10, 20, 10 — and the second 10 never appears twice, since set silently ignores inserting a value already present."
+    },
+    {
+      "type": "heading",
+      "text": "4. find() and count()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "set<int> numbers = {10, 20, 30};\n\nauto it = numbers.find(20);\nif (it != numbers.end())\n{\n    cout << \"Found!\";\n}\n\ncout << numbers.count(20); // 1 — present\ncout << numbers.count(99); // 0 — absent"
+    },
+    {
+      "type": "note",
+      "text": "Recall STL Algorithms' find(): set.find() works the same way conceptually, returning an iterator or end() if not present. count() is especially handy for set specifically, since the answer can only ever be 0 or 1 — there's no way for a duplicate to inflate it."
+    },
+    {
+      "type": "heading",
+      "text": "5. erase()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "set<int> numbers = {10, 20, 30};\n\nnumbers.erase(20); // removes the value 20 directly, by value — not by position"
+    },
+    {
+      "type": "note",
+      "text": "Unlike vector's erase(), which takes an iterator position, set's erase() conveniently accepts the value itself directly."
+    },
+    {
+      "type": "heading",
+      "text": "6. How set Is Implemented"
+    },
+    {
+      "type": "note",
+      "text": "set is typically implemented as a balanced binary search tree, keeping elements sorted automatically and giving insert(), find(), and erase() all roughly logarithmic-time performance — much faster than scanning a whole vector to check for duplicates or find a value."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A guest list where names can't repeat",
+      "text": "A wedding guest list where every name must be unique, and the final list is printed alphabetically for the door staff, is exactly a set: adding \"Aman\" a second time changes nothing, and the list is always naturally sorted, no matter what order names were added in."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Expecting set to preserve insertion order — it always keeps elements sorted, regardless of insertion order.",
+        "Assuming inserting a duplicate causes an error — it silently does nothing; no exception, no crash.",
+        "Using set's erase() the same way as vector's, expecting a position — set's erase() takes the value itself.",
+        "Reaching for set when duplicates should actually be kept — a set can never hold duplicate values by definition."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does set guarantee about its elements?",
+          "answer": "That every value is unique and that the elements are always kept in sorted order automatically."
+        },
+        {
+          "question": "What happens when you insert a value that's already in the set?",
+          "answer": "Nothing — the insertion silently has no effect, and the set remains unchanged."
+        },
+        {
+          "question": "How is set typically implemented, and what does that mean for performance?",
+          "answer": "As a balanced binary search tree, giving insert(), find(), and erase() all roughly logarithmic-time performance."
+        }
+      ],
+      "thirtySecondAnswer": "set stores unique values, automatically kept in sorted order regardless of insertion order — inserting a duplicate silently has no effect. insert() adds a value, find() and count() check for a value's presence (count() can only ever return 0 or 1, since duplicates are impossible), and erase() removes by value directly rather than by position. It's typically implemented as a balanced binary search tree, giving these operations roughly logarithmic-time performance, much faster than scanning through a vector."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember set",
+      "text": "set = a guest list, no repeat names allowed, always printed alphabetically. Insert a duplicate = nothing happens. count() can only ever be 0 or 1."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-set-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <set>\n\nusing namespace std;\n\nint main()\n{\n    set<int> numbers;\n    numbers.insert(30);\n    numbers.insert(10);\n    numbers.insert(20);\n    numbers.insert(10);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-set-basic",
+      "reference": "#include <iostream>\n#include <set>\n\nusing namespace std;\n\nint main()\n{\n    set<int> numbers;\n    numbers.insert(30);\n    numbers.insert(10);\n    numbers.insert(20);\n    numbers.insert(10);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-set-basic"]
+  }
+}
