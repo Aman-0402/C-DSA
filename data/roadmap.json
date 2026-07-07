@@ -121,7 +121,8 @@
         { "id": "cpp-array-container", "title": "array", "lesson": "cpp-array-container" },
         { "id": "cpp-list", "title": "list", "lesson": "cpp-list" },
         { "id": "cpp-forward-list", "title": "forward_list", "lesson": "cpp-forward-list" },
-        { "id": "cpp-deque", "title": "deque", "lesson": "cpp-deque" }
+        { "id": "cpp-deque", "title": "deque", "lesson": "cpp-deque" },
+        { "id": "cpp-stack-container", "title": "stack", "lesson": "cpp-stack-container" }
       ]
     }
   ]

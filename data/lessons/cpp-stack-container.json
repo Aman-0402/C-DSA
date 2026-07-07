@@ -1,0 +1,141 @@
+{
+  "id": "cpp-stack-container",
+  "moduleId": "stl",
+  "title": "stack",
+  "description": "The LIFO container adaptor: push, pop, top — a deliberately restricted interface, no indexing, no iteration.",
+  "objectives": [
+    "Understand stack as a LIFO container adaptor",
+    "Use push(), pop(), top(), and empty()",
+    "Understand why stack deliberately has no indexing or iteration",
+    "Connect back to Stack Memory's LIFO behavior"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: LIFO, Already Familiar"
+    },
+    {
+      "type": "paragraph",
+      "text": "Stack Memory introduced LIFO — last in, first out — using a stack of plates as the analogy, and showed real function calls behaving exactly this way. The STL's stack container is that same idea, available as a data structure you control directly in your own code."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is stack?"
+    },
+    {
+      "type": "definition",
+      "term": "stack (container)",
+      "text": "stack is a container adaptor restricting access to LIFO order only — elements can be added and removed from just one end, the top."
+    },
+    {
+      "type": "note",
+      "text": "Recall STL Containers: an adaptor is built on another container underneath (stack uses deque by default) but exposes a narrower, more specific interface."
+    },
+    {
+      "type": "heading",
+      "text": "3. push(), pop(), top(), empty()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <stack>\n\nstack<int> s;\n\ns.push(10); // add to the top\ns.push(20);\ns.push(30);\n\ncout << s.top(); // 30 — look at the top without removing it\n\ns.pop(); // remove the top element (30) — note: pop() returns nothing"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike vector's pop_back(), stack's pop() doesn't return the removed value — it only removes it. To both read and remove the top, call top() first, then pop() separately."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nint main()\n{\n    stack<int> s;\n    s.push(10);\n    s.push(20);\n    s.push(30);\n\n    while (!s.empty())\n    {\n        cout << s.top() << \" \";\n        s.pop();\n    }\n\n    return 0;\n}",
+      "output": "30 20 10 ",
+      "retypePractice": true,
+      "retypeId": "cpp-stack-container-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "Pushed in order: 10, 20, 30 — 30 ends up on top",
+        "The loop keeps printing top() then popping, until empty() becomes true",
+        "Output comes out in reverse push order: 30, 20, 10 — exactly what LIFO means"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. No Indexing, No Iteration — On Purpose"
+    },
+    {
+      "type": "warning",
+      "text": "stack has no [], no at(), and no begin()/end() at all — it deliberately only exposes push(), pop(), top(), empty(), and size(). This isn't a missing feature; it's the entire point of an adaptor, from STL Containers: a narrower interface that enforces LIFO-only usage, so code using a stack can't accidentally reach into the middle."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The plate stack, now as code",
+      "text": "Recall Stack Memory's plate stack. s.push(plate) adds one to the top; s.top() looks at whichever plate is currently on top without taking it; s.pop() removes it. There's no s[3] — reaching into the middle of a physical stack of plates without taking off everything above it isn't how a real stack works either."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Expecting pop() to return the removed value — it doesn't; call top() before pop() if the value is needed.",
+        "Calling top() or pop() on an empty stack — always check empty() first, since there's no safe fallback here.",
+        "Trying to iterate a stack with a for loop or [] — neither exists; a stack can only be drained one top() element at a time.",
+        "Confusing this container's stack with Stack Memory's call stack — related in concept (LIFO), but this is a data structure you use explicitly in your own code."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does stack restrict access to?",
+          "answer": "LIFO (last in, first out) order only — elements can be added and removed from just the top."
+        },
+        {
+          "question": "What are the main operations on a stack?",
+          "answer": "push() to add to the top, pop() to remove the top element, top() to view it without removing it, and empty() to check if it's empty."
+        },
+        {
+          "question": "Does stack support indexing or iteration?",
+          "answer": "No — it deliberately has no [] or iterators, enforcing that elements can only be accessed through the top."
+        },
+        {
+          "question": "What underlying container does stack typically use?",
+          "answer": "deque by default, though it's an adaptor, meaning the underlying container can be configured — the point is the narrowed, LIFO-only interface it exposes."
+        }
+      ],
+      "thirtySecondAnswer": "stack is a container adaptor exposing only LIFO operations: push() adds to the top, pop() removes the top element without returning it, top() reads the current top element without removing it, and empty() checks whether anything remains. It deliberately has no indexing or iteration at all — that narrowed interface is the entire point of an adaptor, guaranteeing code using a stack can only ever interact with the top, mirroring the same LIFO behavior already seen with the function call stack in Stack Memory."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember stack",
+      "text": "stack = a stack of plates, in code. push = add to top. pop = remove top (no value returned). top = peek without removing. No reaching into the middle."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-stack-container-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nint main()\n{\n    stack<int> s;\n    s.push(10);\n    s.push(20);\n    s.push(30);\n\n    while (!s.empty())\n    {\n        cout << s.top() << \" \";\n        s.pop();\n    }\n\n    return 0;\n}", "output": "30 20 10 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-stack-container-basic",
+      "reference": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nint main()\n{\n    stack<int> s;\n    s.push(10);\n    s.push(20);\n    s.push(30);\n\n    while (!s.empty())\n    {\n        cout << s.top() << \" \";\n        s.pop();\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-stack-container-basic"]
+  }
+}
