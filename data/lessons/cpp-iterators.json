@@ -1,0 +1,142 @@
+{
+  "id": "cpp-iterators",
+  "moduleId": "stl",
+  "title": "Iterators",
+  "description": "Beyond the basics from STL Iterators: iterator categories per container, const_iterator, reverse iteration, and the real danger of invalidation.",
+  "objectives": [
+    "Know which iterator category each container we've covered provides",
+    "Use const_iterator for read-only traversal",
+    "Iterate backward with rbegin()/rend()",
+    "Understand iterator invalidation and why it matters"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Basics from STL Iterators"
+    },
+    {
+      "type": "paragraph",
+      "text": "STL Iterators covered begin(), end(), *it, and it++. Now we go a level deeper into how iterators actually differ between containers, and a genuine danger worth knowing about."
+    },
+    {
+      "type": "heading",
+      "text": "2. Not All Iterators Are Equally Powerful"
+    },
+    {
+      "type": "table",
+      "headers": ["Category", "Can do", "Containers we've covered"],
+      "rows": [
+        ["Forward", "Move forward only, one step at a time", "forward_list"],
+        ["Bidirectional", "Move forward AND backward", "list, set, map"],
+        ["Random access", "Move forward/backward AND jump directly (it + 5)", "vector, deque, array"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "This directly explains forward_list's forward-only iterators from its own topic, and why vector's iterators can do things (like it + 5, jumping five positions at once) that a list iterator cannot — the underlying memory layout determines what's actually possible."
+    },
+    {
+      "type": "heading",
+      "text": "3. const_iterator — Read-Only Traversal"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 3};\n\nfor (vector<int>::const_iterator it = numbers.begin(); it != numbers.end(); it++)\n{\n    cout << *it; // fine — reading\n    // *it = 99;  // ERROR — const_iterator forbids modifying through it\n}"
+    },
+    {
+      "type": "definition",
+      "term": "const_iterator",
+      "text": "A const_iterator can read elements but cannot be used to modify them, providing a compile-time guarantee that a traversal won't accidentally change the container."
+    },
+    {
+      "type": "heading",
+      "text": "4. Reverse Iteration"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    for (vector<int>::reverse_iterator it = numbers.rbegin(); it != numbers.rend(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}",
+      "output": "3 2 1 ",
+      "retypePractice": true,
+      "retypeId": "cpp-iterators-reverse"
+    },
+    {
+      "type": "note",
+      "text": "rbegin() and rend() give a reverse_iterator that walks the container back to front — rbegin() effectively starts at the last element, rend() marks one position before the first. The rest of the pattern (!=, ++, *) stays exactly the same as forward iteration."
+    },
+    {
+      "type": "heading",
+      "text": "5. Iterator Invalidation — A Real Danger"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 3};\n\nauto it = numbers.begin();\nnumbers.push_back(4); // may cause vector to resize (recall vector's growth from the vector topic)\n\ncout << *it; // DANGER — it might now be dangling, pointing at freed memory"
+    },
+    {
+      "type": "warning",
+      "text": "This connects directly to Delete's dangling pointer warning: if push_back() triggers vector's internal resize, the old memory block is freed and a new, bigger one is used instead — any iterator obtained before that resize now points at memory that's no longer valid. Modifying a container can invalidate iterators that were pointing into it; always be cautious about using an iterator after a container has been changed."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A bookmark in a book someone rebinds",
+      "text": "Recall the universal bookmark analogy from STL Iterators. If someone completely rebinds the book while your bookmark is still in it — removing pages, adding new ones, changing the whole physical structure — your bookmark's old page number might no longer correspond to anything sensible. That's iterator invalidation: the container changed shape underneath the iterator that was pointing into it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using an iterator after the container it points into has been resized or modified — it may be invalidated, leading to undefined behavior.",
+        "Assuming every container's iterator supports jumping ahead with it + 5 — only random-access iterators (vector, deque, array) support that; list/set/map iterators only support ++/--.",
+        "Trying to modify a container's element through a const_iterator — it's specifically designed to prevent that.",
+        "Mixing up rbegin()/rend() direction — rbegin() is the LAST element, rend() is one before the FIRST, the reverse of begin()/end()."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What's the difference between a forward, bidirectional, and random-access iterator?",
+          "answer": "Forward iterators only move ahead one step at a time; bidirectional iterators can also move backward; random-access iterators can additionally jump directly to any position, like it + 5."
+        },
+        {
+          "question": "What does const_iterator guarantee?",
+          "answer": "That the container's elements can be read through it, but not modified — a compile-time safeguard against accidental changes during traversal."
+        },
+        {
+          "question": "What is iterator invalidation?",
+          "answer": "When a container is modified in a way that makes previously obtained iterators into it no longer valid — for example, a vector resizing during push_back(), leaving old iterators pointing at freed memory."
+        }
+      ],
+      "thirtySecondAnswer": "Iterators come in categories with different capabilities: forward-only (forward_list), bidirectional (list, set, map), and random-access (vector, deque, array), which also supports direct jumps like it + 5. const_iterator allows reading but not modifying through it, and rbegin()/rend() provide reverse traversal, walking from the last element back to the first. A genuinely important danger is iterator invalidation: modifying a container, such as triggering a vector resize during push_back(), can leave previously obtained iterators pointing at freed memory, exactly the dangling-pointer problem from delete applied to iterators."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Iterators",
+      "text": "Forward < Bidirectional < Random-access, in capability. const_iterator = look, don't touch. rbegin()/rend() = walk it backward. Modify the container, and old iterators might dangle."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-iterators-reverse", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    for (vector<int>::reverse_iterator it = numbers.rbegin(); it != numbers.rend(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}", "output": "3 2 1 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-iterators-reverse",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    for (vector<int>::reverse_iterator it = numbers.rbegin(); it != numbers.rend(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-iterators-reverse"]
+  }
+}
