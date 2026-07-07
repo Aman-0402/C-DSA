@@ -48,18 +48,39 @@
 .callout-note .icon { color: var(--accent); }
 
 .real-life-card {
-  background: var(--bg-sunken);
+  position: relative;
+  display: flex;
+  gap: 14px;
+  background: var(--bg-elevated);
   border-radius: var(--radius);
-  padding: 16px 18px;
-  border: 1px dashed var(--border);
+  padding: 16px 18px 16px 16px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--info);
 }
+.real-life-card .rl-icon {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 999px;
+  background: var(--info-soft);
+  color: var(--info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.real-life-card .rl-icon .icon { width: 17px; height: 17px; }
+.real-life-card .rl-body { min-width: 0; }
 .real-life-card .rl-title {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 6px;
-  letter-spacing: 0.03em;
+  color: var(--info);
+  margin-bottom: 5px;
+  letter-spacing: 0.05em;
+}
+.real-life-card .rl-text {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text);
 }
 
 .flow-diagram {

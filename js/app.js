@@ -142,7 +142,9 @@ function renderSection(section, lesson) {
       return el(
         "div",
         "real-life-card lesson-section",
-        `<div class="rl-title">${section.title || "Real-Life Example"}</div><div>${section.text}</div>`
+        `<div class="rl-icon"><i data-lucide="users" class="icon"></i></div><div class="rl-body"><div class="rl-title">${
+          section.title || "Real-Life Example"
+        }</div><div class="rl-text">${section.text}</div></div>`
       );
 
     case "flow": {

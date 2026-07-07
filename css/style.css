@@ -18,6 +18,8 @@
   --warning-soft: #fff7e6;
   --danger: #dc2626;
   --danger-soft: #fdeeee;
+  --info: #0e8a9c;
+  --info-soft: #e5f6f8;
   --code-bg: #1e1f28;
   --code-text: #e4e6f0;
   --shadow: 0 1px 2px rgba(20, 20, 30, 0.06), 0 4px 16px rgba(20, 20, 30, 0.06);
@@ -42,6 +44,8 @@
   --warning-soft: #2a2010;
   --danger: #f0605a;
   --danger-soft: #2a1414;
+  --info: #38bdd0;
+  --info-soft: #0f2a2e;
   --code-bg: #0d0e14;
   --code-text: #e4e6f0;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.35);
