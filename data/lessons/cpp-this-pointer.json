@@ -1,0 +1,151 @@
+{
+  "id": "cpp-this-pointer",
+  "moduleId": "oop",
+  "title": "this Pointer",
+  "description": "The hidden pointer every member function receives, pointing at the object it was called on — and how it solves parameter names that shadow member names.",
+  "objectives": [
+    "Understand this as a pointer to the object a member function was called on",
+    "Use this-> to disambiguate a parameter from a member variable of the same name",
+    "Understand this is passed implicitly to every non-static member function",
+    "See a preview of returning *this for method chaining"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: A Parameter Named Like a Member"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    string name;\n\n    void setName(string name) // parameter also called 'name'!\n    {\n        name = name; // does nothing useful — just assigns the parameter to itself\n    }\n};"
+    },
+    {
+      "type": "warning",
+      "text": "Inside setName, name refers to the parameter — the innermost matching name wins. name = name; just assigns the parameter to itself and leaves the actual member variable name completely untouched. This is a genuinely common beginner bug."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is this?"
+    },
+    {
+      "type": "definition",
+      "term": "this",
+      "text": "this is an implicit pointer, available inside every non-static member function, pointing to the specific object the function was called on."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void setName(string name)\n{\n    this->name = name; // this->name is the MEMBER; name (alone) is the parameter\n}"
+    },
+    {
+      "type": "note",
+      "text": "this->name explicitly reaches through the pointer to the object's own member, cleanly separating it from the parameter that happens to share the same word. Recall Pointers: -> is just how a pointer accesses a member, matching this->name to (*this).name."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n\n    void setName(string name)\n    {\n        this->name = name;\n    }\n\n    void display()\n    {\n        cout << this->name;\n    }\n};\n\nint main()\n{\n    Student s1;\n    s1.setName(\"Aman\");\n\n    s1.display();\n\n    return 0;\n}",
+      "output": "Aman",
+      "retypePractice": true,
+      "retypeId": "cpp-this-pointer-setname"
+    },
+    {
+      "type": "note",
+      "text": "display() uses this->name too, even with no naming conflict here — it works identically to plain name in that case, since there's nothing to disambiguate."
+    },
+    {
+      "type": "heading",
+      "text": "4. this Is Passed to Every Member Function, Automatically"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "s1.setName(\"Aman\");\n// behind the scenes, this inside setName effectively points to s1"
+    },
+    {
+      "type": "note",
+      "text": "You never write this as an explicit parameter — the compiler quietly supplies it for every call to a non-static member function, set to the address of whichever object the function was called through (via the dot operator). Calling s2.setName(\"Priya\"); would have this point at s2 instead."
+    },
+    {
+      "type": "heading",
+      "text": "5. A Preview: Returning *this for Chaining"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Student& setName(string name)\n{\n    this->name = name;\n    return *this; // returns the object itself, enabling chaining\n}\n\n// later: s1.setName(\"Aman\").setAge(20).display();"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — *this dereferences the this pointer to get the actual object (recall the dereference * from Pointers), and returning a reference to it lets calls be chained one after another. We're not using this pattern yet, just recognizing it for later."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "\"Myself,\" spoken by whoever is currently talking",
+      "text": "If several people take turns saying \"I'll fix this myself,\" the word \"myself\" refers to a different person depending on who's speaking at that moment. this works the same way inside a member function: it always refers to whichever specific object the function is currently running for — s1 in one call, s2 in another — without the function needing to know in advance which one that'll be."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing name = name; when a parameter shadows a member variable — this silently does nothing useful; use this->name = name; instead.",
+        "Forgetting this is a pointer, and trying to use . instead of -> on it — this->name, not this.name.",
+        "Assuming this needs to be passed manually — it's implicit, automatically available inside every non-static member function.",
+        "Overusing this->everywhere out of habit when there's no actual naming conflict — harmless, but usually unnecessary noise."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the this pointer?",
+          "answer": "An implicit pointer available inside every non-static member function, pointing to the specific object the function was called on."
+        },
+        {
+          "question": "Why is this needed when a parameter has the same name as a member variable?",
+          "answer": "Because the parameter name shadows the member name inside the function; this->member explicitly refers to the object's member, distinct from the plain parameter name."
+        },
+        {
+          "question": "Is this passed explicitly by the programmer?",
+          "answer": "No — it's supplied implicitly by the compiler for every call to a non-static member function, based on which object the function was called through."
+        },
+        {
+          "question": "What does returning *this from a member function enable?",
+          "answer": "Method chaining — calling several member functions on the same object in one connected expression, since each call returns a reference to the object itself."
+        }
+      ],
+      "thirtySecondAnswer": "this is an implicit pointer available inside every non-static member function, pointing to the specific object the function was called on — the compiler supplies it automatically, without the programmer ever passing it explicitly. Its most common use is resolving a parameter that shadows a member variable of the same name: this->name refers unambiguously to the object's own member, while plain name refers to the parameter. Returning *this from a member function is a further technique enabling method chaining, where several calls on the same object can be strung together in sequence."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember this",
+      "text": "this = \"me, the object currently running this function.\" this->member cuts through a same-named parameter to reach the real member."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-this-pointer-setname", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n\n    void setName(string name)\n    {\n        this->name = name;\n    }\n\n    void display()\n    {\n        cout << this->name;\n    }\n};\n\nint main()\n{\n    Student s1;\n    s1.setName(\"Aman\");\n\n    s1.display();\n\n    return 0;\n}", "output": "Aman" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-this-pointer-setname",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n\n    void setName(string name)\n    {\n        this->name = name;\n    }\n\n    void display()\n    {\n        cout << this->name;\n    }\n};\n\nint main()\n{\n    Student s1;\n    s1.setName(\"Aman\");\n\n    s1.display();\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-this-pointer-setname"]
+  }
+}
