@@ -1,0 +1,171 @@
+{
+  "id": "cpp-vector",
+  "moduleId": "stl",
+  "title": "vector",
+  "description": "The default DSA container: push_back, size, insert/erase, and the crucial safety difference between [] and at().",
+  "objectives": [
+    "Declare, grow, and shrink a vector",
+    "Use size(), empty(), insert(), and erase()",
+    "Know the safety difference between [] and at()",
+    "Understand, at a high level, how vector grows internally"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The First Taste"
+    },
+    {
+      "type": "paragraph",
+      "text": "Standard Template Library — STL already gave us a glimpse: vector<int> numbers; with push_back(). Let's go deeper."
+    },
+    {
+      "type": "heading",
+      "text": "2. Declaring and Initializing"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> a;                  // empty vector\nvector<int> b = {1, 2, 3};       // initialized with values\nvector<int> c(5, 0);             // 5 elements, all initialized to 0"
+    },
+    {
+      "type": "heading",
+      "text": "3. push_back() and pop_back()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers;\n\nnumbers.push_back(10); // adds to the end\nnumbers.push_back(20);\nnumbers.pop_back();    // removes the last element (20)"
+    },
+    {
+      "type": "heading",
+      "text": "4. size() and empty()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 3};\n\ncout << numbers.size();  // 3\ncout << numbers.empty(); // 0 (false) — not empty"
+    },
+    {
+      "type": "heading",
+      "text": "5. [] vs at() — A Crucial Safety Difference"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    try\n    {\n        cout << numbers.at(5); // out of bounds\n    }\n    catch (out_of_range &e)\n    {\n        cout << \"Caught: \" << e.what() << endl;\n    }\n\n    return 0;\n}",
+      "output": "Caught: vector::_M_range_check: __n (which is 5) >= this->size() (which is 3)",
+      "retypePractice": true,
+      "retypeId": "cpp-vector-at-bounds"
+    },
+    {
+      "type": "warning",
+      "text": "Recall Arrays: numbers[5] here would be undefined behavior, exactly like an out-of-bounds raw array access — no error, just unreliable behavior. at(5) is different: it performs a bounds check and, connecting to Exception Handling, throws a std::out_of_range exception that can actually be caught. The exact wording of e.what() can vary by compiler/standard library, but the behavior — a catchable, safe error — is guaranteed."
+    },
+    {
+      "type": "table",
+      "headers": ["operator[]", "at()"],
+      "rows": [
+        ["No bounds checking — out-of-bounds access is undefined behavior", "Bounds-checked — throws std::out_of_range on invalid access"],
+        ["Faster (no check performed)", "Slightly slower (the check has a cost)"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. insert() and erase()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 4};\n\nnumbers.insert(numbers.begin() + 2, 3); // insert 3 before index 2 → {1, 2, 3, 4}\nnumbers.erase(numbers.begin());          // remove the first element → {2, 3, 4}"
+    },
+    {
+      "type": "note",
+      "text": "Both take an iterator position, connecting directly to STL Iterators — begin() + 2 means \"the position two steps after the start.\""
+    },
+    {
+      "type": "heading",
+      "text": "7. How vector Actually Grows"
+    },
+    {
+      "type": "note",
+      "text": "Internally, vector keeps a block of memory (recall new[] from Dynamic Memory Allocation) somewhat larger than what's currently needed. push_back() usually just fills the next open slot; occasionally, when that block fills up completely, vector allocates a bigger block behind the scenes and copies everything over. This happens automatically — you never manage it yourself — and is why vector is sometimes described as having amortized constant-time push_back(), even though any single call could occasionally trigger a full resize."
+    },
+    {
+      "type": "heading",
+      "text": "8. A Preview: 2D vector"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<vector<int>> grid(3, vector<int>(4, 0)); // 3 rows, 4 columns, all 0"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — a vector of vectors gives a resizable version of the 2D Arrays grid from earlier, still indexed as grid[row][col]. We'll return to this pattern once we're deeper into using STL containers for actual DSA problems."
+    },
+    {
+      "type": "heading",
+      "text": "9. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "An expanding accordion folder",
+      "text": "An ordinary array is a fixed box — once full, that's it. vector is more like an accordion folder that quietly expands to a bigger size when you keep adding papers, without you needing to go buy a new folder and manually move everything over yourself."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using [] when there's real uncertainty about whether an index is valid — at() is the safer choice when bounds aren't already guaranteed.",
+        "Forgetting #include <vector>.",
+        "Calling pop_back() or accessing an element on an empty vector — check empty() or size() first.",
+        "Assuming push_back() always takes exactly the same amount of time — it's amortized constant time, but an occasional call does a full resize underneath."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between [] and at() on a vector?",
+          "answer": "[] performs no bounds checking, so an out-of-range access is undefined behavior; at() checks bounds and throws a std::out_of_range exception on an invalid index."
+        },
+        {
+          "question": "What does push_back() do?",
+          "answer": "Adds a new element to the end of the vector, resizing its internal storage automatically if needed."
+        },
+        {
+          "question": "What does it mean that vector has 'amortized constant-time' push_back()?",
+          "answer": "Most push_back() calls are fast, simply filling the next open slot, but occasionally the internal storage is full and must be resized and copied — averaged over many calls, the cost per call is still effectively constant."
+        },
+        {
+          "question": "How would you create a 2D grid using vector?",
+          "answer": "A vector of vectors, e.g. vector<vector<int>> grid(rows, vector<int>(cols, 0));, indexed as grid[row][col]."
+        }
+      ],
+      "thirtySecondAnswer": "vector is a resizable array — the default STL container for most DSA problems. push_back() and pop_back() grow and shrink it from the end, size() and empty() describe its current state, and insert()/erase() work at any iterator position. The key safety detail is [] versus at(): [] performs no bounds checking, matching the undefined behavior of a raw array from Arrays, while at() checks bounds and throws a catchable std::out_of_range exception instead. Internally, vector over-allocates and resizes automatically as needed, giving push_back() amortized constant-time performance."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember vector",
+      "text": "vector = an accordion folder, expands automatically. [] = fast, no safety net. at() = slower, but catches you if you fall (throws, catchable)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-vector-at-bounds", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    try\n    {\n        cout << numbers.at(5);\n    }\n    catch (out_of_range &e)\n    {\n        cout << \"Caught: \" << e.what() << endl;\n    }\n\n    return 0;\n}" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-vector-at-bounds",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    try\n    {\n        cout << numbers.at(5);\n    }\n    catch (out_of_range &e)\n    {\n        cout << \"Caught: \" << e.what() << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-vector-at-bounds"]
+  }
+}
