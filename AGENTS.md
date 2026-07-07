@@ -78,10 +78,7 @@ Premium modern SaaS/developer aesthetic. Light + dark mode. Rounded corners, sof
 **Every change/update must be committed and pushed** — do not leave work uncommitted locally.
 
 - Create commits with a clear, concise message (why > what).
-- Every commit includes a co-author trailer, e.g.:
-  ```
-  Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
-  ```
+- No co-author trailer — commits are authored solely as the user (Aman), no `Co-Authored-By` line.
 - Push to `origin main` after each commit unless the user says otherwise.
 - Never force-push, never skip hooks, never amend existing commits — always new commits.
 - Follow standard safety rules: check `git status` before any destructive op, never touch secrets, review staged files before commit.
