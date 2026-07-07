@@ -1,0 +1,146 @@
+{
+  "id": "cpp-abstract-classes",
+  "moduleId": "oop",
+  "title": "Abstract Classes",
+  "description": "C++'s formal enforcement of abstraction: pure virtual functions, classes that can't be instantiated, and forcing derived classes to implement an interface.",
+  "objectives": [
+    "Declare a pure virtual function",
+    "Understand why an abstract class cannot be instantiated",
+    "Force derived classes to implement a shared interface",
+    "Combine abstract classes with the polymorphism from Virtual Functions"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Abstraction Needs a Formal Tool"
+    },
+    {
+      "type": "paragraph",
+      "text": "Abstraction discussed hiding complexity behind a simple interface, informally. Abstract classes are C++'s formal, compiler-enforced way to define an interface that every derived class is required to implement."
+    },
+    {
+      "type": "heading",
+      "text": "2. Pure Virtual Functions"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Shape\n{\npublic:\n    virtual double area() = 0; // pure virtual function — note the = 0\n};"
+    },
+    {
+      "type": "definition",
+      "term": "Pure virtual function",
+      "text": "A pure virtual function, written with = 0, has no implementation in the base class at all — it exists only to declare that every derived class must provide its own implementation."
+    },
+    {
+      "type": "note",
+      "text": "This builds directly on virtual from Virtual Functions — but = 0 goes a step further, saying \"this function has no default behavior whatsoever, and any usable class must supply one.\""
+    },
+    {
+      "type": "heading",
+      "text": "3. A Class with Any Pure Virtual Function Is Abstract"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Shape s; // ERROR — cannot instantiate an abstract class"
+    },
+    {
+      "type": "warning",
+      "text": "A class containing at least one pure virtual function becomes an abstract class, and C++ refuses to let you create an object of it directly — there's no sensible area() to call if one were created, since Shape itself never defined one. Shape exists purely to be inherited from."
+    },
+    {
+      "type": "heading",
+      "text": "4. Forcing Derived Classes to Implement It"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Shape\n{\npublic:\n    virtual double area() = 0;\n};\n\nclass Circle : public Shape\n{\nprivate:\n    double radius;\n\npublic:\n    Circle(double r)\n    {\n        radius = r;\n    }\n\n    double area() override\n    {\n        return 3.14159 * radius * radius;\n    }\n};\n\nint main()\n{\n    Shape *s = new Circle(5);\n\n    cout << s->area() << endl;\n\n    delete s;\n\n    return 0;\n}",
+      "output": "78.53975",
+      "retypePractice": true,
+      "retypeId": "cpp-abstract-classes-shape"
+    },
+    {
+      "type": "warning",
+      "text": "If Circle failed to implement area(), Circle would itself remain abstract too (having inherited an unimplemented pure virtual function), and Circle c; would also fail to compile. This is the enforcement: the compiler guarantees no concrete Shape-derived object can exist without a working area()."
+    },
+    {
+      "type": "heading",
+      "text": "5. Combining This with Polymorphism"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Rectangle : public Shape\n{\nprivate:\n    double width, height;\n\npublic:\n    Rectangle(double w, double h) { width = w; height = h; }\n\n    double area() override\n    {\n        return width * height;\n    }\n};\n\nShape *shapes[2];\nshapes[0] = new Circle(5);\nshapes[1] = new Rectangle(4, 6);\n\nfor (int i = 0; i < 2; i++)\n{\n    cout << shapes[i]->area() << endl; // each calls its OWN correct area()\n}"
+    },
+    {
+      "type": "note",
+      "text": "This is the real payoff, combining Arrays, Virtual Functions, and Abstract Classes: a single array of Shape* can hold any mix of shapes, and shapes[i]->area() automatically runs the correct implementation for whichever specific shape each pointer actually refers to."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A job contract requiring a specific duty",
+      "text": "A job contract can require \"must be able to drive\" without specifying which particular car the employee drives — that's the equivalent of a pure virtual function: a required capability with no default way to fulfill it built in. You can't hire someone under a contract that's just a list of unfulfilled requirements (an abstract Shape); you hire an actual person (a Circle or Rectangle) who has actually fulfilled that requirement in their own specific way."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to create an object of a class that has any unimplemented pure virtual function — the compiler blocks it, since it's an abstract class.",
+        "Forgetting = 0 and just writing virtual double area(); with no body — that's an ordinary virtual function needing implementation somewhere, not a pure virtual one requiring every derived class to supply it.",
+        "Forgetting to implement a pure virtual function in a derived class — the derived class remains abstract too, and still can't be instantiated.",
+        "Missing that override still applies here exactly as in ordinary virtual functions — it's good practice to keep using it when implementing a pure virtual function."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a pure virtual function?",
+          "answer": "A virtual function with no implementation in the base class, declared with = 0, requiring every derived class to provide its own implementation."
+        },
+        {
+          "question": "What makes a class abstract?",
+          "answer": "Containing at least one pure virtual function — such a class cannot be instantiated directly."
+        },
+        {
+          "question": "Can you create an object of an abstract class?",
+          "answer": "No — the compiler refuses to let you instantiate a class that has any unimplemented pure virtual function."
+        },
+        {
+          "question": "What happens if a derived class doesn't implement all of its base class's pure virtual functions?",
+          "answer": "The derived class remains abstract as well, and also cannot be instantiated until every inherited pure virtual function is implemented."
+        }
+      ],
+      "thirtySecondAnswer": "A pure virtual function, declared with = 0, has no implementation in its base class at all, and any class containing one becomes an abstract class that cannot be instantiated directly — it exists purely to be inherited from. This formally enforces abstraction: every concrete derived class is compiler-required to supply its own implementation of that function, guaranteeing no usable object exists without one. Combined with the runtime polymorphism from Virtual Functions, this lets code work with a collection of a base type, like Shape*, and correctly call each object's own specific implementation, such as area(), without needing to know exactly which derived type each one actually is."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Abstract Classes",
+      "text": "= 0 = a required duty with no default way to do it. Any class with one becomes abstract — can't be hired (instantiated) directly. Derived classes must actually fulfill the duty before they're usable."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-abstract-classes-shape", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Shape\n{\npublic:\n    virtual double area() = 0;\n};\n\nclass Circle : public Shape\n{\nprivate:\n    double radius;\n\npublic:\n    Circle(double r)\n    {\n        radius = r;\n    }\n\n    double area() override\n    {\n        return 3.14159 * radius * radius;\n    }\n};\n\nint main()\n{\n    Shape *s = new Circle(5);\n\n    cout << s->area() << endl;\n\n    delete s;\n\n    return 0;\n}", "output": "78.53975" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-abstract-classes-shape",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Shape\n{\npublic:\n    virtual double area() = 0;\n};\n\nclass Circle : public Shape\n{\nprivate:\n    double radius;\n\npublic:\n    Circle(double r)\n    {\n        radius = r;\n    }\n\n    double area() override\n    {\n        return 3.14159 * radius * radius;\n    }\n};\n\nint main()\n{\n    Shape *s = new Circle(5);\n\n    cout << s->area() << endl;\n\n    delete s;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-abstract-classes-shape"]
+  }
+}
