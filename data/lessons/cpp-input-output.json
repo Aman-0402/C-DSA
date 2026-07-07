@@ -1,0 +1,137 @@
+{
+  "id": "cpp-input-output",
+  "moduleId": "cpp-fundamentals",
+  "title": "Input and Output",
+  "description": "Putting cout, cin, data types, and operators together: reading different types, chaining cin reads, and a small preview of output formatting.",
+  "objectives": [
+    "Read values of different types (int, double, char) with cin",
+    "Combine cin input with variables and operators to compute a result",
+    "Understand how cin handles whitespace between chained reads",
+    "Get a first preview of output formatting with setprecision",
+    "Build a small complete program using everything learned so far"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap"
+    },
+    {
+      "type": "paragraph",
+      "text": "We've covered cout and cin, several data types, and operators separately. This topic is about combining them — reading real input, computing something with it, and printing a result."
+    },
+    {
+      "type": "heading",
+      "text": "2. Reading Different Types with cin"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age;\ndouble price;\nchar grade;\n\ncin >> age;\ncin >> price;\ncin >> grade;"
+    },
+    {
+      "type": "note",
+      "text": "cin >> works the same way regardless of type — it reads text typed by the user and converts it to match the variable's type. Typing 25 into an int works, 19.99 into a double works, and A into a char works."
+    },
+    {
+      "type": "heading",
+      "text": "3. cin Skips Whitespace Between Values"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a, b, c;\ncin >> a >> b >> c;"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall from cout & cin that >> can be chained. Whether the user types 1 2 3 on one line, or presses enter between each number, cin >> automatically skips spaces and newlines between values — it only cares about the actual values, not how they're separated."
+    },
+    {
+      "type": "heading",
+      "text": "4. Combining Input, Variables, and Operators"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a, b;\n\n    cout << \"Enter two numbers: \";\n    cin >> a >> b;\n\n    int sum = a + b;\n    double average = static_cast<double>(sum) / 2;\n\n    cout << \"Sum: \" << sum << endl;\n    cout << \"Average: \" << average << endl;\n\n    return 0;\n}",
+      "retypePractice": true,
+      "retypeId": "cpp-io-sum-average"
+    },
+    {
+      "type": "note",
+      "text": "This ties together several past lessons at once: cin reads two ints, + adds them, static_cast<double> (from Type Casting) forces real division instead of truncating integer division, and cout prints the results. For example, typing 7 and 4 would print Sum: 11 and Average: 5.5."
+    },
+    {
+      "type": "heading",
+      "text": "5. A Small Preview: Output Formatting"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <iomanip>\n\ncout << setprecision(2) << average;"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — setprecision comes from a different header, <iomanip>, and controls how many digits cout displays for decimal numbers. We're not using it yet; it's mentioned so the name isn't a surprise when we reach a dedicated formatting topic later."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A calculator's display",
+      "text": "Think of cin as the calculator's number pad — however you press the buttons, it reads the numbers you intend. cout is the calculator's screen — it shows the result of whatever operation was performed on those numbers. Input and Output are just the two ends of that same conversation."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting a variable must exist and have the right type before cin >> can read into it.",
+        "Expecting int / int to give a decimal average — cast to double first, as covered in Type Casting.",
+        "Assuming cin >> a >> b; requires input on separate lines — it accepts values separated by any whitespace, spaces or newlines.",
+        "Trying to read a decimal like 19.99 into an int — it will only capture the whole-number part, since int variables can't hold decimals."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Does cin >> care whether input is separated by spaces or newlines?",
+          "answer": "No — cin >> automatically skips whitespace, including spaces and newlines, between values."
+        },
+        {
+          "question": "How would you read two integers and print their average as a decimal?",
+          "answer": "Read them with cin >> a >> b;, sum them, then cast the sum (or one operand) to double before dividing by 2, so the division isn't truncated by integer division."
+        },
+        {
+          "question": "What happens if you try to read a decimal value into an int variable with cin?",
+          "answer": "Only the whole-number portion is captured, since an int cannot store a fractional part."
+        }
+      ],
+      "thirtySecondAnswer": "cin >> can read values of any basic type — int, double, char — converting the typed text to match the variable's type, and it automatically skips whitespace between chained reads like cin >> a >> b;. Combining cin, variables, operators, and cout lets us build small complete programs: read values, compute a result using the right casts to avoid integer-division surprises, and print it back with cout. Output formatting details like setprecision come from a separate header, <iomanip>, and are covered later."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Input and Output",
+      "text": "cin = the calculator's number pad. cout = the calculator's screen. Whitespace between cin >> reads doesn't matter — only the values do."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-io-sum-average", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a, b;\n\n    cout << \"Enter two numbers: \";\n    cin >> a >> b;\n\n    int sum = a + b;\n    double average = static_cast<double>(sum) / 2;\n\n    cout << \"Sum: \" << sum << endl;\n    cout << \"Average: \" << average << endl;\n\n    return 0;\n}" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-io-sum-average",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a, b;\n\n    cout << \"Enter two numbers: \";\n    cin >> a >> b;\n\n    int sum = a + b;\n    double average = static_cast<double>(sum) / 2;\n\n    cout << \"Sum: \" << sum << endl;\n    cout << \"Average: \" << average << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-io-sum-average"]
+  }
+}
