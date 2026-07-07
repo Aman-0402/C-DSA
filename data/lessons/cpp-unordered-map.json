@@ -1,0 +1,143 @@
+{
+  "id": "cpp-unordered-map",
+  "moduleId": "stl",
+  "title": "unordered_map",
+  "description": "The long-awaited payoff from Header Files: hash-based key-value pairs, average O(1) lookup, and the classic frequency-counting pattern.",
+  "objectives": [
+    "Understand unordered_map as hash-based key-value storage",
+    "Use the same insert/access interface as map",
+    "Implement the classic frequency-counting DSA pattern",
+    "Choose correctly between map and unordered_map"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: This Was Foreshadowed Long Ago"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in Header Files, we previewed unordered_map with a specific note: \"This will become extremely important during Hashing and LeetCode.\" That moment has arrived."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is unordered_map?"
+    },
+    {
+      "type": "definition",
+      "term": "unordered_map",
+      "text": "unordered_map stores key-value pairs with unique keys, using hashing internally to give average constant-time insertion and lookup — with no guaranteed ordering, exactly like unordered_set compared to set."
+    },
+    {
+      "type": "heading",
+      "text": "3. Same Interface as map"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <unordered_map>\n\nunordered_map<string, int> ages;\nages[\"Aman\"] = 20;\n\ncout << ages[\"Aman\"]; // 20\ncout << ages.count(\"Aman\"); // 1"
+    },
+    {
+      "type": "warning",
+      "text": "Every detail from map carries over identically: [] both accesses and inserts (including the same silent-creation gotcha for missing keys), count() safely checks existence without inserting, and iteration order is unspecified here — unlike map, there's no sorted-by-key guarantee at all."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Classic DSA Pattern: Frequency Counting"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string word = \"banana\";\n    unordered_map<char, int> freq;\n\n    for (char c : word)\n    {\n        freq[c]++; // if c is new, freq[c] starts at 0 (the map gotcha working IN OUR FAVOR), then increments\n    }\n\n    cout << freq['a'] << endl;\n    cout << freq['n'] << endl;\n    cout << freq['b'] << endl;\n\n    return 0;\n}",
+      "output": "3\n2\n1",
+      "retypePractice": true,
+      "retypeId": "cpp-unordered-map-frequency"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why this works so cleanly",
+      "points": [
+        "freq[c]++ is shorthand for freq[c] = freq[c] + 1;",
+        "The first time a character is seen, freq[c] doesn't exist yet — [] silently creates it as 0, then immediately increments it to 1",
+        "Every later occurrence of the same character just increments its existing count",
+        "'banana' has 3 a's, 2 n's, 1 b — exactly what freq reports"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "This is one of the single most common patterns across DSA and LeetCode problems: count occurrences of something (characters, numbers, words) using an unordered_map, then reason about those counts. The very gotcha that was a danger in map (missing keys silently defaulting) becomes exactly the convenience that makes this one-liner work."
+    },
+    {
+      "type": "heading",
+      "text": "5. map vs unordered_map"
+    },
+    {
+      "type": "table",
+      "headers": ["map", "unordered_map"],
+      "rows": [
+        ["Sorted by key automatically", "No guaranteed order"],
+        ["O(log n) operations", "Average O(1) operations"],
+        ["Choose when sorted key order is needed", "Choose for pure fast lookup / frequency counting — the common DSA default"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A tally counter at a turnstile",
+      "text": "Imagine a tally counter for every distinct visitor ID passing through a turnstile — each new ID starts its own count at 0 automatically, and every repeat visit just clicks that specific counter up by one. Nobody needs the tally sheet alphabetized; they just need the count for any given ID, instantly. That's unordered_map doing frequency counting."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Choosing map when sorted iteration isn't actually needed — unordered_map is typically faster and is the common default for pure lookup/counting tasks.",
+        "Forgetting unordered_map's iteration order is unspecified — never rely on it matching insertion order or any particular order.",
+        "Not recognizing the freq[c]++ pattern — it relies on [] defaulting missing keys to 0, which is genuinely useful here, unlike the danger case in plain map lookups.",
+        "Forgetting #include <unordered_map>."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the main difference between map and unordered_map?",
+          "answer": "map keeps keys automatically sorted with O(log n) operations; unordered_map has no ordering guarantee but typically achieves average O(1) operations via hashing."
+        },
+        {
+          "question": "How would you count the frequency of each character in a string using unordered_map?",
+          "answer": "Iterate the string and increment freq[c] for each character c — [] automatically creates a missing key with a default value of 0 before incrementing."
+        },
+        {
+          "question": "Why is unordered_map especially common in DSA and coding interviews?",
+          "answer": "Many problems require fast lookups or frequency counts, and unordered_map provides average constant-time access, making patterns like duplicate detection and frequency counting efficient and concise."
+        }
+      ],
+      "thirtySecondAnswer": "unordered_map stores key-value pairs with unique keys, using hashing to achieve average O(1) insertion and lookup, with no ordering guarantee — the counterpart to map the same way unordered_set is to set. Its most iconic use in DSA is frequency counting: freq[c]++ for each element in a collection works because [] automatically creates a missing key with a default value of 0 before incrementing it, turning a common counting task into a single line. Because so many DSA and interview problems boil down to fast lookups or counting occurrences, unordered_map is one of the most heavily used STL containers in practice."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember unordered_map",
+      "text": "unordered_map = a tally counter at a turnstile. New ID → starts at 0 automatically. freq[c]++ = the classic one-line frequency counter."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-unordered-map-frequency", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string word = \"banana\";\n    unordered_map<char, int> freq;\n\n    for (char c : word)\n    {\n        freq[c]++;\n    }\n\n    cout << freq['a'] << endl;\n    cout << freq['n'] << endl;\n    cout << freq['b'] << endl;\n\n    return 0;\n}", "output": "3\n2\n1" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-unordered-map-frequency",
+      "reference": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string word = \"banana\";\n    unordered_map<char, int> freq;\n\n    for (char c : word)\n    {\n        freq[c]++;\n    }\n\n    cout << freq['a'] << endl;\n    cout << freq['n'] << endl;\n    cout << freq['b'] << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-unordered-map-frequency"]
+  }
+}
