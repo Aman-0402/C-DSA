@@ -51,7 +51,8 @@
         { "id": "cpp-function-definition", "title": "Function Definition", "lesson": "cpp-function-definition" },
         { "id": "cpp-function-calling", "title": "Function Calling", "lesson": "cpp-function-calling" },
         { "id": "cpp-parameters-arguments", "title": "Parameters and Arguments", "lesson": "cpp-parameters-arguments" },
-        { "id": "cpp-return-types", "title": "Return Types", "lesson": "cpp-return-types" }
+        { "id": "cpp-return-types", "title": "Return Types", "lesson": "cpp-return-types" },
+        { "id": "cpp-pass-by-value", "title": "Pass by Value", "lesson": "cpp-pass-by-value" }
       ]
     }
   ]

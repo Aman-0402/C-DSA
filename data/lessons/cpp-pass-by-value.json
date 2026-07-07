@@ -1,0 +1,154 @@
+{
+  "id": "cpp-pass-by-value",
+  "moduleId": "functions",
+  "title": "Pass by Value",
+  "description": "C++'s default argument-passing behavior: a function gets its own copy, so changes inside it never affect the caller's original variable.",
+  "objectives": [
+    "Understand that C++ passes arguments by value by default",
+    "Prove with a concrete example that a function can't modify the caller's variable this way",
+    "Understand what's actually being copied when an argument is passed",
+    "Recognize why this matters for correctness"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What Does \"Pass by Value\" Mean?"
+    },
+    {
+      "type": "definition",
+      "term": "Pass by value",
+      "text": "Pass by value means a function parameter receives a copy of the argument's value — the function works with that copy, and the original variable at the call site is never touched."
+    },
+    {
+      "type": "note",
+      "text": "Every function we've written so far has used pass by value — it's C++'s default behavior for ordinary parameters."
+    },
+    {
+      "type": "heading",
+      "text": "2. Proving It"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nvoid tryToChange(int n)\n{\n    n = 999;\n}\n\nint main()\n{\n    int x = 5;\n\n    tryToChange(x);\n\n    cout << x << endl;\n\n    return 0;\n}",
+      "output": "5",
+      "retypePractice": true,
+      "retypeId": "cpp-pass-by-value-proof"
+    },
+    {
+      "type": "warning",
+      "text": "Even though tryToChange sets n to 999, x in main() still prints 5. n was only ever a copy of x's value — changing the copy has no effect on the original."
+    },
+    {
+      "type": "heading",
+      "text": "3. Tracing What Actually Happens"
+    },
+    {
+      "type": "flow",
+      "steps": ["x = 5 in main()", "tryToChange(x) called", "n is a NEW copy, also holding 5", "n = 999 changes only the copy", "function ends, copy n is discarded", "x in main() is still 5"]
+    },
+    {
+      "type": "keyPoints",
+      "title": "The key idea",
+      "points": [
+        "x and n are two completely separate variables, living in two separate places",
+        "They happened to start with the same value, but n is not a reference to x — it's an independent copy",
+        "Once tryToChange finishes, n disappears entirely; it was never connected to x in the first place"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Why This Is Usually a Good Default"
+    },
+    {
+      "type": "tip",
+      "text": "Pass by value protects the caller's data — a function can't accidentally corrupt a variable it was only supposed to read. This predictability is valuable: calling a function is safe by default, without needing to check whether it secretly modifies what you passed in."
+    },
+    {
+      "type": "heading",
+      "text": "5. But Sometimes We Want the Function to Modify the Original"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void doubleIt(int n)\n{\n    n = n * 2; // only changes the local copy\n}\n\nint main()\n{\n    int x = 5;\n    doubleIt(x);\n    cout << x; // still 5, not 10!\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This is a genuinely common beginner trap: doubleIt looks like it should double x, but because of pass by value, it only doubles its own private copy. x is completely unaffected. Getting a function to actually modify the caller's variable requires a different tool — Pass by Reference, covered next."
+    },
+    {
+      "type": "heading",
+      "text": "6. Pass by Value Still Applies to Every Basic Type"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void tryToChange(double d) { d = 0.0; }\nvoid tryToChange(char c) { c = 'Z'; }\nvoid tryToChange(bool b) { b = false; }"
+    },
+    {
+      "type": "note",
+      "text": "This isn't specific to int — every fundamental type we covered in Data Types is passed by value by default: double, char, bool, all of them get their own independent copy inside the function."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Handing someone a photocopy",
+      "text": "If you hand a friend a photocopy of a document, they can scribble all over their copy, but your original stays untouched — it was never the same piece of paper. Pass by value is that photocopy: the function gets its own copy to scribble on, and the original at the call site never sees a mark."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Expecting a function to modify the caller's variable through an ordinary parameter — pass by value guarantees it can't.",
+        "Writing a \"doubling\" or \"incrementing\" function that only changes its local copy, then being confused why the original is unchanged.",
+        "Assuming pass by value only applies to int — it's the default for every fundamental type in C++.",
+        "Thinking the parameter and the argument are \"the same variable with two names\" — they are two separate variables that just happen to start with equal values."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does pass by value mean in C++?",
+          "answer": "The function parameter receives an independent copy of the argument's value, so changes made to the parameter inside the function do not affect the original variable at the call site."
+        },
+        {
+          "question": "If a function does param = param * 2; on an int parameter, does the caller's variable change?",
+          "answer": "No — because of pass by value, only the function's local copy is doubled; the original variable passed in is untouched."
+        },
+        {
+          "question": "Is pass by value C++'s default behavior for parameters?",
+          "answer": "Yes — unless a parameter is explicitly declared as a reference or pointer, arguments are passed by value by default."
+        }
+      ],
+      "thirtySecondAnswer": "Pass by value is C++'s default way of passing arguments to a function: the parameter receives an independent copy of the argument's value, so any changes made to the parameter inside the function have no effect on the original variable at the call site. This applies to every fundamental type — int, double, char, bool — and is a safe default, since a function can't accidentally corrupt data it was only meant to read. When a function does need to modify the caller's original variable, pass by reference is needed instead."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Pass by Value",
+      "text": "Pass by value = hand over a photocopy. Scribble all you want on it — the original stays clean."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-pass-by-value-proof", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nvoid tryToChange(int n)\n{\n    n = 999;\n}\n\nint main()\n{\n    int x = 5;\n\n    tryToChange(x);\n\n    cout << x << endl;\n\n    return 0;\n}", "output": "5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-pass-by-value-proof",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nvoid tryToChange(int n)\n{\n    n = 999;\n}\n\nint main()\n{\n    int x = 5;\n\n    tryToChange(x);\n\n    cout << x << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-pass-by-value-proof"]
+  }
+}
