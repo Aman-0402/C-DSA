@@ -1,0 +1,166 @@
+{
+  "id": "cpp-else-statement",
+  "moduleId": "control-flow",
+  "title": "else Statement",
+  "description": "The catch-all fallback branch: what runs when every condition in the chain was false.",
+  "objectives": [
+    "Add a fallback else branch to an if / else if chain",
+    "Understand that else has no condition of its own",
+    "Combine if, else if, and else into a complete decision chain",
+    "Know that else is optional and always comes last"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Gap Without else"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int marks = 40;\n\nif (marks >= 90)\n{\n    cout << \"Grade A\";\n}\nelse if (marks >= 80)\n{\n    cout << \"Grade B\";\n}\nelse if (marks >= 70)\n{\n    cout << \"Grade C\";\n}"
+    },
+    {
+      "type": "warning",
+      "text": "With marks = 40, none of these conditions are true — nothing prints at all. The chain has no branch for this case. That gap is exactly what else fills."
+    },
+    {
+      "type": "heading",
+      "text": "2. else Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "if (condition1)\n{\n    // runs if condition1 is true\n}\nelse if (condition2)\n{\n    // runs if condition1 was false and condition2 is true\n}\nelse\n{\n    // runs if none of the above conditions were true\n}"
+    },
+    {
+      "type": "definition",
+      "term": "else",
+      "text": "else defines a fallback block that runs only when every preceding condition in the if / else if chain was false. It takes no condition of its own."
+    },
+    {
+      "type": "heading",
+      "text": "3. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int marks = 40;\n\n    if (marks >= 90)\n    {\n        cout << \"Grade A\";\n    }\n    else if (marks >= 80)\n    {\n        cout << \"Grade B\";\n    }\n    else if (marks >= 70)\n    {\n        cout << \"Grade C\";\n    }\n    else\n    {\n        cout << \"Grade F\";\n    }\n\n    return 0;\n}",
+      "output": "Grade F",
+      "retypePractice": true,
+      "retypeId": "cpp-else-grade"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "marks is 40",
+        "marks >= 90 → false, marks >= 80 → false, marks >= 70 → false",
+        "None of the conditions matched, so the else block runs",
+        "Prints Grade F"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. else Has No Condition"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "else (marks < 70) // invalid — else does not take a condition\n{\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This is a compilation error. else never has parentheses or a condition — by definition, it only runs when every earlier condition in the chain has already failed, so there's nothing left to check."
+    },
+    {
+      "type": "heading",
+      "text": "5. else is Optional, and Always Last"
+    },
+    {
+      "type": "keyPoints",
+      "points": [
+        "A chain can be just if — no else if, no else",
+        "A chain can be if / else — no else if in between",
+        "A chain can be if / else if / else if / ... / else — as many else ifs as needed, with one final else",
+        "else, if present, must be the last part of the chain — nothing can come after it"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Simple if / else (No else if Needed)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "bool isRaining = true;\n\nif (isRaining)\n{\n    cout << \"Take an umbrella.\";\n}\nelse\n{\n    cout << \"Enjoy the sun.\";\n}"
+    },
+    {
+      "type": "note",
+      "text": "For a simple two-way decision, if / else alone is enough — else if is only needed when there are more than two possible outcomes."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The default option",
+      "text": "Think of a restaurant menu with special offers listed first: if it's your birthday, get dessert free; else if you have a loyalty card, get 10% off; else, pay full price. else is that last line — the plain default that applies to everyone who didn't qualify for anything special above it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing else (condition) — else never takes a condition; only if and else if do.",
+        "Placing else before an else if in the chain — else must always come last.",
+        "Forgetting else entirely when a case should have a fallback, leaving some inputs producing no output at all.",
+        "Using an unnecessary else if true) as a fake else — just use else directly."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does the else block do?",
+          "answer": "It runs as a fallback whenever every condition earlier in the if / else if chain evaluated to false."
+        },
+        {
+          "question": "Does else take a condition?",
+          "answer": "No — else has no condition of its own; it simply catches whatever wasn't matched by the preceding if / else if branches."
+        },
+        {
+          "question": "Is else required in an if statement?",
+          "answer": "No, it's optional. A chain can be just if, or if / else, or include multiple else if branches with or without a final else."
+        },
+        {
+          "question": "Where must else appear in a chain?",
+          "answer": "Always last — nothing can follow an else in the same if / else if / else chain."
+        }
+      ],
+      "thirtySecondAnswer": "else defines the fallback branch of an if / else if chain, running only when none of the preceding conditions were true. Unlike if and else if, it takes no condition of its own — by the time execution reaches else, every earlier check has already failed. else is optional, and when used, it must always be the last part of the chain. A simple two-outcome decision often just needs if / else, while else if is added when there are more than two possible paths."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember else",
+      "text": "else = the default option. No condition needed — it's what's left when everything else already failed."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-else-grade", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int marks = 40;\n\n    if (marks >= 90)\n    {\n        cout << \"Grade A\";\n    }\n    else if (marks >= 80)\n    {\n        cout << \"Grade B\";\n    }\n    else if (marks >= 70)\n    {\n        cout << \"Grade C\";\n    }\n    else\n    {\n        cout << \"Grade F\";\n    }\n\n    return 0;\n}", "output": "Grade F" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-else-grade",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int marks = 40;\n\n    if (marks >= 90)\n    {\n        cout << \"Grade A\";\n    }\n    else if (marks >= 80)\n    {\n        cout << \"Grade B\";\n    }\n    else if (marks >= 70)\n    {\n        cout << \"Grade C\";\n    }\n    else\n    {\n        cout << \"Grade F\";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-else-grade"]
+  }
+}
