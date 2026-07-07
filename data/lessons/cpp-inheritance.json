@@ -1,0 +1,162 @@
+{
+  "id": "cpp-inheritance",
+  "moduleId": "oop",
+  "title": "Inheritance",
+  "description": "The second pillar of OOP: a class reusing another class's members, the : public syntax, protected finally put to use, and constructor call order.",
+  "objectives": [
+    "Understand inheritance as one class reusing another's members",
+    "Write a derived class with : public Base syntax",
+    "Use protected members from a derived class",
+    "Understand the order constructors run in when inheritance is involved"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Repeating a Class's Shape"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Dog\n{\npublic:\n    string name;\n    int age;\n    void eat() { cout << name << \" is eating.\"; }\n};\n\nclass Cat\n{\npublic:\n    string name; // duplicated\n    int age;     // duplicated\n    void eat() { cout << name << \" is eating.\"; } // duplicated\n};"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dog and Cat share name, age, and eat() entirely — only their differences (like a bark() vs a meow()) should really need separate code."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Inheritance?"
+    },
+    {
+      "type": "definition",
+      "term": "Inheritance",
+      "text": "Inheritance lets one class (the derived class) reuse the members of another class (the base class), adding or changing only what's actually different."
+    },
+    {
+      "type": "heading",
+      "text": "3. Basic Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Animal // base class\n{\npublic:\n    string name;\n\n    void eat()\n    {\n        cout << name << \" is eating.\" << endl;\n    }\n};\n\nclass Dog : public Animal // Dog derives from Animal\n{\npublic:\n    void bark()\n    {\n        cout << name << \" says Woof!\" << endl;\n    }\n};"
+    },
+    {
+      "type": "note",
+      "text": "class Dog : public Animal means Dog inherits everything public (and protected) from Animal. Dog automatically has name and eat(), without rewriting either — and adds its own bark() on top."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    string name;\n\n    void eat()\n    {\n        cout << name << \" is eating.\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void bark()\n    {\n        cout << name << \" says Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Dog d;\n    d.name = \"Rex\";\n\n    d.eat();\n    d.bark();\n\n    return 0;\n}",
+      "output": "Rex is eating.\nRex says Woof!",
+      "retypePractice": true,
+      "retypeId": "cpp-inheritance-dog"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What happened",
+      "points": [
+        "d.eat() calls Animal's eat() — inherited, never written inside Dog itself",
+        "d.name works too — Dog inherited the name member, not just the function",
+        "d.bark() is Dog's own addition, something Animal never had"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. protected — Now It Actually Matters"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Animal\n{\nprotected:\n    string name; // NOT public, but still reachable from Dog\n\npublic:\n    void setName(string n)\n    {\n        name = n;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void bark()\n    {\n        cout << name << \" says Woof!\"; // fine — protected is visible to derived classes\n    }\n};"
+    },
+    {
+      "type": "note",
+      "text": "Recall the protected preview from Access Specifiers: a protected member is off-limits to outside code (just like private), but a derived class like Dog can still reach it directly. This is exactly the situation protected exists for."
+    },
+    {
+      "type": "heading",
+      "text": "6. Constructor Order: Base First"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    Animal()\n    {\n        cout << \"Animal constructed\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    Dog()\n    {\n        cout << \"Dog constructed\" << endl;\n    }\n};\n\nint main()\n{\n    Dog d;\n\n    return 0;\n}",
+      "output": "Animal constructed\nDog constructed"
+    },
+    {
+      "type": "warning",
+      "text": "Creating a Dog always constructs its Animal part first, automatically, before Dog's own constructor body runs — a base class must be fully set up before the derived class that builds on top of it. Destructors, covered earlier, run in the exact opposite order: derived first, then base."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A general template, specialized further",
+      "text": "A generic \"Vehicle\" idea has wheels and an engine. A \"Car\" is a Vehicle, plus a trunk. A \"Motorcycle\" is also a Vehicle, plus a kickstand. Both reuse everything Vehicle already defines, adding only what makes them specifically a Car or a Motorcycle — exactly the relationship inheritance models between a base and derived class."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the public keyword in class Dog : public Animal — omitting it changes the inheritance's access behavior in ways beyond this introductory scope.",
+        "Trying to access a base class's private member from a derived class — private is invisible even to derived classes; protected is the level that allows it.",
+        "Assuming the derived class's constructor runs before the base class's — it's always the other way around: base first, then derived.",
+        "Duplicating members in a derived class that the base class already provides — defeats the entire purpose of inheriting them."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is inheritance?",
+          "answer": "A mechanism letting one class (derived) reuse the members of another class (base), adding or changing only what's actually different."
+        },
+        {
+          "question": "What is the syntax for a class inheriting from another?",
+          "answer": "class Derived : public Base { ... }; — Derived inherits Base's public and protected members."
+        },
+        {
+          "question": "What is the difference between private and protected in the context of inheritance?",
+          "answer": "A private member is inaccessible even to a derived class; a protected member is inaccessible from outside the class hierarchy but is accessible from a derived class."
+        },
+        {
+          "question": "In what order do constructors run when a class inherits from another?",
+          "answer": "The base class's constructor always runs first, fully constructing the base part of the object, before the derived class's own constructor body runs."
+        }
+      ],
+      "thirtySecondAnswer": "Inheritance lets a derived class reuse a base class's members, avoiding the duplication of writing the same data and behavior across several similar classes — for example, class Dog : public Animal gives Dog everything Animal has, plus whatever Dog adds on its own. protected finally becomes useful here: it's accessible to a derived class, unlike private, which stays completely off-limits even to classes that inherit from it. When an object of the derived class is created, the base class's constructor always runs first, ensuring the base part of the object is fully set up before the derived class's own constructor body executes."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Inheritance",
+      "text": "Inheritance = a specialized version of something general. Derived gets everything Base has, for free, plus its own extras. Base constructs first, always."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-inheritance-dog", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    string name;\n\n    void eat()\n    {\n        cout << name << \" is eating.\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void bark()\n    {\n        cout << name << \" says Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Dog d;\n    d.name = \"Rex\";\n\n    d.eat();\n    d.bark();\n\n    return 0;\n}", "output": "Rex is eating.\nRex says Woof!" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-inheritance-dog",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    string name;\n\n    void eat()\n    {\n        cout << name << \" is eating.\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void bark()\n    {\n        cout << name << \" says Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Dog d;\n    d.name = \"Rex\";\n\n    d.eat();\n    d.bark();\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-inheritance-dog"]
+  }
+}

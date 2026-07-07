@@ -92,7 +92,8 @@
         { "id": "cpp-destructors", "title": "Destructors", "lesson": "cpp-destructors" },
         { "id": "cpp-this-pointer", "title": "this Pointer", "lesson": "cpp-this-pointer" },
         { "id": "cpp-static-keyword", "title": "static Keyword", "lesson": "cpp-static-keyword" },
-        { "id": "cpp-encapsulation", "title": "Encapsulation", "lesson": "cpp-encapsulation" }
+        { "id": "cpp-encapsulation", "title": "Encapsulation", "lesson": "cpp-encapsulation" },
+        { "id": "cpp-inheritance", "title": "Inheritance", "lesson": "cpp-inheritance" }
       ]
     }
   ]
