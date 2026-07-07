@@ -1,0 +1,549 @@
+{
+  "id": "cpp-program-structure",
+  "moduleId": "cpp-fundamentals",
+  "title": "C++ Program Structure",
+  "description": "Breaking down a basic C++ program part by part: header inclusion, namespace, main(), braces, statements, semicolons, cout, and return 0.",
+  "objectives": [
+    "Identify the four main parts of a basic C++ program",
+    "Understand the role of #include <iostream> and using namespace std;",
+    "Understand main() as the program's entry point",
+    "Understand statements, semicolons, cout, <<, string literals, and return 0;",
+    "Trace a simple C++ program line by line and predict its output"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is C++ Program Structure?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Program structure means how different parts of a C++ program are organized."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The house analogy",
+      "text": "A house may have a Roof, Rooms, Doors, Windows, and Floor — each part has a purpose. Similarly, a C++ program contains different parts."
+    },
+    {
+      "type": "flow",
+      "steps": ["Header Inclusion", "Namespace", "main() Function", "Program Instructions", "Return Statement"]
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello World\";\n\n    return 0;\n}",
+      "output": "Hello World",
+      "retypePractice": true,
+      "retypeId": "cpp-structure-hello-world"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Meaning"],
+      "rows": [
+        ["#include <iostream>", "Required library/header inclusion"],
+        ["using namespace std;", "Namespace-related statement"],
+        ["int main()", "Main function"],
+        ["{", "Start of main function"],
+        ["Program Instructions", "Work performed by program"],
+        ["return 0;", "End status"],
+        ["}", "End of main function"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "We will study each concept separately. Today's goal is to understand how these parts are organized together."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Do We Need Program Structure?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Imagine writing an address with no structure: India, 827013, Jharkhand, Aman, Bokaro — the information exists, but the organization is confusing. A better structure labels each piece: Name, City, State, Country, PIN."
+    },
+    {
+      "type": "note",
+      "text": "Programming languages also follow rules and structures. C++ expects code to be written according to C++ syntax. Program structure helps us organize: Libraries, Functions, Instructions, Program Entry Point."
+    },
+    {
+      "type": "definition",
+      "term": "C++ Program Structure",
+      "text": "C++ program structure defines how the different parts of a C++ program are organized."
+    },
+    {
+      "type": "heading",
+      "text": "3. Basic Structure of a C++ Program"
+    },
+    {
+      "type": "paragraph",
+      "text": "We can divide a basic C++ program into four main parts:"
+    },
+    {
+      "type": "keyPoints",
+      "points": ["1. Header Inclusion", "2. Namespace Statement", "3. main() Function", "4. Program Statements"]
+    },
+    {
+      "type": "heading",
+      "text": "4. Part 1: Header Inclusion"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <iostream>"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Breaking it down",
+      "points": [
+        "# — indicates a preprocessor directive",
+        "include — tells the preprocessor to include the contents/declarations provided through a header",
+        "<iostream> — a C++ standard library header associated with input and output streams (io + stream)"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Basic idea: #include <iostream> makes the standard input/output stream declarations from the iostream header available to this source file — for example, cout and cin. Header Files and #include are upcoming separate topics, so don't worry about the deeper mechanism yet."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "iostream → Input / Output Stream"
+    },
+    {
+      "type": "heading",
+      "text": "5. Part 2: Namespace Statement"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "using namespace std;"
+    },
+    {
+      "type": "paragraph",
+      "text": "A namespace helps organize names and reduce naming conflicts."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Two students named Aman",
+      "text": "Imagine two students named Aman — one in Class A, another in Class B. Simply saying \"Aman\" may be confusing, but ClassA::Aman and ClassB::Aman help identify them. C++ uses a similar idea with namespaces."
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Meaning"],
+      "rows": [
+        ["std", "The namespace (means \"standard\")"],
+        ["::", "The scope resolution operator"],
+        ["cout", "The name we want to access"]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "std::cout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "Compare that with using the namespace directive so we can write cout instead of std::cout:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "using namespace std;\n\ncout << \"Hello\";"
+    },
+    {
+      "type": "warning",
+      "text": "We will study Namespace and using namespace std; properly in separate topics. For today, remember: this line affects how we refer to names from the std namespace."
+    },
+    {
+      "type": "heading",
+      "text": "6. Part 3: The main() Function"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int main()"
+    },
+    {
+      "type": "paragraph",
+      "text": "The main function is the entry point of a normal C++ program. When the program starts, execution begins with main."
+    },
+    {
+      "type": "flow",
+      "steps": ["Run Program", "main()", "Program Instructions"]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The mall entrance analogy",
+      "text": "A shopping mall may have a Food Court, Cinema, Clothing Stores, and Gaming Zone — but you first enter through an entrance. Mall Entrance → main(). Program Entrance → main()."
+    },
+    {
+      "type": "definition",
+      "term": "main()",
+      "text": "main() is the function where execution of a normal C++ program begins."
+    },
+    {
+      "type": "heading",
+      "text": "7. Understanding int main()"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Breaking it down: int / main / ()",
+      "points": [
+        "int — a C++ keyword and fundamental integer type, here specifying the return type of the main function (main returns an integer status value)",
+        "main — the special function name used as the program entry point",
+        "() — the parentheses are part of the function syntax (later you'll see this with functions like add(), calculate(), display())"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "We have not learned Data Types or Return Types yet, so do not worry about the deeper meaning of int here now."
+    },
+    {
+      "type": "heading",
+      "text": "8. Part 4: Curly Braces { }"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "{\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "Curly braces (also called braces or curly brackets) are used to create a block of code. The opening brace { marks the beginning of the function body; the closing brace } marks the end."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The box analogy",
+      "text": "Imagine a box that defines which items are inside it. Similarly, the braces in { cout << \"Hello\"; return 0; } define which statements belong to the main function body."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "{ → Open block. } → Close block."
+    },
+    {
+      "type": "heading",
+      "text": "9. Program Statements"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inside main(), we write instructions. For example, cout << \"Hello World\"; is a statement."
+    },
+    {
+      "type": "definition",
+      "term": "Statement",
+      "text": "A statement is an instruction that tells the program to perform an action."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Later, you will write statements such as",
+      "points": ["int age = 25;", "age = age + 1;", "cout << age;"]
+    },
+    {
+      "type": "heading",
+      "text": "10. What is a Semicolon ;?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "In C++, many statements end with a semicolon. Think of a semicolon like a full stop for many C++ statements — the way English sentences end with a period."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "English sentence → \".\"  Many C++ statements → \";\""
+    },
+    {
+      "type": "heading",
+      "text": "11. What Happens If We Forget the Semicolon?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\""
+    },
+    {
+      "type": "warning",
+      "text": "This is missing a semicolon — the compiler will normally report a compilation error. Correct: cout << \"Hello\";  This is one of the most common beginner mistakes."
+    },
+    {
+      "type": "tip",
+      "text": "Later, when you get an error, always check: did I forget a semicolon? You will probably forget it at least once — almost everyone does."
+    },
+    {
+      "type": "heading",
+      "text": "12. The cout Statement"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";",
+      "output": "Hello"
+    },
+    {
+      "type": "paragraph",
+      "text": "cout is commonly used to display output."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "c + out → console output"
+    },
+    {
+      "type": "note",
+      "text": "Technically, cout is the standard character output stream object from the C++ Standard Library. We will study cout properly later."
+    },
+    {
+      "type": "heading",
+      "text": "13. Understanding <<"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "The << symbol is the stream insertion operator — it sends data into the output stream. Read cout << \"Hello\"; as: send \"Hello\" to cout."
+    },
+    {
+      "type": "flow",
+      "steps": ["\"Hello\"", "cout", "Screen / Console"]
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Aman\";",
+      "output": "Aman"
+    },
+    {
+      "type": "heading",
+      "text": "14. What Are Double Quotes \" \"?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "\"Hello World\""
+    },
+    {
+      "type": "paragraph",
+      "text": "Text written inside double quotes is a string literal — for example \"Hello\", \"Aman\", \"I am learning C++\"."
+    },
+    {
+      "type": "warning",
+      "text": "We have not learned strings yet. For now, think: text that we want to display can be written inside double quotes."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"C++\";",
+      "output": "C++"
+    },
+    {
+      "type": "heading",
+      "text": "15. The return 0; Statement"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "return 0;"
+    },
+    {
+      "type": "paragraph",
+      "text": "The main function has int as its return type, so main returns an integer status value. return 0; returns 0 to the environment that started the program — traditionally, 0 means successful program termination."
+    },
+    {
+      "type": "flow",
+      "steps": ["Program Work Completed", "return 0;", "Program reports successful completion"]
+    },
+    {
+      "type": "tip",
+      "text": "For now, remember: return 0; indicates successful completion of the program. We will understand return deeply when learning Functions and Return Types."
+    },
+    {
+      "type": "heading",
+      "text": "16. Complete Line-by-Line Explanation"
+    },
+    {
+      "type": "table",
+      "headers": ["Line", "Explanation"],
+      "rows": [
+        ["#include <iostream>", "Makes the standard input/output stream declarations available"],
+        ["using namespace std;", "Allows names from the std namespace to be referred to without repeatedly writing std:: in this scope"],
+        ["int main()", "Defines the main function; execution begins here; int means the function returns an integer status value"],
+        ["{", "Starts the body of the main function"],
+        ["cout << \"Hello World\";", "cout is the output stream object, << inserts data into the stream, \"Hello World\" is the text displayed, ; ends the statement"],
+        ["return 0;", "Returns the integer value 0, indicating successful program completion"],
+        ["}", "Ends the body of the main function"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "17. Dry Run of the Program"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello World\";\n\n    return 0;\n}",
+      "output": "Hello World"
+    },
+    {
+      "type": "flow",
+      "title": "Recap: the build process happens before this",
+      "steps": ["Preprocessing", "Compilation", "Assembly", "Linking"]
+    },
+    {
+      "type": "keyPoints",
+      "title": "Then the executable runs",
+      "points": [
+        "Step 1 — Execution begins at main()",
+        "Step 2 — The opening brace { starts the function body",
+        "Step 3 — cout << \"Hello World\"; executes, console becomes: Hello World",
+        "Step 4 — return 0; executes, the main function returns 0",
+        "Step 5 — The closing brace } marks the end of the function body, execution finishes"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "18. Another Simple Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"I am learning C++\";\n\n    return 0;\n}",
+      "output": "I am learning C++"
+    },
+    {
+      "type": "heading",
+      "text": "19. Can We Write Multiple Statements?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Yes. Let's dry run this:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n    cout << \"Aman\";\n\n    return 0;\n}",
+      "output": "HelloAman"
+    },
+    {
+      "type": "warning",
+      "text": "Notice the output is HelloAman, not Hello / Aman on separate lines — because we did not tell the program to move to a new line. We will learn output formatting properly during the cout topic."
+    },
+    {
+      "type": "note",
+      "text": "For now, understand: C++ executes these statements in order. Statement 1 → Statement 2 → Statement 3."
+    },
+    {
+      "type": "heading",
+      "text": "20. Does C++ Execute from Top to Bottom?"
+    },
+    {
+      "type": "paragraph",
+      "text": "For our current simple program, statements inside main() execute in sequence."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"A\";\ncout << \"B\";\ncout << \"C\";",
+      "output": "ABC"
+    },
+    {
+      "type": "note",
+      "text": "Later, this execution flow can change because of Conditions, Loops, Functions, and Recursion — but we have not learned those yet."
+    },
+    {
+      "type": "tip",
+      "text": "For now: simple statements execute sequentially in the order they are reached."
+    },
+    {
+      "type": "heading",
+      "text": "21. Code Tracing Practice"
+    },
+    {
+      "type": "paragraph",
+      "text": "Look carefully at this code and manually predict the exact output before revealing the answer."
+    },
+    {
+      "type": "predictOutput",
+      "title": "What will this print?",
+      "lang": "cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"C++\";\n    cout << \"DSA\";\n    cout << \"LeetCode\";\n\n    return 0;\n}",
+      "hint": "Remember: nothing here tells the program to start a new line between statements.",
+      "correctOutput": "C++DSALeetCode"
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the semicolon — cout << \"Hello\" is incorrect; cout << \"Hello\"; is correct. Many C++ statements end with ;",
+        "Using the wrong brackets — int main() ( ... ) is incorrect; a function body uses curly braces { ... }.",
+        "Writing Main instead of main — C++ is case-sensitive, so Main and main are different names.",
+        "Forgetting double quotes for text — cout << Hello; treats Hello as a name, not text; use cout << \"Hello\"; for literal text.",
+        "Writing cout without the required standard-library context — use using namespace std; then cout, or write std::cout directly.",
+        "Thinking every cout automatically creates a new line — cout << \"A\"; cout << \"B\"; outputs AB, not A and B on separate lines."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the basic structure of a C++ program?",
+          "answer": "A basic C++ program commonly contains header inclusions, namespace-related usage, the main function, and program statements inside the function body."
+        },
+        {
+          "question": "What is the purpose of main()?",
+          "answer": "main() is the entry point of a normal C++ program. Program execution begins from the main function."
+        },
+        {
+          "question": "What do curly braces do in C++?",
+          "answer": "Curly braces define a block of code. In a function, they mark the beginning and end of the function body."
+        },
+        {
+          "question": "What is a statement?",
+          "answer": "A statement is an instruction that tells the program to perform an action."
+        },
+        {
+          "question": "Why is a semicolon used in C++?",
+          "answer": "A semicolon is used to terminate many C++ statements."
+        },
+        {
+          "question": "What does return 0; mean in main()?",
+          "answer": "return 0; returns a zero status value from the main function, traditionally indicating successful program termination."
+        },
+        {
+          "question": "Where does C++ program execution begin?",
+          "answer": "Execution of a normal C++ program begins at the main function."
+        }
+      ],
+      "thirtySecondAnswer": "A basic C++ program commonly starts with required header inclusions, followed by namespace-related declarations or usage. The main function acts as the entry point of the program. Statements inside the main function body perform the required operations. Curly braces define the function body, semicolons terminate many statements, and returning zero from main traditionally indicates successful program completion."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember C++ Program Structure",
+      "text": "H → N → M → S → R: Header → Namespace → main() → Statements → Return."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-structure-hello-world", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello World\";\n\n    return 0;\n}", "output": "Hello World" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-structure-hello-world",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello World\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-structure-hello-world"]
+  }
+}

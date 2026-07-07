@@ -99,6 +99,7 @@ function renderLesson(lesson) {
   Prism.highlightAllUnder(root);
   attachCodeProtection(root);
   attachInterviewToggles(root);
+  attachPredictReveals(root);
   attachRetypeEditors(root, lesson);
 }
 
@@ -190,6 +191,9 @@ function renderSection(section, lesson) {
     case "code":
       return renderCodeBlock(section);
 
+    case "predictOutput":
+      return renderPredictOutput(section);
+
     case "interviewQuestions":
       return renderInterviewQuestions(section);
 
@@ -254,6 +258,34 @@ function renderCodeBlock(section) {
   return wrap;
 }
 
+function renderPredictOutput(section) {
+  const wrap = el("div", "lesson-section");
+  const codeId = `predict-${Math.random().toString(36).slice(2, 9)}`;
+  const lineCount = section.code.split("\n").length;
+  const lineNumbers = Array.from({ length: lineCount }, (_, i) => i + 1).join("\n");
+
+  wrap.innerHTML = `
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="cb-lang">${section.lang || "cpp"}</span>
+        <span class="cb-filename">${section.title || "Predict the output"}</span>
+        <span class="cb-protected-note">read-only</span>
+      </div>
+      <div class="code-body protected" id="${codeId}">
+        <div class="code-lines">${lineNumbers}</div>
+        <pre><code class="language-cpp">${escapeHtml(section.code)}</code></pre>
+      </div>
+    </div>
+    <div class="predict-card">
+      ${section.hint ? `<div class="predict-hint"><i data-lucide="lightbulb" class="icon"></i> ${section.hint}</div>` : ""}
+      <button class="btn btn-primary predict-reveal-btn">Think First → Reveal Answer</button>
+      <div class="predict-answer"><span class="co-label">Output</span><span class="predict-answer-text"></span></div>
+    </div>
+  `;
+  wrap.dataset.correctOutput = section.correctOutput;
+  return wrap;
+}
+
 function renderInterviewQuestions(section) {
   const wrap = el("div", "lesson-section");
   const qHtml = section.questions
@@ -308,6 +340,20 @@ function attachInterviewToggles(root) {
     btn.addEventListener("click", () => {
       const answer = btn.nextElementSibling;
       answer.classList.toggle("open");
+    });
+  });
+}
+
+function attachPredictReveals(root) {
+  root.querySelectorAll(".predict-card").forEach((card) => {
+    const wrap = card.closest(".lesson-section");
+    const btn = card.querySelector(".predict-reveal-btn");
+    const answerBox = card.querySelector(".predict-answer");
+    const answerText = card.querySelector(".predict-answer-text");
+    btn.addEventListener("click", () => {
+      answerText.textContent = wrap.dataset.correctOutput;
+      answerBox.classList.add("show");
+      btn.disabled = true;
     });
   });
 }
