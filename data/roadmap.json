@@ -62,7 +62,8 @@
       "title": "Arrays & Strings",
       "topics": [
         { "id": "cpp-arrays", "title": "Arrays", "lesson": "cpp-arrays" },
-        { "id": "cpp-2d-arrays", "title": "2D Arrays", "lesson": "cpp-2d-arrays" }
+        { "id": "cpp-2d-arrays", "title": "2D Arrays", "lesson": "cpp-2d-arrays" },
+        { "id": "cpp-character-arrays", "title": "Character Arrays", "lesson": "cpp-character-arrays" }
       ]
     }
   ]

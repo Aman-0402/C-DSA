@@ -1,0 +1,163 @@
+{
+  "id": "cpp-character-arrays",
+  "moduleId": "arrays-strings",
+  "title": "Character Arrays",
+  "description": "C-style strings: an array of char terminated by a hidden '\\0', why size must include room for it, and cin's word-only behavior with them.",
+  "objectives": [
+    "Declare a character array holding text",
+    "Understand the null terminator '\\0' and why it matters",
+    "Access individual characters by index",
+    "Know why array size must include room for the terminator"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Text as an Array of char"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall char from Data Types: it holds exactly one character. An array of char, put together, can hold a whole word or sentence — this is how C++ represented text before the more convenient std::string existed (covered next)."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "char word[6] = {'H', 'e', 'l', 'l', 'o', '\\0'};"
+    },
+    {
+      "type": "heading",
+      "text": "2. The Null Terminator"
+    },
+    {
+      "type": "definition",
+      "term": "Null terminator",
+      "text": "The null terminator, written '\\0', is a special character marking the end of a C-style string — code that reads the array knows to stop there."
+    },
+    {
+      "type": "warning",
+      "text": "'\\0' is not the digit character '0' — it's a completely different, invisible character whose value is zero, used purely as an end marker. Without it, there'd be no way to know where the text actually stops inside the array."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Easier Way to Write It"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "char word[6] = \"Hello\"; // \\0 is added automatically"
+    },
+    {
+      "type": "note",
+      "text": "Writing text in double quotes automatically appends '\\0' at the end. \"Hello\" is 5 visible characters, but takes 6 slots in memory — the 6th holds the hidden terminator."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    char word[6] = \"Hello\";\n\n    cout << word << endl;\n    cout << word[0] << endl;\n\n    return 0;\n}",
+      "output": "Hello\nH",
+      "retypePractice": true,
+      "retypeId": "cpp-character-arrays-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What happened",
+      "points": [
+        "cout << word; prints the whole array as text — cout knows to stop at '\\0' automatically",
+        "word[0] accesses just the first character, 'H', using the same zero-based indexing from Arrays"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. The Size Trap"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "char word[5] = \"Hello\"; // ERROR-PRONE — no room for '\\0'!"
+    },
+    {
+      "type": "warning",
+      "text": "\"Hello\" needs 6 slots — 5 for the letters, 1 for '\\0'. Declaring only [5] leaves no room for the terminator, which is a common, dangerous mistake: some compilers reject it outright, others allow it in ways that risk writing past the array's actual memory. Always size a character array as (number of characters) + 1."
+    },
+    {
+      "type": "heading",
+      "text": "6. Reading Text with cin"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "char name[20];\ncin >> name;"
+    },
+    {
+      "type": "warning",
+      "text": "cin >> stops reading at the first whitespace — typing \"John Smith\" only captures \"John\" into name, exactly like it only reads one value at a time with numbers. Reading a full line of text (with spaces) needs a different tool, covered once we reach std::string."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A message spelled out in labeled boxes, ending with a stop sign",
+      "text": "Imagine spelling a word using one small box per letter, lined up in a row, followed by a tiny stop sign box at the end. Anyone reading the boxes left to right knows to stop exactly at the stop sign — that's '\\0'. Forget to place the stop sign, and a reader has no idea where the word is actually supposed to end."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Sizing a character array without room for '\\0' — always allocate (visible characters) + 1.",
+        "Confusing the null terminator '\\0' with the character '0' — they are entirely different values.",
+        "Expecting cin >> to capture text containing spaces — it stops at the first whitespace.",
+        "Manually building a character array without a terminator — code that expects one (like cout <<) won't know where the text ends and may read past the array."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a C-style string?",
+          "answer": "An array of char representing text, ending with a special null terminator character, '\\0', that marks where the text stops."
+        },
+        {
+          "question": "Why does char word[6] = \"Hello\"; need 6 elements for a 5-letter word?",
+          "answer": "Because \"Hello\" automatically gets a hidden '\\0' terminator appended, requiring one extra slot beyond the 5 visible characters."
+        },
+        {
+          "question": "What happens if a character array isn't large enough to include the null terminator?",
+          "answer": "There's no room to properly mark the end of the string, which is a common and dangerous mistake that can lead to reading or writing past the array's actual memory."
+        },
+        {
+          "question": "Does cin >> read an entire line of text into a character array?",
+          "answer": "No — it stops at the first whitespace, so text containing spaces is only partially captured."
+        }
+      ],
+      "thirtySecondAnswer": "A character array can represent text as a C-style string: a sequence of char values ending with a special null terminator, '\\0', that marks where the actual text stops. Writing char word[6] = \"Hello\"; automatically appends that terminator, which is why a 5-letter word needs 6 elements of storage — forgetting to leave room for it is a classic, dangerous mistake. cin >> reads only up to the first whitespace when filling a character array, so capturing a full sentence with spaces requires a different approach, covered with std::string."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Character Arrays",
+      "text": "C-style string = letters in a row + a hidden stop sign ('\\0') at the end. Always size for (letters) + 1."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-character-arrays-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    char word[6] = \"Hello\";\n\n    cout << word << endl;\n    cout << word[0] << endl;\n\n    return 0;\n}", "output": "Hello\nH" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-character-arrays-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    char word[6] = \"Hello\";\n\n    cout << word << endl;\n    cout << word[0] << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-character-arrays-basic"]
+  }
+}
