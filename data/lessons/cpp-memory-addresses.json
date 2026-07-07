@@ -1,0 +1,171 @@
+{
+  "id": "cpp-memory-addresses",
+  "moduleId": "pointers-memory",
+  "title": "Memory Addresses",
+  "description": "What an address actually is, why it's shown in hex, sizeof, and how array elements sit at addresses spaced exactly by their type's size.",
+  "objectives": [
+    "Understand a memory address as a numeric location in memory",
+    "Know addresses are conventionally displayed in hexadecimal",
+    "Use sizeof to see how many bytes a type occupies",
+    "Understand array elements are stored contiguously, addresses spaced by sizeof(type)"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Addresses So Far"
+    },
+    {
+      "type": "paragraph",
+      "text": "We've used & to get an address since Pointers, without examining what an address really is. Let's look closer."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Memory Address?"
+    },
+    {
+      "type": "definition",
+      "term": "Memory address",
+      "text": "A memory address is a number identifying a specific location in a computer's memory — every byte of memory has its own unique address."
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall What Happens When You Run an Executable from Source Code and Executable Files: the operating system loads a running program into memory. Every variable in that program occupies some number of bytes at some specific address within that memory."
+    },
+    {
+      "type": "heading",
+      "text": "3. Addresses Are Shown in Hexadecimal"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 25;\ncout << &age; // something like 0x7ffee3a1c05c"
+    },
+    {
+      "type": "note",
+      "text": "That 0x... value is a hexadecimal (base-16) number — the conventional way addresses are displayed, since it's a more compact way to write large numbers than decimal. You don't need to understand hexadecimal deeply here — just recognize that 0x... means \"this is an address.\""
+    },
+    {
+      "type": "heading",
+      "text": "4. Addresses Are Different Every Run"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike a value like 25, an address printed by your program will typically be different each time you run it — modern operating systems deliberately place programs at different memory locations for security reasons. Never write code (or examples) that depend on a specific address value staying the same between runs."
+    },
+    {
+      "type": "heading",
+      "text": "5. sizeof — How Many Bytes a Type Occupies"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << sizeof(int) << endl;\n    cout << sizeof(char) << endl;\n    cout << sizeof(double) << endl;\n\n    return 0;\n}",
+      "output": "4\n1\n8",
+      "retypePractice": true,
+      "retypeId": "cpp-memory-addresses-sizeof"
+    },
+    {
+      "type": "note",
+      "text": "sizeof(Type) returns the number of bytes that type occupies — matching the typical sizes previewed back in Data Types. These exact numbers can technically vary by platform, but 4, 1, and 8 are the common values on most modern systems."
+    },
+    {
+      "type": "heading",
+      "text": "6. Array Elements Sit Right Next to Each Other"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int arr[3] = {10, 20, 30};\n\n// arr[0]'s address, arr[1]'s address, and arr[2]'s address\n// are spaced exactly sizeof(int) bytes apart, back to back in memory"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall Arrays: elements are stored together as one contiguous block. That's not just a mental model — arr[1]'s address is genuinely arr[0]'s address plus sizeof(int) bytes, and arr[2]'s address is another sizeof(int) further along."
+    },
+    {
+      "type": "heading",
+      "text": "7. Proving the Spacing (Without Depending on Exact Addresses)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int arr[3] = {10, 20, 30};\n\n    cout << (&arr[1] - &arr[0]) << endl;\n    cout << (&arr[2] - &arr[0]) << endl;\n\n    return 0;\n}",
+      "output": "1\n2",
+      "retypePractice": true,
+      "retypeId": "cpp-memory-addresses-spacing"
+    },
+    {
+      "type": "note",
+      "text": "Subtracting two pointers of the same type gives the number of elements between them, not raw bytes — this works out to 1 and 2 no matter what the actual addresses happen to be on a given run, because C++ automatically accounts for sizeof(int) when doing this kind of pointer arithmetic."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "House numbers on a street",
+      "text": "Memory addresses are like house numbers on a long street — every house (byte) has a unique number, and houses belonging to the same family (an array's elements) sit at consecutive numbers, spaced by exactly how wide each house is (sizeof the type). A family occupying 4-unit-wide houses starting at number 100 would have their next house at 104, then 108 — exactly what sizeof(int) spacing looks like for consecutive array elements."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming an address stays the same across different runs of a program — it usually doesn't, and code should never depend on a specific address value.",
+        "Treating the 0x... printed address as if it were meaningful decimal data — it's hexadecimal, a different number base, purely a location identifier.",
+        "Forgetting sizeof depends on the type — sizeof(int) and sizeof(double) are typically different.",
+        "Assuming pointer subtraction gives a byte count — subtracting two same-type pointers gives an element count, since C++ divides by sizeof(type) automatically."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a memory address?",
+          "answer": "A number that uniquely identifies a specific location in a computer's memory."
+        },
+        {
+          "question": "In what number base are memory addresses conventionally displayed?",
+          "answer": "Hexadecimal (base-16), typically shown with a 0x prefix."
+        },
+        {
+          "question": "What does sizeof(Type) return?",
+          "answer": "The number of bytes that type occupies in memory."
+        },
+        {
+          "question": "How are the elements of an array arranged in memory?",
+          "answer": "Contiguously — stored back to back, with each element's address exactly sizeof(elementType) bytes after the previous one."
+        }
+      ],
+      "thirtySecondAnswer": "A memory address is a number identifying a specific location in memory, conventionally displayed in hexadecimal and typically different on every run of a program, since operating systems place programs at varying memory locations. sizeof(Type) reveals how many bytes a given type occupies — commonly 4 for int, 1 for char, 8 for double. Array elements are stored contiguously, meaning each element's address is exactly sizeof(elementType) bytes after the previous one, which is why subtracting two same-type pointers gives a clean element count rather than a raw byte difference."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Memory Addresses",
+      "text": "Address = house number on a street. sizeof = how wide each house is. Array elements = houses of the same family, lined up back to back."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-memory-addresses-sizeof", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << sizeof(int) << endl;\n    cout << sizeof(char) << endl;\n    cout << sizeof(double) << endl;\n\n    return 0;\n}", "output": "4\n1\n8" },
+    { "id": "cpp-memory-addresses-spacing", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int arr[3] = {10, 20, 30};\n\n    cout << (&arr[1] - &arr[0]) << endl;\n    cout << (&arr[2] - &arr[0]) << endl;\n\n    return 0;\n}", "output": "1\n2" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-memory-addresses-sizeof",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << sizeof(int) << endl;\n    cout << sizeof(char) << endl;\n    cout << sizeof(double) << endl;\n\n    return 0;\n}"
+    },
+    {
+      "id": "cpp-memory-addresses-spacing",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int arr[3] = {10, 20, 30};\n\n    cout << (&arr[1] - &arr[0]) << endl;\n    cout << (&arr[2] - &arr[0]) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-memory-addresses-sizeof", "cpp-memory-addresses-spacing"]
+  }
+}
