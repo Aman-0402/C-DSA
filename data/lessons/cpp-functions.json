@@ -1,0 +1,153 @@
+{
+  "id": "cpp-functions",
+  "moduleId": "functions",
+  "title": "Functions",
+  "description": "Why functions exist: bundling code so it can be reused by name, instead of copy-pasting the same logic everywhere.",
+  "objectives": [
+    "Understand what a function is and why it matters",
+    "Recognize main() as a function we've been using all along",
+    "See the shape of a simple custom function",
+    "Preview declaration, definition, calling, parameters, and return types as upcoming subtopics"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Repeated Code"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a = 5, b = 3;\ncout << a + b << endl;\n\nint c = 10, d = 20;\ncout << c + d << endl;\n\nint e = 7, f = 7;\ncout << e + f << endl;"
+    },
+    {
+      "type": "paragraph",
+      "text": "The same idea — \"add two numbers and print the result\" — is written out three separate times. If that logic ever needed to change, it would need to change in every single copy."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Function?"
+    },
+    {
+      "type": "definition",
+      "term": "Function",
+      "text": "A function is a named, reusable block of code that performs a specific task and can be run (called) from anywhere by using its name."
+    },
+    {
+      "type": "note",
+      "text": "We've actually been using a function since the very first lesson: main() is a function — the special one C++ calls automatically to start the program."
+    },
+    {
+      "type": "heading",
+      "text": "3. A Simple Custom Function"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(5, 3) << endl;\n    cout << add(10, 20) << endl;\n    cout << add(7, 7) << endl;\n\n    return 0;\n}",
+      "output": "8\n30\n14",
+      "retypePractice": true,
+      "retypeId": "cpp-functions-add"
+    },
+    {
+      "type": "note",
+      "text": "This solves the repeated-code problem: the addition logic is written exactly once, inside add, and reused three times just by calling add(...) with different values."
+    },
+    {
+      "type": "heading",
+      "text": "4. Recognizing the Pieces"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "keyPoints",
+      "title": "At a glance",
+      "points": [
+        "int — the type of value this function returns",
+        "add — the function's name",
+        "(int a, int b) — the inputs it needs, called parameters",
+        "{ ... } — the function body, the code that actually runs",
+        "return a + b; — sends a value back to wherever the function was called from"
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "This is only an overview. Each of these pieces — declaring a function separately from defining it, calling it, parameters vs arguments, and return types — gets its own dedicated topic next."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why Functions Matter"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Functions give us",
+      "points": [
+        "Reuse — write the logic once, use it as many times as needed",
+        "Readability — main() becomes a short list of named steps instead of one giant block",
+        "Easier fixes — a bug only needs fixing in one place, not everywhere the logic was copied",
+        "A natural way to break a big problem into smaller, named pieces"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A recipe you reuse",
+      "text": "A cookbook doesn't rewrite the full \"how to boil pasta\" instructions inside every single recipe that needs boiled pasta — it just says \"boil pasta (see page 12)\" and reuses that one set of steps. A function is that reusable recipe: write the steps once, refer to them by name wherever they're needed."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Copy-pasting the same logic repeatedly instead of wrapping it in a function — makes future changes error-prone, since every copy needs updating.",
+        "Thinking main() is somehow not a function — it's a function like any other, just the one C++ calls automatically to start the program.",
+        "Trying to write everything inside main() as the program grows — functions exist precisely to break large programs into smaller, named, reusable pieces."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a function in C++?",
+          "answer": "A named, reusable block of code that performs a specific task and can be executed by calling its name."
+        },
+        {
+          "question": "Why are functions useful?",
+          "answer": "They let code be written once and reused many times, improve readability, and make a program easier to maintain since a fix only needs to happen in one place."
+        },
+        {
+          "question": "Is main() a function?",
+          "answer": "Yes — main() is a function, the special one that C++ automatically calls to begin program execution."
+        }
+      ],
+      "thirtySecondAnswer": "A function is a named, reusable block of code that performs a specific task and can be called from anywhere by name, instead of rewriting the same logic repeatedly. We've already been using one function throughout every lesson: main(), the special function C++ calls automatically to start a program. A custom function like int add(int a, int b) { return a + b; } has a return type, a name, parameters describing its inputs, and a body — each of which gets its own dedicated topic next."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Functions",
+      "text": "Function = a named recipe. Write the steps once, call it by name as many times as needed."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-functions-add", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(5, 3) << endl;\n    cout << add(10, 20) << endl;\n    cout << add(7, 7) << endl;\n\n    return 0;\n}", "output": "8\n30\n14" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-functions-add",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(5, 3) << endl;\n    cout << add(10, 20) << endl;\n    cout << add(7, 7) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-functions-add"]
+  }
+}

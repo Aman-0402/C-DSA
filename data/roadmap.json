@@ -41,6 +41,13 @@
         { "id": "cpp-break", "title": "break", "lesson": "cpp-break" },
         { "id": "cpp-continue", "title": "continue", "lesson": "cpp-continue" }
       ]
+    },
+    {
+      "id": "functions",
+      "title": "Functions",
+      "topics": [
+        { "id": "cpp-functions", "title": "Functions", "lesson": "cpp-functions" }
+      ]
     }
   ]
 }
