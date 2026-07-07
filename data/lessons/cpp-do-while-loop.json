@@ -1,0 +1,141 @@
+{
+  "id": "cpp-do-while-loop",
+  "moduleId": "control-flow",
+  "title": "do-while Loop",
+  "description": "The loop that always runs its body at least once, checking the condition only after — and why that matters for menus and input validation.",
+  "objectives": [
+    "Write a basic do-while loop with correct syntax",
+    "Understand the key difference from while: check-after vs check-before",
+    "Know a realistic use case where do-while is the natural fit",
+    "Avoid forgetting the semicolon after the while(condition)"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. do-while Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "do\n{\n    // runs at least once\n} while (condition);"
+    },
+    {
+      "type": "warning",
+      "text": "Notice the semicolon after while (condition) — it's required here, unlike the for and while loops we've already seen. Forgetting it is a common mistake."
+    },
+    {
+      "type": "heading",
+      "text": "2. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int i = 1;\n\n    do\n    {\n        cout << i << endl;\n        i++;\n    } while (i <= 5);\n\n    return 0;\n}",
+      "output": "1\n2\n3\n4\n5",
+      "retypePractice": true,
+      "retypeId": "cpp-do-while-basic"
+    },
+    {
+      "type": "note",
+      "text": "Same output as while's version, because i <= 5 happened to be true from the start. The real difference only shows up when the condition is false from the beginning."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Key Difference: Check-Before vs Check-After"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int i = 10;\n\nwhile (i <= 5) // checked BEFORE — false immediately\n{\n    cout << i << endl; // never runs\n}"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int i = 10;\n\ndo\n{\n    cout << i << endl; // runs once, even though condition is false!\n} while (i <= 5);"
+    },
+    {
+      "type": "table",
+      "headers": ["while", "do-while"],
+      "rows": [
+        ["Checks the condition before running the body", "Checks the condition after running the body"],
+        ["Body may run zero times", "Body always runs at least once"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "This is the entire point of do-while: even with a condition that's false from the very start, the body still executes exactly once before the check ever happens."
+    },
+    {
+      "type": "heading",
+      "text": "4. When do-while Fits Naturally"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int choice;\n\ndo\n{\n    cout << \"1. Play\\n2. Settings\\n3. Exit\\nChoose: \";\n    cin >> choice;\n} while (choice != 3);"
+    },
+    {
+      "type": "note",
+      "text": "A menu needs to be shown at least once before there's anything for the user to respond to — there's no earlier point where checking the condition first would even make sense. This \"do the thing, then check whether to repeat\" shape is do-while's classic use case."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Tasting a dish before deciding to add more salt",
+      "text": "You always taste the food first — that's not optional — and only after tasting do you decide: repeat (add more salt and taste again) or stop (it's good). while would be like deciding whether to taste before ever having tasted anything, which doesn't make sense. do-while guarantees the action happens first, then the condition decides whether it happens again."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the semicolon after while (condition); — required for do-while, unlike for and while.",
+        "Using do-while when zero executions should be possible — if the body should be skippable entirely, a plain while is the correct choice.",
+        "Assuming do-while and while always behave identically — they only differ when the condition is false on the very first check, but that difference matters."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the key difference between while and do-while?",
+          "answer": "while checks its condition before running the body, so the body may run zero times; do-while checks its condition after running the body, so the body always runs at least once."
+        },
+        {
+          "question": "Give an example where do-while is a more natural fit than while.",
+          "answer": "Displaying a menu and asking the user to choose an option — the menu must be shown at least once before there's any input to check against a condition."
+        },
+        {
+          "question": "What syntax detail is easy to forget in a do-while loop?",
+          "answer": "The semicolon after while (condition); at the end — it's required, unlike in for or while loops."
+        }
+      ],
+      "thirtySecondAnswer": "do-while is like while, but it checks its condition after running the body instead of before, guaranteeing the body executes at least once — even if the condition turns out to be false on that very first check. This makes it a natural fit for situations like displaying a menu, where the action needs to happen before there's anything to evaluate. A do-while loop also requires a semicolon after its while (condition), which is easy to forget since neither for nor while need one."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember do-while",
+      "text": "do-while = act first, ask later. while = ask first, maybe never act. Don't forget the semicolon after while(condition);."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-do-while-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int i = 1;\n\n    do\n    {\n        cout << i << endl;\n        i++;\n    } while (i <= 5);\n\n    return 0;\n}", "output": "1\n2\n3\n4\n5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-do-while-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int i = 1;\n\n    do\n    {\n        cout << i << endl;\n        i++;\n    } while (i <= 5);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-do-while-basic"]
+  }
+}
