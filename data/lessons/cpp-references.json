@@ -1,0 +1,170 @@
+{
+  "id": "cpp-references",
+  "moduleId": "pointers-memory",
+  "title": "References",
+  "description": "Formalizing the & from Pass by Reference and Pointers: a reference as a permanent alias, and a full comparison table against pointers.",
+  "objectives": [
+    "Understand a reference as a permanent alias for an existing variable",
+    "Declare and use a reference correctly",
+    "Know a reference must be initialized immediately and can never be reseated",
+    "Compare references and pointers directly, side by side"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We've Already Used References"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in Pass by Reference, void doubleIt(int &n) used a reference parameter without a full formal explanation. Now we look at references directly, on their own."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Reference?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 25;\nint &ageRef = age; // ageRef is now another name for age"
+    },
+    {
+      "type": "definition",
+      "term": "Reference",
+      "text": "A reference is an alias — another name — for an already-existing variable. It is not a separate variable; it refers to the exact same memory as the original."
+    },
+    {
+      "type": "heading",
+      "text": "3. A Reference Must Be Initialized Immediately"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int &ref; // ERROR — a reference must refer to something from the moment it's created"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike a pointer, which can be declared and assigned an address later, a reference has no such option — it must be bound to a variable at the point it's declared, with no gap in between."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    int &ageRef = age;\n\n    ageRef = 30; // changes age itself\n\n    cout << age << endl;\n    cout << ageRef << endl;\n\n    return 0;\n}",
+      "output": "30\n30",
+      "retypePractice": true,
+      "retypeId": "cpp-references-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What happened",
+      "points": [
+        "ageRef isn't a copy of age, and it isn't a pointer to age — it IS age, under a second name",
+        "ageRef = 30; is the exact same action as age = 30;",
+        "Both age and ageRef print 30, because they were never two different things to begin with"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. A Reference Can Never Be Reseated"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a = 5;\nint b = 10;\n\nint &ref = a;\nref = b; // this does NOT make ref refer to b — it copies b's VALUE into a!\n\ncout << a; // 10"
+    },
+    {
+      "type": "warning",
+      "text": "This is a subtle but important trap: once a reference is bound to a variable, it stays bound to that variable forever — there is no syntax to later point it somewhere else. ref = b; doesn't rebind ref to b; it assigns b's value into whatever ref already refers to, which is a. This is exactly the behavior that makes reference parameters (like Pass by Reference's &n) reliably modify the caller's original variable."
+    },
+    {
+      "type": "heading",
+      "text": "6. References vs Pointers, Side by Side"
+    },
+    {
+      "type": "table",
+      "headers": ["Reference", "Pointer"],
+      "rows": [
+        ["Must be initialized immediately", "Can be declared without an initial address"],
+        ["Cannot be reseated to refer to something else", "Can be reassigned to point elsewhere at any time"],
+        ["No special syntax to \"dereference\" — used just like the original variable", "Requires * to access the value it points to"],
+        ["Cannot be null / point to nothing", "Can be null, or point to nothing valid"],
+        ["Simpler, safer, commonly used for function parameters", "More flexible and powerful, but easier to misuse"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Why References Are Common in Function Parameters"
+    },
+    {
+      "type": "note",
+      "text": "This is exactly why Pass by Reference used int &n rather than a pointer: a reference parameter reads and behaves just like an ordinary variable inside the function body (no * needed everywhere), while still directly affecting the caller's original — the best of both simplicity and real modification power."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A nickname that's permanent",
+      "text": "A reference is like a nickname that's welded to one specific person forever — you can call them by their real name or their nickname, but the nickname can never be transferred to refer to someone else later. A pointer is more like a name tag you're holding, which you can peel off and stick onto a different person whenever you like."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to declare a reference without initializing it — int &ref; alone is a compilation error.",
+        "Expecting ref = anotherVariable; to \"rebind\" the reference — it doesn't; it copies a value into whatever the reference already refers to.",
+        "Confusing references with pointers — a reference has no separate dereference syntax and can't be reseated; a pointer has both.",
+        "Assuming a reference can be null — unlike a pointer, a properly declared reference always refers to a real, existing variable."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a reference in C++?",
+          "answer": "An alias — another name — for an already-existing variable, referring to the exact same memory rather than being a separate copy."
+        },
+        {
+          "question": "Can a reference be declared without initializing it?",
+          "answer": "No — a reference must be bound to a variable at the moment it's declared."
+        },
+        {
+          "question": "Can a reference be reseated to refer to a different variable later?",
+          "answer": "No — once bound, a reference always refers to the same variable; assigning to it changes that variable's value instead."
+        },
+        {
+          "question": "What is the key difference between a reference and a pointer?",
+          "answer": "A reference is a permanent alias, initialized once and never reseated, with no dereference syntax; a pointer is a separate variable holding an address, which can be reassigned, dereferenced with *, and can be null."
+        }
+      ],
+      "thirtySecondAnswer": "A reference is an alias for an existing variable — not a copy, and not a separate object, but another name for the exact same memory. It must be initialized at the moment it's declared and can never be reseated to refer to something else afterward; assigning to a reference changes the original variable's value instead. Compared to a pointer, a reference is simpler and safer: no dereference operator is needed, and it can't be null, which is why references are the common choice for function parameters that need to modify the caller's variable, as seen in Pass by Reference."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember References",
+      "text": "Reference = a permanent nickname, welded on at birth, never transferable. Pointer = a name tag you can peel off and move to someone else."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-references-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    int &ageRef = age;\n\n    ageRef = 30;\n\n    cout << age << endl;\n    cout << ageRef << endl;\n\n    return 0;\n}", "output": "30\n30" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-references-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    int &ageRef = age;\n\n    ageRef = 30;\n\n    cout << age << endl;\n    cout << ageRef << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-references-basic"]
+  }
+}

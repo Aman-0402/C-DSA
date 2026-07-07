@@ -72,7 +72,8 @@
       "id": "pointers-memory",
       "title": "Pointers & Memory",
       "topics": [
-        { "id": "cpp-pointers", "title": "Pointers", "lesson": "cpp-pointers" }
+        { "id": "cpp-pointers", "title": "Pointers", "lesson": "cpp-pointers" },
+        { "id": "cpp-references", "title": "References", "lesson": "cpp-references" }
       ]
     }
   ]
