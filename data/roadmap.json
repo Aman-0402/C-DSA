@@ -56,6 +56,13 @@
         { "id": "cpp-pass-by-reference", "title": "Pass by Reference", "lesson": "cpp-pass-by-reference" },
         { "id": "cpp-function-overloading", "title": "Function Overloading", "lesson": "cpp-function-overloading" }
       ]
+    },
+    {
+      "id": "arrays-strings",
+      "title": "Arrays & Strings",
+      "topics": [
+        { "id": "cpp-arrays", "title": "Arrays", "lesson": "cpp-arrays" }
+      ]
     }
   ]
 }

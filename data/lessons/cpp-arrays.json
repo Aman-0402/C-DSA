@@ -1,0 +1,206 @@
+{
+  "id": "cpp-arrays",
+  "moduleId": "arrays-strings",
+  "title": "Arrays",
+  "description": "Storing many values under one name: declaring an array, zero-based indexing, looping through it, and the out-of-bounds trap.",
+  "objectives": [
+    "Declare and initialize an array",
+    "Understand zero-based indexing",
+    "Loop through an array with a for loop",
+    "Understand why C++ doesn't check array bounds for you"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Many Related Variables"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int score1 = 90;\nint score2 = 85;\nint score3 = 78;\nint score4 = 92;\nint score5 = 88;"
+    },
+    {
+      "type": "paragraph",
+      "text": "Five separate variables for five scores is manageable. A hundred scores this way would be unmanageable — and there'd be no way to loop through them, since a for loop can't iterate over separately named variables."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is an Array?"
+    },
+    {
+      "type": "definition",
+      "term": "Array",
+      "text": "An array is a fixed-size collection of values of the same type, stored together and accessed using a single name and a position number called an index."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int scores[5] = {90, 85, 78, 92, 88};"
+    },
+    {
+      "type": "note",
+      "text": "One name, scores, holding all five values. [5] tells the compiler how many elements to reserve room for."
+    },
+    {
+      "type": "heading",
+      "text": "3. Zero-Based Indexing"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int scores[5] = {90, 85, 78, 92, 88};\n\ncout << scores[0]; // 90 — the FIRST element\ncout << scores[4]; // 88 — the LAST element"
+    },
+    {
+      "type": "warning",
+      "text": "C++ arrays are zero-indexed: the first element is at index 0, not 1. An array of 5 elements has valid indices 0, 1, 2, 3, 4 — there is no index 5. This trips up nearly every beginner at least once."
+    },
+    {
+      "type": "table",
+      "headers": ["Index", "0", "1", "2", "3", "4"],
+      "rows": [["Value", "90", "85", "78", "92", "88"]]
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int scores[5] = {90, 85, 78, 92, 88};\n\n    cout << \"First: \" << scores[0] << endl;\n    cout << \"Last: \" << scores[4] << endl;\n\n    return 0;\n}",
+      "output": "First: 90\nLast: 88",
+      "retypePractice": true,
+      "retypeId": "cpp-arrays-basic"
+    },
+    {
+      "type": "heading",
+      "text": "5. Looping Through an Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int scores[5] = {90, 85, 78, 92, 88};\n\n    for (int i = 0; i < 5; i++)\n    {\n        cout << scores[i] << endl;\n    }\n\n    return 0;\n}",
+      "output": "90\n85\n78\n92\n88"
+    },
+    {
+      "type": "note",
+      "text": "This is exactly why zero-based indexing pairs naturally with for loops: i starts at 0 and runs while i < 5, matching the array's valid indices precisely."
+    },
+    {
+      "type": "heading",
+      "text": "6. Modifying an Element"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "scores[2] = 100; // overwrite the element at index 2 (was 78)"
+    },
+    {
+      "type": "note",
+      "text": "Each element behaves like an individual variable — it can be read or reassigned using its index, exactly like scores[2] = 100; here."
+    },
+    {
+      "type": "heading",
+      "text": "7. Declaring Without Initializing"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int numbers[5]; // size given, but no values yet — contents are garbage, like an uninitialized variable"
+    },
+    {
+      "type": "warning",
+      "text": "Just like an uninitialized variable from Variables, an array declared without values contains garbage — unpredictable leftover data. Always initialize before reading."
+    },
+    {
+      "type": "heading",
+      "text": "8. Out-of-Bounds Access — No Safety Net"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int scores[5] = {90, 85, 78, 92, 88};\n\ncout << scores[5];  // out of bounds! valid indices are only 0-4\ncout << scores[-1]; // also out of bounds"
+    },
+    {
+      "type": "warning",
+      "text": "C++ does not check whether an index is actually valid. scores[5] doesn't throw a clean error — it reads whatever memory happens to sit right after the array, which is undefined behavior: it might print garbage, might crash, or might even appear to \"work\" by accident. This is one of the most notorious sources of bugs in C++, and there is no automatic protection against it."
+    },
+    {
+      "type": "heading",
+      "text": "9. Array Size Is Fixed"
+    },
+    {
+      "type": "note",
+      "text": "Once declared with int scores[5];, that array can never hold more or fewer than 5 elements — its size is fixed for its entire lifetime. Growable, resizable collections are covered later, once we reach vector in the STL."
+    },
+    {
+      "type": "heading",
+      "text": "10. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A row of numbered lockers",
+      "text": "Think of an array as a row of lockers, numbered starting from 0, all reserved together as one block. scores[2] means \"open locker number 2\" — a fixed, direct way to reach exactly one item without touching the others. Try to open locker number 5 in a row of 5 lockers (0 through 4), and there's nothing there — but nothing stops you from reaching for it anyway."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting arrays are zero-indexed — the last valid index is size - 1, not size.",
+        "Accessing an out-of-bounds index — C++ does not check this for you, and the result is undefined behavior, not a clean error.",
+        "Looping with i <= 5 instead of i < 5 for a 5-element array — an off-by-one that reads one element past the end.",
+        "Assuming an array can grow — its size is fixed once declared; a different tool (vector, covered later) is needed for resizable storage.",
+        "Reading an array element before initializing it — like any uninitialized variable, it holds garbage."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is an array?",
+          "answer": "A fixed-size collection of values of the same type, stored together and accessed by a single name with an index."
+        },
+        {
+          "question": "What is the index of the first element of an array?",
+          "answer": "0 — C++ arrays are zero-indexed."
+        },
+        {
+          "question": "What is the last valid index of an array with 10 elements?",
+          "answer": "9 — indices run from 0 to size - 1."
+        },
+        {
+          "question": "What happens if you access an array index that's out of bounds?",
+          "answer": "C++ does not check bounds automatically; accessing an invalid index is undefined behavior, which can silently read garbage, crash, or appear to work unpredictably."
+        },
+        {
+          "question": "Can an array be resized after it's declared?",
+          "answer": "No — a C++ array's size is fixed at declaration; a resizable alternative like vector is needed for growable storage."
+        }
+      ],
+      "thirtySecondAnswer": "An array is a fixed-size collection of values of the same type, stored together under one name and accessed by an index. C++ arrays are zero-indexed, so an array of size n has valid indices 0 through n-1, which pairs naturally with a for loop like for (int i = 0; i < n; i++). Critically, C++ does not check array bounds — accessing an out-of-range index is undefined behavior rather than a clean error, making off-by-one mistakes a classic and dangerous bug. An array's size is also fixed once declared; resizable collections come later with vector."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Arrays",
+      "text": "Array = a row of lockers starting at 0. Last valid locker = size - 1. Nothing stops you from reaching for locker 'size' — but there's nothing there."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-arrays-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int scores[5] = {90, 85, 78, 92, 88};\n\n    cout << \"First: \" << scores[0] << endl;\n    cout << \"Last: \" << scores[4] << endl;\n\n    return 0;\n}", "output": "First: 90\nLast: 88" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-arrays-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int scores[5] = {90, 85, 78, 92, 88};\n\n    cout << \"First: \" << scores[0] << endl;\n    cout << \"Last: \" << scores[4] << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-arrays-basic"]
+  }
+}
