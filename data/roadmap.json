@@ -114,7 +114,8 @@
       "title": "Standard Template Library (STL)",
       "topics": [
         { "id": "cpp-stl", "title": "Standard Template Library — STL", "lesson": "cpp-stl" },
-        { "id": "cpp-stl-containers", "title": "STL Containers", "lesson": "cpp-stl-containers" }
+        { "id": "cpp-stl-containers", "title": "STL Containers", "lesson": "cpp-stl-containers" },
+        { "id": "cpp-stl-iterators", "title": "STL Iterators", "lesson": "cpp-stl-iterators" }
       ]
     }
   ]

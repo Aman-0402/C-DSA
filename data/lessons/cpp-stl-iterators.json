@@ -1,0 +1,156 @@
+{
+  "id": "cpp-stl-iterators",
+  "moduleId": "stl",
+  "title": "STL Iterators",
+  "description": "A uniform way to walk through any container's elements: begin(), end(), and why containers without [] still need to be traversable.",
+  "objectives": [
+    "Understand an iterator as a generalized pointer into a container",
+    "Use begin() and end() to walk through a container",
+    "Dereference and increment an iterator",
+    "Understand why iterators matter for containers without []"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Indexing Worked Fine for vector"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {10, 20, 30};\n\nfor (int i = 0; i < numbers.size(); i++)\n{\n    cout << numbers[i] << \" \"; // [] works, because vector stores elements contiguously\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "This worked because vector, like an ordinary array from Arrays, stores its elements back to back and supports direct indexing. Not every STL container can do this — a list (a linked list, previewed in STL Containers) has no meaningful way to jump straight to \"element 5\" without walking through the ones before it."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is an Iterator?"
+    },
+    {
+      "type": "definition",
+      "term": "Iterator",
+      "text": "An iterator is an object that points to a position within a container and can be used to access that element and move to the next one, working consistently across many different container types."
+    },
+    {
+      "type": "note",
+      "text": "Recall Pointers: an iterator behaves a lot like a pointer — it can be dereferenced with * to get the value it points to, and moved forward with ++. In fact, for something like vector, an iterator often is essentially a pointer under the hood."
+    },
+    {
+      "type": "heading",
+      "text": "3. begin() and end()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {10, 20, 30};\n\nvector<int>::iterator it = numbers.begin(); // points to the FIRST element\nvector<int>::iterator stop = numbers.end();  // points PAST the last element"
+    },
+    {
+      "type": "warning",
+      "text": "end() does not point to the last element — it points to one position past it, a marker meaning \"nothing more here.\" This mirrors the zero-based indexing rule from Arrays, where a loop runs i < size, not i <= size."
+    },
+    {
+      "type": "heading",
+      "text": "4. Dereferencing and Incrementing"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << *it;  // dereference — get the value the iterator points to (10)\nit++;          // move to the next element"
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    for (vector<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-stl-iterators-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Comparing this to the index-based loop",
+      "points": [
+        "it starts at begin() — the first element, like i = 0",
+        "The loop continues while it != end() — notice != instead of <, since iterators aren't always ordered numbers the way indices are",
+        "it++ moves forward, like i++",
+        "*it reads the current value, like numbers[i]"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Why This Matters: Containers Without []"
+    },
+    {
+      "type": "note",
+      "text": "The exact same it/begin()/end()/*it/it++ pattern works for list, set, map, and nearly every other STL container — even the ones that have no [] operator at all. This is the entire point: one consistent way to traverse any container, regardless of how it actually stores its elements internally."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A universal bookmark for any book format",
+      "text": "Whether a book is a physical paperback, an e-book, or an audiobook, a bookmark still means the same thing: \"my current position, and the ability to move to the next part.\" An iterator is that universal bookmark for any STL container — the container's actual internal shape doesn't matter, the bookmark behaves the same way regardless."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Dereferencing end() — it points past the last element, not to a valid one; *end() is undefined behavior.",
+        "Using < to compare iterators in a loop condition instead of != — not every container's iterators support ordering comparisons, but != always works for this pattern.",
+        "Assuming [] indexing works on every STL container — it doesn't (list has no []), which is exactly why iterators exist as the universal alternative.",
+        "Forgetting to increment the iterator inside a manual loop — leads to an infinite loop, just like forgetting i++ in Loops."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is an iterator?",
+          "answer": "An object that points to a position within a container, letting you access that element and move to the next one, working consistently across different container types."
+        },
+        {
+          "question": "What do begin() and end() return?",
+          "answer": "begin() returns an iterator to the first element; end() returns an iterator to one position past the last element, used as a stopping marker rather than a valid element to access."
+        },
+        {
+          "question": "Why is != used instead of < to check an iterator loop's stopping condition?",
+          "answer": "Because not every container's iterators support ordering comparisons like <, while != reliably works across all of them for this pattern."
+        },
+        {
+          "question": "Why are iterators necessary, given that vector already supports []?",
+          "answer": "Not every container supports direct indexing — a list has no [] at all — so iterators provide one uniform way to traverse any container, regardless of how it stores its elements internally."
+        }
+      ],
+      "thirtySecondAnswer": "An iterator is an object that points to a position within a container, dereferenced with * to access the current value and advanced with ++ to move to the next one — behaving much like a pointer. begin() returns an iterator to the first element, and end() returns one pointing past the last element, used as a stopping marker; a typical loop runs while it != end(). This pattern works identically across nearly every STL container, including ones like list that have no [] operator at all, making iterators the universal way to traverse any container regardless of its internal structure."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember STL Iterators",
+      "text": "Iterator = a universal bookmark. begin() = start here. end() = nothing left, stop. *it = read here. it++ = move to the next page."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-stl-iterators-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    for (vector<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-stl-iterators-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    for (vector<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-stl-iterators-basic"]
+  }
+}
