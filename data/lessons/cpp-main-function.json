@@ -1,0 +1,208 @@
+{
+  "id": "cpp-main-function",
+  "moduleId": "cpp-fundamentals",
+  "title": "main() Function",
+  "description": "A closer look at main(): why it returns int, what happens if you skip return 0;, why void main() is wrong, and rules the language enforces around it.",
+  "objectives": [
+    "Understand why main() returns an integer status value",
+    "Know that C++ lets you omit return 0; only in main()",
+    "Understand why void main() is non-standard",
+    "Know that a program can only have one main()",
+    "Know that main() takes optional command-line parameters (preview only)"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: main() is the Entry Point"
+    },
+    {
+      "type": "paragraph",
+      "text": "We already know main() is where a normal C++ program starts executing. Today we go deeper into rules specific to main() that don't apply to ordinary functions."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int main()\n{\n    return 0;\n}"
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Does main() Return an int?"
+    },
+    {
+      "type": "paragraph",
+      "text": "When your program finishes, the operating system (or whatever process launched it) can check how it ended. That integer is called the program's exit status."
+    },
+    {
+      "type": "flow",
+      "steps": ["Program finishes", "return 0;", "Exit status sent to the OS / calling process"]
+    },
+    {
+      "type": "table",
+      "headers": ["Exit status", "Conventional meaning"],
+      "rows": [
+        ["0", "Success"],
+        ["Non-zero", "Some kind of failure occurred"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "This is a convention, not something the C++ language forces you to interpret a certain way — but it's followed almost everywhere, including by the OS shell, scripts, and CI pipelines that check whether a program \"succeeded.\""
+    },
+    {
+      "type": "heading",
+      "text": "3. What If We Forget return 0;?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n}",
+      "output": "Hello",
+      "retypePractice": true,
+      "retypeId": "cpp-main-implicit-return"
+    },
+    {
+      "type": "tip",
+      "text": "This compiles and runs fine. main() is special: in C++, if execution reaches the closing brace of main() without hitting a return statement, the compiler treats it as if return 0; had been written — meaning success."
+    },
+    {
+      "type": "warning",
+      "text": "This implicit-return rule applies only to main(). Every other function that's declared to return a value must explicitly return one, or the behavior is not guaranteed to be well-defined."
+    },
+    {
+      "type": "heading",
+      "text": "4. Why void main() is Wrong"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void main()  // not standard C++\n{\n}"
+    },
+    {
+      "type": "warning",
+      "text": "You may see void main() in old tutorials or textbooks. It is not standard C++ — the standard requires main() to return int. Some compilers may tolerate it as a non-standard extension, but you should always write int main()."
+    },
+    {
+      "type": "definition",
+      "term": "Standard vs non-standard",
+      "text": "\"Standard\" means guaranteed to work the same way across every conforming C++ compiler. void main() might compile on one compiler and fail on another."
+    },
+    {
+      "type": "heading",
+      "text": "5. Only One main() Per Program"
+    },
+    {
+      "type": "paragraph",
+      "text": "A single executable program can have exactly one main() function."
+    },
+    {
+      "type": "warning",
+      "text": "If two source files in the same project both define int main(), the linker (recall: Compiler translates, Linker connects) will fail with something like a \"multiple definition of main\" error, since it can't decide which one is the real entry point."
+    },
+    {
+      "type": "heading",
+      "text": "6. Can Our Code Call main() Itself?"
+    },
+    {
+      "type": "note",
+      "text": "In standard C++, a program is not allowed to call main() from within its own code — you can't treat it like an ordinary function and invoke it again. It's reserved purely as the entry point the runtime calls once, before your code runs, and after which control eventually returns to the OS."
+    },
+    {
+      "type": "heading",
+      "text": "7. main() Can Take Parameters (Preview)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int main(int argc, char* argv[])\n{\n    return 0;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview. main() can optionally accept command-line arguments — information typed after the program's name when it's run from a terminal. We have not learned parameters, pointers, or arrays yet, so don't worry about this syntax now; it will make sense once those topics are covered."
+    },
+    {
+      "type": "heading",
+      "text": "8. Simple Dry Run Recap"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"C++\";\n\n    return 0;\n}",
+      "output": "C++"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What happens",
+      "points": [
+        "The program starts by calling main() — nothing runs before it",
+        "cout << \"C++\"; executes, printing C++",
+        "return 0; ends main(), sending a success exit status",
+        "Control returns to the operating system"
+      ]
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing void main() — not standard C++; always write int main().",
+        "Thinking every function can skip its return statement like main() can — the implicit return 0; rule is special to main() only.",
+        "Defining main() in more than one file in the same project — causes a linker error, since only one entry point is allowed.",
+        "Trying to call main() from inside your own code — the standard does not permit this.",
+        "Assuming the return value from main() doesn't matter — tools like build scripts and CI pipelines often check it to decide whether the program succeeded."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Why does main() return an int?",
+          "answer": "The returned integer is the program's exit status, conventionally 0 for success and non-zero for failure, which the operating system or calling process can check."
+        },
+        {
+          "question": "What happens if main() has no return statement?",
+          "answer": "C++ allows main() specifically to omit return — if execution reaches the end of main() without one, it's treated as return 0;, meaning success."
+        },
+        {
+          "question": "Is void main() valid C++?",
+          "answer": "No. Standard C++ requires main() to return int. void main() is a non-standard form some older compilers tolerated."
+        },
+        {
+          "question": "Can a program have more than one main() function?",
+          "answer": "No. Only one main() is allowed per program; having two causes a linker error since there would be two candidate entry points."
+        },
+        {
+          "question": "Can main() call itself or be called from other code?",
+          "answer": "No. Standard C++ does not allow a program to call main() from within its own code."
+        },
+        {
+          "question": "What are the parameters in int main(int argc, char* argv[])?",
+          "answer": "They let main() receive command-line arguments passed when the program is run — argc is the argument count and argv holds the argument values. This is covered in detail once parameters and arrays are learned."
+        }
+      ],
+      "thirtySecondAnswer": "main() is the entry point of a C++ program and is required to return an int, which becomes the program's exit status — 0 conventionally means success, non-zero means failure. Uniquely, main() is allowed to omit its return statement; if execution reaches the closing brace without one, C++ treats it as return 0;. void main() is not standard C++. A program can only have one main(), and it cannot be called recursively from within the program's own code. main() can also optionally accept command-line arguments through parameters, typically named argc and argv."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember main()",
+      "text": "main() is the ONE special function: ONE per program, returns INT (not void), and the ONLY function allowed to skip its return statement."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-main-implicit-return", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n}", "output": "Hello" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-main-implicit-return",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-main-implicit-return"]
+  }
+}
