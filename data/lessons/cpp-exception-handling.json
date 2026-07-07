@@ -1,0 +1,164 @@
+{
+  "id": "cpp-exception-handling",
+  "moduleId": "advanced-cpp",
+  "title": "Exception Handling",
+  "description": "Dealing with runtime errors on purpose: throw, try, and catch — and the crucial distinction from the undefined behavior we've seen elsewhere.",
+  "objectives": [
+    "Understand what an exception is and when to throw one",
+    "Use try/catch to handle an exception gracefully",
+    "Catch different exception types",
+    "Distinguish exceptions from the undefined behavior seen in Arrays and Pointers"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Errors That Happen While Running"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int divide(int a, int b)\n{\n    return a / b; // what if b is 0?\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "Some problems can't be caught by the compiler ahead of time — dividing by a value that turns out to be 0 only becomes a problem once the program is actually running with that specific input."
+    },
+    {
+      "type": "heading",
+      "text": "2. throw — Signaling Something Went Wrong"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int divide(int a, int b)\n{\n    if (b == 0)\n    {\n        throw runtime_error(\"Division by zero\");\n    }\n    return a / b;\n}"
+    },
+    {
+      "type": "definition",
+      "term": "Exception",
+      "text": "An exception is a signal, raised with throw, that an error occurred — interrupting normal execution and looking for code prepared to handle that specific problem."
+    },
+    {
+      "type": "note",
+      "text": "runtime_error is a standard exception type from <stdexcept>, carrying a descriptive message. throw immediately stops divide() from continuing normally and starts searching for a handler."
+    },
+    {
+      "type": "heading",
+      "text": "3. try/catch — Handling It"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "try\n{\n    int result = divide(10, 0);\n}\ncatch (runtime_error &e)\n{\n    cout << \"Error: \" << e.what() << endl;\n}"
+    },
+    {
+      "type": "keyPoints",
+      "title": "The pieces",
+      "points": [
+        "try { ... } — code that might throw an exception",
+        "catch (Type &e) { ... } — runs only if a matching exception was thrown inside the try block",
+        "e.what() — returns the descriptive message the exception was created with"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <stdexcept>\n\nusing namespace std;\n\nint divide(int a, int b)\n{\n    if (b == 0)\n    {\n        throw runtime_error(\"Division by zero\");\n    }\n    return a / b;\n}\n\nint main()\n{\n    try\n    {\n        cout << divide(10, 0) << endl;\n    }\n    catch (runtime_error &e)\n    {\n        cout << \"Error: \" << e.what() << endl;\n    }\n\n    cout << \"Program continues normally.\" << endl;\n\n    return 0;\n}",
+      "output": "Error: Division by zero\nProgram continues normally.",
+      "retypePractice": true,
+      "retypeId": "cpp-exception-handling-divide"
+    },
+    {
+      "type": "warning",
+      "text": "Notice cout << divide(10, 0); never actually prints a result — the moment throw executes inside divide(), control jumps straight to the matching catch block, skipping the rest of the try block entirely. Crucially, the program doesn't crash: it recovers and \"Program continues normally.\" still prints."
+    },
+    {
+      "type": "heading",
+      "text": "5. Catching Different Types"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "try\n{\n    // risky code\n}\ncatch (runtime_error &e)\n{\n    cout << \"Runtime error: \" << e.what();\n}\ncatch (exception &e) // a more general fallback\n{\n    cout << \"Some other exception: \" << e.what();\n}"
+    },
+    {
+      "type": "note",
+      "text": "Multiple catch blocks can follow one try, each handling a different exception type — checked in order, similar in spirit to else if from Conditional Statements. exception is the general base type most standard exceptions derive from, useful as a catch-all."
+    },
+    {
+      "type": "heading",
+      "text": "6. What Exceptions Are NOT For"
+    },
+    {
+      "type": "warning",
+      "text": "This is an important distinction: an out-of-bounds array access (from Arrays) or dereferencing a dangling pointer (from delete) is undefined behavior, not a thrown exception — nothing throws, nothing can be caught, and the program's behavior is simply unreliable. C++'s built-in array and pointer operations do not automatically protect you with exceptions the way, say, calling .at() on some STL containers later will. Exceptions are for errors a program explicitly detects and reports with throw, not a safety net that catches every possible mistake automatically."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A fire alarm and an evacuation plan",
+      "text": "throw is like pulling a fire alarm — a clear signal that something specific has gone wrong. try/catch is the building's evacuation plan: normal activity (the try block) is interrupted, everyone follows the prepared response (the catch block) for that specific alarm, and life goes on afterward instead of the whole building collapsing."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming every runtime problem automatically becomes a catchable exception — undefined behavior (like out-of-bounds array access) is not an exception and cannot be caught.",
+        "Forgetting #include <stdexcept> when using standard exception types like runtime_error.",
+        "Catching by value instead of by reference — catch (runtime_error &e) is generally preferred over catch (runtime_error e), for reasons that become clearer once inheritance-based exception hierarchies are involved.",
+        "Wrapping code in try/catch defensively everywhere, even where nothing can realistically throw — adds noise without benefit."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does the throw keyword do?",
+          "answer": "It raises an exception, immediately interrupting normal execution and transferring control to a matching catch block, if one exists."
+        },
+        {
+          "question": "What is the purpose of a try/catch block?",
+          "answer": "try marks code that might throw an exception; catch defines a handler that runs if a matching exception is thrown inside that try block, allowing the program to recover instead of crashing."
+        },
+        {
+          "question": "Can multiple catch blocks follow a single try block?",
+          "answer": "Yes — each catch block can handle a different exception type, checked in order, similar to an if/else if chain."
+        },
+        {
+          "question": "Is an out-of-bounds array access an exception?",
+          "answer": "No — it's undefined behavior. Nothing is thrown and nothing can be caught; this is a key distinction from an explicitly thrown exception."
+        }
+      ],
+      "thirtySecondAnswer": "Exception handling deals with runtime errors on purpose: throw raises an exception, such as throw runtime_error(\"Division by zero\");, immediately interrupting normal execution. A try block wraps code that might throw, and a matching catch block handles that specific exception type, letting the program recover and continue instead of crashing — multiple catch blocks can handle different exception types in order. It's important to distinguish this from undefined behavior, like an out-of-bounds array access: that's not an exception, nothing is thrown, and try/catch cannot catch it."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Exception Handling",
+      "text": "throw = pull the fire alarm. try = the area that might have a fire. catch = the evacuation plan for that specific alarm. Undefined behavior ≠ exception — no alarm rings at all."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-exception-handling-divide", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <stdexcept>\n\nusing namespace std;\n\nint divide(int a, int b)\n{\n    if (b == 0)\n    {\n        throw runtime_error(\"Division by zero\");\n    }\n    return a / b;\n}\n\nint main()\n{\n    try\n    {\n        cout << divide(10, 0) << endl;\n    }\n    catch (runtime_error &e)\n    {\n        cout << \"Error: \" << e.what() << endl;\n    }\n\n    cout << \"Program continues normally.\" << endl;\n\n    return 0;\n}", "output": "Error: Division by zero\nProgram continues normally." }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-exception-handling-divide",
+      "reference": "#include <iostream>\n#include <stdexcept>\n\nusing namespace std;\n\nint divide(int a, int b)\n{\n    if (b == 0)\n    {\n        throw runtime_error(\"Division by zero\");\n    }\n    return a / b;\n}\n\nint main()\n{\n    try\n    {\n        cout << divide(10, 0) << endl;\n    }\n    catch (runtime_error &e)\n    {\n        cout << \"Error: \" << e.what() << endl;\n    }\n\n    cout << \"Program continues normally.\" << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-exception-handling-divide"]
+  }
+}

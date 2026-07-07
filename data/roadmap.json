@@ -105,7 +105,8 @@
       "id": "advanced-cpp",
       "title": "Advanced C++",
       "topics": [
-        { "id": "cpp-templates", "title": "Templates", "lesson": "cpp-templates" }
+        { "id": "cpp-templates", "title": "Templates", "lesson": "cpp-templates" },
+        { "id": "cpp-exception-handling", "title": "Exception Handling", "lesson": "cpp-exception-handling" }
       ]
     }
   ]
