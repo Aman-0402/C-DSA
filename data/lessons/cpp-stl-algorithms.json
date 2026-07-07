@@ -1,0 +1,159 @@
+{
+  "id": "cpp-stl-algorithms",
+  "moduleId": "stl",
+  "title": "STL Algorithms",
+  "description": "Ready-made operations from <algorithm> that work on any container through iterators: find, count, reverse, min/max_element, and a preview of sort().",
+  "objectives": [
+    "Understand the algorithm(begin, end, ...) pattern",
+    "Use find(), count(), reverse(), max_element(), and min_element()",
+    "Understand why algorithms work identically across different containers",
+    "Preview sort() as its own upcoming topic"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Iterators Are What Make This Work"
+    },
+    {
+      "type": "paragraph",
+      "text": "STL Iterators showed a uniform way to walk through any container. STL algorithms, from the <algorithm> header, are built on exactly that: they take a range described by two iterators and operate on it, without caring what specific container that range came from."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Common Pattern"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "algorithmName(container.begin(), container.end(), /* other arguments */);"
+    },
+    {
+      "type": "note",
+      "text": "Nearly every STL algorithm follows this shape: a starting iterator, an ending iterator, and whatever else that particular algorithm needs. Because it's expressed purely in terms of iterators, the exact same find() works whether it's searching a vector, a list, or something else entirely."
+    },
+    {
+      "type": "heading",
+      "text": "3. find() — Searching for a Value"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {10, 20, 30};\n\nauto it = find(numbers.begin(), numbers.end(), 20);\n\nif (it != numbers.end())\n{\n    cout << \"Found!\";\n}"
+    },
+    {
+      "type": "warning",
+      "text": "auto here is a preview of the auto Keyword, its own upcoming topic — for now, just know it lets the compiler figure out it's an iterator type automatically. find() returns an iterator to the matching element, or end() if nothing matched — checking against end() is how \"not found\" is detected, the same pattern used for string::find() back in std::string."
+    },
+    {
+      "type": "heading",
+      "text": "4. max_element() and min_element()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {40, 10, 90, 25};\n\nauto maxIt = max_element(numbers.begin(), numbers.end());\ncout << *maxIt; // 90 — dereference to get the actual value"
+    },
+    {
+      "type": "note",
+      "text": "Like find(), these return an iterator, not the value directly — dereferencing with * (from Pointers and STL Iterators) gets the actual maximum or minimum value."
+    },
+    {
+      "type": "heading",
+      "text": "5. count() — Counting Matches"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 2, 3, 2};\n\nint howMany = count(numbers.begin(), numbers.end(), 2);\ncout << howMany; // 3"
+    },
+    {
+      "type": "heading",
+      "text": "6. reverse() — Reversing In Place"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 3};\n\nreverse(numbers.begin(), numbers.end());\n// numbers is now {3, 2, 1} — modified directly, nothing returned"
+    },
+    {
+      "type": "heading",
+      "text": "7. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 2, 3, 2};\n\n    cout << count(numbers.begin(), numbers.end(), 2) << endl;\n\n    reverse(numbers.begin(), numbers.end());\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}",
+      "output": "3\n2 3 2 2 1 ",
+      "retypePractice": true,
+      "retypeId": "cpp-stl-algorithms-basic"
+    },
+    {
+      "type": "heading",
+      "text": "8. A Preview: sort()"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — the single most commonly used STL algorithm, sort(), gets its own dedicated topic soon (Sorting using sort()), along with Custom Comparators for controlling exactly how things get sorted."
+    },
+    {
+      "type": "heading",
+      "text": "9. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A universal remote's buttons, not tied to one brand of TV",
+      "text": "Recall the universal remote from Virtual Functions. STL algorithms are similar: find(), count(), and reverse() are generic \"buttons\" that work the same way no matter which container (which \"brand of TV\") they're pointed at, because they're expressed purely in terms of the universal iterator interface, not any one container's internal details."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting #include <algorithm> — none of these functions are available from <vector> or <iostream> alone.",
+        "Expecting find() to return the value itself — it returns an iterator, which must be dereferenced with * or compared against end().",
+        "Forgetting reverse() modifies the container directly and returns nothing — there's no reversed copy to capture.",
+        "Assuming every algorithm works on every container equally efficiently — the iterator interface is uniform, but performance can still depend on the underlying container, a detail covered as we go through each container."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the common pattern most STL algorithms follow?",
+          "answer": "They take a range as two iterators, begin and end, plus whatever other arguments are needed, e.g. find(container.begin(), container.end(), value)."
+        },
+        {
+          "question": "What does find() return, and how do you check if nothing was found?",
+          "answer": "It returns an iterator to the matching element, or the container's end() iterator if nothing matched — checking the result against end() detects \"not found.\""
+        },
+        {
+          "question": "Why can the same STL algorithms work on very different containers like vector and list?",
+          "answer": "Because they're written in terms of the uniform iterator interface rather than any particular container's internal structure, so any container providing compatible iterators can be used."
+        }
+      ],
+      "thirtySecondAnswer": "STL algorithms, from <algorithm>, operate on a range described by two iterators, following the common pattern algorithm(begin, end, ...) — this is what STL Iterators was building toward. find() searches for a value and returns an iterator to it (or end() if not found), count() tallies matches, reverse() reverses a range in place, and max_element()/min_element() return iterators to the largest/smallest values. Because these algorithms are expressed purely through iterators rather than any specific container's internals, the same function works identically across vector, list, and most other STL containers. The most commonly used algorithm, sort(), gets its own dedicated topic next."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember STL Algorithms",
+      "text": "algorithm(begin, end, ...) = a universal remote button, works on any container's iterator range. find/max_element/min_element return an iterator — dereference with * to get the value."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-stl-algorithms-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 2, 3, 2};\n\n    cout << count(numbers.begin(), numbers.end(), 2) << endl;\n\n    reverse(numbers.begin(), numbers.end());\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}", "output": "3\n2 3 2 2 1 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-stl-algorithms-basic",
+      "reference": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {1, 2, 2, 3, 2};\n\n    cout << count(numbers.begin(), numbers.end(), 2) << endl;\n\n    reverse(numbers.begin(), numbers.end());\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-stl-algorithms-basic"]
+  }
+}
