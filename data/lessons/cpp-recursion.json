@@ -1,0 +1,158 @@
+{
+  "id": "cpp-recursion",
+  "moduleId": "dsa-foundations",
+  "title": "Recursion",
+  "description": "A function calling itself: the base case and recursive case, a full call-stack trace, and the stack overflow danger finally made concrete.",
+  "objectives": [
+    "Understand recursion as a function calling itself",
+    "Identify the base case and recursive case in a recursive function",
+    "Trace a recursive function's call stack step by step",
+    "Understand exactly how a missing base case causes a stack overflow"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Stack Memory Already Set This Up"
+    },
+    {
+      "type": "paragraph",
+      "text": "Stack Memory previewed this exact idea: \"most commonly from a function that keeps calling itself without ever stopping.\" That's recursion — and now we look at it properly, both when it's used correctly and when it goes wrong."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Recursion?"
+    },
+    {
+      "type": "definition",
+      "term": "Recursion",
+      "text": "Recursion is a technique where a function solves a problem by calling itself with a smaller version of that same problem, until it reaches a case simple enough to answer directly."
+    },
+    {
+      "type": "heading",
+      "text": "3. Two Required Parts"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Role"],
+      "rows": [
+        ["Base case", "The simplest version of the problem, answered directly, with NO further recursive call"],
+        ["Recursive case", "Calls the function again with a smaller/simpler version of the problem, moving toward the base case"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "Every recursive function needs both. Without a base case — or a recursive case that never actually gets closer to it — the function calls itself forever, exactly the runaway-recursion scenario Stack Memory warned about."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example: Factorial"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint factorial(int n)\n{\n    if (n == 0) // BASE CASE\n    {\n        return 1;\n    }\n    return n * factorial(n - 1); // RECURSIVE CASE\n}\n\nint main()\n{\n    cout << factorial(4) << endl;\n\n    return 0;\n}",
+      "output": "24",
+      "retypePractice": true,
+      "retypeId": "cpp-recursion-factorial"
+    },
+    {
+      "type": "note",
+      "text": "factorial(4) means 4 × 3 × 2 × 1 = 24. The recursive case, n * factorial(n - 1), calls factorial with a smaller number every time — n - 1 — steadily moving toward the base case, n == 0."
+    },
+    {
+      "type": "heading",
+      "text": "5. Tracing the Call Stack"
+    },
+    {
+      "type": "flow",
+      "title": "Building up (each call waits on the next)",
+      "steps": ["factorial(4) calls factorial(3)", "factorial(3) calls factorial(2)", "factorial(2) calls factorial(1)", "factorial(1) calls factorial(0)", "factorial(0) hits the base case, returns 1 — no further calls"]
+    },
+    {
+      "type": "flow",
+      "title": "Unwinding (each call finishes using the answer below it)",
+      "steps": ["factorial(1) returns 1 * 1 = 1", "factorial(2) returns 2 * 1 = 2", "factorial(3) returns 3 * 2 = 6", "factorial(4) returns 4 * 6 = 24"]
+    },
+    {
+      "type": "note",
+      "text": "This is exactly Stack Memory's stack frames in action: each factorial(n) call pushes a new frame, which stays on the stack — paused, waiting — until the call it made returns a value. Once factorial(0) finally hits the base case, the frames unwind one by one, each completing its own multiplication using the value handed back from below."
+    },
+    {
+      "type": "heading",
+      "text": "6. What Happens Without a Base Case"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int broken(int n)\n{\n    return n * broken(n - 1); // no base case — NEVER stops calling itself\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This calls itself forever — n - 1, then n - 2, and so on, with no check ever stopping it. Every call pushes another stack frame (recall Stack Memory), and since the stack has a limited size, this exhausts it and crashes with a stack overflow. This is the real, concrete cause behind that earlier preview."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Russian nesting dolls",
+      "text": "Opening a matryoshka doll to find a smaller doll inside, then opening that one too, continues until you reach the smallest doll that doesn't open at all — the base case. Each doll you opened is still \"waiting,\" nested around the one inside it, until you work your way back out from the smallest one, exactly like recursive calls unwinding back up the stack."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the base case entirely — leads directly to a stack overflow.",
+        "Writing a recursive case that doesn't actually move toward the base case — e.g. calling factorial(n) instead of factorial(n - 1), never shrinking the problem.",
+        "Assuming recursion is always the most efficient approach — some recursive solutions do significant repeated work (a concern for later, deeper DSA topics) compared to an equivalent loop.",
+        "Losing track of what's \"paused\" during the build-up phase — every pending call really is sitting on the stack, using real memory, until it can complete."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is recursion?",
+          "answer": "A technique where a function calls itself with a smaller version of the same problem, until reaching a base case that can be answered directly."
+        },
+        {
+          "question": "What are the two essential parts of a recursive function?",
+          "answer": "A base case, answered directly with no further recursive call, and a recursive case, which calls the function again with a smaller version of the problem, moving toward the base case."
+        },
+        {
+          "question": "What happens if a recursive function has no base case, or never reaches it?",
+          "answer": "It keeps calling itself indefinitely, pushing a new stack frame each time, until the stack's limited size is exhausted, causing a stack overflow."
+        },
+        {
+          "question": "Trace factorial(3) — what value does each recursive call ultimately contribute?",
+          "answer": "factorial(3) calls factorial(2), which calls factorial(1), which calls factorial(0) — the base case, returning 1. Then factorial(1) returns 1*1=1, factorial(2) returns 2*1=2, and factorial(3) returns 3*2=6."
+        }
+      ],
+      "thirtySecondAnswer": "Recursion is a function calling itself with a smaller version of the same problem, requiring two parts: a base case that's answered directly with no further call, and a recursive case that calls the function again while moving toward that base case. Tracing factorial(4) shows calls building up the stack — each one pausing, waiting on the next — until factorial(0) hits the base case, after which the calls unwind, each multiplying using the value returned from below. This is exactly the stack frame mechanism from Stack Memory, and it's also why a missing or broken base case causes a stack overflow: frames keep piling up with no call ever returning to remove them."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Recursion",
+      "text": "Recursion = Russian nesting dolls. Base case = the smallest doll, doesn't open further. Each call waits, nested, until the innermost one answers — then everything unwinds back out."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-recursion-factorial", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint factorial(int n)\n{\n    if (n == 0)\n    {\n        return 1;\n    }\n    return n * factorial(n - 1);\n}\n\nint main()\n{\n    cout << factorial(4) << endl;\n\n    return 0;\n}", "output": "24" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-recursion-factorial",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint factorial(int n)\n{\n    if (n == 0)\n    {\n        return 1;\n    }\n    return n * factorial(n - 1);\n}\n\nint main()\n{\n    cout << factorial(4) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-recursion-factorial"]
+  }
+}

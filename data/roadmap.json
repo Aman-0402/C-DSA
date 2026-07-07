@@ -138,6 +138,13 @@
         { "id": "cpp-sorting-sort", "title": "Sorting using sort()", "lesson": "cpp-sorting-sort" },
         { "id": "cpp-custom-comparators", "title": "Custom Comparators", "lesson": "cpp-custom-comparators" }
       ]
+    },
+    {
+      "id": "dsa-foundations",
+      "title": "DSA Foundations",
+      "topics": [
+        { "id": "cpp-recursion", "title": "Recursion", "lesson": "cpp-recursion" }
+      ]
     }
   ]
 }
