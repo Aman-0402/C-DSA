@@ -1,0 +1,187 @@
+{
+  "id": "cpp-switch-statement",
+  "moduleId": "control-flow",
+  "title": "switch Statement",
+  "description": "Branching on a fixed value with switch: case, break, default, and the classic fallthrough bug.",
+  "objectives": [
+    "Write a switch statement with multiple case labels",
+    "Understand why break is needed after each case",
+    "Understand what fallthrough is and why it's dangerous",
+    "Know when switch is a better fit than a long else if chain"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. When else if Gets Repetitive"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int day = 3;\n\nif (day == 1) cout << \"Monday\";\nelse if (day == 2) cout << \"Tuesday\";\nelse if (day == 3) cout << \"Wednesday\";\nelse if (day == 4) cout << \"Thursday\";\nelse if (day == 5) cout << \"Friday\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "This works, but it repeats day == over and over just to compare the same variable against different fixed values. switch is built exactly for this pattern: matching one value against several fixed possibilities."
+    },
+    {
+      "type": "heading",
+      "text": "2. switch Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "switch (value)\n{\n    case option1:\n        // runs if value == option1\n        break;\n    case option2:\n        // runs if value == option2\n        break;\n    default:\n        // runs if value matched no case\n}"
+    },
+    {
+      "type": "keyPoints",
+      "title": "The pieces",
+      "points": [
+        "switch (value) — the value being matched",
+        "case option: — one possible match; runs if value equals option",
+        "break; — stops the switch from continuing past this case",
+        "default: — optional fallback, like else, for when nothing matched"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int day = 3;\n\n    switch (day)\n    {\n        case 1:\n            cout << \"Monday\";\n            break;\n        case 2:\n            cout << \"Tuesday\";\n            break;\n        case 3:\n            cout << \"Wednesday\";\n            break;\n        default:\n            cout << \"Invalid day\";\n    }\n\n    return 0;\n}",
+      "output": "Wednesday",
+      "retypePractice": true,
+      "retypeId": "cpp-switch-day"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "day is 3",
+        "switch (day) jumps directly to case 3:",
+        "Prints Wednesday",
+        "break; stops execution here — case 1 and case 2 are skipped entirely, and default is never reached"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. The Fallthrough Bug"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int day = 1;\n\nswitch (day)\n{\n    case 1:\n        cout << \"Monday\";\n        // missing break! falls through into case 2\n    case 2:\n        cout << \"Tuesday\";\n        break;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Without break;, execution doesn't stop at the matched case — it \"falls through\" and keeps running every case after it, until it hits a break or the end of the switch. Here, day = 1 matches case 1, prints Monday, and then keeps going straight into case 2, printing Tuesday too. Output: MondayTuesday, not just Monday. Forgetting break is one of the most common switch bugs."
+    },
+    {
+      "type": "heading",
+      "text": "5. Intentional Fallthrough"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int day = 6;\n\nswitch (day)\n{\n    case 6:\n    case 7:\n        cout << \"Weekend\";\n        break;\n    default:\n        cout << \"Weekday\";\n}"
+    },
+    {
+      "type": "note",
+      "text": "Fallthrough isn't always a bug — stacking case 6: directly above case 7: with no code or break between them is a common, deliberate way to say \"either of these matches runs the same code.\" The danger is only when a break is missing by accident."
+    },
+    {
+      "type": "heading",
+      "text": "6. default is Optional"
+    },
+    {
+      "type": "paragraph",
+      "text": "Just like else, default is optional. If it's omitted and value matches no case, the switch simply does nothing and execution continues after it."
+    },
+    {
+      "type": "heading",
+      "text": "7. switch vs if / else if"
+    },
+    {
+      "type": "table",
+      "headers": ["switch", "if / else if"],
+      "rows": [
+        ["Matches one value against several fixed options", "Can test any condition, including ranges and complex expressions"],
+        ["Needs break to prevent fallthrough", "No fallthrough concept — each branch is independent"],
+        ["Reads cleanly for many discrete cases", "Reads cleanly for a small number of varied conditions"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "switch cannot check ranges like marks >= 80 directly — it only compares for exact equality against fixed values. The grade calculator from earlier lessons needs else if for that reason; something like matching an exact day number is a better fit for switch."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A vending machine",
+      "text": "Press button 1, get a soda. Press button 2, get chips. Press button 3, get candy. Press anything else, nothing happens (or an error message). That's exactly a switch: one input, matched against several exact fixed options, with a default for anything unexpected."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting break; after a case — execution falls through into the next case's code instead of stopping.",
+        "Trying to use a range in a case, like case day >= 1 && day <= 5: — switch only supports exact-value matches, not conditions.",
+        "Forgetting default — leaving unmatched values silently doing nothing, when a fallback message might be expected.",
+        "Using switch when the conditions aren't simple equality checks — a long else if chain is the right tool for ranges or complex logic."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a switch statement used for?",
+          "answer": "Branching based on matching one value against several fixed, exact possibilities, as a cleaner alternative to a long chain of == comparisons in else if."
+        },
+        {
+          "question": "What happens if break is omitted in a switch case?",
+          "answer": "Execution falls through into the next case's code and keeps running until it hits a break or the end of the switch — a common source of bugs."
+        },
+        {
+          "question": "What does default do in a switch?",
+          "answer": "It's an optional fallback branch that runs when the value didn't match any of the case labels, similar to else in an if chain."
+        },
+        {
+          "question": "Can a switch statement check a range like age >= 18?",
+          "answer": "No — switch only supports exact-value matching against a case label; ranges and complex conditions require if / else if."
+        },
+        {
+          "question": "Is fallthrough always a bug?",
+          "answer": "No — stacking case labels with no code between them is a common intentional pattern for making multiple values share the same code. It's only a bug when a break is missing by accident."
+        }
+      ],
+      "thirtySecondAnswer": "switch matches one value against several fixed case labels, running the matching case's code. Each case should end with break; to stop execution there — omitting it causes fallthrough, where execution keeps running into the following cases, a classic switch bug. default is an optional fallback for values that match no case, similar to else. Unlike if / else if, switch only supports exact-value equality checks, not ranges or complex conditions, but it reads more cleanly when there are many discrete fixed options to match."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember switch",
+      "text": "switch = a vending machine. Each case is a button. break = stop after this button's item comes out. Forget break, and it keeps dispensing every item after it too."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-switch-day", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int day = 3;\n\n    switch (day)\n    {\n        case 1:\n            cout << \"Monday\";\n            break;\n        case 2:\n            cout << \"Tuesday\";\n            break;\n        case 3:\n            cout << \"Wednesday\";\n            break;\n        default:\n            cout << \"Invalid day\";\n    }\n\n    return 0;\n}", "output": "Wednesday" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-switch-day",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int day = 3;\n\n    switch (day)\n    {\n        case 1:\n            cout << \"Monday\";\n            break;\n        case 2:\n            cout << \"Tuesday\";\n            break;\n        case 3:\n            cout << \"Wednesday\";\n            break;\n        default:\n            cout << \"Invalid day\";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-switch-day"]
+  }
+}
