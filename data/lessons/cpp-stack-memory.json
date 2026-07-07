@@ -1,0 +1,150 @@
+{
+  "id": "cpp-stack-memory",
+  "moduleId": "pointers-memory",
+  "title": "Stack Memory",
+  "description": "Where ordinary variables actually live: the LIFO call stack, stack frames per function call, automatic cleanup, and stack overflow.",
+  "objectives": [
+    "Understand the stack as a LIFO (last in, first out) region of memory",
+    "Connect function calls to stack frames being pushed and popped",
+    "Understand why local variables are automatically cleaned up",
+    "Understand what a stack overflow is"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Stack, Previewed"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dynamic Memory Allocation previewed this: ordinary variables like int age = 25; live on the stack, which is fast but fixed and automatically cleaned up. Let's see exactly what that means."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Stack is LIFO"
+    },
+    {
+      "type": "definition",
+      "term": "Stack (memory)",
+      "text": "The stack is a region of memory that grows and shrinks in a strict last-in, first-out (LIFO) order — the most recently added thing is always the first thing removed."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A stack of plates",
+      "text": "Picture a stack of plates on a counter. You can only add a plate to the top, and you can only remove the plate currently on top — never one from the middle without first removing everything above it. That's LIFO, and it's exactly how the stack in memory behaves."
+    },
+    {
+      "type": "heading",
+      "text": "3. Function Calls Use the Stack"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall Function Calling: calling a function jumps execution into its body, and returning jumps back. Every single call adds a stack frame — a chunk of stack memory holding that call's local variables and parameters."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint square(int n)\n{\n    int result = n * n; // lives in square's own stack frame\n    return result;\n}\n\nint main()\n{\n    int x = 5; // lives in main's stack frame\n    int y = square(x);\n\n    cout << y << endl;\n\n    return 0;\n}",
+      "output": "25",
+      "retypePractice": true,
+      "retypeId": "cpp-stack-memory-frames"
+    },
+    {
+      "type": "flow",
+      "title": "The stack while this runs",
+      "steps": ["main's frame pushed (holds x, y)", "square(x) called → square's frame pushed on top (holds n, result)", "square returns → square's frame is popped, gone", "main's frame remains, continues"]
+    },
+    {
+      "type": "heading",
+      "text": "4. Local Variables Are Automatically Cleaned Up"
+    },
+    {
+      "type": "note",
+      "text": "This is the payoff of the stack's LIFO discipline: the moment square() returns, its entire stack frame — including result and n — is automatically popped and gone. Nothing needs to be manually freed, unlike memory from new (recall delete). This is exactly why Pass by Value's local copy disappeared the instant the function ended."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Stack Has a Limited Size"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike the heap (used by new, covered in Dynamic Memory Allocation), the stack is comparatively small and fixed in size. Each function call adds another frame on top; if calls nest too deeply — most commonly from a function that keeps calling itself without ever stopping (a preview of Recursion) — the stack runs out of room entirely."
+    },
+    {
+      "type": "heading",
+      "text": "6. Stack Overflow"
+    },
+    {
+      "type": "definition",
+      "term": "Stack overflow",
+      "text": "A stack overflow happens when too many stack frames pile up — typically from runaway recursive calls — exceeding the stack's limited size and crashing the program."
+    },
+    {
+      "type": "note",
+      "text": "This is the same underlying idea as an infinite loop from Loops, but for function calls instead of a loop body: something keeps calling deeper and deeper without ever returning, until the stack has nowhere left to grow."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A stack of trays in a cafeteria",
+      "text": "A cafeteria's tray dispenser only lets you take the top tray, and only lets staff add a new tray to the top — you can't reach in and grab one from the middle. Function calls behave the same way: main() calls square(), which sits on top of main()'s tray; square() finishes and its tray is removed, revealing main()'s tray again, exactly where it left off."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming a local variable still exists after its function has returned — its entire stack frame is gone the moment the function ends.",
+        "Confusing the stack with the heap — the stack is for automatic, function-scoped storage; the heap is for memory explicitly requested with new and released with delete.",
+        "Not recognizing runaway recursion (a function calling itself with no way to stop) as the classic cause of a stack overflow.",
+        "Thinking the stack can grow as large as needed — it's comparatively small and fixed, unlike the heap."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does LIFO mean, and how does it apply to the stack?",
+          "answer": "Last In, First Out — the most recently added item is the first one removed, which is exactly how stack frames are pushed and popped as functions are called and return."
+        },
+        {
+          "question": "What is a stack frame?",
+          "answer": "A chunk of stack memory created for a single function call, holding that call's local variables and parameters, and removed automatically when the function returns."
+        },
+        {
+          "question": "Why are local variables automatically cleaned up when a function returns?",
+          "answer": "Because their entire stack frame is popped off the stack the moment the function ends, requiring no manual cleanup."
+        },
+        {
+          "question": "What typically causes a stack overflow?",
+          "answer": "Too many nested function calls piling up stack frames without returning — most commonly from recursion that never reaches a stopping point — exceeding the stack's limited size."
+        }
+      ],
+      "thirtySecondAnswer": "The stack is a LIFO region of memory: the most recently pushed item is the first one popped. Every function call pushes a new stack frame holding its local variables and parameters, and that frame is automatically popped the instant the function returns — which is why local variables disappear cleanly with no manual cleanup, unlike heap memory from new. The stack's size is comparatively small and fixed, so calls that nest too deeply without returning — classically, runaway recursion — exhaust it and cause a stack overflow, crashing the program."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Stack Memory",
+      "text": "Stack = a stack of trays. Last tray on, first tray off. Each function call = one tray. Return = tray removed automatically. Too many trays with no removal = overflow."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-stack-memory-frames", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint square(int n)\n{\n    int result = n * n;\n    return result;\n}\n\nint main()\n{\n    int x = 5;\n    int y = square(x);\n\n    cout << y << endl;\n\n    return 0;\n}", "output": "25" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-stack-memory-frames",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint square(int n)\n{\n    int result = n * n;\n    return result;\n}\n\nint main()\n{\n    int x = 5;\n    int y = square(x);\n\n    cout << y << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-stack-memory-frames"]
+  }
+}
