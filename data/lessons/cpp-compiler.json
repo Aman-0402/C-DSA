@@ -1,0 +1,451 @@
+{
+  "id": "cpp-compiler",
+  "moduleId": "cpp-fundamentals",
+  "title": "Compiler and Compilation Process",
+  "description": "What a compiler is, the four build stages (preprocessing, compilation, assembly, linking), compiler vs linker, and common build errors.",
+  "objectives": [
+    "Understand what a compiler is and why it's needed",
+    "Understand the four-stage build process: preprocessing, compilation, assembly, linking",
+    "Understand the difference between a compilation error and a linker error",
+    "Understand the difference between compiler and linker",
+    "Read a basic g++ compilation command"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Compiler?"
+    },
+    {
+      "type": "paragraph",
+      "text": "A compiler is a software program that translates source code into machine-level code that a computer can execute. The CPU does not directly understand a C++ instruction like cout << \"Hello\"; — so we need a compiler."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "flow",
+      "steps": ["C++ Source Code", "Compiler", "Machine-Level Code"]
+    },
+    {
+      "type": "definition",
+      "term": "Compiler",
+      "text": "A compiler translates programming code into a form that the computer can execute."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Do We Use a Compiler?"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The Hindi-English translator analogy",
+      "text": "Imagine someone tells you \"दरवाज़ा खोलो.\" If you do not understand Hindi, you need a translator: Hindi → Translator → English (\"दरवाज़ा खोलो\" → \"Open the door\"). Similarly: C++ Code → Compiler → Machine Instructions."
+    },
+    {
+      "type": "note",
+      "text": "Why is it required? Because the programmer understands C++, but the CPU executes Machine Instructions. The compiler bridges this gap."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Compiler = Translator for programming code"
+    },
+    {
+      "type": "heading",
+      "text": "3. Examples of C++ Compilers"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Commonly used C++ compilers",
+      "points": ["GCC / G++ — part of the GNU Compiler Collection", "Clang — a compiler front end in the LLVM ecosystem", "MSVC — Microsoft's C++ compiler"]
+    },
+    {
+      "type": "paragraph",
+      "text": "Do not worry about choosing one right now. For DSA, you may frequently see g++ used, for example:"
+    },
+    {
+      "type": "code",
+      "lang": "bash",
+      "code": "g++ main.cpp"
+    },
+    {
+      "type": "warning",
+      "text": "We will understand compilation commands after we understand the process."
+    },
+    {
+      "type": "heading",
+      "text": "4. What is Compilation?"
+    },
+    {
+      "type": "definition",
+      "term": "Compilation",
+      "text": "Compilation is the process of converting C++ source code into a program that the computer can execute."
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Compilation", "Executable Program"]
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose we have main.cpp. After successfully building the program, we may get an executable file — on Windows, you may commonly see main.exe."
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "Compilation Process", "main.exe"]
+    },
+    {
+      "type": "memoryTrick",
+      "text": ".cpp → Source Code. .exe → Executable File on Windows."
+    },
+    {
+      "type": "note",
+      "text": "We will learn Source Code and Executable Files in more detail in the next topic."
+    },
+    {
+      "type": "heading",
+      "text": "5. Is Compilation Only One Step?"
+    },
+    {
+      "type": "paragraph",
+      "text": "No. Beginners often imagine Source Code → Compiler → Executable — a useful simplified view. But the C++ build process commonly involves multiple stages."
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Preprocessing", "Compilation", "Assembly", "Linking", "Executable"]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "P → C → A → L: Preprocessing, Compilation, Assembly, Linking."
+    },
+    {
+      "type": "heading",
+      "text": "6. Stage 1: Preprocessing"
+    },
+    {
+      "type": "paragraph",
+      "text": "A tool called the preprocessor handles preprocessor directives. For example, #include <iostream> starts with # — this is a preprocessor directive."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <iostream>"
+    },
+    {
+      "type": "warning",
+      "text": "We will learn #include and header files properly in separate topics. For now, understand: the preprocessing stage handles instructions such as #include."
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Preprocessor", "Expanded / Preprocessed Code"]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The recipe reference analogy",
+      "text": "Imagine a recipe says \"Use the sauce recipe from Page 10.\" Before cooking, someone brings the required sauce instructions into your working recipe. Conceptually, preprocessing does related preparation before compilation."
+    },
+    {
+      "type": "definition",
+      "term": "Preprocessing",
+      "text": "Preprocessing prepares the source code before actual compilation."
+    },
+    {
+      "type": "heading",
+      "text": "7. Stage 2: Compilation"
+    },
+    {
+      "type": "paragraph",
+      "text": "Now the preprocessed C++ code goes to the compiler, which checks and translates the C++ program."
+    },
+    {
+      "type": "flow",
+      "steps": ["Preprocessed Code", "Compiler", "Assembly Code"]
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose you write incorrect syntax:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout \"Hello\";"
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "code": "error: expected something before string"
+    },
+    {
+      "type": "note",
+      "text": "The exact error message depends on the compiler. Important: if a compilation error occurs (Source Code → Compiler → ❌ Error), the normal build process cannot successfully continue to produce the intended executable."
+    },
+    {
+      "type": "definition",
+      "term": "Compilation stage",
+      "text": "The compilation stage translates preprocessed C++ code into lower-level assembly code and detects many code errors."
+    },
+    {
+      "type": "heading",
+      "text": "8. Stage 3: Assembly"
+    },
+    {
+      "type": "paragraph",
+      "text": "The assembler converts assembly code into object code."
+    },
+    {
+      "type": "flow",
+      "steps": ["Assembly Code", "Assembler", "Object Code"]
+    },
+    {
+      "type": "paragraph",
+      "text": "You may see an object file such as main.o. On some Windows toolchains, you may see main.obj."
+    },
+    {
+      "type": "warning",
+      "text": "Object code contains machine-level instructions, but it may not yet be the final executable program. Do not think Object File = Final Program. Instead: Object File → Needs Linking → Executable."
+    },
+    {
+      "type": "definition",
+      "term": "Assembly stage",
+      "text": "The assembly stage converts assembly code into object code."
+    },
+    {
+      "type": "heading",
+      "text": "9. Stage 4: Linking"
+    },
+    {
+      "type": "paragraph",
+      "text": "The linker combines required object files and library code to create the executable program. Suppose your program needs code from multiple parts: main.o, math.o, and library code — the linker combines the required pieces into the final executable."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The car assembly analogy",
+      "text": "Imagine building a car: Engine, Wheels, Doors, Seats each exist separately. Someone needs to connect everything together — an assembly team turns the parts into a complete car."
+    },
+    {
+      "type": "table",
+      "headers": ["Concept", "Car Analogy"],
+      "rows": [
+        ["Object Files", "Car Parts"],
+        ["Linker", "Assembly Team"],
+        ["Executable", "Complete Car"]
+      ]
+    },
+    {
+      "type": "definition",
+      "term": "Linker",
+      "text": "The linker combines object files and required library code to create the final executable program."
+    },
+    {
+      "type": "heading",
+      "text": "10. Complete Compilation Process"
+    },
+    {
+      "type": "flow",
+      "title": "The full pipeline",
+      "steps": ["main.cpp", "Preprocessing", "Preprocessed Code", "Compilation", "Assembly Code", "Assembly", "Object Code", "Linking", "Executable Program"]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "SOURCE → PREPROCESS → COMPILE → ASSEMBLE → LINK → EXECUTABLE"
+    },
+    {
+      "type": "heading",
+      "text": "11. Simple Example"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose we have this complete C++ program:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}",
+      "output": "Hello",
+      "retypePractice": true,
+      "retypeId": "cpp-compiler-hello"
+    },
+    {
+      "type": "warning",
+      "text": "We still have not officially learned every line of this program, so you are not expected to write it from memory yet. Let's only trace the build process."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing the build",
+      "points": [
+        "Step 1 — The source code exists in main.cpp",
+        "Step 2 — Preprocessing handles #include <iostream>",
+        "Step 3 — Compilation translates the preprocessed C++ code into assembly code",
+        "Step 4 — Assembly converts assembly code into object code (conceptually main.o)",
+        "Step 5 — The linker combines required object code and libraries",
+        "Step 6 — An executable program is created (on Windows, commonly main.exe)",
+        "Step 7 — You run the executable and get the output: Hello"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "12. Compiler vs Linker"
+    },
+    {
+      "type": "table",
+      "headers": ["Compiler", "Linker"],
+      "rows": [
+        ["Translates code", "Combines compiled pieces"],
+        ["Works during compilation", "Works during linking"],
+        ["Can detect compilation errors", "Can detect linking errors"],
+        ["Produces lower-level output/object-related build output", "Produces final executable"]
+      ]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Compiler → TRANSLATE. Linker → CONNECT."
+    },
+    {
+      "type": "heading",
+      "text": "13. Compilation Error"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout \"Hello\";"
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Compiler", "❌ Compilation Error"]
+    },
+    {
+      "type": "keyPoints",
+      "title": "Common causes",
+      "points": ["Wrong syntax", "Missing symbols", "Incorrect declarations", "Type-related errors"]
+    },
+    {
+      "type": "note",
+      "text": "We have not learned declarations or types yet. We will understand these errors naturally as we learn C++."
+    },
+    {
+      "type": "heading",
+      "text": "14. Linker Error"
+    },
+    {
+      "type": "paragraph",
+      "text": "Now imagine your code refers to a function whose implementation cannot be found during linking:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "calculate();"
+    },
+    {
+      "type": "flow",
+      "steps": ["Object Code", "Linker", "❌ Linker Error"]
+    },
+    {
+      "type": "keyPoints",
+      "title": "You may see errors containing words such as",
+      "points": ["undefined reference", "unresolved external symbol (depending on the toolchain)"]
+    },
+    {
+      "type": "table",
+      "headers": ["Compilation Error", "Linker Error"],
+      "rows": [["Problem while compiling code", "Problem connecting required compiled pieces"]]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Compiler Error → Translation problem. Linker Error → Connection problem."
+    },
+    {
+      "type": "heading",
+      "text": "15. Line-by-Line Understanding of a Compilation Command"
+    },
+    {
+      "type": "paragraph",
+      "text": "Later, you may use a command like this. Let's only understand the basic idea."
+    },
+    {
+      "type": "code",
+      "lang": "bash",
+      "code": "g++ main.cpp -o main"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Meaning"],
+      "rows": [
+        ["g++", "The C++ compiler driver command from the GNU Compiler Collection toolchain — coordinates the required build stages"],
+        ["main.cpp", "Our C++ source file"],
+        ["-o", "Tells the compiler driver what name to use for the output file"],
+        ["main", "The requested output name"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "So g++ main.cpp -o main conceptually means: build the C++ source file main.cpp and name the output main. On Windows, the resulting executable may appear as main.exe."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Thinking compiler and compilation are the same — they're related but different: Compiler → Software/tool, Compilation → Process (like Chef → Person, Cooking → Process).",
+        "Thinking the compiler directly runs your program — building and running are different: Build Program → Executable Created → Run Executable.",
+        "Thinking object code is always the final executable — wrong: Object Code = Final Executable. Better: Object Code → Linking → Executable.",
+        "Confusing compiler and linker — remember: Compiler → TRANSLATE, Linker → CONNECT.",
+        "Thinking g++ represents the entire C++ language — g++ is a compiler driver/tool commonly used to build C++ programs; C++ is the programming language."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a compiler?",
+          "answer": "A compiler is software that translates source code into lower-level code so that it can eventually be executed by the computer."
+        },
+        {
+          "question": "What are the main stages of the C++ build process?",
+          "answer": "The main stages are preprocessing, compilation, assembly, and linking."
+        },
+        {
+          "question": "What does the preprocessor do?",
+          "answer": "The preprocessor handles preprocessor directives such as #include before the actual compilation stage."
+        },
+        {
+          "question": "What does the assembler do?",
+          "answer": "The assembler converts assembly code into object code."
+        },
+        {
+          "question": "What does the linker do?",
+          "answer": "The linker combines object files and required library code to create the final executable program."
+        },
+        {
+          "question": "What is the difference between a compiler and a linker?",
+          "answer": "The compiler translates source code into lower-level code, while the linker connects required compiled pieces and libraries to create the executable."
+        },
+        {
+          "question": "What is an object file?",
+          "answer": "An object file contains compiled machine-level code but may still need to be linked with other object files or libraries before becoming a final executable."
+        }
+      ],
+      "thirtySecondAnswer": "In C++, source code goes through multiple build stages. First, preprocessing handles directives such as #include. Then the compiler translates the preprocessed C++ code into assembly code. The assembler converts the assembly code into object code. Finally, the linker combines object files and required library code to create the executable program. In simple terms, the compiler translates code, while the linker connects the required compiled pieces."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember",
+      "text": "P C A L — Prepare (Preprocessing) → Convert (Compilation) → Assemble (Assembly) → Link (Linking)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-compiler-hello", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}", "output": "Hello" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-compiler-hello",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-compiler-hello"]
+  }
+}

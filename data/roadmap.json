@@ -5,7 +5,8 @@
       "title": "C++ Fundamentals",
       "topics": [
         { "id": "cpp-introduction", "title": "Introduction to C++", "lesson": "cpp-introduction" },
-        { "id": "cpp-how-it-works", "title": "How C++ Works", "lesson": "cpp-how-it-works" }
+        { "id": "cpp-how-it-works", "title": "How C++ Works", "lesson": "cpp-how-it-works" },
+        { "id": "cpp-compiler", "title": "Compiler and Compilation Process", "lesson": "cpp-compiler" }
       ]
     }
   ]
