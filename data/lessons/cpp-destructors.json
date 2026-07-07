@@ -1,0 +1,165 @@
+{
+  "id": "cpp-destructors",
+  "moduleId": "oop",
+  "title": "Destructors",
+  "description": "The opposite of a constructor: code that runs automatically right before an object is destroyed, commonly used for cleanup.",
+  "objectives": [
+    "Understand a destructor as code that runs automatically when an object is destroyed",
+    "Know when a destructor fires for a stack object vs a heap object",
+    "Write a basic destructor",
+    "Understand why destructors matter for cleaning up heap memory"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Constructors Run at Creation"
+    },
+    {
+      "type": "paragraph",
+      "text": "Constructors covered code that runs automatically when an object is created. A destructor is the mirror image: code that runs automatically right before an object is destroyed."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Destructor?"
+    },
+    {
+      "type": "definition",
+      "term": "Destructor",
+      "text": "A destructor is a special member function that runs automatically right before an object is destroyed, commonly used to release any resources the object was holding."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    ~Student() // destructor — same name as the class, prefixed with ~, no return type\n    {\n        cout << \"Student object destroyed\" << endl;\n    }\n};"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What makes it a destructor",
+      "points": [
+        "Its name is the class's name prefixed with ~ — ~Student",
+        "It has no return type, and takes no parameters at all",
+        "It runs automatically, right before the object goes away"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. When Does a Destructor Run?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    Student()\n    {\n        cout << \"Student created\" << endl;\n    }\n\n    ~Student()\n    {\n        cout << \"Student destroyed\" << endl;\n    }\n};\n\nint main()\n{\n    cout << \"Before\" << endl;\n\n    Student s1;\n\n    cout << \"After\" << endl;\n\n    return 0;\n}",
+      "output": "Before\nStudent created\nAfter\nStudent destroyed",
+      "retypePractice": true,
+      "retypeId": "cpp-destructors-timing"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "\"Before\" prints first",
+        "Student s1; runs the constructor immediately — \"Student created\"",
+        "\"After\" prints",
+        "main() reaches its closing brace — recall Stack Memory: s1's stack frame is about to be popped, so its destructor fires right before that happens — \"Student destroyed\""
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. For Heap Objects, delete Triggers It"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Student *s2 = new Student(); // constructor runs\n\ndelete s2; // destructor runs HERE, then the memory is freed"
+    },
+    {
+      "type": "warning",
+      "text": "A heap-allocated object (recall new and delete) doesn't get automatic stack cleanup — its destructor only runs when delete is explicitly called on it. Forgetting to delete a heap object means its destructor never runs at all, on top of the memory leak already covered in delete."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why Destructors Matter: Cleaning Up Heap Memory"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Buffer\n{\nprivate:\n    int *data;\n\npublic:\n    Buffer()\n    {\n        data = new int[100]; // heap memory acquired in the constructor\n    }\n\n    ~Buffer()\n    {\n        delete[] data; // released automatically when the Buffer is destroyed\n    }\n};"
+    },
+    {
+      "type": "note",
+      "text": "This pattern — acquiring a resource in the constructor and releasing it in the destructor — means a Buffer object always cleans up after itself the moment it's destroyed, without the programmer needing to remember to call delete[] manually every time. This idea has a name, RAII (Resource Acquisition Is Initialization), which becomes more relevant in advanced C++."
+    },
+    {
+      "type": "heading",
+      "text": "6. Only One Destructor, No Overloading"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike constructors, a class can have only one destructor — it takes no parameters, so there's no way to overload it (recall Function Overloading requires differing parameter lists). Every object of that class is destroyed using the exact same destructor."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Checking out of a hotel room",
+      "text": "Checking into a hotel room (the constructor) sets things up — keys issued, room assigned. Checking out (the destructor) automatically triggers cleanup — keys returned, the room reset for the next guest — and it happens the moment you leave, without you personally having to reset the room yourself."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the ~ in a destructor's name — ~Student(), not Student() again (that would just be another constructor attempt).",
+        "Giving a destructor parameters — it can never take any, which is also why it can never be overloaded.",
+        "Assuming a heap object's destructor runs automatically — it only runs when delete is explicitly called.",
+        "Not releasing resources (like heap memory) acquired in the constructor — the destructor is exactly the place that cleanup belongs."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a destructor?",
+          "answer": "A special member function that runs automatically right before an object is destroyed, commonly used to release resources the object was holding."
+        },
+        {
+          "question": "How is a destructor named, and what does its signature look like?",
+          "answer": "The class's name prefixed with ~, with no return type and no parameters, e.g. ~Student()."
+        },
+        {
+          "question": "When does a destructor run for a stack-allocated object versus a heap-allocated one?",
+          "answer": "For a stack object, it runs automatically when the object goes out of scope; for a heap object created with new, it only runs when delete is explicitly called on it."
+        },
+        {
+          "question": "Can a class have multiple overloaded destructors?",
+          "answer": "No — a destructor takes no parameters, so there's nothing to differentiate overloads by; a class has exactly one destructor."
+        }
+      ],
+      "thirtySecondAnswer": "A destructor is a special member function, named as the class's name prefixed with ~, with no return type and no parameters, that runs automatically right before an object is destroyed. For a stack-allocated object, this happens automatically when it goes out of scope; for a heap-allocated object created with new, the destructor only runs when delete is explicitly called. Destructors are commonly used to release resources acquired in the constructor — like heap memory — ensuring an object always cleans up after itself, and unlike constructors, a class can have only one destructor, since it takes no parameters to differentiate overloads by."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Destructors",
+      "text": "Destructor = checking out of a hotel room. ~ClassName(), no params, runs automatically. Constructor acquires, destructor releases."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-destructors-timing", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    Student()\n    {\n        cout << \"Student created\" << endl;\n    }\n\n    ~Student()\n    {\n        cout << \"Student destroyed\" << endl;\n    }\n};\n\nint main()\n{\n    cout << \"Before\" << endl;\n\n    Student s1;\n\n    cout << \"After\" << endl;\n\n    return 0;\n}", "output": "Before\nStudent created\nAfter\nStudent destroyed" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-destructors-timing",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    Student()\n    {\n        cout << \"Student created\" << endl;\n    }\n\n    ~Student()\n    {\n        cout << \"Student destroyed\" << endl;\n    }\n};\n\nint main()\n{\n    cout << \"Before\" << endl;\n\n    Student s1;\n\n    cout << \"After\" << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-destructors-timing"]
+  }
+}
