@@ -4,15 +4,28 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+  transition: opacity 0.15s ease;
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 18px 18px 14px;
+  padding: 18px 14px 14px 18px;
   border-bottom: 1px solid var(--border);
 }
+.sidebar-brand .brand-text { flex: 1; min-width: 0; }
+.sidebar-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+.sidebar-collapse-btn:hover { background: var(--bg-sunken); color: var(--text); }
 .sidebar-brand .logo-mark {
   width: 30px; height: 30px;
   border-radius: 8px;
@@ -43,6 +56,7 @@
 }
 .progress-fill {
   height: 100%;
+  width: 0%;
   background: var(--accent);
   border-radius: 999px;
   transition: width 0.3s ease;

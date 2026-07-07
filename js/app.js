@@ -5,17 +5,21 @@ import { getCurrentLessonId, navigateToLesson, onRouteChange } from "./router.js
 import { markLessonViewed, markRetyped, isRetyped, checkLessonCompletion } from "./progress.js";
 import { createRetypeEditor } from "./code-editor.js";
 import { checkRetype } from "./retype-checker.js";
+import { getRaw, setRaw } from "./storage.js";
 
 let roadmap = null;
 
 async function boot() {
   initTheme();
+  initSidebarCollapse();
   document.getElementById("themeToggleBtn").addEventListener("click", () => {
     toggleTheme();
     if (window.lucide) window.lucide.createIcons();
   });
   document.getElementById("mobileMenuBtn").addEventListener("click", toggleSidebar);
   document.getElementById("sidebarOverlay").addEventListener("click", toggleSidebar);
+  document.getElementById("sidebarCollapseBtn").addEventListener("click", () => setSidebarCollapsed(true));
+  document.getElementById("sidebarOpenBtn").addEventListener("click", () => setSidebarCollapsed(false));
 
   roadmap = await loadRoadmap();
   const defaultLesson = roadmap.modules[0].topics[0].lesson;
@@ -32,6 +36,15 @@ async function boot() {
 function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("open");
   document.getElementById("sidebarOverlay").classList.toggle("open");
+}
+
+function initSidebarCollapse() {
+  setSidebarCollapsed(getRaw("sidebarCollapsed", "false") === "true");
+}
+
+function setSidebarCollapsed(collapsed) {
+  document.getElementById("appShell").classList.toggle("sidebar-collapsed", collapsed);
+  setRaw("sidebarCollapsed", String(collapsed));
 }
 
 async function selectLesson(lessonId, updateHash = true) {
