@@ -30,7 +30,8 @@
       "title": "Control Flow",
       "topics": [
         { "id": "cpp-conditional-statements", "title": "Conditional Statements", "lesson": "cpp-conditional-statements" },
-        { "id": "cpp-if-statement", "title": "if Statement", "lesson": "cpp-if-statement" }
+        { "id": "cpp-if-statement", "title": "if Statement", "lesson": "cpp-if-statement" },
+        { "id": "cpp-else-if-statement", "title": "else if Statement", "lesson": "cpp-else-if-statement" }
       ]
     }
   ]

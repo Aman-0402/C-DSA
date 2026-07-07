@@ -1,0 +1,142 @@
+{
+  "id": "cpp-else-if-statement",
+  "moduleId": "control-flow",
+  "title": "else if Statement",
+  "description": "Chaining multiple conditions with else if: order matters, and only the first true branch runs.",
+  "objectives": [
+    "Chain multiple conditions using else if",
+    "Understand that only the first true branch executes",
+    "Understand why the order of conditions matters",
+    "Build a simple grade calculator using else if"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem with Only if"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int marks = 85;\n\nif (marks >= 90) cout << \"Grade A\";\nif (marks >= 80) cout << \"Grade B\";\nif (marks >= 70) cout << \"Grade C\";"
+    },
+    {
+      "type": "warning",
+      "text": "With separate if statements, every single one is checked independently. Here, marks = 85 makes both the second and third conditions true, so this would print Grade BGrade C — not what we want. We need a way to check conditions as one connected chain, where only one branch can win."
+    },
+    {
+      "type": "heading",
+      "text": "2. else if Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "if (condition1)\n{\n    // runs if condition1 is true\n}\nelse if (condition2)\n{\n    // runs only if condition1 was false AND condition2 is true\n}\nelse if (condition3)\n{\n    // runs only if condition1 and condition2 were false, AND condition3 is true\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "else if chains conditions together. C++ checks them in order, top to bottom, and stops at the first one that's true — every condition after that is skipped entirely, even if it would also have been true."
+    },
+    {
+      "type": "heading",
+      "text": "3. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int marks = 85;\n\n    if (marks >= 90)\n    {\n        cout << \"Grade A\";\n    }\n    else if (marks >= 80)\n    {\n        cout << \"Grade B\";\n    }\n    else if (marks >= 70)\n    {\n        cout << \"Grade C\";\n    }\n\n    return 0;\n}",
+      "output": "Grade B",
+      "retypePractice": true,
+      "retypeId": "cpp-else-if-grade"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "marks is 85",
+        "marks >= 90 is false — skip",
+        "marks >= 80 is true — print Grade B, then stop checking",
+        "marks >= 70 is never even evaluated, because a true branch was already found"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Order Matters"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int marks = 85;\n\nif (marks >= 70)\n{\n    cout << \"Grade C\"; // wrong! this fires first\n}\nelse if (marks >= 80)\n{\n    cout << \"Grade B\";\n}\nelse if (marks >= 90)\n{\n    cout << \"Grade A\";\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Written in the wrong order, marks >= 70 is checked first — and since 85 >= 70, that branch wins immediately, printing Grade C for a student who actually deserves Grade B. When conditions overlap like this (a value satisfying more than one), the more specific/restrictive condition needs to come first."
+    },
+    {
+      "type": "heading",
+      "text": "5. Only One Branch Ever Runs"
+    },
+    {
+      "type": "tip",
+      "text": "In an if / else if chain, exactly zero or one branch executes — never more than one, no matter how many conditions would technically be true. This is the key difference from writing several separate if statements, where every one is checked independently."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Airport security checkpoints",
+      "text": "Imagine checking travelers against a priority list: VIP first, then Business class, then Economy. Once a traveler is matched to VIP, you don't also check whether they qualify for Economy — the first match wins, and everyone moves on. else if works the same way: the first true condition wins, and the rest are never even checked."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing separate if statements instead of else if when only one branch should run — multiple ifs are each checked independently and can all execute.",
+        "Ordering broad conditions before narrow ones — a broad marks >= 70 checked before marks >= 90 will always catch high scores too, hiding the more specific branch.",
+        "Assuming every condition in the chain gets evaluated — once one is true, the rest are skipped entirely, not just their bodies."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between multiple if statements and an if / else if chain?",
+          "answer": "Separate if statements are each checked independently and any number of them can run; in an if / else if chain, only the first true condition's branch runs, and the rest are skipped."
+        },
+        {
+          "question": "Why does the order of conditions matter in an else if chain?",
+          "answer": "Because the first true condition wins and stops the chain — if a broader condition is placed before a more specific one, the specific condition may never be reached even when it would also be true."
+        },
+        {
+          "question": "In a chain of five else if conditions, what's the maximum number of blocks that can execute?",
+          "answer": "One — an if / else if chain always runs at most a single branch, whichever condition is found true first."
+        }
+      ],
+      "thirtySecondAnswer": "else if lets multiple conditions be chained together so C++ checks them in order and runs only the first one found true, skipping the rest entirely — unlike separate if statements, which are each checked independently and could all run. Because the first match wins, the order of conditions matters: broader conditions placed before more specific ones can accidentally catch cases meant for a later branch, so conditions are usually ordered from most specific to least specific."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember else if",
+      "text": "else if chain = a priority line. First true condition wins, everyone behind it is skipped. Order from most specific to least specific."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-else-if-grade", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int marks = 85;\n\n    if (marks >= 90)\n    {\n        cout << \"Grade A\";\n    }\n    else if (marks >= 80)\n    {\n        cout << \"Grade B\";\n    }\n    else if (marks >= 70)\n    {\n        cout << \"Grade C\";\n    }\n\n    return 0;\n}", "output": "Grade B" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-else-if-grade",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int marks = 85;\n\n    if (marks >= 90)\n    {\n        cout << \"Grade A\";\n    }\n    else if (marks >= 80)\n    {\n        cout << \"Grade B\";\n    }\n    else if (marks >= 70)\n    {\n        cout << \"Grade C\";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-else-if-grade"]
+  }
+}
