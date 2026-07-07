@@ -1,0 +1,146 @@
+{
+  "id": "cpp-custom-comparators",
+  "moduleId": "stl",
+  "title": "Custom Comparators",
+  "description": "Writing your own comparison logic for sort() and priority_queue with a lambda, sorting pairs by any field, and the strict weak ordering rule.",
+  "objectives": [
+    "Write a custom comparator lambda for sort()",
+    "Sort a vector of pairs by a specific field",
+    "Understand the strict weak ordering rule a comparator must follow",
+    "Fully understand priority_queue's comparator syntax, previewed earlier"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: greater<int>() Was Only the Beginning"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sorting using sort() showed greater<int>() for descending order. That's a ready-made comparator. Sometimes the sorting rule needed is more specific than \"ascending\" or \"descending\" — that's when a custom comparator, usually a lambda from Lambda Functions, comes in."
+    },
+    {
+      "type": "heading",
+      "text": "2. Writing a Custom Comparator"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {40, 10, 90, 25};\n\nsort(numbers.begin(), numbers.end(), [](int a, int b) {\n    return a < b; // ascending — identical to the default\n});"
+    },
+    {
+      "type": "definition",
+      "term": "Comparator",
+      "text": "A comparator is a function (often a lambda) that takes two elements and returns true if the first should come before the second in the sorted order."
+    },
+    {
+      "type": "note",
+      "text": "sort()'s comparator argument accepts any callable with this shape — a lambda, a named function, or a functor like greater<int>(). The lambda form is usually the most direct way to express custom logic right at the call site."
+    },
+    {
+      "type": "heading",
+      "text": "3. Sorting Pairs by a Specific Field"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    vector<pair<string, int>> students = {{\"Aman\", 88}, {\"Priya\", 95}, {\"Zara\", 72}};\n\n    sort(students.begin(), students.end(), [](pair<string, int> a, pair<string, int> b) {\n        return a.second > b.second; // sort by marks, DESCENDING\n    });\n\n    for (auto s : students)\n    {\n        cout << s.first << \": \" << s.second << endl;\n    }\n\n    return 0;\n}",
+      "output": "Priya: 95\nAman: 88\nZara: 72",
+      "retypePractice": true,
+      "retypeId": "cpp-custom-comparators-pairs"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What the comparator is really saying",
+      "points": [
+        "a.second > b.second means: a should come before b when a's marks are higher",
+        "This ties directly to pair.first/.second from pair — sorting isn't limited to plain numbers",
+        "The default sort() has no idea what 'marks' means; the comparator is what teaches it the actual criteria"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. The Rule: Strict Weak Ordering"
+    },
+    {
+      "type": "warning",
+      "text": "A comparator must implement what's called a strict weak ordering — informally: it should return false when comparing an element to itself (comp(a, a) must be false), and it must be logically consistent (if a should come before b, then b should NOT come before a). Writing a broken comparator, like return a <= b; for a sort expecting strict less-than, can cause undefined behavior in sort() itself, not just wrong output."
+    },
+    {
+      "type": "heading",
+      "text": "5. priority_queue's Comparator — Fully Explained"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "priority_queue<int, vector<int>, greater<int>> minHeap;"
+    },
+    {
+      "type": "note",
+      "text": "Recall this line from priority_queue, left as a preview. Now it's fully explainable: priority_queue<T, Container, Comparator> — T is the element type (int), Container is what it's built on internally (vector<int>, the default), and Comparator (greater<int>) decides ordering, exactly like sort()'s third argument. Using greater<int> flips the default max-heap into a min-heap, because it reverses what 'comes first.'"
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Telling the card sorter your own rule",
+      "text": "Recall sort()'s professional card sorter analogy. A custom comparator is you telling that sorter your own specific rule instead of the default \"numerically ascending\" — \"sort these by suit, then by rank,\" or here, \"sort these students by marks, highest first.\" The sorter still does all the actual work; you've just given it a precise rule to follow."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing a comparator using <= instead of < (or its equivalent) — breaks strict weak ordering and can cause undefined behavior in sort().",
+        "Forgetting the comparator's return type must be bool — true means 'the first argument should come before the second.'",
+        "Confusing which field to compare when sorting pairs or objects — double check .first vs .second, or the intended member, matches the actual sorting goal.",
+        "Assuming a comparator is only for sort() — the exact same idea configures priority_queue's ordering too."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a comparator, in the context of sort()?",
+          "answer": "A function (commonly a lambda) taking two elements and returning true if the first should come before the second in the sorted order."
+        },
+        {
+          "question": "How would you sort a vector of pairs by their second element, in descending order?",
+          "answer": "sort(v.begin(), v.end(), [](pair<A,B> a, pair<A,B> b) { return a.second > b.second; });"
+        },
+        {
+          "question": "What rule must a valid comparator follow?",
+          "answer": "Strict weak ordering — it must return false comparing an element to itself, and be logically consistent; violating this can cause undefined behavior in sort(), not just incorrect results."
+        },
+        {
+          "question": "How does priority_queue<int, vector<int>, greater<int>> work?",
+          "answer": "It's a priority_queue of int, built on a vector<int> internally, using greater<int> as its comparator — which flips the default max-heap behavior into a min-heap."
+        }
+      ],
+      "thirtySecondAnswer": "A custom comparator, usually a lambda, teaches sort() (or priority_queue) exactly what 'comes first' means for a specific case — for example, sorting a vector<pair<string,int>> by .second in descending order with [](auto a, auto b) { return a.second > b.second; }. A valid comparator must follow strict weak ordering: logically consistent, and false when comparing an element to itself — violating this causes undefined behavior in sort() itself. This is also exactly what powers priority_queue<T, Container, Comparator>, where swapping in greater<int> as the comparator turns the default max-heap into a min-heap."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Custom Comparators",
+      "text": "Comparator = your own rule handed to the card sorter. Returns true = 'a belongs before b.' Must be logically consistent — no contradictions allowed."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-custom-comparators-pairs", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    vector<pair<string, int>> students = {{\"Aman\", 88}, {\"Priya\", 95}, {\"Zara\", 72}};\n\n    sort(students.begin(), students.end(), [](pair<string, int> a, pair<string, int> b) {\n        return a.second > b.second;\n    });\n\n    for (auto s : students)\n    {\n        cout << s.first << \": \" << s.second << endl;\n    }\n\n    return 0;\n}", "output": "Priya: 95\nAman: 88\nZara: 72" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-custom-comparators-pairs",
+      "reference": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    vector<pair<string, int>> students = {{\"Aman\", 88}, {\"Priya\", 95}, {\"Zara\", 72}};\n\n    sort(students.begin(), students.end(), [](pair<string, int> a, pair<string, int> b) {\n        return a.second > b.second;\n    });\n\n    for (auto s : students)\n    {\n        cout << s.first << \": \" << s.second << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-custom-comparators-pairs"]
+  }
+}
