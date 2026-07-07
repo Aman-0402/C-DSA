@@ -1,0 +1,166 @@
+{
+  "id": "cpp-pass-by-reference",
+  "moduleId": "functions",
+  "title": "Pass by Reference",
+  "description": "Fixing the doubleIt problem from Pass by Value: using & so a parameter becomes an alias for the caller's actual variable.",
+  "objectives": [
+    "Fix a function so it actually modifies the caller's variable",
+    "Use & to declare a reference parameter",
+    "Understand a reference parameter is an alias, not a copy",
+    "Write the classic swap function using references"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The doubleIt Problem"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void doubleIt(int n)\n{\n    n = n * 2; // only the local copy changes\n}\n\nint main()\n{\n    int x = 5;\n    doubleIt(x);\n    cout << x; // still 5!\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "In Pass by Value, we saw this fails because n is only a copy of x. To make doubleIt actually change x, the function needs a way to work with x itself, not a copy of it."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Fix: &"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void doubleIt(int &n) // note the &\n{\n    n = n * 2;\n}"
+    },
+    {
+      "type": "definition",
+      "term": "Pass by reference",
+      "text": "Pass by reference means a function parameter becomes an alias for the caller's original variable, using &, so changes made to the parameter directly affect that original variable."
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview of what & does here — a full References topic covers it in more depth soon. For now: adding & to a parameter's type makes it a reference parameter."
+    },
+    {
+      "type": "heading",
+      "text": "3. Proving It Now Works"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nvoid doubleIt(int &n)\n{\n    n = n * 2;\n}\n\nint main()\n{\n    int x = 5;\n\n    doubleIt(x);\n\n    cout << x << endl;\n\n    return 0;\n}",
+      "output": "10",
+      "retypePractice": true,
+      "retypeId": "cpp-pass-by-reference-double"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What's different this time",
+      "points": [
+        "n is declared as int &n — a reference to an int, not a plain int",
+        "n doesn't get its own copy — it becomes another name for x itself",
+        "n = n * 2; is really the same as saying x = x * 2;",
+        "x prints as 10, because it was genuinely changed"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. A Reference Is an Alias, Not a Copy"
+    },
+    {
+      "type": "flow",
+      "steps": ["x = 5 in main()", "doubleIt(x) called", "n becomes ANOTHER NAME for x (no copy made)", "n = n * 2; changes x directly", "x in main() is now 10"]
+    },
+    {
+      "type": "note",
+      "text": "Compare this flow to Pass by Value's diagram — there, a brand new copy was created and later discarded. Here, no copy exists at all; n and x are two names referring to the exact same variable."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Classic swap Function"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nvoid swapValues(int &a, int &b)\n{\n    int temp = a;\n    a = b;\n    b = temp;\n}\n\nint main()\n{\n    int x = 5;\n    int y = 10;\n\n    swapValues(x, y);\n\n    cout << \"x: \" << x << \", y: \" << y << endl;\n\n    return 0;\n}",
+      "output": "x: 10, y: 5"
+    },
+    {
+      "type": "note",
+      "text": "a and b are aliases for x and y. temp = a; saves x's value (5) into temp. a = b; makes x equal to y's value (10). b = temp; makes y equal to the saved value (5). Both originals genuinely swapped — x: 10, y: 5. swap is one of the most common functions taught to demonstrate why pass by reference exists: it's simply impossible to write correctly with plain pass by value, since two independent copies could never affect each other's originals."
+    },
+    {
+      "type": "heading",
+      "text": "6. Why This Matters Beyond \"Fixing\" Functions"
+    },
+    {
+      "type": "note",
+      "text": "Pass by reference isn't only for fixing broken doubling functions — it's also commonly used to avoid copying large amounts of data. We haven't covered arrays, strings, or objects yet, but once we do, passing them by value would copy the entire thing every single call; passing by reference avoids that copy entirely. We'll return to this once those topics arrive."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A nickname vs a photocopy",
+      "text": "Pass by value was handing someone a photocopy — scribbling on it doesn't touch the original. Pass by reference is more like giving someone a nickname for the same person: whether you call them by their real name or the nickname, you're still talking about — and can still affect — the exact same person."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the & and wondering why the function still doesn't modify the caller's variable — without &, it's back to an ordinary (value) parameter.",
+        "Thinking a reference parameter creates a copy that's somehow linked to the original — there is no copy at all; it's the same variable with a second name.",
+        "Writing swap logic without a temp variable — without saving one value first, a = b; b = a; loses the original value of a entirely.",
+        "Using pass by reference everywhere out of habit — pass by value is still the safer default when a function shouldn't be able to modify its input."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does pass by reference mean?",
+          "answer": "A function parameter, declared with &, becomes an alias for the caller's original variable rather than a copy, so changes made inside the function directly affect that original variable."
+        },
+        {
+          "question": "How do you declare a reference parameter?",
+          "answer": "By adding & after the type in the parameter list, e.g. void doubleIt(int &n)."
+        },
+        {
+          "question": "Why is swap a classic example for teaching pass by reference?",
+          "answer": "Because swapping two variables' values genuinely requires modifying both of the caller's originals, which is impossible with plain pass by value — each parameter would only be a disconnected copy."
+        },
+        {
+          "question": "Besides letting a function modify the caller's variable, why else is pass by reference used?",
+          "answer": "To avoid copying large amounts of data on every call, since a reference doesn't duplicate the original — this matters most once larger data structures like arrays or objects are involved."
+        }
+      ],
+      "thirtySecondAnswer": "Pass by reference, declared with & on a parameter, makes that parameter an alias for the caller's original variable instead of an independent copy — so changes made inside the function are changes to the original. This fixes the classic problem from pass by value, where a function like doubleIt could only ever modify its own local copy. The swap function is the textbook example: swapping two variables' values requires modifying both originals directly, which pass by value simply cannot do. Pass by reference is also used to avoid expensive copies of large data, a benefit that becomes more relevant once arrays and objects are covered."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Pass by Reference",
+      "text": "Pass by value = photocopy, scribble freely, original untouched. Pass by reference (&) = nickname for the same person — touch the nickname, touch the real thing."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-pass-by-reference-double", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nvoid doubleIt(int &n)\n{\n    n = n * 2;\n}\n\nint main()\n{\n    int x = 5;\n\n    doubleIt(x);\n\n    cout << x << endl;\n\n    return 0;\n}", "output": "10" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-pass-by-reference-double",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nvoid doubleIt(int &n)\n{\n    n = n * 2;\n}\n\nint main()\n{\n    int x = 5;\n\n    doubleIt(x);\n\n    cout << x << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-pass-by-reference-double"]
+  }
+}
