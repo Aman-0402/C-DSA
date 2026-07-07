@@ -46,7 +46,8 @@
       "id": "functions",
       "title": "Functions",
       "topics": [
-        { "id": "cpp-functions", "title": "Functions", "lesson": "cpp-functions" }
+        { "id": "cpp-functions", "title": "Functions", "lesson": "cpp-functions" },
+        { "id": "cpp-function-declaration", "title": "Function Declaration", "lesson": "cpp-function-declaration" }
       ]
     }
   ]

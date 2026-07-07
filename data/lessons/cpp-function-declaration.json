@@ -1,0 +1,159 @@
+{
+  "id": "cpp-function-declaration",
+  "moduleId": "functions",
+  "title": "Function Declaration",
+  "description": "The function prototype: telling the compiler a function exists before its full body is written, so it can be called earlier in the file.",
+  "objectives": [
+    "Understand what a function declaration (prototype) is",
+    "Know why a declaration is needed when a function is defined after where it's called",
+    "Write a function prototype with correct syntax",
+    "Connect this back to the Declaration vs Definition idea from Header Files"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Declaration vs Definition"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in Header Files, we learned: a declaration tells the compiler that something exists; a definition provides the actual implementation. Functions follow exactly this same split."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Compiler Reads Top to Bottom"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int main()\n{\n    cout << add(5, 3); // ERROR — add is unknown here\n\n    return 0;\n}\n\nint add(int a, int b) // defined AFTER it's used\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "The compiler processes a file from top to bottom. When it reaches add(5, 3) inside main(), it hasn't seen add defined yet — as far as it knows at that point, add doesn't exist. This causes a compilation error."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Fix: A Function Declaration"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b); // declaration (prototype)"
+    },
+    {
+      "type": "paragraph",
+      "text": "A function declaration — also called a prototype — tells the compiler \"a function named add exists, it takes two ints, and it returns an int\" without providing the actual body yet. That's enough for the compiler to accept a call to add() before it has seen the full definition."
+    },
+    {
+      "type": "definition",
+      "term": "Function declaration (prototype)",
+      "text": "A function declaration states a function's return type, name, and parameter types, telling the compiler it exists without providing its body."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b); // declaration\n\nint main()\n{\n    cout << add(5, 3) << endl; // works now\n\n    return 0;\n}\n\nint add(int a, int b) // definition\n{\n    return a + b;\n}",
+      "output": "8",
+      "retypePractice": true,
+      "retypeId": "cpp-function-declaration-add"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What changed",
+      "points": [
+        "int add(int a, int b); appears before main() — the compiler now knows add exists",
+        "main() can call add(5, 3) even though the actual definition comes later in the file",
+        "The real definition, with its body, still appears further down"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Parameter Names Are Optional in a Declaration"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int, int); // also valid — names dropped\nint add(int a, int b); // also valid — names kept for readability"
+    },
+    {
+      "type": "note",
+      "text": "A declaration only needs the types the compiler will check calls against. Parameter names in a declaration are purely for a human reader's benefit and don't have to match the names used in the actual definition."
+    },
+    {
+      "type": "heading",
+      "text": "6. Why This Matters for Header Files"
+    },
+    {
+      "type": "note",
+      "text": "This connects directly back to Header Files: a .h file commonly holds function declarations (like int add(int, int);), while the matching .cpp file holds the actual definitions. Other files can #include the header and call the function, without needing to see (or recompile) its implementation."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A table of contents",
+      "text": "A book's table of contents tells you \"Chapter 5: The Ocean\" exists and roughly what it covers, before you've actually read it. A function declaration is that table-of-contents entry — a promise that the full chapter (the definition) exists somewhere in the book, even if you haven't reached that page yet."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Calling a function before it's defined, with no declaration above the call — causes a compilation error, since the compiler hasn't \"met\" that name yet.",
+        "Writing a declaration whose types don't match the actual definition — the parameter types and return type must agree between the two.",
+        "Forgetting the semicolon at the end of a declaration — int add(int, int) without a ; is not a valid standalone declaration.",
+        "Thinking a declaration and a definition are the same thing — a declaration has no body; only the definition does."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a function declaration?",
+          "answer": "A statement that tells the compiler a function's return type, name, and parameter types, without providing its body — also called a function prototype."
+        },
+        {
+          "question": "Why is a function declaration needed?",
+          "answer": "Because the compiler reads a file top to bottom; if a function is called before its full definition appears, a declaration earlier in the file lets the compiler accept the call."
+        },
+        {
+          "question": "Do parameter names need to appear in a function declaration?",
+          "answer": "No — a declaration only requires the parameter types; names are optional and purely for readability."
+        },
+        {
+          "question": "How does function declaration relate to header files?",
+          "answer": "Header files commonly contain function declarations, while the matching source file contains the definitions — letting other files call the function after including the header, without needing its implementation."
+        }
+      ],
+      "thirtySecondAnswer": "A function declaration, or prototype, tells the compiler a function's return type, name, and parameter types without providing its body — for example, int add(int, int);. It's needed because the compiler reads a file from top to bottom, so calling a function before its full definition appears would otherwise be an error. This is the same declaration vs definition split we saw with header files: a header commonly holds function declarations, while the matching .cpp file holds the actual implementations."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Function Declaration",
+      "text": "Declaration = a promise it exists (table of contents). Definition = the actual chapter. The compiler just needs the promise to accept a call earlier in the file."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-function-declaration-add", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b);\n\nint main()\n{\n    cout << add(5, 3) << endl;\n\n    return 0;\n}\n\nint add(int a, int b)\n{\n    return a + b;\n}", "output": "8" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-function-declaration-add",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b);\n\nint main()\n{\n    cout << add(5, 3) << endl;\n\n    return 0;\n}\n\nint add(int a, int b)\n{\n    return a + b;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-function-declaration-add"]
+  }
+}
