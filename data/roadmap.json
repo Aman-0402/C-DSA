@@ -19,7 +19,8 @@
         { "id": "cpp-variables", "title": "Variables", "lesson": "cpp-variables" },
         { "id": "cpp-constants", "title": "Constants", "lesson": "cpp-constants" },
         { "id": "cpp-data-types", "title": "Data Types", "lesson": "cpp-data-types" },
-        { "id": "cpp-type-modifiers", "title": "Type Modifiers", "lesson": "cpp-type-modifiers" }
+        { "id": "cpp-type-modifiers", "title": "Type Modifiers", "lesson": "cpp-type-modifiers" },
+        { "id": "cpp-type-casting", "title": "Type Casting", "lesson": "cpp-type-casting" }
       ]
     }
   ]

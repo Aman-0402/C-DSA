@@ -1,0 +1,182 @@
+{
+  "id": "cpp-type-casting",
+  "moduleId": "cpp-fundamentals",
+  "title": "Type Casting",
+  "description": "Implicit vs explicit conversion between types, static_cast, the older C-style cast, and why int/int division surprises beginners.",
+  "objectives": [
+    "Understand implicit (automatic) type conversion",
+    "Perform explicit type casting with static_cast",
+    "Recognize the older C-style cast and why static_cast is preferred",
+    "Understand why dividing two ints truncates the result",
+    "Know when truncation happens vs when a value is preserved"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is Type Casting?"
+    },
+    {
+      "type": "paragraph",
+      "text": "We saw in Data Types that assigning a double to an int truncates it: int x = 9.7; gives 9. That conversion between types is called casting. Sometimes it happens automatically, and sometimes we ask for it explicitly."
+    },
+    {
+      "type": "definition",
+      "term": "Type casting",
+      "text": "Type casting is converting a value from one data type to another, either automatically (implicit) or explicitly requested by the programmer."
+    },
+    {
+      "type": "heading",
+      "text": "2. Implicit Casting (Automatic)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int wholeNumber = 9.7;   // double → int, automatic\ndouble price = 10;       // int → double, automatic"
+    },
+    {
+      "type": "paragraph",
+      "text": "The compiler converts values between types automatically when needed — this is implicit casting. No special syntax is required; it just happens."
+    },
+    {
+      "type": "table",
+      "headers": ["Conversion", "Safe?"],
+      "rows": [
+        ["int → double", "Safe — the whole number becomes a decimal with .0, nothing is lost"],
+        ["double → int", "Lossy — the decimal part is truncated (dropped), not rounded"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "Implicit casting is convenient, but a double → int conversion silently loses information. The compiler generally won't stop you — it's worth being deliberate about it."
+    },
+    {
+      "type": "heading",
+      "text": "3. Explicit Casting with static_cast"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "double price = 19.99;\nint wholeDollars = static_cast<int>(price);"
+    },
+    {
+      "type": "paragraph",
+      "text": "static_cast<Type>(value) explicitly requests a conversion. It does exactly what the implicit conversion would have done here, but writing it out makes the intent obvious to anyone reading the code — this conversion is deliberate, not an accident."
+    },
+    {
+      "type": "definition",
+      "term": "static_cast",
+      "text": "static_cast<Type>(value) is C++'s standard way to explicitly convert a value to a different type."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Older C-Style Cast"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "double price = 19.99;\nint wholeDollars = (int)price;"
+    },
+    {
+      "type": "note",
+      "text": "(int)price is the older, C-style cast syntax, inherited from C. It still works in C++, and you'll see it in older code, but static_cast<int>(price) is generally preferred because it's more specific about what kind of conversion is happening and easier to search for in a codebase."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why int / int Divides Strangely"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a = 7;\n    int b = 2;\n\n    cout << a / b << endl;\n\n    return 0;\n}",
+      "output": "3",
+      "retypePractice": true,
+      "retypeId": "cpp-type-casting-int-division"
+    },
+    {
+      "type": "warning",
+      "text": "7 / 2 is mathematically 3.5, but with two int operands, C++ performs integer division — the result is truncated to an int, giving 3, not 3.5. Nothing was cast to double, so there was no decimal to keep."
+    },
+    {
+      "type": "heading",
+      "text": "6. Fixing It with a Cast"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a = 7;\nint b = 2;\n\ncout << static_cast<double>(a) / b << endl;",
+      "output": "3.5"
+    },
+    {
+      "type": "note",
+      "text": "Casting just one operand to double is enough — once either side of / is a double, C++ performs the division as double math, and the result keeps its decimal part."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Pouring liquid into a smaller jar",
+      "text": "Casting a double into an int is like pouring a full jug of water into a smaller jar — whatever doesn't fit spills out and is gone. Casting an int into a double is the opposite: pouring a small amount into a much bigger jar, nothing is lost, there's just extra empty room (the .0)."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Expecting int / int to give a decimal result — it performs integer division and truncates, e.g. 7 / 2 gives 3.",
+        "Assuming static_cast<int>(x) rounds — it truncates, exactly like implicit double → int conversion.",
+        "Casting the wrong operand — static_cast<double>(a) / b works because it forces double math, but a / static_cast<double>(b) works too; casting neither still gives integer division.",
+        "Relying only on implicit casting for important conversions — an explicit static_cast makes the intent clear and easier to spot in review."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between implicit and explicit casting?",
+          "answer": "Implicit casting happens automatically when the compiler converts between types as needed; explicit casting is a deliberate conversion requested by the programmer, such as with static_cast."
+        },
+        {
+          "question": "What does static_cast<int>(9.7) return?",
+          "answer": "9 — the decimal part is truncated, not rounded."
+        },
+        {
+          "question": "Why does 7 / 2 give 3 instead of 3.5 in C++?",
+          "answer": "Because both operands are int, C++ performs integer division, which truncates the result to a whole number rather than producing a decimal."
+        },
+        {
+          "question": "How do you fix integer division to get a decimal result?",
+          "answer": "Cast at least one operand to a floating-point type, e.g. static_cast<double>(a) / b, so the division is performed using double arithmetic."
+        },
+        {
+          "question": "Why is static_cast preferred over the C-style cast?",
+          "answer": "static_cast is more explicit about the intended conversion, is easier to search for in a codebase, and is generally considered safer and clearer in modern C++."
+        }
+      ],
+      "thirtySecondAnswer": "Type casting converts a value from one type to another. It can happen implicitly, as when a double is automatically assigned to an int and truncated, or explicitly, using static_cast<Type>(value) to make the conversion deliberate and visible. A common surprise is that dividing two ints performs integer division and truncates the result — 7 / 2 gives 3, not 3.5 — which can be fixed by casting one operand to double first. static_cast is generally preferred over the older C-style (Type)value cast because it's clearer about intent."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Type Casting",
+      "text": "double → int = pour into a smaller jar, decimals spill out. int → double = pour into a bigger jar, nothing lost. int / int = integer division, always truncates."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-type-casting-int-division", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a = 7;\n    int b = 2;\n\n    cout << a / b << endl;\n\n    return 0;\n}", "output": "3" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-type-casting-int-division",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a = 7;\n    int b = 2;\n\n    cout << a / b << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-type-casting-int-division"]
+  }
+}
