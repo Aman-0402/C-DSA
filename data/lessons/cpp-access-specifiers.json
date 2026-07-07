@@ -1,0 +1,155 @@
+{
+  "id": "cpp-access-specifiers",
+  "moduleId": "oop",
+  "title": "Access Specifiers",
+  "description": "public, private, and protected: controlling what's reachable from outside a class, and the getter/setter pattern this enables.",
+  "objectives": [
+    "Understand public, private, and protected access levels",
+    "See what happens when private members are accessed from outside the class",
+    "Use the getter/setter pattern to control access to private data",
+    "Know the default access level differs between class and struct"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: public: in Classes and Objects"
+    },
+    {
+      "type": "paragraph",
+      "text": "The Student class used public: without explaining it. public is one of three access specifiers that control what code outside the class is allowed to touch."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Three Access Levels"
+    },
+    {
+      "type": "table",
+      "headers": ["Specifier", "Accessible from outside the class?"],
+      "rows": [
+        ["public", "Yes — freely accessible from anywhere the object is visible"],
+        ["private", "No — only accessible from inside the class's own member functions"],
+        ["protected", "No from outside, but yes from a derived class (a preview — covered fully in Inheritance)"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. private in Action"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class BankAccount\n{\nprivate:\n    double balance;\n};\n\nint main()\n{\n    BankAccount acc;\n    acc.balance = 1000; // ERROR — balance is private, not reachable from here\n}"
+    },
+    {
+      "type": "warning",
+      "text": "acc.balance is invalid the moment balance is marked private — code outside BankAccount simply cannot reach it, no exceptions. This is a compile-time error, not a runtime warning."
+    },
+    {
+      "type": "heading",
+      "text": "4. Why Hide Data?"
+    },
+    {
+      "type": "note",
+      "text": "This is a first taste of Encapsulation, its own topic soon. Making balance private prevents code elsewhere in the program from setting it to something nonsensical, like a negative balance, without going through logic the class itself controls."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Getter/Setter Pattern"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass BankAccount\n{\nprivate:\n    double balance;\n\npublic:\n    void setBalance(double amount)\n    {\n        if (amount >= 0) // control what's allowed in\n        {\n            balance = amount;\n        }\n    }\n\n    double getBalance()\n    {\n        return balance;\n    }\n};\n\nint main()\n{\n    BankAccount acc;\n    acc.setBalance(1000);\n\n    cout << acc.getBalance() << endl;\n\n    return 0;\n}",
+      "output": "1000",
+      "retypePractice": true,
+      "retypeId": "cpp-access-specifiers-bank"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What this buys us",
+      "points": [
+        "balance itself stays private — nothing outside the class can touch it directly",
+        "setBalance is a public member function — a controlled gateway that can validate before changing balance",
+        "getBalance is a public member function — a controlled way to read balance without exposing it directly",
+        "This pair is called getters and setters — a very common OOP pattern for controlled access"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Default Access: class vs struct"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class A\n{\n    int x; // private by default in a class\n};\n\nstruct B\n{\n    int y; // public by default in a struct\n};"
+    },
+    {
+      "type": "warning",
+      "text": "This is a genuinely common interview question: class and struct in C++ are nearly identical, but their default access level differs. Members are private by default in a class, and public by default in a struct, if no access specifier is written at all."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A bank vault vs the lobby",
+      "text": "A bank's lobby (public) is open to any visitor. The vault (private) is only accessible to bank staff working from behind the counter — a customer can't just walk in and grab cash directly, they have to go through a teller (a public member function) who follows the bank's rules before touching the vault's contents."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to access a private member directly from outside the class — this is a compile-time error, not something caught only at runtime.",
+        "Forgetting class members default to private, and being confused why direct access fails with no access specifier written.",
+        "Making everything public out of convenience — defeats the purpose of controlling how a class's data can be changed.",
+        "Writing a setter with no validation at all — the entire benefit of a setter is the chance to check the incoming value before accepting it."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What are the three access specifiers in C++?",
+          "answer": "public, private, and protected, controlling whether a member is accessible from outside the class, only within the class, or accessible to derived classes as well."
+        },
+        {
+          "question": "What happens if you try to access a private member from outside its class?",
+          "answer": "It's a compile-time error — private members are only reachable from the class's own member functions."
+        },
+        {
+          "question": "What is the default access level for members of a class versus a struct?",
+          "answer": "private by default in a class, public by default in a struct, when no access specifier is explicitly written."
+        },
+        {
+          "question": "What is the getter/setter pattern, and why is it useful?",
+          "answer": "Public member functions (get*/set*) that provide controlled access to a private member, letting a setter validate incoming values instead of allowing direct, unchecked modification."
+        }
+      ],
+      "thirtySecondAnswer": "Access specifiers control what's reachable from outside a class: public members are freely accessible, private members are only accessible from the class's own member functions, and protected members add accessibility for derived classes, covered fully in Inheritance. A class's members default to private, while a struct's default to public. The getter/setter pattern uses this: a member variable is kept private, and public functions provide controlled read and write access — letting a setter validate a value before it's ever assigned, which is the foundation of Encapsulation."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Access Specifiers",
+      "text": "public = the lobby, anyone welcome. private = the vault, staff only. Getter/setter = the teller who checks the rules before touching the vault for you."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-access-specifiers-bank", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass BankAccount\n{\nprivate:\n    double balance;\n\npublic:\n    void setBalance(double amount)\n    {\n        if (amount >= 0)\n        {\n            balance = amount;\n        }\n    }\n\n    double getBalance()\n    {\n        return balance;\n    }\n};\n\nint main()\n{\n    BankAccount acc;\n    acc.setBalance(1000);\n\n    cout << acc.getBalance() << endl;\n\n    return 0;\n}", "output": "1000" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-access-specifiers-bank",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass BankAccount\n{\nprivate:\n    double balance;\n\npublic:\n    void setBalance(double amount)\n    {\n        if (amount >= 0)\n        {\n            balance = amount;\n        }\n    }\n\n    double getBalance()\n    {\n        return balance;\n    }\n};\n\nint main()\n{\n    BankAccount acc;\n    acc.setBalance(1000);\n\n    cout << acc.getBalance() << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-access-specifiers-bank"]
+  }
+}
