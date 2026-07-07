@@ -1,0 +1,178 @@
+{
+  "id": "cpp-constructors",
+  "moduleId": "oop",
+  "title": "Constructors",
+  "description": "A special function that runs automatically when an object is created: default constructors, parameterized constructors, and constructor overloading.",
+  "objectives": [
+    "Understand a constructor as code that runs automatically at object creation",
+    "Write a parameterized constructor to set members at creation time",
+    "Understand the default constructor",
+    "Overload constructors, connecting back to Function Overloading"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Manual Setup, Every Time"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Student s1;\ns1.name = \"Aman\";\ns1.age = 20;\ns1.marks = 88.5;"
+    },
+    {
+      "type": "paragraph",
+      "text": "In Classes and Objects, every single field had to be set manually, line by line, after creating the object. It's easy to forget one, and repetitive to do for every new Student."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Constructor?"
+    },
+    {
+      "type": "definition",
+      "term": "Constructor",
+      "text": "A constructor is a special member function that runs automatically when an object is created, commonly used to initialize its member variables."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    string name;\n    int age;\n\n    Student(string n, int a) // constructor — same name as the class, no return type\n    {\n        name = n;\n        age = a;\n    }\n};"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What makes it a constructor",
+      "points": [
+        "Its name is exactly the class's name — Student",
+        "It has no return type at all — not even void",
+        "It runs automatically, right when an object is created"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n    int age;\n\n    Student(string n, int a)\n    {\n        name = n;\n        age = a;\n    }\n\n    void display()\n    {\n        cout << name << \", age \" << age;\n    }\n};\n\nint main()\n{\n    Student s1(\"Aman\", 20);\n\n    s1.display();\n\n    return 0;\n}",
+      "output": "Aman, age 20",
+      "retypePractice": true,
+      "retypeId": "cpp-constructors-student"
+    },
+    {
+      "type": "note",
+      "text": "Student s1(\"Aman\", 20); creates s1 and calls the constructor in one step — name and age are set immediately, with no separate s1.name = ...; lines needed afterward."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Default Constructor"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    string name;\n    int age;\n\n    Student() // default constructor — takes no parameters\n    {\n        name = \"Unknown\";\n        age = 0;\n    }\n};\n\nStudent s1; // calls the default constructor automatically"
+    },
+    {
+      "type": "definition",
+      "term": "Default constructor",
+      "text": "A default constructor is a constructor that takes no parameters, called automatically whenever an object is created without arguments."
+    },
+    {
+      "type": "note",
+      "text": "If a class defines absolutely no constructor at all, C++ silently provides an implicit default constructor that does nothing special — members are left uninitialized, exactly like an uninitialized variable from Variables. Once any constructor is written by hand, that automatic one no longer exists unless explicitly written too."
+    },
+    {
+      "type": "heading",
+      "text": "5. Overloading Constructors"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    string name;\n    int age;\n\n    Student() // no-argument version\n    {\n        name = \"Unknown\";\n        age = 0;\n    }\n\n    Student(string n, int a) // two-argument version\n    {\n        name = n;\n        age = a;\n    }\n};\n\nStudent s1;               // uses the no-argument constructor\nStudent s2(\"Priya\", 22);  // uses the two-argument constructor"
+    },
+    {
+      "type": "note",
+      "text": "This is exactly Function Overloading applied to constructors: multiple constructors can coexist as long as their parameter lists differ, and C++ picks the right one based on how the object is created."
+    },
+    {
+      "type": "heading",
+      "text": "6. A Preview: Member Initializer Lists"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Student(string n, int a) : name(n), age(a) // initializer list\n{\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — the : name(n), age(a) syntax is a member initializer list, a more direct way to set members that's often preferred over assigning inside the constructor's body. We'll return to why it matters once we've covered a bit more of the language."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A car rolling off the assembly line, fully assembled",
+      "text": "A car doesn't leave the factory as an empty shell that someone then manually bolts an engine, wheels, and seats onto afterward — it comes off the line already assembled, built to a specific configuration from the start. A constructor is that assembly step: the object arrives already set up, rather than needing to be configured piece by piece after the fact."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Giving a constructor a return type — not even void; a constructor never has one, and adding one makes it just an ordinary member function with a confusing name.",
+        "Naming the constructor something other than exactly the class's name — it must match precisely.",
+        "Forgetting that writing any constructor removes the automatic default one — if a no-argument version is still needed, it must be written explicitly too.",
+        "Assuming a constructor must be called explicitly — it runs automatically at the moment the object is created, matching whichever overload fits the arguments given."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a constructor?",
+          "answer": "A special member function that runs automatically when an object is created, commonly used to initialize its member variables."
+        },
+        {
+          "question": "What are the two defining rules of a constructor's signature?",
+          "answer": "Its name must exactly match the class's name, and it has no return type at all, not even void."
+        },
+        {
+          "question": "What is a default constructor?",
+          "answer": "A constructor that takes no parameters, automatically called when an object is created with no arguments."
+        },
+        {
+          "question": "Can a class have more than one constructor?",
+          "answer": "Yes — constructors can be overloaded just like ordinary functions, as long as their parameter lists differ, and C++ picks the matching one based on how the object is created."
+        },
+        {
+          "question": "What happens if a class defines no constructor at all?",
+          "answer": "C++ implicitly provides a default constructor that does nothing special, leaving members uninitialized."
+        }
+      ],
+      "thirtySecondAnswer": "A constructor is a special member function, named exactly like its class with no return type, that runs automatically whenever an object is created — commonly used to initialize member variables in one step instead of assigning them manually afterward. A default constructor takes no parameters; a parameterized constructor, like Student(string n, int a), sets members immediately from arguments passed at creation. Constructors can be overloaded just like ordinary functions, letting the same class support several different ways of being created, with C++ choosing the matching overload automatically."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Constructors",
+      "text": "Constructor = the car rolling off the assembly line, already built. Same name as the class, no return type, runs automatically — never called by hand."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-constructors-student", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n    int age;\n\n    Student(string n, int a)\n    {\n        name = n;\n        age = a;\n    }\n\n    void display()\n    {\n        cout << name << \", age \" << age;\n    }\n};\n\nint main()\n{\n    Student s1(\"Aman\", 20);\n\n    s1.display();\n\n    return 0;\n}", "output": "Aman, age 20" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-constructors-student",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n    int age;\n\n    Student(string n, int a)\n    {\n        name = n;\n        age = a;\n    }\n\n    void display()\n    {\n        cout << name << \", age \" << age;\n    }\n};\n\nint main()\n{\n    Student s1(\"Aman\", 20);\n\n    s1.display();\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-constructors-student"]
+  }
+}

@@ -87,7 +87,8 @@
       "title": "Object-Oriented Programming",
       "topics": [
         { "id": "cpp-classes-objects", "title": "Classes and Objects", "lesson": "cpp-classes-objects" },
-        { "id": "cpp-access-specifiers", "title": "Access Specifiers", "lesson": "cpp-access-specifiers" }
+        { "id": "cpp-access-specifiers", "title": "Access Specifiers", "lesson": "cpp-access-specifiers" },
+        { "id": "cpp-constructors", "title": "Constructors", "lesson": "cpp-constructors" }
       ]
     }
   ]
