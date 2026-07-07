@@ -1,0 +1,162 @@
+{
+  "id": "cpp-sorting-sort",
+  "moduleId": "stl",
+  "title": "Sorting using sort()",
+  "description": "The single most-used STL algorithm: sort() for ascending order, greater<int>() for descending, and its O(n log n) performance.",
+  "objectives": [
+    "Sort a container in ascending order with sort()",
+    "Sort in descending order using greater<int>()",
+    "Sort only part of a range",
+    "Know sort()'s time complexity and stability characteristics"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: This Was Promised Twice"
+    },
+    {
+      "type": "paragraph",
+      "text": "STL Algorithms previewed sort() as \"the single most commonly used STL algorithm.\" priority_queue also referenced it when introducing greater<int>. Here it is, properly."
+    },
+    {
+      "type": "heading",
+      "text": "2. Basic sort()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <algorithm>\n\nvector<int> numbers = {40, 10, 90, 25};\n\nsort(numbers.begin(), numbers.end()); // ascending order, by default"
+    },
+    {
+      "type": "note",
+      "text": "This follows the exact algorithm(begin, end, ...) pattern from STL Algorithms — sort() modifies the range in place and returns nothing."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {40, 10, 90, 25};\n\n    sort(numbers.begin(), numbers.end());\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 25 40 90 ",
+      "retypePractice": true,
+      "retypeId": "cpp-sorting-sort-ascending"
+    },
+    {
+      "type": "heading",
+      "text": "4. Sorting in Descending Order"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {40, 10, 90, 25};\n\n    sort(numbers.begin(), numbers.end(), greater<int>());\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}",
+      "output": "90 40 25 10 ",
+      "retypePractice": true,
+      "retypeId": "cpp-sorting-sort-descending"
+    },
+    {
+      "type": "note",
+      "text": "greater<int>() is a third argument telling sort() how to compare two elements — \"is a greater than b?\" instead of the default \"is a less than b?\" This is the exact mechanism priority_queue previewed for switching to a min-heap. We'll go much deeper into writing custom comparison logic in Custom Comparators, right after this."
+    },
+    {
+      "type": "heading",
+      "text": "5. Sorting Only Part of a Range"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {40, 10, 90, 25, 5};\n\nsort(numbers.begin(), numbers.begin() + 3); // only sorts indices 0, 1, 2\n// numbers is now: {10, 40, 90, 25, 5} — the last two elements are untouched"
+    },
+    {
+      "type": "note",
+      "text": "Because sort() just takes a begin/end range, that range doesn't have to be the whole container — begin() + 3 (recall random-access iterator arithmetic from Iterators) marks the boundary, sorting only the first three elements and leaving the rest untouched."
+    },
+    {
+      "type": "heading",
+      "text": "6. Complexity: O(n log n)"
+    },
+    {
+      "type": "note",
+      "text": "std::sort() runs in O(n log n) time on average and in the worst case — far better than a naive O(n²) sort, and this efficiency is one major reason to always reach for the standard library's sort() rather than writing a sorting algorithm by hand for typical use."
+    },
+    {
+      "type": "heading",
+      "text": "7. A Note on Stability"
+    },
+    {
+      "type": "warning",
+      "text": "std::sort() is not guaranteed to be stable — if two elements are considered equal by the comparison, their relative order after sorting isn't guaranteed to match their original order. When that relative order does matter (for example, sorting by one field while wanting ties to preserve original order by another), stable_sort() is the tool for that — a detail worth remembering exists, even without a full deep dive here."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Handing a deck of cards to a professional card sorter",
+      "text": "You don't reshuffle and manually compare every card yourself — you hand the deck to someone highly skilled and say \"lowest to highest\" or \"highest to lowest.\" sort() is that professional: hand it a range and (optionally) a comparison rule, and it reorganizes everything efficiently, without you writing the sorting logic yourself."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting #include <algorithm> — sort() lives there, not in <vector>.",
+        "Assuming sort() returns a sorted copy — it modifies the range in place and returns nothing.",
+        "Forgetting greater<int>() needs #include <functional> in some implementations, or relying on it being pulled in transitively — worth including explicitly if it's ever missing.",
+        "Assuming sort() preserves the relative order of equal elements — it's not guaranteed stable; stable_sort() is the tool when that matters."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How do you sort a vector in ascending order?",
+          "answer": "sort(v.begin(), v.end()); — ascending is the default comparison."
+        },
+        {
+          "question": "How do you sort a vector in descending order?",
+          "answer": "sort(v.begin(), v.end(), greater<int>()); — passing a comparison rule as the third argument."
+        },
+        {
+          "question": "What is sort()'s time complexity?",
+          "answer": "O(n log n), both on average and in the worst case."
+        },
+        {
+          "question": "Is std::sort() stable?",
+          "answer": "No — the relative order of elements considered equal by the comparison is not guaranteed; stable_sort() should be used when that matters."
+        }
+      ],
+      "thirtySecondAnswer": "sort(v.begin(), v.end()); sorts a range in ascending order in place, running in O(n log n) time. Passing a third argument, like greater<int>(), changes the comparison rule — for example, to sort descending — the same mechanism previewed for configuring priority_queue as a min-heap. Because sort() just works on an iterator range, it can sort any sub-portion of a container, not just the whole thing. One caveat worth remembering: std::sort() isn't guaranteed stable, so elements considered equal may not retain their original relative order — stable_sort() exists for when that matters."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember sort()",
+      "text": "sort(begin, end) = ascending, default. sort(begin, end, greater<int>()) = descending. O(n log n), in place, not guaranteed stable."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-sorting-sort-ascending", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {40, 10, 90, 25};\n\n    sort(numbers.begin(), numbers.end());\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}", "output": "10 25 40 90 " },
+    { "id": "cpp-sorting-sort-descending", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {40, 10, 90, 25};\n\n    sort(numbers.begin(), numbers.end(), greater<int>());\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}", "output": "90 40 25 10 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-sorting-sort-ascending",
+      "reference": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {40, 10, 90, 25};\n\n    sort(numbers.begin(), numbers.end());\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}"
+    },
+    {
+      "id": "cpp-sorting-sort-descending",
+      "reference": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {40, 10, 90, 25};\n\n    sort(numbers.begin(), numbers.end(), greater<int>());\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-sorting-sort-ascending", "cpp-sorting-sort-descending"]
+  }
+}
