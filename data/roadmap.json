@@ -132,7 +132,8 @@
         { "id": "cpp-pair", "title": "pair", "lesson": "cpp-pair" },
         { "id": "cpp-tuples", "title": "Tuples", "lesson": "cpp-tuples" },
         { "id": "cpp-iterators", "title": "Iterators", "lesson": "cpp-iterators" },
-        { "id": "cpp-range-based-loops", "title": "Range-Based Loops", "lesson": "cpp-range-based-loops" }
+        { "id": "cpp-range-based-loops", "title": "Range-Based Loops", "lesson": "cpp-range-based-loops" },
+        { "id": "cpp-lambda-functions", "title": "Lambda Functions", "lesson": "cpp-lambda-functions" }
       ]
     }
   ]

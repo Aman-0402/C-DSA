@@ -1,0 +1,169 @@
+{
+  "id": "cpp-lambda-functions",
+  "moduleId": "stl",
+  "title": "Lambda Functions",
+  "description": "Small anonymous functions defined right where they're needed — the capture clause, and why STL algorithms rely on them constantly.",
+  "objectives": [
+    "Understand a lambda as a function with no separate name, defined inline",
+    "Write a basic lambda and call it",
+    "Use the capture clause to access surrounding variables",
+    "Pass a lambda directly to an STL algorithm"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: A Tiny One-Off Function"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "bool isEven(int n)\n{\n    return n % 2 == 0;\n}\n\n// used exactly once, somewhere far below, just to filter a list"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall Functions: writing a full named function, with a declaration and definition, is straightforward — but slightly heavyweight for tiny logic that's only ever used in one specific spot."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Lambda?"
+    },
+    {
+      "type": "definition",
+      "term": "Lambda function",
+      "text": "A lambda is an anonymous function, defined directly at the point it's needed, without requiring a separate name or declaration."
+    },
+    {
+      "type": "heading",
+      "text": "3. Basic Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "[](int n) { return n % 2 == 0; }"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Breaking it down",
+      "points": [
+        "[] — the capture clause (empty here — nothing from outside is used)",
+        "(int n) — the parameter list, exactly like an ordinary function",
+        "{ return n % 2 == 0; } — the body, exactly like an ordinary function"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Calling a Lambda Directly"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    auto isEven = [](int n) { return n % 2 == 0; };\n\n    cout << isEven(4) << endl;\n    cout << isEven(7) << endl;\n\n    return 0;\n}",
+      "output": "1\n0",
+      "retypePractice": true,
+      "retypeId": "cpp-lambda-functions-basic"
+    },
+    {
+      "type": "note",
+      "text": "auto (previewed here, its own topic next) lets us store the lambda in a variable and call it like any function — isEven(4). Lambdas don't have to be stored, though; they're most often written directly inline, as we'll see next."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Capture Clause"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int threshold = 10;\n\nauto isAboveThreshold = [threshold](int n) { return n > threshold; }; // captures threshold BY VALUE (a copy)\n\nauto isAboveThresholdRef = [&threshold](int n) { return n > threshold; }; // captures threshold BY REFERENCE"
+    },
+    {
+      "type": "table",
+      "headers": ["Capture", "Meaning"],
+      "rows": [
+        ["[]", "Captures nothing from the surrounding scope"],
+        ["[x]", "Captures x by value (a copy) — recall Pass by Value"],
+        ["[&x]", "Captures x by reference — recall Pass by Reference"],
+        ["[=]", "Captures everything used from the surrounding scope, by value"],
+        ["[&]", "Captures everything used from the surrounding scope, by reference"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "Without capturing threshold in some form, the lambda [](int n) { return n > threshold; } wouldn't compile — a lambda can only see variables from its surrounding scope that it has explicitly (or via [=]/[&]) captured."
+    },
+    {
+      "type": "heading",
+      "text": "6. Why Lambdas Matter for STL Algorithms"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {3, 8, 5, 12, 7};\n\n    auto it = find_if(numbers.begin(), numbers.end(), [](int n) { return n > 10; });\n\n    if (it != numbers.end())\n    {\n        cout << \"First value over 10: \" << *it << endl;\n    }\n\n    return 0;\n}",
+      "output": "First value over 10: 12"
+    },
+    {
+      "type": "note",
+      "text": "Recall STL Algorithms' pattern: algorithm(begin, end, ...). find_if takes a range plus a condition — and a lambda is the natural, inline way to express \"whatever this specific condition is\" right where find_if is called, instead of writing and naming a separate function just for this one check."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A sticky note instead of a filed document",
+      "text": "Writing a full named function is like filing an official numbered document for something you'll reference by name later. A lambda is a quick sticky note, written right where it's needed, for a thought that's only relevant in that one spot — no filing, no naming, just handed directly to whoever needs it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the capture clause when a lambda needs an outside variable — [](int n) { return n > threshold; } won't compile without capturing threshold.",
+        "Capturing by value ([x]) when a live, up-to-date reference was actually needed, or vice versa — the choice has the same implications as Pass by Value vs Pass by Reference.",
+        "Overusing [=] or [&] out of convenience when only one or two specific variables are actually needed — less clear about what the lambda actually depends on.",
+        "Writing an unnecessary named function for logic that's only ever used once in an STL algorithm call — a lambda is usually more direct."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a lambda function?",
+          "answer": "An anonymous function defined directly at the point it's needed, without a separate name or declaration."
+        },
+        {
+          "question": "What does the capture clause [] do in a lambda?",
+          "answer": "It specifies which variables from the surrounding scope the lambda can access, and whether by value (a copy) or by reference."
+        },
+        {
+          "question": "Why are lambdas commonly used with STL algorithms like find_if?",
+          "answer": "They let a specific, one-off condition be written directly inline at the call site, instead of requiring a separate named function just for that single use."
+        }
+      ],
+      "thirtySecondAnswer": "A lambda is an anonymous function, written directly where it's needed: [](int n) { return n % 2 == 0; }. The capture clause, [], controls which surrounding variables the lambda can use — [x] captures by value, [&x] by reference, mirroring the same Pass by Value vs Pass by Reference distinction seen earlier. Lambdas are especially common with STL algorithms like find_if(begin, end, condition), letting a one-off condition be expressed inline rather than requiring a separately named function for something used in only one place."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Lambda Functions",
+      "text": "Lambda = a sticky note function, no filing needed. [] = what it's allowed to see from outside. [x] copies, [&x] refers to the real thing."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-lambda-functions-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    auto isEven = [](int n) { return n % 2 == 0; };\n\n    cout << isEven(4) << endl;\n    cout << isEven(7) << endl;\n\n    return 0;\n}", "output": "1\n0" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-lambda-functions-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    auto isEven = [](int n) { return n % 2 == 0; };\n\n    cout << isEven(4) << endl;\n    cout << isEven(7) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-lambda-functions-basic"]
+  }
+}
