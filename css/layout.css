@@ -27,9 +27,10 @@
 }
 
 .main-content {
-  max-width: 1040px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
-  padding: 40px clamp(20px, 4vw, 56px) 120px;
+  padding: 40px clamp(20px, 5vw, 96px) 120px;
 }
 
 .mobile-menu-btn {
@@ -49,7 +50,7 @@
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
 }
-.app-shell.sidebar-collapsed .sidebar-open-btn {
+body.sidebar-collapsed .sidebar-open-btn {
   display: flex;
 }
 

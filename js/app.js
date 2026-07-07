@@ -44,6 +44,7 @@ function initSidebarCollapse() {
 
 function setSidebarCollapsed(collapsed) {
   document.getElementById("appShell").classList.toggle("sidebar-collapsed", collapsed);
+  document.body.classList.toggle("sidebar-collapsed", collapsed);
   setRaw("sidebarCollapsed", String(collapsed));
 }
 
