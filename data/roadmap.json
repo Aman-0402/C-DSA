@@ -9,7 +9,8 @@
         { "id": "cpp-compiler", "title": "Compiler and Compilation Process", "lesson": "cpp-compiler" },
         { "id": "cpp-source-executable", "title": "Source Code and Executable Files", "lesson": "cpp-source-executable" },
         { "id": "cpp-program-structure", "title": "C++ Program Structure", "lesson": "cpp-program-structure" },
-        { "id": "cpp-header-files", "title": "Header Files", "lesson": "cpp-header-files" }
+        { "id": "cpp-header-files", "title": "Header Files", "lesson": "cpp-header-files" },
+        { "id": "cpp-include", "title": "#include", "lesson": "cpp-include" }
       ]
     }
   ]

@@ -1,0 +1,405 @@
+{
+  "id": "cpp-include",
+  "moduleId": "cpp-fundamentals",
+  "title": "#include",
+  "description": "What the #include preprocessor directive does, angle brackets vs double quotes, why order/indirect inclusion matters, and bits/stdc++.h.",
+  "objectives": [
+    "Understand #include as a preprocessor directive handled before compilation",
+    "Understand the difference between #include <header> and #include \"header.h\"",
+    "Understand why you should directly include the header for every feature you use",
+    "Understand what #include <bits/stdc++.h> is and why explicit headers are preferred while learning",
+    "Trace where #include fits in the full build pipeline"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is #include?"
+    },
+    {
+      "type": "definition",
+      "term": "#include",
+      "text": "#include tells the preprocessor to include the contents of another file before compilation."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <iostream>"
+    },
+    {
+      "type": "paragraph",
+      "text": "The basic structure is #include <header>. Later you'll see headers like <vector>, <string>, <algorithm>, and <unordered_map>."
+    },
+    {
+      "type": "warning",
+      "text": "Do not use those headers yet — we will learn every required header and feature separately."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Do We Use #include?"
+    },
+    {
+      "type": "flow",
+      "steps": ["Our Program", "Needs cout", "iostream provides its declaration", "#include <iostream>"]
+    },
+    {
+      "type": "note",
+      "text": "Without the required declaration being available, the compiler cannot correctly understand the name you are trying to use. Simple idea: need a feature → include the appropriate header."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Later, during DSA",
+      "points": ["Need vector → <vector>", "Need string → <string>", "Need sort() → <algorithm>", "Need unordered_map → <unordered_map>"]
+    },
+    {
+      "type": "heading",
+      "text": "3. Why Does #include Start with #?"
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Preprocessing", "Compilation", "Assembly", "Linking"]
+    },
+    {
+      "type": "note",
+      "text": "#include is handled during Preprocessing, not during normal program execution. The program does not reach #include <iostream> while running and decide to include it then — the directive is processed before the actual compilation stage."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "# → Preprocessor. When you see #include, think: before compilation."
+    },
+    {
+      "type": "heading",
+      "text": "4. How Does #include Work?"
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "Preprocessor sees #include", "Find requested header", "Process/include header contents", "Create preprocessed source", "Compiler receives preprocessed source"]
+    },
+    {
+      "type": "note",
+      "text": "You will often hear \"#include copies and pastes the header file\" — a useful beginner mental model. More accurately: the preprocessor processes the included file as if its contents appeared at the location of the #include directive."
+    },
+    {
+      "type": "tip",
+      "text": "#include makes the included file's content part of preprocessing at that location."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The report and chapter analogy",
+      "text": "Your report says \"Insert Chapter 2 here.\" Another file contains the actual Chapter 2 content. Before submitting, someone replaces the placeholder with the actual content: Main Report + Chapter File → Combined Report. Similarly: Source File + Header → Preprocessed Source."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "#include = Bring required file content into preprocessing"
+    },
+    {
+      "type": "heading",
+      "text": "6. Basic #include Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <header_name>"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Breaking it down",
+      "points": ["# — indicates a preprocessor directive", "include — the directive requesting file inclusion", "<iostream> — specifies the header being requested"]
+    },
+    {
+      "type": "heading",
+      "text": "7. Two Ways to Use #include"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <iostream>"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include \"calculator.h\""
+    },
+    {
+      "type": "note",
+      "text": "Notice the difference: < > versus \" \". Let's understand them."
+    },
+    {
+      "type": "heading",
+      "text": "8. Angle Brackets < >"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Commonly used for standard/implementation-provided headers",
+      "points": ["#include <iostream>", "#include <vector>", "#include <string>", "#include <algorithm>"]
+    },
+    {
+      "type": "tip",
+      "text": "For beginner-level C++: use < > for C++ Standard Library headers, e.g. #include <iostream>."
+    },
+    {
+      "type": "heading",
+      "text": "9. Double Quotes \" \""
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include \"calculator.h\""
+    },
+    {
+      "type": "paragraph",
+      "text": "Double quotes are commonly used for project or user-created headers. Imagine a project with main.cpp and calculator.h — inside main.cpp, #include \"calculator.h\" means: include our project's calculator.h header."
+    },
+    {
+      "type": "table",
+      "headers": ["Syntax", "Meaning"],
+      "rows": [
+        ["< >", "Standard Library Header (C++ provides it)"],
+        ["\" \"", "Our Project Header (we created it)"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "10. Is the Search Process Exactly the Same?"
+    },
+    {
+      "type": "note",
+      "text": "No. For #include \"calculator.h\", the implementation commonly searches relative to the current source file or associated local locations first, then configured include paths. For #include <iostream>, the implementation searches its configured system or standard include paths. The exact search rules can depend on the compiler implementation and its configuration."
+    },
+    {
+      "type": "tip",
+      "text": "For interviews and beginner understanding: angle brackets are normally used for standard/system headers, while double quotes are normally used for local project headers."
+    },
+    {
+      "type": "heading",
+      "text": "11. Example Using <iostream>"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}",
+      "output": "Hello",
+      "retypePractice": true,
+      "retypeId": "cpp-include-hello"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing #include only",
+      "points": [
+        "Step 1 — The preprocessor sees #include <iostream>",
+        "Step 2 — The requested standard header is processed",
+        "Step 3 — Declarations related to standard input/output streams become available",
+        "Step 4 — The program later uses cout (accessible as cout because of using namespace std;)"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "12. What Happens Without #include <iostream>?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "using namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "We removed #include <iostream>. Now the required declaration for std::cout has not been made available through iostream — the compiler may report an error related to cout."
+    },
+    {
+      "type": "flow",
+      "steps": ["Compiler sees cout", "Where is cout declared?", "Required declaration unavailable", "Error"]
+    },
+    {
+      "type": "heading",
+      "text": "13. Important: #include Does Not Create cout"
+    },
+    {
+      "type": "warning",
+      "text": "Do not think \"#include creates cout.\" Better understanding: the iostream header provides the required declaration for the standard stream object std::cout. #include makes the header content available during preprocessing."
+    },
+    {
+      "type": "flow",
+      "steps": ["cout exists as part of the Standard Library", "iostream provides its declaration", "#include processes iostream", "Our source can use that declaration"]
+    },
+    {
+      "type": "heading",
+      "text": "14. Can We Include Multiple Headers?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <iostream>\n#include <string>\n#include <vector>"
+    },
+    {
+      "type": "keyPoints",
+      "points": ["iostream → Input / Output Streams", "string → Standard String Features", "vector → Vector Container"]
+    },
+    {
+      "type": "note",
+      "text": "A C++ program may include multiple headers. But remember our rule: we will not use a feature before learning it."
+    },
+    {
+      "type": "heading",
+      "text": "15. Does the Order of #include Matter?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sometimes it can. You should not rely on one standard header indirectly including another header you need. Even if code happens to compile in one environment because of indirect inclusions, relying on that is poor practice."
+    },
+    {
+      "type": "tip",
+      "text": "Good habit: directly include the header that provides the feature you directly use."
+    },
+    {
+      "type": "keyPoints",
+      "points": ["Use cout → #include <iostream>", "Use vector → #include <vector>", "Use sort() → #include <algorithm>"]
+    },
+    {
+      "type": "heading",
+      "text": "16. What is #include <bits/stdc++.h>?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <bits/stdc++.h>\n\nusing namespace std;\n\nint main()\n{\n    return 0;\n}"
+    },
+    {
+      "type": "keyPoints",
+      "title": "You may see it in",
+      "points": ["Competitive programming", "Coding tutorials", "DSA videos", "Some LeetCode-style solutions"]
+    },
+    {
+      "type": "warning",
+      "text": "bits/stdc++.h is not a standard C++ header. It is commonly available in GCC-based environments and includes a large collection of standard library headers there. Code using it may not compile on every C++ compiler — portability to other compiler environments can be a problem."
+    },
+    {
+      "type": "note",
+      "text": "During learning, we will prefer explicit standard headers (e.g. #include <iostream>, #include <vector>, #include <algorithm>) so you understand which feature comes from which header. Later, once you fully understand STL, we can discuss when competitive programmers use bits/stdc++.h."
+    },
+    {
+      "type": "tip",
+      "text": "Interview tip: explicit standard headers are clearer and portable."
+    },
+    {
+      "type": "heading",
+      "text": "17. #include and the Compilation Process"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}",
+      "output": "Hello"
+    },
+    {
+      "type": "flow",
+      "title": "The build flow begins",
+      "steps": ["main.cpp", "PREPROCESSING (#include <iostream> processed)", "Preprocessed Source", "COMPILATION", "Assembly Code", "ASSEMBLY", "Object Code", "LINKING", "Executable"]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "#include → Preprocessing Stage. Not execution. Not normal runtime."
+    },
+    {
+      "type": "heading",
+      "text": "18. Dry Run of #include"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"C++\";\n\n    return 0;\n}",
+      "output": "C++"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Before program execution, the source file enters preprocessing",
+      "points": [
+        "Step 1 — Preprocessor reads #include <iostream>",
+        "Step 2 — The iostream header is processed at this location",
+        "Step 3 — The preprocessed source goes to the compiler",
+        "Step 4 — The remaining build stages occur",
+        "Step 5 — The executable runs",
+        "Step 6 — Execution starts from main()",
+        "Step 7 — The program executes cout << \"C++\"; → Output: C++"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "#include was handled before the program ran. Runtime execution did not start from #include <iostream> — runtime execution begins from main() for our normal C++ program."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing include without # — include <iostream> is incorrect, #include <iostream> is correct.",
+        "Adding a semicolon — #include <iostream>; is wrong, there is no semicolon at the end of a #include directive.",
+        "Using parentheses — #include(iostream) is incorrect, use #include <iostream>.",
+        "Writing the wrong header name — #include <iosteam> (misspelled) instead of #include <iostream>; spelling matters.",
+        "Thinking #include runs when the program runs — it's handled during preprocessing, before the build continues and main() begins.",
+        "Using the wrong brackets — standard headers use #include <iostream>, local project headers commonly use #include \"calculator.h\".",
+        "Using bits/stdc++.h without understanding it — if asked why you included it, you should be able to answer; we'll use explicit standard headers while learning."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is #include in C++?",
+          "answer": "#include is a preprocessor directive that tells the preprocessor to process the contents of another file at the location of the directive before compilation."
+        },
+        {
+          "question": "When is #include processed?",
+          "answer": "#include is processed during the preprocessing stage, before compilation."
+        },
+        {
+          "question": "Why do we use #include <iostream>?",
+          "answer": "We use #include <iostream> to make declarations for standard input and output stream features, such as std::cout and std::cin, available to the source file."
+        },
+        {
+          "question": "What is the difference between < > and \" \" in #include?",
+          "answer": "Angle brackets are commonly used for standard or implementation-provided headers, while double quotes are commonly used for local project headers. Their file search behavior also differs depending on the implementation."
+        },
+        {
+          "question": "Does #include execute at runtime?",
+          "answer": "No. #include is handled by the preprocessor before compilation and is not executed at runtime."
+        },
+        {
+          "question": "Is bits/stdc++.h a standard C++ header?",
+          "answer": "No. bits/stdc++.h is a non-standard header commonly available in GCC-based environments and is frequently used in competitive programming."
+        },
+        {
+          "question": "Should we rely on indirect header inclusion?",
+          "answer": "No. A good practice is to directly include the header that provides the feature our code directly uses."
+        }
+      ],
+      "thirtySecondAnswer": "#include is a C++ preprocessor directive used to include another file during the preprocessing stage. For example, #include <iostream> makes standard input and output stream declarations available to the source file. Angle brackets are commonly used for Standard Library headers, while double quotes are commonly used for local project headers. The #include directive is processed before compilation and does not execute at runtime."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember #include",
+      "text": "NEED → INCLUDE → USE (e.g. Need cout → #include <iostream> → Use cout). # = BEFORE COMPILATION. #include → Preprocessor. < > → Standard header. \" \" → Local header. No semicolon after #include."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-include-hello", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}", "output": "Hello" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-include-hello",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-include-hello"]
+  }
+}
