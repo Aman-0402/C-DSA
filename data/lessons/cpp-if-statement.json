@@ -1,0 +1,165 @@
+{
+  "id": "cpp-if-statement",
+  "moduleId": "control-flow",
+  "title": "if Statement",
+  "description": "The syntax and mechanics of if: braces, single-statement bodies, and the = vs == mistake in a real condition.",
+  "objectives": [
+    "Write a basic if statement with correct syntax",
+    "Understand when braces are required vs optional",
+    "Trace exactly how an if statement executes",
+    "Avoid the classic if (a = 5) mistake"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Basic Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "if (condition)\n{\n    // runs only if condition is true\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "The condition goes inside parentheses. If it evaluates to true, the block inside the braces runs. If it's false, the block is skipped entirely."
+    },
+    {
+      "type": "heading",
+      "text": "2. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 20;\n\n    if (age >= 18)\n    {\n        cout << \"You are an adult.\";\n    }\n\n    return 0;\n}",
+      "output": "You are an adult.",
+      "retypePractice": true,
+      "retypeId": "cpp-if-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "age is 20",
+        "age >= 18 evaluates to true",
+        "The block inside { } runs, printing You are an adult.",
+        "If age had been 15, the condition would be false and nothing would print"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Braces Are Optional for a Single Statement"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "if (age >= 18)\n    cout << \"You are an adult.\";"
+    },
+    {
+      "type": "warning",
+      "text": "If the body is exactly one statement, C++ allows dropping the braces. This is legal, but it's a common source of bugs — if someone later adds a second line expecting it to be \"inside\" the if without also adding braces, only the first line is actually conditional. Using braces even for one-line bodies is a widely recommended habit."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "if (age >= 18)\n    cout << \"You are an adult.\";\n    cout << \"This always runs, regardless of age!\"; // NOT inside the if"
+    },
+    {
+      "type": "note",
+      "text": "Indentation is just for readability to humans — it has no effect on which lines are actually inside the if. Only the braces (or the single next statement, with none) decide that."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Classic Mistake: if (a = 5)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a = 3;\n\nif (a = 5) // assignment, not comparison!\n{\n    cout << \"This always runs\";\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Recall from Operators: = assigns, == compares. if (a = 5) assigns 5 to a and then checks whether the result (5) is truthy — which it always is, since 5 is non-zero. The block runs every single time, regardless of a's original value, and a has now been silently overwritten. The correct condition is if (a == 5)."
+    },
+    {
+      "type": "heading",
+      "text": "5. Conditions Aren't Only Comparisons"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "bool isLoggedIn = true;\n\nif (isLoggedIn)\n{\n    cout << \"Welcome back!\";\n}"
+    },
+    {
+      "type": "note",
+      "text": "A condition can be any bool expression — including a bool variable used directly, without needing == true. if (isLoggedIn) already means \"if this is true.\""
+    },
+    {
+      "type": "heading",
+      "text": "6. Nested if"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 20;\nbool hasID = true;\n\nif (age >= 18)\n{\n    if (hasID)\n    {\n        cout << \"Entry allowed.\";\n    }\n}"
+    },
+    {
+      "type": "note",
+      "text": "An if can contain another if inside its block — the inner condition is only even checked if the outer one was true. We'll see cleaner ways to combine conditions once we cover && in more depth, but nesting like this is valid and common."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing if (a = 5) instead of if (a == 5) — this assigns instead of comparing, and the block runs almost unconditionally.",
+        "Assuming indentation controls what's inside the if — only braces (or the single next statement) do.",
+        "Adding a second statement after a brace-less if, expecting it to be conditional too — without braces, only the very next statement is inside the if.",
+        "Writing if (isLoggedIn == true) — redundant; if (isLoggedIn) already checks the same thing."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the basic syntax of an if statement?",
+          "answer": "if (condition) { ... } — the block runs only when the condition evaluates to true."
+        },
+        {
+          "question": "Are braces required for an if statement?",
+          "answer": "Only if the body has more than one statement. A single-statement body can omit braces, though using them anyway is a recommended habit to avoid bugs."
+        },
+        {
+          "question": "What's wrong with if (a = 5)?",
+          "answer": "It uses assignment (=) instead of comparison (==), so it assigns 5 to a and the condition becomes true almost unconditionally, since a non-zero value is truthy."
+        },
+        {
+          "question": "Can an if condition be a bool variable directly?",
+          "answer": "Yes — if (isLoggedIn) is valid and equivalent to if (isLoggedIn == true), but simpler."
+        }
+      ],
+      "thirtySecondAnswer": "An if statement runs a block of code only when its condition evaluates to true: if (condition) { ... }. Braces are required for multi-statement bodies but optional for a single statement, though omitting them is a common source of bugs. A classic mistake is writing if (a = 5), which assigns instead of comparing due to confusing = with ==, making the condition almost always true. A condition can be any bool expression, including a bool variable used directly, and if statements can be nested inside one another."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember if",
+      "text": "if (condition) → true runs the block, false skips it. Always == to compare, never = inside a condition. When in doubt, use braces."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-if-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 20;\n\n    if (age >= 18)\n    {\n        cout << \"You are an adult.\";\n    }\n\n    return 0;\n}", "output": "You are an adult." }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-if-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 20;\n\n    if (age >= 18)\n    {\n        cout << \"You are an adult.\";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-if-basic"]
+  }
+}
