@@ -16,7 +16,8 @@
         { "id": "cpp-using-namespace-std", "title": "using namespace std", "lesson": "cpp-using-namespace-std" },
         { "id": "cpp-main-function", "title": "main() Function", "lesson": "cpp-main-function" },
         { "id": "cpp-cout-cin", "title": "cout & cin", "lesson": "cpp-cout-cin" },
-        { "id": "cpp-variables", "title": "Variables", "lesson": "cpp-variables" }
+        { "id": "cpp-variables", "title": "Variables", "lesson": "cpp-variables" },
+        { "id": "cpp-constants", "title": "Constants", "lesson": "cpp-constants" }
       ]
     }
   ]

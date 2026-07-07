@@ -1,0 +1,202 @@
+{
+  "id": "cpp-constants",
+  "moduleId": "cpp-fundamentals",
+  "title": "Constants",
+  "description": "Values that aren't allowed to change: the const keyword, the older #define approach, naming convention, and why constants matter.",
+  "objectives": [
+    "Understand what a constant is and how it differs from a variable",
+    "Declare a constant with const",
+    "Recognize the #define preprocessor approach and how it differs from const",
+    "Follow the UPPER_SNAKE_CASE naming convention for constants",
+    "Know what happens when code tries to modify a constant"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Constant?"
+    },
+    {
+      "type": "paragraph",
+      "text": "In the Variables lesson, we saw that a variable's value can change: age = age + 1;. A constant is the opposite — a value that is fixed once set, and cannot be changed afterward."
+    },
+    {
+      "type": "definition",
+      "term": "Constant",
+      "text": "A constant is a named value that is fixed at declaration and cannot be changed afterward during the program's execution."
+    },
+    {
+      "type": "heading",
+      "text": "2. Declaring a Constant with const"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "const int MAX_SCORE = 100;"
+    },
+    {
+      "type": "paragraph",
+      "text": "This looks like a normal variable declaration, with one addition: the const keyword before the type. It means MAX_SCORE must be given a value right here, and that value can never change again."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "MAX_SCORE = 200; // compilation error — cannot assign to a const"
+    },
+    {
+      "type": "warning",
+      "text": "A const variable must be initialized at the moment it's declared. const int MAX_SCORE; with no value is not allowed — there would be no way to ever give it one afterward."
+    },
+    {
+      "type": "heading",
+      "text": "3. Why Use Constants?"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Constants are useful when a value should never change",
+      "points": [
+        "Fixed limits — a maximum score, a maximum number of attempts",
+        "Mathematical values — like PI",
+        "Configuration-style values — a fixed tax rate, a fixed conversion factor",
+        "Protecting against bugs — the compiler stops you from accidentally reassigning it later in the code"
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "Marking a value const is a way of telling both the compiler and other programmers reading your code: this value is not meant to change. If someone tries to change it anyway, it's caught immediately as an error, rather than becoming a silent bug."
+    },
+    {
+      "type": "heading",
+      "text": "4. Naming Convention for Constants"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "const int MAX_SCORE = 100;\nconst double PI = 3.14159;\nconst int TOTAL_ATTEMPTS = 3;"
+    },
+    {
+      "type": "note",
+      "text": "By convention, C++ constants are commonly written in UPPER_SNAKE_CASE — all capital letters, words separated by underscores. This makes them instantly recognizable as constants, distinct from ordinary variables like age or totalMarks."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The speed limit sign analogy",
+      "text": "A speed limit sign says 60. Every driver reads that same fixed number — nobody gets to walk up and repaint the sign to say something else while driving. A constant in code works the same way: every part of the program reads the same fixed value, and nothing is allowed to change it."
+    },
+    {
+      "type": "heading",
+      "text": "6. #define — The Older Preprocessor Way"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#define MAX_SCORE 100"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall from the Compiler and #include topics: anything starting with # is a preprocessor directive, handled before compilation. #define creates a macro — wherever MAX_SCORE appears in the code, the preprocessor literally replaces it with 100 before the compiler ever sees it."
+    },
+    {
+      "type": "flow",
+      "steps": ["Source with #define MAX_SCORE 100", "Preprocessor replaces every MAX_SCORE with 100", "Compiler sees only 100"]
+    },
+    {
+      "type": "warning",
+      "text": "Notice #define has no = sign, no semicolon, and no type — it's pure text substitution, not a real variable. This makes it less safe than const: the compiler doesn't know MAX_SCORE is meant to be a number, it just blindly swaps text."
+    },
+    {
+      "type": "heading",
+      "text": "7. const vs #define"
+    },
+    {
+      "type": "table",
+      "headers": ["const", "#define"],
+      "rows": [
+        ["A real, typed variable", "Text substitution by the preprocessor"],
+        ["Handled during compilation", "Handled during preprocessing"],
+        ["Has a type (int, double, ...)", "No type — just replaced text"],
+        ["Follows normal C++ scoping rules", "Has no scope — applies everywhere after it, for the rest of the file"],
+        ["Generally preferred in modern C++", "Mostly legacy / older-style code"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "For modern C++, prefer const over #define for constant values — it's type-safe and respects scope, which we'll study properly in a later topic."
+    },
+    {
+      "type": "heading",
+      "text": "8. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    const int MAX_SCORE = 100;\n\n    cout << \"Max score: \" << MAX_SCORE << endl;\n\n    return 0;\n}",
+      "output": "Max score: 100",
+      "retypePractice": true,
+      "retypeId": "cpp-constants-max-score"
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Declaring const int MAX_SCORE; with no value — a const must be initialized at the point of declaration, since it can never be assigned afterward.",
+        "Trying to reassign a const after declaration — MAX_SCORE = 200; after const int MAX_SCORE = 100; is a compilation error.",
+        "Using lowercase for constants — not a compiler error, but breaks the UPPER_SNAKE_CASE convention that makes constants easy to spot.",
+        "Writing #define MAX_SCORE = 100; with an = and a semicolon — #define uses only a space between the name and the value, no = and no ;.",
+        "Assuming #define respects scope like a normal variable — it doesn't; it applies to the rest of the file from that point on."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a constant in C++?",
+          "answer": "A constant is a named value that is fixed at declaration and cannot be changed afterward during the program's execution."
+        },
+        {
+          "question": "How do you declare a constant?",
+          "answer": "Using the const keyword before the type, and initializing it immediately, e.g. const int MAX_SCORE = 100;."
+        },
+        {
+          "question": "What happens if you try to modify a const variable?",
+          "answer": "The compiler reports an error — a const variable cannot be assigned a new value after its initial declaration."
+        },
+        {
+          "question": "What is the difference between const and #define?",
+          "answer": "const creates a real, typed variable handled during compilation and following normal scoping rules, while #define is a preprocessor text substitution with no type and no scope."
+        },
+        {
+          "question": "Why is const generally preferred over #define for constants in modern C++?",
+          "answer": "const is type-safe and respects scope, catching mistakes the compiler can check, whereas #define is a blind text replacement performed before compilation even begins."
+        }
+      ],
+      "thirtySecondAnswer": "A constant is a value that's fixed once declared and can never be changed afterward. In C++, the modern way to declare one is with const, such as const int MAX_SCORE = 100;, which must be initialized immediately since it can't be assigned later. By convention, constant names are written in UPPER_SNAKE_CASE. An older approach is the preprocessor directive #define, which does plain text substitution before compilation and has no type or scope — const is generally preferred today because it's type-safe and integrates properly with the language."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Constants",
+      "text": "const = a locked locker — you set what's inside once, then the lock stays shut forever. Variable = unlocked locker, swap contents anytime."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-constants-max-score", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    const int MAX_SCORE = 100;\n\n    cout << \"Max score: \" << MAX_SCORE << endl;\n\n    return 0;\n}", "output": "Max score: 100" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-constants-max-score",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    const int MAX_SCORE = 100;\n\n    cout << \"Max score: \" << MAX_SCORE << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-constants-max-score"]
+  }
+}
