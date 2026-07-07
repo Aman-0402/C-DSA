@@ -1,0 +1,140 @@
+{
+  "id": "cpp-unordered-set",
+  "moduleId": "stl",
+  "title": "unordered_set",
+  "description": "Same idea as set — unique values — but hash-based instead of sorted, trading order for typically much faster lookups.",
+  "objectives": [
+    "Understand unordered_set as hash-based rather than sorted",
+    "Use the same insert()/find()/count()/erase() interface as set",
+    "Know why it's typically faster than set for lookups",
+    "Choose between set and unordered_set correctly"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: set Was Sorted, but O(log n)"
+    },
+    {
+      "type": "paragraph",
+      "text": "set kept elements sorted automatically, using a balanced binary search tree, giving roughly logarithmic-time operations. unordered_set drops the sorting guarantee entirely, in exchange for typically much faster operations."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is unordered_set?"
+    },
+    {
+      "type": "definition",
+      "term": "unordered_set",
+      "text": "unordered_set stores unique values with no particular guaranteed order, using hashing internally to achieve average constant-time insertion, lookup, and removal."
+    },
+    {
+      "type": "heading",
+      "text": "3. Same Interface as set"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nint main()\n{\n    unordered_set<int> numbers;\n    numbers.insert(30);\n    numbers.insert(10);\n    numbers.insert(20);\n    numbers.insert(10); // duplicate — still silently ignored\n\n    cout << numbers.count(20) << endl;\n    cout << numbers.size() << endl;\n\n    return 0;\n}",
+      "output": "1\n3",
+      "retypePractice": true,
+      "retypeId": "cpp-unordered-set-basic"
+    },
+    {
+      "type": "note",
+      "text": "insert(), count(), and duplicate handling all work identically to set — this example deliberately avoids printing every element in order, since unordered_set makes no promise about what order that would come out in."
+    },
+    {
+      "type": "heading",
+      "text": "4. No Sorted Order — On Purpose"
+    },
+    {
+      "type": "warning",
+      "text": "Iterating an unordered_set with a range-based for loop is valid, but the order elements come out in is unspecified and can even change between runs. If sorted output matters, set is the right choice; if order genuinely doesn't matter and speed does, unordered_set is usually better."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why It's Faster: Hashing, Briefly"
+    },
+    {
+      "type": "note",
+      "text": "Instead of comparing values against a sorted tree structure, unordered_set uses a hash function to convert each value into a number that determines roughly where it's stored — allowing insert(), find(), and count() to jump close to the right spot directly, rather than navigating down a tree. This is what gives average O(1) performance, versus set's O(log n)."
+    },
+    {
+      "type": "heading",
+      "text": "6. set vs unordered_set"
+    },
+    {
+      "type": "table",
+      "headers": ["set", "unordered_set"],
+      "rows": [
+        ["Automatically sorted", "No guaranteed order"],
+        ["O(log n) insert/find/erase", "Average O(1) insert/find/erase"],
+        ["Choose when sorted iteration is needed", "Choose when only fast membership checks matter"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "For pure DSA problems that just need to answer \"have I seen this value before?\" as fast as possible, unordered_set is usually the better default — this is a very common pattern for detecting duplicates or checking membership efficiently."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A guest list checked at the door, not read aloud alphabetically",
+      "text": "Recall set's alphabetical guest list. unordered_set is a guest list kept in whatever quick-lookup system gets a bouncer to \"yes, they're on the list\" or \"no, they're not\" almost instantly — nobody cares that the underlying storage isn't alphabetically organized, since nobody ever needs to read the whole list out loud in order."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Expecting unordered_set to iterate in insertion or sorted order — it guarantees neither.",
+        "Choosing unordered_set when sorted output is actually needed — set is the right tool for that.",
+        "Assuming unordered_set is always faster in every single case — average performance is O(1), but worst-case scenarios (rare, hash-related) can degrade this.",
+        "Forgetting #include <unordered_set> — it's a separate header from <set>."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the main difference between set and unordered_set?",
+          "answer": "set keeps elements automatically sorted with O(log n) operations via a balanced tree; unordered_set has no guaranteed order but typically achieves average O(1) operations via hashing."
+        },
+        {
+          "question": "Why is unordered_set typically faster than set?",
+          "answer": "It uses a hash function to jump close to the right storage location directly, rather than navigating a sorted tree structure comparison by comparison."
+        },
+        {
+          "question": "When would you choose set over unordered_set?",
+          "answer": "When elements need to be iterated in sorted order — unordered_set makes no ordering guarantee at all."
+        }
+      ],
+      "thirtySecondAnswer": "unordered_set stores unique values just like set, with the same insert()/find()/count()/erase() interface, but drops the sorted-order guarantee in exchange for typically much faster operations — average O(1) instead of set's O(log n) — achieved through hashing rather than a balanced tree. Iterating it gives elements in an unspecified order that can even vary between runs, so set remains the right choice when sorted output matters. For pure membership-checking tasks common in DSA, like detecting duplicates quickly, unordered_set is usually the better default."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember unordered_set",
+      "text": "unordered_set = the bouncer's quick-check list. Fast yes/no answer, no promise about order. set = the alphabetical guest list, slower, but organized."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-unordered-set-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nint main()\n{\n    unordered_set<int> numbers;\n    numbers.insert(30);\n    numbers.insert(10);\n    numbers.insert(20);\n    numbers.insert(10);\n\n    cout << numbers.count(20) << endl;\n    cout << numbers.size() << endl;\n\n    return 0;\n}", "output": "1\n3" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-unordered-set-basic",
+      "reference": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nint main()\n{\n    unordered_set<int> numbers;\n    numbers.insert(30);\n    numbers.insert(10);\n    numbers.insert(20);\n    numbers.insert(10);\n\n    cout << numbers.count(20) << endl;\n    cout << numbers.size() << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-unordered-set-basic"]
+  }
+}
