@@ -1,0 +1,146 @@
+{
+  "id": "cpp-new",
+  "moduleId": "pointers-memory",
+  "title": "new",
+  "description": "Requesting memory at runtime with new — for a single value and, finally, for an array whose size isn't known until the program runs.",
+  "objectives": [
+    "Allocate a single value at runtime with new",
+    "Allocate a dynamically-sized array with new[]",
+    "Understand what new actually returns",
+    "Finally solve the runtime-sized array problem from Dynamic Memory Allocation"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. new for a Single Value"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int *ptr = new int; // allocates one int on the heap, uninitialized\n*ptr = 25;"
+    },
+    {
+      "type": "paragraph",
+      "text": "new Type requests enough memory to hold one value of that type, at runtime, and returns a pointer to it. Recall Pointers: the * is then used to actually read or write the value stored there."
+    },
+    {
+      "type": "heading",
+      "text": "2. Initializing at Allocation"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int *ptr = new int(25); // allocated AND initialized to 25 in one step"
+    },
+    {
+      "type": "note",
+      "text": "Parentheses after the type let new set an initial value immediately, avoiding a separate *ptr = 25; line."
+    },
+    {
+      "type": "heading",
+      "text": "3. new for an Array — Finally, Runtime Sizing"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int n;\n    cout << \"How many scores? \";\n    cin >> n;\n\n    int *scores = new int[n]; // size decided at RUNTIME\n\n    for (int i = 0; i < n; i++)\n    {\n        scores[i] = (i + 1) * 10;\n    }\n\n    for (int i = 0; i < n; i++)\n    {\n        cout << scores[i] << \" \";\n    }\n\n    delete[] scores;\n\n    return 0;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This solves exactly the problem raised in Dynamic Memory Allocation: int scores[n]; wasn't valid standard C++ because n wasn't known at compile time. new int[n] is completely valid — n is read from cin first, and the array is sized at that exact moment, while the program runs."
+    },
+    {
+      "type": "heading",
+      "text": "4. A Deterministic Example (Fixed Size, Still Dynamic)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *scores = new int[5];\n\n    for (int i = 0; i < 5; i++)\n    {\n        scores[i] = (i + 1) * 10;\n    }\n\n    for (int i = 0; i < 5; i++)\n    {\n        cout << scores[i] << \" \";\n    }\n\n    delete[] scores;\n\n    return 0;\n}",
+      "output": "10 20 30 40 50",
+      "retypePractice": true,
+      "retypeId": "cpp-new-array"
+    },
+    {
+      "type": "note",
+      "text": "This one uses a fixed 5 so its output is predictable to trace here — but new int[5] is still genuine dynamic allocation, indexed with [] exactly like an ordinary array from Arrays."
+    },
+    {
+      "type": "heading",
+      "text": "5. What new Actually Returns"
+    },
+    {
+      "type": "table",
+      "headers": ["Expression", "Returns"],
+      "rows": [
+        ["new int", "A pointer to a single new int (int*)"],
+        ["new int[n]", "A pointer to the first element of a new array of n ints (int*)"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Either way, new hands back a pointer — this is why a pointer variable is always needed on the left side to receive it, just like in Pointers."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Ordering exactly the amount you need",
+      "text": "Instead of a fixed 5-slot tray baked into the kitchen, new int[n] is like ordering exactly n plates from the supplier the moment you find out how many guests are coming — decided at the last minute, sized precisely for the occasion."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting new returns a pointer, not a value — it must be assigned to a pointer variable, e.g. int *ptr = new int;.",
+        "Using delete instead of delete[] for an array allocated with new[] — this distinction is covered fully in the delete topic next, but they are not interchangeable.",
+        "Assuming a normal (non-new) array could have been sized with a runtime variable — that's exactly the limitation new[] exists to lift.",
+        "Losing track of a pointer returned by new without ever freeing it — covered next in delete, but worth flagging now: this memory doesn't clean itself up automatically."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does the new operator do?",
+          "answer": "It requests memory at runtime — for a single value or an array — and returns a pointer to the allocated memory."
+        },
+        {
+          "question": "How does new solve the problem of array sizes needing to be known at compile time?",
+          "answer": "new int[n] allocates an array whose size, n, can be a variable computed or read at runtime, unlike an ordinary array declaration, which requires a fixed compile-time size."
+        },
+        {
+          "question": "What type of value does new int[n] return?",
+          "answer": "A pointer to the first element of the newly allocated array (int*), just like new int returns a pointer to a single allocated int."
+        }
+      ],
+      "thirtySecondAnswer": "new requests memory at runtime and returns a pointer to it — new int allocates a single value, while new int[n] allocates an array of n elements, where n can be a variable only known once the program is running. This is exactly what solves the limitation raised in Dynamic Memory Allocation, where an ordinary array's size has to be a fixed value known at compile time. Either form of new hands back a pointer, which must be stored in a pointer variable and, as covered next in delete, eventually released."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember new",
+      "text": "new Type = order one item, made to order. new Type[n] = order n items, exactly how many you need, decided right now."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-new-array", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *scores = new int[5];\n\n    for (int i = 0; i < 5; i++)\n    {\n        scores[i] = (i + 1) * 10;\n    }\n\n    for (int i = 0; i < 5; i++)\n    {\n        cout << scores[i] << \" \";\n    }\n\n    delete[] scores;\n\n    return 0;\n}", "output": "10 20 30 40 50" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-new-array",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *scores = new int[5];\n\n    for (int i = 0; i < 5; i++)\n    {\n        scores[i] = (i + 1) * 10;\n    }\n\n    for (int i = 0; i < 5; i++)\n    {\n        cout << scores[i] << \" \";\n    }\n\n    delete[] scores;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-new-array"]
+  }
+}
