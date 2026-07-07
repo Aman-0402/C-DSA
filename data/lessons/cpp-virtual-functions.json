@@ -1,0 +1,156 @@
+{
+  "id": "cpp-virtual-functions",
+  "moduleId": "oop",
+  "title": "Virtual Functions",
+  "description": "Resolving the cliffhanger from Function Overriding: the virtual keyword, how it enables true runtime polymorphism, and why virtual destructors matter.",
+  "objectives": [
+    "Fix the base-pointer problem left open by Function Overriding",
+    "Declare and use a virtual function correctly",
+    "Understand, at a high level, how virtual dispatch works",
+    "Understand why a base class needs a virtual destructor"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Problem"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Animal\n{\npublic:\n    void makeSound() { cout << \"Some generic animal sound\" << endl; }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() { cout << \"Woof!\" << endl; }\n};\n\nAnimal *a = new Dog();\na->makeSound(); // prints Animal's version — NOT what we wanted"
+    },
+    {
+      "type": "paragraph",
+      "text": "Function Overriding left this open: overriding alone doesn't make calls through a base class pointer use the derived version. virtual is the fix."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Fix: virtual"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Animal\n{\npublic:\n    virtual void makeSound() // mark it virtual in the BASE class\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() override // override here confirms it matches\n    {\n        cout << \"Woof!\" << endl;\n    }\n};"
+    },
+    {
+      "type": "definition",
+      "term": "Virtual function",
+      "text": "A virtual function is a base class member function marked virtual, telling C++ to decide which version to call at runtime, based on the object's actual type, rather than the pointer or reference's declared type."
+    },
+    {
+      "type": "heading",
+      "text": "3. Proving It Now Works"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() override\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    a->makeSound();\n\n    delete a;\n\n    return 0;\n}",
+      "output": "Woof!",
+      "retypePractice": true,
+      "retypeId": "cpp-virtual-functions-fixed"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What changed from the broken version",
+      "points": [
+        "Only one word was added: virtual, on Animal's makeSound()",
+        "Now a->makeSound() checks what a actually points to at runtime — a real Dog — and calls Dog's version",
+        "This is the mechanism that makes Polymorphism's earlier preview actually work as described"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. How Does This Work, Roughly?"
+    },
+    {
+      "type": "note",
+      "text": "Under the hood, a class with virtual functions keeps a hidden table (informally called a vtable) mapping each virtual function to the correct version for that specific type. Calling a virtual function looks up the right version in that table at runtime, instead of the compiler hard-wiring the call to one fixed version while compiling. You don't need to manage this table yourself — the compiler handles it automatically once virtual is used."
+    },
+    {
+      "type": "heading",
+      "text": "5. Virtual Destructors — A Critical Detail"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual ~Animal() // virtual destructor\n    {\n        cout << \"Animal destroyed\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    ~Dog()\n    {\n        cout << \"Dog destroyed\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    delete a; // with a virtual destructor, BOTH destructors run, correctly\n\n    return 0;\n}",
+      "output": "Dog destroyed\nAnimal destroyed",
+      "retypePractice": true,
+      "retypeId": "cpp-virtual-functions-destructor"
+    },
+    {
+      "type": "warning",
+      "text": "This is genuinely important, and a classic interview question: if Animal's destructor (from Destructors) is NOT virtual, then delete a; here would only run Animal's destructor, silently skipping Dog's — a real bug if Dog's destructor was responsible for releasing something like heap memory. Any base class meant to be used through pointers like this should always mark its destructor virtual."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A universal remote that checks which TV it's actually facing",
+      "text": "A non-virtual call is like a universal remote hard-wired to always control one specific brand of TV, no matter which TV it's actually pointed at. A virtual call is a smarter remote that checks, at the moment you press the button, exactly which TV is in front of it, and sends the correct signal for that model — the right behavior for the real device, decided at the last possible moment."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Overriding a function without ever marking the base version virtual — calls through a base pointer will keep using the base version regardless.",
+        "Forgetting a virtual destructor on a base class meant to be deleted through a base pointer — the derived class's destructor may be silently skipped.",
+        "Assuming virtual is needed on the derived class's override too — only the base class version needs virtual; override on the derived version is a recommended check, not a requirement for the mechanism to work.",
+        "Thinking virtual functions are slower in a way that matters for most programs — the runtime lookup has a small cost, but it's rarely the actual bottleneck in typical code."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does the virtual keyword do?",
+          "answer": "It tells C++ to decide which version of a function to call at runtime based on the object's actual type, rather than the pointer or reference's declared type."
+        },
+        {
+          "question": "Why doesn't calling a function through a base class pointer use the derived version without virtual?",
+          "answer": "Without virtual, the compiler resolves the call to the base class's version at compile time, based only on the pointer's declared type, ignoring what it actually points to at runtime."
+        },
+        {
+          "question": "Why should a base class have a virtual destructor?",
+          "answer": "So that deleting a derived object through a base class pointer correctly runs the derived class's destructor as well as the base class's — without it, the derived destructor can be silently skipped, potentially leaking resources."
+        },
+        {
+          "question": "At a high level, how does C++ implement virtual function calls?",
+          "answer": "Commonly through a hidden table (a vtable) that maps each virtual function to the correct version for the object's actual type, consulted at runtime when the function is called."
+        }
+      ],
+      "thirtySecondAnswer": "virtual, applied to a base class function, makes C++ resolve calls to it at runtime based on the object's actual type, rather than at compile time based on the pointer or reference's declared type — this is what makes overriding through a base class pointer actually work, fixing the problem left open in Function Overriding. Under the hood, this is commonly implemented with a hidden vtable mapping each virtual function to the correct version per type. A closely related and frequently tested detail is the virtual destructor: a base class intended to be deleted through a base pointer needs a virtual destructor, or the derived class's destructor may be silently skipped, potentially leaking resources it was responsible for releasing."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Virtual Functions",
+      "text": "virtual = check the real object at the last moment, not the declared pointer type. Base classes used through pointers always need a virtual destructor."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-virtual-functions-fixed", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() override\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    a->makeSound();\n\n    delete a;\n\n    return 0;\n}", "output": "Woof!" },
+    { "id": "cpp-virtual-functions-destructor", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual ~Animal()\n    {\n        cout << \"Animal destroyed\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    ~Dog()\n    {\n        cout << \"Dog destroyed\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    delete a;\n\n    return 0;\n}", "output": "Dog destroyed\nAnimal destroyed" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-virtual-functions-fixed",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() override\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    a->makeSound();\n\n    delete a;\n\n    return 0;\n}"
+    },
+    {
+      "id": "cpp-virtual-functions-destructor",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual ~Animal()\n    {\n        cout << \"Animal destroyed\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    ~Dog()\n    {\n        cout << \"Dog destroyed\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    delete a;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-virtual-functions-fixed", "cpp-virtual-functions-destructor"]
+  }
+}
