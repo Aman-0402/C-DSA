@@ -1,0 +1,135 @@
+{
+  "id": "cpp-queue",
+  "moduleId": "stl",
+  "title": "queue",
+  "description": "The FIFO container adaptor, stack's opposite: push at the back, pop from the front — first in, first out.",
+  "objectives": [
+    "Understand queue as a FIFO container adaptor",
+    "Use push(), pop(), front(), and back()",
+    "Contrast queue directly against stack",
+    "Recognize real-world FIFO scenarios"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: stack Was LIFO"
+    },
+    {
+      "type": "paragraph",
+      "text": "stack gave elements back in the exact reverse order they went in — last in, first out. queue, from the <queue> header, is the opposite: first in, first out (FIFO)."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is queue?"
+    },
+    {
+      "type": "definition",
+      "term": "queue",
+      "text": "queue is a container adaptor restricting access to FIFO order — elements are added at the back and removed from the front, in the same order they arrived."
+    },
+    {
+      "type": "heading",
+      "text": "3. push(), pop(), front(), back()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <queue>\n\nqueue<int> q;\n\nq.push(10); // added at the back\nq.push(20);\nq.push(30);\n\ncout << q.front(); // 10 — the oldest element, first to leave\ncout << q.back();  // 30 — the newest element, most recently added\n\nq.pop(); // removes from the FRONT (10) — note: pop() returns nothing, same as stack"
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    queue<int> q;\n    q.push(10);\n    q.push(20);\n    q.push(30);\n\n    while (!q.empty())\n    {\n        cout << q.front() << \" \";\n        q.pop();\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-queue-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Compare directly with stack's example",
+      "points": [
+        "Pushed in the exact same order: 10, 20, 30",
+        "stack printed 30 20 10 (reverse order — LIFO)",
+        "queue prints 10 20 30 (same order — FIFO)",
+        "Identical push pattern, opposite retrieval order — that's the entire distinction between the two adaptors"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. stack vs queue, Side by Side"
+    },
+    {
+      "type": "table",
+      "headers": ["stack", "queue"],
+      "rows": [
+        ["LIFO — last in, first out", "FIFO — first in, first out"],
+        ["Access one end only: top()", "Access both ends: front() and back()"],
+        ["push()/pop() both act on the same end", "push() acts on the back, pop() acts on the front"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A checkout line at a store",
+      "text": "The first person to join a checkout line is the first person served — nobody who joins later gets served before someone who's already been waiting. That's exactly FIFO: push() is joining the back of the line, pop() is being served and leaving from the front."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing queue's FIFO order with stack's LIFO order — push order is the same for both, but retrieval order is opposite.",
+        "Expecting pop() to return the removed value — like stack, it only removes; use front() first if the value is needed.",
+        "Calling front()/back()/pop() on an empty queue — always check empty() first.",
+        "Trying to index or iterate a queue directly — like stack, it deliberately offers no [] or iterators."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does FIFO mean, and how does queue implement it?",
+          "answer": "First In, First Out — queue adds elements at the back with push() and removes them from the front with pop(), so the oldest element is always the next one removed."
+        },
+        {
+          "question": "What is the difference between stack and queue?",
+          "answer": "stack is LIFO, accessing only one end (top()); queue is FIFO, accessing both ends separately (front() for removal, back() for the most recently added element)."
+        },
+        {
+          "question": "Does queue's pop() return the removed value?",
+          "answer": "No — like stack's pop(), it only removes the front element; front() must be called separately beforehand to read the value."
+        }
+      ],
+      "thirtySecondAnswer": "queue is a FIFO container adaptor: push() adds an element at the back, pop() removes the oldest element from the front, front() reads the next element to be removed, and back() reads the most recently added one. It's the direct counterpart to stack — both share the same push-based insertion, but stack retrieves in reverse (LIFO) order from a single end, while queue retrieves in original (FIFO) order across two ends, exactly like a checkout line where the first person to join is the first one served."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember queue",
+      "text": "queue = a checkout line. push = join the back. pop = served and leave from the front. First in, first out — no cutting in line."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-queue-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    queue<int> q;\n    q.push(10);\n    q.push(20);\n    q.push(30);\n\n    while (!q.empty())\n    {\n        cout << q.front() << \" \";\n        q.pop();\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-queue-basic",
+      "reference": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    queue<int> q;\n    q.push(10);\n    q.push(20);\n    q.push(30);\n\n    while (!q.empty())\n    {\n        cout << q.front() << \" \";\n        q.pop();\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-queue-basic"]
+  }
+}
