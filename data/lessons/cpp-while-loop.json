@@ -1,0 +1,159 @@
+{
+  "id": "cpp-while-loop",
+  "moduleId": "control-flow",
+  "title": "while Loop",
+  "description": "Looping when you don't know the count ahead of time: while's simpler two-part shape, and how it compares to for.",
+  "objectives": [
+    "Write a basic while loop",
+    "Understand when while fits better than for",
+    "Trace a while loop step by step",
+    "Avoid the classic missing-increment infinite loop"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. while Loop Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "while (condition)\n{\n    // runs repeatedly as long as condition is true\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "for packed initialization, condition, and increment into one header. while only has the condition — initialization happens before the loop, and the increment happens somewhere inside the body."
+    },
+    {
+      "type": "heading",
+      "text": "2. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int i = 1;\n\n    while (i <= 5)\n    {\n        cout << i << endl;\n        i++;\n    }\n\n    return 0;\n}",
+      "output": "1\n2\n3\n4\n5",
+      "retypePractice": true,
+      "retypeId": "cpp-while-basic"
+    },
+    {
+      "type": "note",
+      "text": "Same output as the for loop from the previous topic — i starts at 1 (before the loop), the condition i <= 5 is checked before each run, and i++ inside the body moves it forward."
+    },
+    {
+      "type": "heading",
+      "text": "3. for vs while"
+    },
+    {
+      "type": "table",
+      "headers": ["for", "while"],
+      "rows": [
+        ["Init, condition, and increment all in one header", "Only the condition is in the header"],
+        ["Best when the number of repetitions is known/countable", "Best when repetition depends on a condition, with no natural counter"],
+        ["Counter's scope is naturally limited to the loop", "Counter (if any) must be declared before the loop"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. When while Fits Better"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int num;\ncin >> num;\n\nwhile (num != 0)\n{\n    cout << \"You entered: \" << num << endl;\n    cin >> num;\n}\ncout << \"Done.\";"
+    },
+    {
+      "type": "note",
+      "text": "There's no way to know ahead of time how many numbers the user will type before entering 0 — there's no fixed count to put in a for header. while is the natural fit whenever the stopping point depends on something that happens during the loop, not a pre-known number of repetitions."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Missing-Increment Infinite Loop"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int i = 1;\n\nwhile (i <= 5)\n{\n    cout << i << endl; // i is never changed here!\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Because for keeps the increment right in its header, it's hard to forget. while has no such reminder — it's easy to write a body that never actually changes the condition's variable, in which case i <= 5 stays true forever and the loop never stops. Always double check: does something inside this while body actually move it toward becoming false?"
+    },
+    {
+      "type": "heading",
+      "text": "6. A while Loop That Never Runs"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int i = 10;\n\nwhile (i <= 5) // false from the very start\n{\n    cout << i << endl;\n}\ncout << \"Loop skipped entirely.\";"
+    },
+    {
+      "type": "note",
+      "text": "Just like if, the condition is checked before the body ever runs. If it's false immediately, the body never executes even once — this is a key difference from do-while, covered next."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Waiting for the kettle to boil",
+      "text": "\"While the water isn't boiling, keep waiting\" doesn't specify a fixed number of seconds — you just keep checking the condition until it changes. That's a while loop: repetition driven purely by a condition, not a known count."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to update the loop's condition variable inside the body — causes an infinite loop, since nothing pushes the condition toward false.",
+        "Using while when a for loop would be clearer — if there's a natural counter and a known range, for keeps the setup together in one place.",
+        "Assuming the body runs at least once — like if, the condition is checked first, so a false condition means zero executions.",
+        "Declaring the loop's variable inside the while header, expecting it to work like for — while (int i = 0; ...) is not valid syntax; the variable must be declared before the loop."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between a for loop and a while loop?",
+          "answer": "for bundles initialization, condition, and increment into one header, and suits a known repetition count; while has only a condition, with initialization before the loop and updates inside the body, suiting repetition driven by a condition rather than a fixed count."
+        },
+        {
+          "question": "When would you choose while over for?",
+          "answer": "When there's no natural fixed number of repetitions known ahead of time — for example, repeating until the user enters a specific value."
+        },
+        {
+          "question": "Does a while loop's body always run at least once?",
+          "answer": "No — the condition is checked before the first run, so if it's false from the start, the body never executes."
+        },
+        {
+          "question": "What commonly causes an infinite while loop?",
+          "answer": "Forgetting to update, inside the loop body, whatever variable the condition depends on, so the condition never becomes false."
+        }
+      ],
+      "thirtySecondAnswer": "A while loop repeats a block of code as long as its condition stays true, checking the condition before every run — including the very first one, so the body may not run at all if it starts false. Unlike for, which bundles initialization, condition, and increment into one header, while only holds the condition, meaning the loop's variable must be initialized before the loop and updated somewhere inside its body. This makes while easy to forget an update in, causing an infinite loop, but it's the better fit when repetition depends on a condition rather than a known count."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember while",
+      "text": "while = keep going as long as this stays true. Unlike for, nothing reminds you to move forward — you have to do it yourself, inside the body."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-while-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int i = 1;\n\n    while (i <= 5)\n    {\n        cout << i << endl;\n        i++;\n    }\n\n    return 0;\n}", "output": "1\n2\n3\n4\n5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-while-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int i = 1;\n\n    while (i <= 5)\n    {\n        cout << i << endl;\n        i++;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-while-basic"]
+  }
+}

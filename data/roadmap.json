@@ -35,7 +35,8 @@
         { "id": "cpp-else-statement", "title": "else Statement", "lesson": "cpp-else-statement" },
         { "id": "cpp-switch-statement", "title": "switch Statement", "lesson": "cpp-switch-statement" },
         { "id": "cpp-loops", "title": "Loops", "lesson": "cpp-loops" },
-        { "id": "cpp-for-loop", "title": "for Loop", "lesson": "cpp-for-loop" }
+        { "id": "cpp-for-loop", "title": "for Loop", "lesson": "cpp-for-loop" },
+        { "id": "cpp-while-loop", "title": "while Loop", "lesson": "cpp-while-loop" }
       ]
     }
   ]
