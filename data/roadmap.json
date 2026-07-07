@@ -38,7 +38,8 @@
         { "id": "cpp-for-loop", "title": "for Loop", "lesson": "cpp-for-loop" },
         { "id": "cpp-while-loop", "title": "while Loop", "lesson": "cpp-while-loop" },
         { "id": "cpp-do-while-loop", "title": "do-while Loop", "lesson": "cpp-do-while-loop" },
-        { "id": "cpp-break", "title": "break", "lesson": "cpp-break" }
+        { "id": "cpp-break", "title": "break", "lesson": "cpp-break" },
+        { "id": "cpp-continue", "title": "continue", "lesson": "cpp-continue" }
       ]
     }
   ]

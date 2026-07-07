@@ -1,0 +1,144 @@
+{
+  "id": "cpp-continue",
+  "moduleId": "control-flow",
+  "title": "continue",
+  "description": "Skipping just the current repetition with continue — the key difference from break, and the classic skip-even-numbers pattern.",
+  "objectives": [
+    "Use continue to skip the rest of the current loop iteration",
+    "Understand the difference between continue and break",
+    "Know that continue still respects the loop's increment/condition",
+    "Recognize a common filtering pattern using continue"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. continue vs break"
+    },
+    {
+      "type": "table",
+      "headers": ["break", "continue"],
+      "rows": [
+        ["Exits the loop entirely", "Skips only the rest of the current repetition"],
+        ["No more iterations happen", "The loop moves on to its next iteration as normal"]
+      ]
+    },
+    {
+      "type": "definition",
+      "term": "continue",
+      "text": "continue skips the remaining code in the current loop iteration and moves on to the loop's next check/increment, without exiting the loop."
+    },
+    {
+      "type": "heading",
+      "text": "2. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 5; i++)\n    {\n        if (i == 3)\n        {\n            continue;\n        }\n        cout << i << endl;\n    }\n\n    return 0;\n}",
+      "output": "1\n2\n4\n5",
+      "retypePractice": true,
+      "retypeId": "cpp-continue-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "i = 1, 2 — condition i == 3 is false, cout runs",
+        "i = 3 — condition i == 3 is true, continue skips the cout line, jumps straight to i++",
+        "i = 4, 5 — loop resumes normally, cout runs again",
+        "3 never prints, but the loop still completes all 5 iterations — unlike break, which would have stopped it entirely"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. continue Still Respects the Loop's Own Mechanics"
+    },
+    {
+      "type": "note",
+      "text": "In a for loop, continue still triggers the increment before re-checking the condition — it doesn't skip that housekeeping, only the code written after it in the body. In a while or do-while loop, this means continue can accidentally cause an infinite loop if the increment happens after the continue in the body — worth double-checking."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int i = 1;\n\nwhile (i <= 5)\n{\n    if (i == 3)\n    {\n        continue; // DANGER: skips i++ below, i stays 3 forever\n    }\n    cout << i << endl;\n    i++;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike a for loop, a while loop's increment is just an ordinary line in the body — if continue skips over it, i never changes, and the loop spins on i == 3 forever. When using continue in a while loop, make sure the variable that controls the condition is updated before the continue, or via some other path that isn't skipped."
+    },
+    {
+      "type": "heading",
+      "text": "4. A Common Pattern: Filtering"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 10; i++)\n    {\n        if (i % 2 != 0)\n        {\n            continue; // skip odd numbers\n        }\n        cout << i << endl;\n    }\n\n    return 0;\n}",
+      "output": "2\n4\n6\n8\n10"
+    },
+    {
+      "type": "note",
+      "text": "This uses % (modulus) from Operators — i % 2 != 0 means \"i is odd.\" continue skips odd numbers, leaving only even numbers printed. This is a very common shape for \"process only items matching some condition, skip the rest.\""
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Grading a stack of papers",
+      "text": "Going through a stack of exam papers, you skip any paper marked \"absent\" — you don't stop grading altogether, you just move past that one paper to the next. That's continue: skip this one item, keep going through the rest."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using continue where break was actually meant — continue keeps looping, break stops it entirely; mixing them up gives very different results.",
+        "Placing continue in a while loop before the increment, causing an infinite loop when the condition variable never gets updated.",
+        "Assuming continue exits the loop early like break — it only skips ahead to the next iteration, the loop keeps running."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between break and continue?",
+          "answer": "break exits the loop entirely, stopping all remaining iterations; continue skips only the rest of the current iteration and moves on to the next one."
+        },
+        {
+          "question": "In a for loop, does continue skip the increment step?",
+          "answer": "No — the increment still runs before the condition is re-checked; continue only skips the code written after it in that iteration's body."
+        },
+        {
+          "question": "Why can continue cause an infinite loop in a while loop specifically?",
+          "answer": "Because a while loop's increment is just an ordinary statement in the body — if continue is placed before it, that update gets skipped and the condition may never become false."
+        }
+      ],
+      "thirtySecondAnswer": "continue skips the remaining code in the current loop iteration and moves on to the next one, without exiting the loop — unlike break, which stops the loop entirely. In a for loop, the increment still runs before continue's skip takes effect, so the loop mechanics stay intact. In a while loop, though, continue can cause an infinite loop if it's placed before the line that updates the condition's variable, since that update gets skipped. A common use is filtering: skipping items that don't match a condition while still processing the rest."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember continue",
+      "text": "continue = skip this one, keep the loop going. break = stop the whole loop, right now. In while loops, make sure your increment isn't skipped by accident."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-continue-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 5; i++)\n    {\n        if (i == 3)\n        {\n            continue;\n        }\n        cout << i << endl;\n    }\n\n    return 0;\n}", "output": "1\n2\n4\n5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-continue-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 5; i++)\n    {\n        if (i == 3)\n        {\n            continue;\n        }\n        cout << i << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-continue-basic"]
+  }
+}
