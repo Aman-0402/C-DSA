@@ -1,0 +1,129 @@
+{
+  "id": "cpp-loops",
+  "moduleId": "control-flow",
+  "title": "Loops",
+  "description": "The overview before for, while, and do-while: why repetition needs its own tool, and the pieces every loop shares.",
+  "objectives": [
+    "Understand why repeating code by hand doesn't scale",
+    "Understand the three pieces every loop needs: a starting point, a condition, and a way to move forward",
+    "Understand what an infinite loop is and why it happens",
+    "Preview for, while, and do-while as the upcoming subtopics"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem Loops Solve"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << 1 << endl;\ncout << 2 << endl;\ncout << 3 << endl;\ncout << 4 << endl;\ncout << 5 << endl;"
+    },
+    {
+      "type": "paragraph",
+      "text": "This prints 1 through 5, but it's five separate lines for a simple, repetitive pattern. Now imagine needing 1 through 1,000 — copy-pasting a thousand cout lines clearly doesn't scale."
+    },
+    {
+      "type": "definition",
+      "term": "Loop",
+      "text": "A loop is a control structure that repeats a block of code multiple times, without writing that code out more than once."
+    },
+    {
+      "type": "heading",
+      "text": "2. Every Loop Needs Three Things"
+    },
+    {
+      "type": "keyPoints",
+      "title": "To repeat something a controlled number of times, a loop needs",
+      "points": [
+        "A starting point — where the repetition begins (e.g. a counter starting at 1)",
+        "A condition — checked before each repetition, deciding whether to continue (e.g. counter <= 5)",
+        "A way to move forward — something that changes each time, so the condition eventually becomes false (e.g. counter++)"
+      ]
+    },
+    {
+      "type": "flow",
+      "steps": ["Start", "Check condition", "True → run the block, then move forward, check again", "False → stop, continue after the loop"]
+    },
+    {
+      "type": "note",
+      "text": "This mirrors what we've already used: a counter is a variable, the condition is a bool expression built from comparison operators, and \"moving forward\" is often ++, all covered in earlier lessons."
+    },
+    {
+      "type": "heading",
+      "text": "3. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Doing push-ups",
+      "text": "\"Do 10 push-ups\" doesn't mean writing out ten separate instructions — it means: start a counter at 0, repeat one push-up while the counter is less than 10, and increase the counter by 1 each time. That's exactly the shape of a loop: a start, a condition, and a step forward."
+    },
+    {
+      "type": "heading",
+      "text": "4. What Happens If the Condition Never Becomes False?"
+    },
+    {
+      "type": "warning",
+      "text": "If a loop's condition is never checked correctly, or the counter never actually moves it toward false, the loop runs forever — an infinite loop. The program appears to freeze, endlessly repeating the same block. We'll see exactly how this happens (and how to avoid it) once we write real loop code next."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Tools Ahead"
+    },
+    {
+      "type": "keyPoints",
+      "title": "C++ provides a few different loop structures",
+      "points": [
+        "for — best when you know how many times to repeat, or have a clear counter",
+        "while (a future topic) — best when repetition depends on a condition, not a fixed count",
+        "do-while (a future topic) — like while, but always runs the block at least once"
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "This lesson is only the concept. for's exact syntax is covered next; while and do-while will follow in their own topics."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to move the counter forward — without it, the condition never changes, and the loop never ends.",
+        "Getting the condition backward — a condition that's false from the very start means the loop body never runs at all.",
+        "Assuming every repetition problem needs the same loop type — the right choice depends on whether the number of repetitions is known ahead of time."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a loop?",
+          "answer": "A control structure that repeats a block of code multiple times without writing that code out more than once."
+        },
+        {
+          "question": "What three things does a loop generally need?",
+          "answer": "A starting point, a condition checked before each repetition, and a way to move forward so the condition can eventually become false."
+        },
+        {
+          "question": "What is an infinite loop?",
+          "answer": "A loop whose condition never becomes false, so it keeps repeating forever instead of stopping."
+        }
+      ],
+      "thirtySecondAnswer": "A loop repeats a block of code multiple times without duplicating that code. Every loop generally needs a starting point, a condition checked before each repetition, and a way to move forward so the condition eventually becomes false — if that last part is missing, the result is an infinite loop that never stops. C++ provides a few loop structures for different situations: for, typically used when the number of repetitions is known, and while and do-while, better suited when repetition depends purely on a condition."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Loops",
+      "text": "Every loop = Start, Check, Run, Move forward, repeat. Forget to move forward, and it never stops."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
