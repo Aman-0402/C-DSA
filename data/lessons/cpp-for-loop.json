@@ -1,0 +1,190 @@
+{
+  "id": "cpp-for-loop",
+  "moduleId": "control-flow",
+  "title": "for Loop",
+  "description": "The for loop's three-part header — initialization, condition, increment — a full dry run, and the classic off-by-one and infinite-loop mistakes.",
+  "objectives": [
+    "Write a basic for loop with correct syntax",
+    "Understand the three parts of a for loop's header and their execution order",
+    "Dry run a for loop step by step",
+    "Avoid off-by-one errors and accidental infinite loops"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. for Loop Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (initialization; condition; increment)\n{\n    // runs once per repetition\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "This is the concept from the Loops overview, written in exact C++ syntax — all three pieces (start, condition, move forward) live in one header, separated by semicolons."
+    },
+    {
+      "type": "heading",
+      "text": "2. A Real Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 5; i++)\n    {\n        cout << i << endl;\n    }\n\n    return 0;\n}",
+      "output": "1\n2\n3\n4\n5",
+      "retypePractice": true,
+      "retypeId": "cpp-for-loop-basic"
+    },
+    {
+      "type": "heading",
+      "text": "3. Breaking Down the Header"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Runs when", "Here"],
+      "rows": [
+        ["int i = 1;", "Once, before the loop starts", "Creates a counter i, starting at 1"],
+        ["i <= 5;", "Before every repetition", "Continue only while i is 5 or less"],
+        ["i++", "After every repetition", "Increases i by 1 each time"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Dry Run, Step by Step"
+    },
+    {
+      "type": "keyPoints",
+      "points": [
+        "i = 1 (initialization runs once)",
+        "Check i <= 5 → 1 <= 5, true → run body → prints 1",
+        "i++ → i becomes 2",
+        "Check i <= 5 → 2 <= 5, true → run body → prints 2",
+        "i++ → i becomes 3 ... this repeats through i = 5",
+        "After printing 5, i++ makes i become 6",
+        "Check i <= 5 → 6 <= 5, false → loop stops"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "The condition is always checked before the body runs, including the very last time — that's why the loop stops after printing 5 rather than running one extra time."
+    },
+    {
+      "type": "heading",
+      "text": "5. Off-By-One: <= vs <"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (int i = 1; i < 5; i++)\n{\n    cout << i << endl;\n}",
+      "output": "1\n2\n3\n4"
+    },
+    {
+      "type": "warning",
+      "text": "Swapping <= for < changes how many times the loop runs — i < 5 stops as soon as i reaches 5, so 5 itself never prints. This one-character difference is behind one of the most common bugs in programming: the off-by-one error. Always double-check whether a boundary value should be included."
+    },
+    {
+      "type": "heading",
+      "text": "6. Accidental Infinite Loops"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (int i = 1; i <= 5; i--) // wrong direction!\n{\n    cout << i << endl;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "i starts at 1 and i <= 5 is already true, but i-- moves i further away from 5, not closer — i becomes 0, then -1, then -2, forever. i <= 5 stays true endlessly, so this never stops. The increment step must actually move the counter toward making the condition false eventually."
+    },
+    {
+      "type": "heading",
+      "text": "7. Counting Downward"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (int i = 5; i >= 1; i--)\n{\n    cout << i << endl;\n}",
+      "output": "5\n4\n3\n2\n1"
+    },
+    {
+      "type": "note",
+      "text": "A for loop isn't limited to counting upward — starting high, checking >= instead of <=, and decrementing with i-- counts down just as naturally."
+    },
+    {
+      "type": "heading",
+      "text": "8. A Preview: Nested for Loops"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (int i = 1; i <= 2; i++)\n{\n    for (int j = 1; j <= 2; j++)\n    {\n        cout << i << j << \" \";\n    }\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — a for loop can contain another for loop inside it, running the inner loop completely for every single repetition of the outer one. We'll explore nested loops properly in a dedicated topic, since they're central to many DSA patterns (like working through a grid)."
+    },
+    {
+      "type": "heading",
+      "text": "9. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Checking every seat in a row",
+      "text": "\"For seat 1 through seat 20, check if it's occupied\" is a for loop in plain English: a clear starting seat, a clear stopping point, and a clear step (move to the next seat). Anytime a task has a known, countable range like this, a for loop is usually the natural fit."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using < when <= was intended (or vice versa) — causes an off-by-one error, running one time too few or too many.",
+        "Incrementing in the wrong direction for the condition — e.g. i-- with i <= 5, which never makes the condition false, causing an infinite loop.",
+        "Forgetting that the condition is checked before every repetition, including what would be the last one.",
+        "Re-declaring the same counter name in a nested loop's outer and inner headers without meaning to shadow it — using i for both outer and inner loops is a common source of confusion."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What are the three parts of a for loop's header?",
+          "answer": "Initialization (runs once before the loop starts), condition (checked before every repetition), and increment (runs after every repetition)."
+        },
+        {
+          "question": "In for (int i = 1; i <= 5; i++), why does the loop stop after printing 5?",
+          "answer": "After the body runs with i = 5, i++ makes i become 6, and the condition i <= 5 is then checked and found false, stopping the loop before another repetition."
+        },
+        {
+          "question": "What causes an infinite loop in a for statement?",
+          "answer": "When the increment step never actually moves the counter toward making the condition false — for example, decrementing a counter while the condition only becomes false for larger values."
+        },
+        {
+          "question": "What is an off-by-one error?",
+          "answer": "A common bug where a loop runs one time too many or too few, often caused by mixing up < and <=, or miscounting the starting or ending boundary."
+        }
+      ],
+      "thirtySecondAnswer": "A for loop's header has three parts: initialization, which runs once; a condition, checked before every repetition; and an increment, which runs after every repetition. For for (int i = 1; i <= 5; i++), the loop prints 1 through 5 and stops once i becomes 6 and the condition fails. Two classic bugs come from this structure: off-by-one errors, from mixing up < and <=, and infinite loops, when the increment moves the counter in a direction that never makes the condition false. for loops are the natural choice whenever the number of repetitions is known ahead of time."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember for Loops",
+      "text": "for (start; check; step) — Start once, Check before every run, Step after every run. Wrong direction on step = infinite loop. Off by one symbol (< vs <=) = off-by-one bug."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-for-loop-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 5; i++)\n    {\n        cout << i << endl;\n    }\n\n    return 0;\n}", "output": "1\n2\n3\n4\n5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-for-loop-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    for (int i = 1; i <= 5; i++)\n    {\n        cout << i << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-for-loop-basic"]
+  }
+}
