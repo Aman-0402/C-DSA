@@ -1,0 +1,191 @@
+{
+  "id": "cpp-using-namespace-std",
+  "moduleId": "cpp-fundamentals",
+  "title": "using namespace std",
+  "description": "A closer look at the line every program starts with: what it does, where it should be placed, why it's considered risky in larger code, and what to use instead.",
+  "objectives": [
+    "Understand exactly what using namespace std; does",
+    "Understand why it can cause name collisions in larger programs",
+    "Understand global scope vs local (block) scope for using namespace std;",
+    "Know why it's especially discouraged inside header files",
+    "Know the alternatives: std::, and targeted using declarations"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: What Does This Line Do?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "using namespace std;"
+    },
+    {
+      "type": "paragraph",
+      "text": "We saw in the Namespace topic that this line imports every name from the std namespace into the current scope, so we can write cout instead of std::cout. Today we go one level deeper: where it's safe to put this line, and where it isn't."
+    },
+    {
+      "type": "heading",
+      "text": "2. A Name Collision, Made Concrete"
+    },
+    {
+      "type": "paragraph",
+      "text": "The Standard Library has a sort function, reachable as std::sort (from the <algorithm> header, which we'll use later). Now imagine your own project also defines a function named sort — maybe your own custom sorting logic."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Standard Library: std::sort\n// Your own code:    sort  (defined somewhere in your project)\n\nusing namespace std;\n\nsort(...); // Which sort? Yours, or std::sort?"
+    },
+    {
+      "type": "warning",
+      "text": "This is a conceptual illustration — we haven't learned functions or <algorithm> yet. The point is: once using namespace std; is active, the name sort could mean either your function or std::sort, and the compiler may report an ambiguity, or silently pick one, depending on the situation."
+    },
+    {
+      "type": "definition",
+      "term": "Name collision",
+      "text": "A name collision happens when two different things share the same name in a scope where both are visible, making it unclear which one a reference to that name means."
+    },
+    {
+      "type": "heading",
+      "text": "3. Global Scope vs Local Scope"
+    },
+    {
+      "type": "paragraph",
+      "text": "using namespace std; can be placed in different locations, and where you put it changes how far its effect reaches."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}"
+    },
+    {
+      "type": "note",
+      "text": "Placed here, outside and above main(), it's at global scope — every function below it in this file can use cout without std::."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nint main()\n{\n    using namespace std;\n\n    cout << \"Hello\";\n\n    return 0;\n}",
+      "output": "Hello",
+      "retypePractice": true,
+      "retypeId": "cpp-using-ns-local-scope"
+    },
+    {
+      "type": "tip",
+      "text": "Placed inside main()'s braces instead, its effect is limited to just that function's block — a smaller, safer blast radius. This is called scoped (or local) using."
+    },
+    {
+      "type": "table",
+      "headers": ["Placement", "Effect"],
+      "rows": [
+        ["Above main(), at global scope", "Affects the entire file below it"],
+        ["Inside a function's { }", "Affects only that function's block"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Why It's Riskier Inside Header Files"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall from the Header Files topic: a header's content gets included into every .cpp file that #includes it."
+    },
+    {
+      "type": "flow",
+      "steps": ["using namespace std; in a header", "Header included by file A", "Header included by file B", "Header included by file C", "Every one of them now has std fully imported"]
+    },
+    {
+      "type": "warning",
+      "text": "Because #include effectively pastes the header's content at that spot, a using namespace std; sitting in a header silently affects every single file that includes it — even ones the header's author never saw. This is why many style guides say: never write using namespace std; in a header file."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why It's Fine for Small / Learning Programs"
+    },
+    {
+      "type": "paragraph",
+      "text": "For a single small file, with no other libraries fighting over names, using namespace std; is harmless and keeps code readable — which is exactly why we've been using it throughout these lessons."
+    },
+    {
+      "type": "note",
+      "text": "The risk grows with project size: more files, more included libraries, more chances that some other name also happens to be called sort, count, or list."
+    },
+    {
+      "type": "heading",
+      "text": "6. Alternatives, Compared"
+    },
+    {
+      "type": "table",
+      "headers": ["Approach", "What it does", "When it's a good fit"],
+      "rows": [
+        ["std::cout every time", "No import at all, fully explicit", "Header files, large projects"],
+        ["using std::cout;", "Imports just cout, nothing else", "When you use a few specific names often"],
+        ["using namespace std;", "Imports everything from std", "Small programs, learning, single-file scripts"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Common Beginner Mistakes"
+    },
+    {
+      "type": "commonMistakes",
+      "items": [
+        "Assuming using namespace std; is always required — it's a convenience; std::cout works without it.",
+        "Copy-pasting using namespace std; into a header file without knowing it will affect every file that includes that header.",
+        "Thinking scope doesn't matter — using namespace std; inside a function only affects that function, not the whole program.",
+        "Believing name collisions are rare and therefore not worth understanding — they become more likely as a project grows and includes more libraries."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does using namespace std; do?",
+          "answer": "It imports every name from the std namespace into the current scope, so those names can be used without the std:: prefix."
+        },
+        {
+          "question": "Why is using namespace std; often considered bad practice in larger codebases?",
+          "answer": "It can cause name collisions when a program's own code or another library defines a name that also exists in std, and the compiler may not be able to tell which one is meant."
+        },
+        {
+          "question": "Why is using namespace std; especially discouraged in header files?",
+          "answer": "A header's contents are included into every file that #includes it, so a using namespace std; in a header silently affects every one of those files, not just the header's own code."
+        },
+        {
+          "question": "What's the difference between placing using namespace std; at global scope versus inside a function?",
+          "answer": "At global scope it affects the entire file from that point on; placed inside a function's braces, its effect is limited to just that function's block."
+        },
+        {
+          "question": "What are the alternatives to using namespace std;?",
+          "answer": "Writing std:: explicitly every time, or using a targeted using declaration like using std::cout; to import only the specific names actually needed."
+        }
+      ],
+      "thirtySecondAnswer": "using namespace std; imports every name from the std namespace into scope, which is why cout works instead of std::cout. It's convenient for small programs, but in larger codebases it risks name collisions with other libraries or your own code, since the compiler can no longer tell which sort or count you meant. It's especially discouraged inside header files, because the header's contents get included into every file that uses it. Safer alternatives are writing std:: explicitly, using a targeted using declaration for just the names you need, or scoping using namespace std; to a single function instead of the whole file."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember",
+      "text": "Global using namespace std; = shouting your import to the whole file. Local using namespace std; = whispering it to just one function. Header files = never shout — everyone hears it."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-using-ns-local-scope", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nint main()\n{\n    using namespace std;\n\n    cout << \"Hello\";\n\n    return 0;\n}", "output": "Hello" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-using-ns-local-scope",
+      "reference": "#include <iostream>\n\nint main()\n{\n    using namespace std;\n\n    cout << \"Hello\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-using-ns-local-scope"]
+  }
+}

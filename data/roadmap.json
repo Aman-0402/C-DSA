@@ -12,7 +12,8 @@
         { "id": "cpp-header-files", "title": "Header Files", "lesson": "cpp-header-files" },
         { "id": "cpp-include", "title": "#include", "lesson": "cpp-include" },
         { "id": "cpp-iostream", "title": "iostream", "lesson": "cpp-iostream" },
-        { "id": "cpp-namespace", "title": "Namespace", "lesson": "cpp-namespace" }
+        { "id": "cpp-namespace", "title": "Namespace", "lesson": "cpp-namespace" },
+        { "id": "cpp-using-namespace-std", "title": "using namespace std", "lesson": "cpp-using-namespace-std" }
       ]
     }
   ]
