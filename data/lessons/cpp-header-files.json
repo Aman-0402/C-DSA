@@ -1,0 +1,410 @@
+{
+  "id": "cpp-header-files",
+  "moduleId": "cpp-fundamentals",
+  "title": "Header Files",
+  "description": "What a header file is, declarations vs definitions, why header/source files are separated, and common Standard Library headers.",
+  "objectives": [
+    "Understand what a header file is and why we use one",
+    "Understand the difference between a declaration and a definition",
+    "Understand why projects separate .h/.hpp header files from .cpp source files",
+    "Recognize common Standard Library headers used in DSA",
+    "Understand where header inclusion fits in the compilation process"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Header File?"
+    },
+    {
+      "type": "paragraph",
+      "text": "A header file provides information about useful C++ features so that our program knows those features exist and how they can be used."
+    },
+    {
+      "type": "definition",
+      "term": "Header File",
+      "text": "A header file is a file that contains declarations and definitions that can be made available to other C++ source files."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <iostream>"
+    },
+    {
+      "type": "note",
+      "text": "<iostream> refers to a header from the C++ Standard Library. It provides declarations related to input and output streams — because of iostream, we can use standard stream features such as cout and cin (we will learn both separately)."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Do We Use Header Files?"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Imagine you create a calculator needing",
+      "points": ["Add", "Subtract", "Multiply", "Divide"]
+    },
+    {
+      "type": "note",
+      "text": "Now imagine writing the same code for these operations again and again in every program — this creates repeated code and poor organization. Instead, related programming features can be organized separately."
+    },
+    {
+      "type": "flow",
+      "steps": ["Useful Features", "Header / Library Interface", "Use in Programs"]
+    },
+    {
+      "type": "tip",
+      "text": "Header files help organize declarations and make reusable program interfaces available to source files."
+    },
+    {
+      "type": "heading",
+      "text": "3. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The restaurant menu analogy",
+      "text": "A menu says: Burger, Pizza, Pasta, Coffee — it tells you these items are available. You don't need to enter the kitchen and inspect the complete cooking process before ordering. A header file is similar: it can tell your C++ source file that these functions, classes, objects, and types exist. The detailed implementation may exist elsewhere."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Header = Information about available programming features"
+    },
+    {
+      "type": "heading",
+      "text": "4. Header File Extension"
+    },
+    {
+      "type": "paragraph",
+      "text": "User-created C++ header files commonly use extensions such as .h or .hpp. You may see both in C++ projects."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Examples",
+      "points": ["calculator.h", "student.h", "math.hpp", "utility.hpp"]
+    },
+    {
+      "type": "table",
+      "headers": ["File", "Contains"],
+      "rows": [
+        ["calculator.h", "Declarations / Interface Information"],
+        ["calculator.cpp", "Implementation / Source Code"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "This separation becomes very useful in larger programs."
+    },
+    {
+      "type": "heading",
+      "text": "5. What is a Declaration?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int, int);"
+    },
+    {
+      "type": "warning",
+      "text": "You have not learned functions, parameters, or data types properly yet — you are not expected to write this. Only understand the concept."
+    },
+    {
+      "type": "paragraph",
+      "text": "This declaration conceptually tells the compiler: there is a function named add. It receives two integer values. It returns an integer value. The actual function code may exist somewhere else."
+    },
+    {
+      "type": "definition",
+      "term": "Declaration",
+      "text": "A declaration tells the compiler that a name or feature exists and provides information about it."
+    },
+    {
+      "type": "heading",
+      "text": "6. What is a Definition?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The job advertisement analogy",
+      "text": "A job advertisement says: Job: Software Developer, Work: Build applications, Experience: 2 years — this is a Declaration (information). The employee actually performing the work is the Definition (actual implementation)."
+    },
+    {
+      "type": "definition",
+      "term": "Definition",
+      "text": "A definition provides the actual implementation or creates the entity being declared, depending on the C++ feature."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Declaration → WHAT EXISTS? Definition → ACTUAL IMPLEMENTATION"
+    },
+    {
+      "type": "heading",
+      "text": "7. Simple Header File Example"
+    },
+    {
+      "type": "paragraph",
+      "text": "Imagine we create calculator.h containing a declaration, and calculator.cpp containing the definition:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "calculator.h",
+      "code": "int add(int, int);"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "calculator.cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "table",
+      "headers": ["File", "Role"],
+      "rows": [
+        ["calculator.h", "Declaration — \"What exists?\""],
+        ["calculator.cpp", "Definition — \"How does it work?\""]
+      ]
+    },
+    {
+      "type": "keyPoints",
+      "title": "A project might conceptually look like",
+      "points": ["main.cpp", "calculator.cpp", "calculator.h"]
+    },
+    {
+      "type": "heading",
+      "text": "8. Why Separate Header and Source Files?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose everything is inside main.cpp — maybe 5,000 lines of code. That becomes difficult to manage. Instead, we can organize the project into logical parts."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Example project layout",
+      "points": ["main.cpp", "student.cpp / student.h", "calculator.cpp / calculator.h", "payment.cpp / payment.h"]
+    },
+    {
+      "type": "keyPoints",
+      "title": "This improves",
+      "points": ["Organization", "Reusability", "Maintainability", "Separation of interface and implementation"]
+    },
+    {
+      "type": "heading",
+      "text": "9. Standard Library Headers"
+    },
+    {
+      "type": "paragraph",
+      "text": "C++ provides many standard headers. You will see several of them during DSA — these are examples only, you are not expected to use them yet. We will learn every required STL header and feature before using it in a solution."
+    },
+    {
+      "type": "table",
+      "headers": ["Header", "Provides"],
+      "rows": [
+        ["<iostream>", "Input and output stream features"],
+        ["<vector>", "The vector container"],
+        ["<string>", "Standard string-related functionality"],
+        ["<algorithm>", "Many standard algorithms (e.g. sort())"],
+        ["<unordered_map>", "unordered_map — extremely important during Hashing and LeetCode"],
+        ["<queue>", "Standard queue-related containers"],
+        ["<stack>", "The standard stack container adaptor"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "10. Why Do Different Features Need Different Headers?"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The toolbox analogy",
+      "text": "Imagine an Electrical Toolbox, a Plumbing Toolbox, and a Carpentry Toolbox. If you need a screwdriver for electrical work, you open the appropriate toolbox. Standard headers organize related features the same way: iostream → Input/Output Streams, vector → Vector Container, algorithm → Standard Algorithms, string → String Features."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Header = Toolbox of related programming declarations"
+    },
+    {
+      "type": "heading",
+      "text": "11. Understanding <iostream>"
+    },
+    {
+      "type": "paragraph",
+      "text": "The name comes from I/O Stream, where I = Input, O = Output. A stream can be understood as a flow of data."
+    },
+    {
+      "type": "flow",
+      "steps": ["Keyboard", "Input Data", "Program"]
+    },
+    {
+      "type": "flow",
+      "steps": ["Program", "Output Data", "Console"]
+    },
+    {
+      "type": "keyPoints",
+      "points": ["cin → INPUT (receives standard input)", "cout → OUTPUT (produces standard output)"]
+    },
+    {
+      "type": "note",
+      "text": "The iostream header provides the relevant standard stream declarations."
+    },
+    {
+      "type": "heading",
+      "text": "12. Header File vs Source File"
+    },
+    {
+      "type": "table",
+      "headers": ["Header File", "Source File"],
+      "rows": [
+        ["Commonly .h or .hpp", "Commonly .cpp"],
+        ["Often contains declarations", "Often contains implementations"],
+        ["Describes available interfaces", "Contains program source implementation"],
+        ["Can be included by source files", "Compiled as part of the program"]
+      ]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "HEADER → WHAT IS AVAILABLE? SOURCE → HOW IS IT IMPLEMENTED?"
+    },
+    {
+      "type": "note",
+      "text": "This is a simplified beginner-friendly model. In real C++, headers can also contain definitions — for example, templates are commonly defined in header files. We will understand that when we reach Templates."
+    },
+    {
+      "type": "heading",
+      "text": "13. Header Files and the Compilation Process"
+    },
+    {
+      "type": "flow",
+      "steps": ["Preprocessing", "Compilation", "Assembly", "Linking"]
+    },
+    {
+      "type": "paragraph",
+      "text": "Header inclusion is handled during Preprocessing. The preprocessor handles #include <iostream> before the main compilation stage."
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "Preprocessor handles header inclusion", "Preprocessed Source", "Compiler"]
+    },
+    {
+      "type": "note",
+      "text": "This is why headers are connected to the preprocessing stage we learned earlier."
+    },
+    {
+      "type": "heading",
+      "text": "14. Are Header Files Executable?"
+    },
+    {
+      "type": "tip",
+      "text": "No. A header file such as calculator.h is not normally a standalone executable program — you do not run calculator.h like calculator.exe."
+    },
+    {
+      "type": "table",
+      "headers": ["Extension", "Meaning"],
+      "rows": [
+        [".h / .hpp", "Header File"],
+        [".cpp", "Source File"],
+        [".exe", "Windows Executable"]
+      ]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "HEADER → PROVIDES INFORMATION. SOURCE → CONTAINS CODE. EXECUTABLE → RUNS."
+    },
+    {
+      "type": "heading",
+      "text": "15. Simple Project Dry Run"
+    },
+    {
+      "type": "paragraph",
+      "text": "Imagine our project contains main.cpp, calculator.cpp, and calculator.h."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "calculator.h",
+      "code": "int add(int, int);"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "calculator.cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "flow",
+      "title": "The basic project idea",
+      "steps": ["main.cpp needs add()", "Header tells compiler about add()", "calculator.cpp provides implementation", "Files are compiled", "Linker connects required compiled pieces", "Executable created"]
+    },
+    {
+      "type": "tip",
+      "text": "Remember our previous lesson: Compiler translates. Linker connects. Now you can see why linking matters — the implementation may exist in another source file, and the linker helps connect the compiled pieces."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Thinking a header file is an executable — iostream is a Standard Library header, not a program that runs.",
+        "Thinking header files only contain code implementation — headers commonly contain declarations, but C++ headers can also contain definitions (don't memorize that they never can).",
+        "Confusing .cpp and .h — .cpp is a C++ source file, .h / .hpp is a header file.",
+        "Thinking iostream means only output — it means Input/Output Stream; later we use cin for input and cout for output.",
+        "Thinking the header always contains the complete implementation — sometimes it exists in a separate .cpp file, though templates are often defined directly in headers.",
+        "Using a library feature without its required declaration being available — for example, using vector without including the appropriate standard header means the compiler may not know the declaration."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a header file in C++?",
+          "answer": "A header file is a file that commonly contains declarations and interface information that can be made available to other C++ source files."
+        },
+        {
+          "question": "Why are header files used?",
+          "answer": "Header files help organize declarations, provide reusable interfaces, and allow multiple source files to use shared programming features."
+        },
+        {
+          "question": "What is the difference between a declaration and a definition?",
+          "answer": "A declaration tells the compiler that an entity exists and describes it, while a definition provides the actual implementation or creates the entity."
+        },
+        {
+          "question": "What is iostream?",
+          "answer": "iostream is a C++ Standard Library header that provides declarations for standard input and output stream functionality."
+        },
+        {
+          "question": "What are common C++ header file extensions?",
+          "answer": "Common C++ header file extensions are .h and .hpp."
+        },
+        {
+          "question": "What is the difference between a header file and a source file?",
+          "answer": "A header file commonly provides declarations and interfaces, while a source file commonly contains program implementations and is compiled as part of the program."
+        },
+        {
+          "question": "Can a header file contain definitions?",
+          "answer": "Yes. Header files can contain definitions — for example, template definitions are commonly placed in header files."
+        },
+        {
+          "question": "During which stage is #include handled?",
+          "answer": "The #include preprocessor directive is handled during the preprocessing stage."
+        }
+      ],
+      "thirtySecondAnswer": "A header file in C++ commonly contains declarations and interface information that can be shared across source files. Header files help organize code and make reusable features available to different parts of a program. Standard Library headers such as iostream provide declarations for standard input and output streams. Header inclusion is handled by the preprocessor before compilation."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Header Files",
+      "text": "HEADER = MENU — a menu tells you what is available. Declaration → WHAT EXISTS? Definition → HOW IT WORKS? Header = Interface / Information. Source = Implementation / Code."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-header-calculator-h", "lang": "cpp", "filename": "calculator.h", "code": "int add(int, int);" },
+    { "id": "cpp-header-calculator-cpp", "lang": "cpp", "filename": "calculator.cpp", "code": "int add(int a, int b)\n{\n    return a + b;\n}" }
+  ],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
