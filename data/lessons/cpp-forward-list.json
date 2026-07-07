@@ -1,0 +1,144 @@
+{
+  "id": "cpp-forward-list",
+  "moduleId": "stl",
+  "title": "forward_list",
+  "description": "An even lighter linked list: singly linked, forward-only, push_front() only — and the genuine surprise that it has no size().",
+  "objectives": [
+    "Understand forward_list as a singly linked list",
+    "Know it only supports push_front(), not push_back()",
+    "Recognize the surprising absence of size()",
+    "Understand the trade-off: less memory per node, less flexibility"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: list Was Doubly Linked"
+    },
+    {
+      "type": "paragraph",
+      "text": "list stores, for every element, a link to both its next AND previous neighbor. forward_list, from the <forward_list> header, stores only a link to the next one — lighter, but with real capability trade-offs."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is forward_list?"
+    },
+    {
+      "type": "definition",
+      "term": "forward_list",
+      "text": "forward_list is a singly linked list — each element links only to the next one, with no way to go backward, minimizing memory overhead per element."
+    },
+    {
+      "type": "heading",
+      "text": "3. Only push_front() — No push_back()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <forward_list>\n\nforward_list<int> numbers;\n\nnumbers.push_front(30);\nnumbers.push_front(20);\nnumbers.push_front(10);\n// numbers.push_back(40); // ERROR — push_back() doesn't exist"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike list, forward_list has no push_back() at all. Since each node only knows its next neighbor, reaching the very end to append something would require walking the entire list first — so the STL simply doesn't offer that operation, keeping the container honest about what's actually cheap."
+    },
+    {
+      "type": "heading",
+      "text": "4. A Genuine Surprise: No size()"
+    },
+    {
+      "type": "warning",
+      "text": "forward_list also has no size() member function — a real surprise coming from vector, array, and list, which all have one. This is a deliberate design choice: computing the size would require walking the entire list, and the container's authors chose not to offer a method that looks cheap but secretly isn't."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <forward_list>\n\nusing namespace std;\n\nint main()\n{\n    forward_list<int> numbers;\n    numbers.push_front(30);\n    numbers.push_front(20);\n    numbers.push_front(10);\n\n    for (forward_list<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-forward-list-basic"
+    },
+    {
+      "type": "note",
+      "text": "Each push_front() places its value at the very front, so the three calls (30, then 20, then 10) end up ordered 10, 20, 30 — the most recently pushed value is always first."
+    },
+    {
+      "type": "heading",
+      "text": "6. Forward-Only Traversal"
+    },
+    {
+      "type": "note",
+      "text": "Its iterators only support moving forward (it++) — there's no it-- the way a list iterator allows, since there's no backward link to follow. This is exactly what \"forward\" in the name signals."
+    },
+    {
+      "type": "heading",
+      "text": "7. When to Use forward_list"
+    },
+    {
+      "type": "tip",
+      "text": "forward_list is a niche, specialized choice — useful when memory per element genuinely matters (many small elements, one link instead of two) and only forward traversal and front insertion are ever needed. For general-purpose use, list or vector are far more common defaults."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A one-way treasure hunt with no headcount",
+      "text": "Recall list's treasure hunt analogy. forward_list is the same hunt, but each clue only ever points forward, never back — and nobody along the way is keeping a running count of how many clues exist, since counting them all would mean walking the entire hunt from the start."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Calling push_back() on a forward_list — it doesn't exist, only push_front() does.",
+        "Calling size() on a forward_list — also doesn't exist; counting manually with a loop is the alternative if truly needed.",
+        "Trying to iterate backward — forward_list iterators only move forward.",
+        "Reaching for forward_list by default — it's a specialized, memory-conscious choice; list or vector are the more common general-purpose defaults."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between list and forward_list?",
+          "answer": "list is doubly linked, storing both next and previous links, and supports bidirectional traversal; forward_list is singly linked, storing only a next link, and only supports forward traversal, saving memory per element."
+        },
+        {
+          "question": "Why does forward_list not have push_back()?",
+          "answer": "Because reaching the end would require walking the entire list from the front, which wouldn't be cheap — the STL deliberately omits operations that would silently be expensive."
+        },
+        {
+          "question": "Why does forward_list not have size()?",
+          "answer": "Computing it would require traversing the whole list, so it's deliberately left out to avoid offering an operation that looks cheap but actually isn't."
+        }
+      ],
+      "thirtySecondAnswer": "forward_list is a singly linked list, storing only a link to each element's next neighbor, unlike list's doubly linked structure. This makes it lighter on memory but more limited: it only supports push_front(), not push_back(), and has no size() at all — both omissions are deliberate, since either operation would secretly require walking the entire list. Its iterators only move forward, matching its name, and it's a specialized choice for cases where minimizing per-element memory matters more than the flexibility list or vector provide."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember forward_list",
+      "text": "forward_list = a one-way treasure hunt, no headcount kept. Only push_front(). No push_back(). No size(). Forward only, no looking back."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-forward-list-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <forward_list>\n\nusing namespace std;\n\nint main()\n{\n    forward_list<int> numbers;\n    numbers.push_front(30);\n    numbers.push_front(20);\n    numbers.push_front(10);\n\n    for (forward_list<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-forward-list-basic",
+      "reference": "#include <iostream>\n#include <forward_list>\n\nusing namespace std;\n\nint main()\n{\n    forward_list<int> numbers;\n    numbers.push_front(30);\n    numbers.push_front(20);\n    numbers.push_front(10);\n\n    for (forward_list<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-forward-list-basic"]
+  }
+}

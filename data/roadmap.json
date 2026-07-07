@@ -119,7 +119,8 @@
         { "id": "cpp-stl-algorithms", "title": "STL Algorithms", "lesson": "cpp-stl-algorithms" },
         { "id": "cpp-vector", "title": "vector", "lesson": "cpp-vector" },
         { "id": "cpp-array-container", "title": "array", "lesson": "cpp-array-container" },
-        { "id": "cpp-list", "title": "list", "lesson": "cpp-list" }
+        { "id": "cpp-list", "title": "list", "lesson": "cpp-list" },
+        { "id": "cpp-forward-list", "title": "forward_list", "lesson": "cpp-forward-list" }
       ]
     }
   ]
