@@ -1,0 +1,215 @@
+{
+  "id": "cpp-cout-cin",
+  "moduleId": "cpp-fundamentals",
+  "title": "cout & cin",
+  "description": "cout and cin in depth: chaining with << and >>, endl vs \\n, and reading input into a variable for the first time.",
+  "objectives": [
+    "Chain multiple values into a single cout statement",
+    "Understand endl vs \\n for starting a new line",
+    "Read a value from the user with cin into a variable",
+    "Chain multiple cin >> reads in one statement",
+    "Avoid the classic << / >> direction mix-up"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap"
+    },
+    {
+      "type": "paragraph",
+      "text": "We already know cout and cin come from iostream, live in the std namespace, and that cout displays output while cin reads input. Today we go deep enough to actually use both properly."
+    },
+    {
+      "type": "heading",
+      "text": "2. Chaining Multiple Values with cout"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in the Program Structure lesson, we wrote two separate cout statements and got HelloAman glued together. There's a cleaner way — chain everything into one statement using << repeatedly:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\" << \"Aman\";",
+      "output": "HelloAman"
+    },
+    {
+      "type": "note",
+      "text": "Each << inserts one more piece of data into the same output stream. You can chain as many as you like in a single statement."
+    },
+    {
+      "type": "heading",
+      "text": "3. Starting a New Line: endl and \\n"
+    },
+    {
+      "type": "paragraph",
+      "text": "Nothing so far has told the program to break onto a new line — that's why HelloAman appeared glued together. Two common ways to add a line break:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\" << endl;\ncout << \"Aman\";"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\\n\";\ncout << \"Aman\";"
+    },
+    {
+      "type": "table",
+      "headers": ["Option", "Behavior"],
+      "rows": [
+        ["endl", "Inserts a newline and flushes the output buffer immediately"],
+        ["\\n", "Inserts a newline character only, no flush"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Recall the buffering preview from the iostream topic — cout is normally buffered. endl forces that buffer to be written out right away, which is slightly slower if used heavily (e.g. inside a big loop later). For most beginner programs the difference isn't noticeable, but \\n is generally the more efficient habit."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "endl = new line + flush. \\n = just a new line."
+    },
+    {
+      "type": "heading",
+      "text": "4. cin — Reading a Value"
+    },
+    {
+      "type": "paragraph",
+      "text": "cin needs somewhere to put the value it reads — a variable. We haven't formally covered variables yet, so here's just enough to see cin in action: int num; creates a variable named num that can hold a whole number."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int num;\ncin >> num;"
+    },
+    {
+      "type": "warning",
+      "text": "We will properly cover variables and data types in their own topic. For now, just recognize the shape: cin >> variableName; reads a value typed by the user and stores it into that variable."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int num;\n\n    cout << \"Enter a number: \";\n    cin >> num;\n    cout << \"You entered: \" << num << endl;\n\n    return 0;\n}",
+      "retypePractice": true,
+      "retypeId": "cpp-cout-cin-basic"
+    },
+    {
+      "type": "note",
+      "text": "Unlike our earlier examples, this program's output depends on what you type. For example, if you type 7 when prompted, the program prints: Enter a number: 7 followed by You entered: 7 on the next line."
+    },
+    {
+      "type": "heading",
+      "text": "6. Chaining Multiple cin Reads"
+    },
+    {
+      "type": "paragraph",
+      "text": "Just like cout can chain <<, cin can chain >> to read several values in one statement:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a, b;\ncin >> a >> b;"
+    },
+    {
+      "type": "note",
+      "text": "This reads two numbers, separated by whitespace (a space or a new line) — for example typing 3 5 and pressing enter fills a with 3 and b with 5. We'll cover declaring multiple variables like int a, b; properly in the Variables topic."
+    },
+    {
+      "type": "heading",
+      "text": "7. cout vs cin: Direction Matters"
+    },
+    {
+      "type": "table",
+      "headers": ["", "cout", "cin"],
+      "rows": [
+        ["Purpose", "Output (display)", "Input (read)"],
+        ["Operator", "<< (points toward cout, i.e. into the stream)", ">> (points away from cin, i.e. out of the stream)"],
+        ["Data flow", "Program → Console", "Keyboard → Program"]
+      ]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A conversation analogy",
+      "text": "Think of cout as you speaking (sending words out) and cin as you listening (bringing words in). The arrows even hint at direction: << pushes data into cout and out to the screen; >> pulls data from cin into your variable."
+    },
+    {
+      "type": "heading",
+      "text": "8. A Very Common Mistake: Mixing Up << and >>"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout >> \"Hello\"; // wrong operator for cout\ncin << num;       // wrong operator for cin"
+    },
+    {
+      "type": "warning",
+      "text": "cout always uses <<. cin always uses >>. Swapping them is one of the most common beginner mistakes and will cause a compilation error."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using >> with cout or << with cin — cout only takes <<, cin only takes >>.",
+        "Forgetting to declare a variable before using cin — cin >> num; needs num to already exist.",
+        "Expecting a new line automatically — without endl or \\n, consecutive cout statements print on the same line.",
+        "Overusing endl in performance-sensitive code — each endl flushes the buffer; \\n is usually enough for a simple line break.",
+        "Forgetting that cin >> skips whitespace between values, which is usually what you want when chaining cin >> a >> b;."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between endl and \\n?",
+          "answer": "Both insert a new line, but endl also flushes the output buffer immediately, while \\n does not — making \\n generally more efficient for repeated output."
+        },
+        {
+          "question": "Can multiple values be chained in a single cout statement?",
+          "answer": "Yes, using << repeatedly, e.g. cout << \"Hello\" << \" \" << \"Aman\";."
+        },
+        {
+          "question": "What does cin >> num; do?",
+          "answer": "It reads a value typed by the user from standard input and stores it into the variable num."
+        },
+        {
+          "question": "Why does cin require a variable?",
+          "answer": "cin needs somewhere to store the value it reads — without a variable to write into, there's nowhere for the input to go."
+        },
+        {
+          "question": "What's a common beginner mistake with cout and cin?",
+          "answer": "Mixing up the operators — using >> with cout or << with cin — which causes a compilation error, since each stream only supports its own direction."
+        }
+      ],
+      "thirtySecondAnswer": "cout displays output using the << operator and can chain multiple values in one statement, like cout << a << b;. A new line can be added with endl, which also flushes the output buffer, or with \\n, which is usually more efficient. cin reads input using the >> operator into a variable that must already exist, and multiple values can be read in one statement by chaining, like cin >> a >> b;. The two operators point in the direction data flows: << into cout, >> out of cin."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember cout & cin",
+      "text": "cout uses << (arrows point INTO the stream, data goes OUT to screen). cin uses >> (arrows point OUT of the stream, data comes IN from keyboard). endl = newline + flush. \\n = just newline."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-cout-cin-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int num;\n\n    cout << \"Enter a number: \";\n    cin >> num;\n    cout << \"You entered: \" << num << endl;\n\n    return 0;\n}" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-cout-cin-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int num;\n\n    cout << \"Enter a number: \";\n    cin >> num;\n    cout << \"You entered: \" << num << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-cout-cin-basic"]
+  }
+}
