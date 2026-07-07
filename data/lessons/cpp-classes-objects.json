@@ -1,0 +1,169 @@
+{
+  "id": "cpp-classes-objects",
+  "moduleId": "oop",
+  "title": "Classes and Objects",
+  "description": "Grouping related data and behavior together: a class as a blueprint, an object as a real instance built from it, and the dot operator.",
+  "objectives": [
+    "Understand a class as a blueprint bundling data and behavior",
+    "Understand an object as a concrete instance of a class",
+    "Declare member variables and member functions",
+    "Create and use multiple objects from the same class"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Related Data, Scattered"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string studentName = \"Aman\";\nint studentAge = 20;\ndouble studentMarks = 88.5;"
+    },
+    {
+      "type": "paragraph",
+      "text": "These three variables clearly describe one student, but nothing in the code actually groups them together — they're just three separate variables that happen to be related by their names. Now imagine needing to track 30 students this way."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Class?"
+    },
+    {
+      "type": "definition",
+      "term": "Class",
+      "text": "A class is a blueprint that bundles related data (member variables) and behavior (member functions) together under one custom type."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    string name;\n    int age;\n    double marks;\n\n    void display()\n    {\n        cout << name << \", age \" << age << \", marks \" << marks;\n    }\n};"
+    },
+    {
+      "type": "warning",
+      "text": "public: is a preview of Access Specifiers, covered in its own topic right after this one — for now, just know it makes these members usable from outside the class."
+    },
+    {
+      "type": "heading",
+      "text": "3. What is an Object?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Student s1; // s1 is an OBJECT — a real, concrete Student"
+    },
+    {
+      "type": "definition",
+      "term": "Object",
+      "text": "An object is a concrete instance of a class — actual memory holding its own copy of the class's member variables, created from the class's blueprint."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A blueprint vs an actual house",
+      "text": "A house blueprint describes what every house built from it will have — rooms, doors, a kitchen — but the blueprint itself is not a house you can live in. class Student is that blueprint. Student s1; is an actual house built from it — a real object occupying real memory, with its own name, age, and marks."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Dot Operator"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "s1.name = \"Aman\";\ns1.age = 20;\ns1.marks = 88.5;\n\ns1.display();"
+    },
+    {
+      "type": "note",
+      "text": "The . (dot) operator reaches into an object to access its member variables or call its member functions — object.member. s1.name refers to that specific object's name, distinct from any other Student object's name."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n    int age;\n    double marks;\n\n    void display()\n    {\n        cout << name << \", age \" << age << \", marks \" << marks;\n    }\n};\n\nint main()\n{\n    Student s1;\n    s1.name = \"Aman\";\n    s1.age = 20;\n    s1.marks = 88.5;\n\n    s1.display();\n\n    return 0;\n}",
+      "output": "Aman, age 20, marks 88.5",
+      "retypePractice": true,
+      "retypeId": "cpp-classes-objects-student"
+    },
+    {
+      "type": "heading",
+      "text": "6. Multiple Objects from One Class"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Student s1;\ns1.name = \"Aman\";\ns1.age = 20;\n\nStudent s2;\ns2.name = \"Priya\";\ns2.age = 22;\n\n// s1 and s2 are completely separate — changing one never affects the other"
+    },
+    {
+      "type": "note",
+      "text": "This solves the original scattering problem directly: instead of studentName, studentAge, studentMarks repeated per student, each Student object bundles its own name, age, and marks together, and there can be as many independent objects as needed, all built from the same one class definition."
+    },
+    {
+      "type": "heading",
+      "text": "7. Member Variables and Member Functions"
+    },
+    {
+      "type": "table",
+      "headers": ["Term", "Meaning"],
+      "rows": [
+        ["Member variable", "A variable that belongs to the class — each object gets its own copy (name, age, marks)"],
+        ["Member function", "A function that belongs to the class, usually operating on that object's own member variables (display())"]
+      ]
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing a class with an object — the class is the blueprint (Student); an object (s1) is a real instance built from it.",
+        "Forgetting the semicolon after a class's closing brace — class Student { ... }; needs that trailing ;, unlike a function definition.",
+        "Assuming two objects of the same class share their member variables — s1.age and s2.age are completely independent.",
+        "Trying to access a member with . on the class name itself instead of an object — Student.age is invalid; it must be an actual object, like s1.age."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a class?",
+          "answer": "A blueprint that bundles related data (member variables) and behavior (member functions) together under a custom type."
+        },
+        {
+          "question": "What is an object?",
+          "answer": "A concrete instance of a class — real memory holding its own copy of that class's member variables, created from the class's blueprint."
+        },
+        {
+          "question": "What does the dot operator do?",
+          "answer": "It accesses a specific object's member variable or calls its member function, using object.member syntax."
+        },
+        {
+          "question": "If two objects are created from the same class, do they share their member variables?",
+          "answer": "No — each object gets its own independent copy of the class's member variables; changing one object's data never affects another object of the same class."
+        }
+      ],
+      "thirtySecondAnswer": "A class is a blueprint that bundles related data, called member variables, and related behavior, called member functions, into one custom type — for example, a Student class with name, age, and marks, plus a display() function. An object is a real, concrete instance built from that blueprint, created with Student s1;, and its members are accessed with the dot operator, like s1.name. Multiple independent objects can be created from the same class, each with its own separate copy of the member variables, which solves the earlier problem of scattered, loosely related variables."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Classes and Objects",
+      "text": "Class = blueprint. Object = an actual house built from it. Dot (.) = walk into a specific house and use what's inside it."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-classes-objects-student", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n    int age;\n    double marks;\n\n    void display()\n    {\n        cout << name << \", age \" << age << \", marks \" << marks;\n    }\n};\n\nint main()\n{\n    Student s1;\n    s1.name = \"Aman\";\n    s1.age = 20;\n    s1.marks = 88.5;\n\n    s1.display();\n\n    return 0;\n}", "output": "Aman, age 20, marks 88.5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-classes-objects-student",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    string name;\n    int age;\n    double marks;\n\n    void display()\n    {\n        cout << name << \", age \" << age << \", marks \" << marks;\n    }\n};\n\nint main()\n{\n    Student s1;\n    s1.name = \"Aman\";\n    s1.age = 20;\n    s1.marks = 88.5;\n\n    s1.display();\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-classes-objects-student"]
+  }
+}
