@@ -1,0 +1,132 @@
+{
+  "id": "cpp-array-container",
+  "moduleId": "stl",
+  "title": "array",
+  "description": "std::array: a fixed-size array with STL conveniences layered on top — the safety of at() and size(), without vector's resizing.",
+  "objectives": [
+    "Understand std::array as a fixed-size, STL-flavored array",
+    "Use size() and at() on a std::array",
+    "Compare std::array against a raw array and vector",
+    "Know when std::array is the right choice"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: What Raw Arrays Were Missing"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall Arrays: a raw C-style array has no size() to ask how big it is, and [] never checks bounds — going out of range is silent undefined behavior. std::array, from the <array> header, keeps the fixed size of a raw array but adds the STL conveniences vector had."
+    },
+    {
+      "type": "heading",
+      "text": "2. Declaring a std::array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <array>\n\narray<int, 5> scores = {90, 85, 78, 92, 88}; // size is part of the type: 5"
+    },
+    {
+      "type": "note",
+      "text": "Unlike vector<int>, the size (5) is written directly into the type — array<int, 5> and array<int, 10> are technically different types. Once declared, a std::array can never grow or shrink, exactly like a raw array."
+    },
+    {
+      "type": "heading",
+      "text": "3. size() and at()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <array>\n\nusing namespace std;\n\nint main()\n{\n    array<int, 5> scores = {90, 85, 78, 92, 88};\n\n    cout << scores.size() << endl;\n    cout << scores.at(2) << endl;\n\n    return 0;\n}",
+      "output": "5\n78",
+      "retypePractice": true,
+      "retypeId": "cpp-array-container-basic"
+    },
+    {
+      "type": "note",
+      "text": "Just like vector, scores.at(2) is bounds-checked and throws std::out_of_range on an invalid index (recall vector's at() vs [] safety difference), while scores[2] behaves like a raw array — fast, but unchecked."
+    },
+    {
+      "type": "heading",
+      "text": "4. Three Options, Side by Side"
+    },
+    {
+      "type": "table",
+      "headers": ["Raw array (int[])", "std::array", "vector"],
+      "rows": [
+        ["Fixed size, no size()", "Fixed size, has size()", "Resizable, has size()"],
+        ["[] only, no bounds checking", "[] and at() — at() is bounds-checked", "[] and at() — at() is bounds-checked"],
+        ["No STL iterator support built in the same way", "Works with STL iterators and algorithms", "Works with STL iterators and algorithms"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. When to Use std::array Instead of vector"
+    },
+    {
+      "type": "tip",
+      "text": "When the size is genuinely fixed and known at compile time, std::array is a reasonable choice — it avoids vector's (small) overhead of tracking resizable capacity, while still getting size(), at(), and STL algorithm compatibility. When the size might change, or isn't known until runtime, vector remains the default."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A labeled ice cube tray vs an expandable pitcher",
+      "text": "A raw array is like a plain ice cube tray — a fixed number of slots, and no label telling you how many. std::array is the same fixed tray, but now labeled with exactly how many slots it has and a proper safe way to check a slot exists before reaching in. vector, by contrast, is the expandable pitcher from before — it can grow as needed, at the cost of not having a truly fixed shape."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to push_back() onto a std::array — it has no such method; its size never changes after declaration.",
+        "Forgetting the size is part of the type — array<int, 5> and array<int, 10> are not interchangeable types.",
+        "Using [] when bounds aren't already guaranteed — at() is available and safer, exactly as with vector.",
+        "Choosing std::array when the size genuinely isn't known until runtime — that's exactly the situation vector or new[] (from new) is meant for."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is std::array, and how does it differ from a raw C-style array?",
+          "answer": "It's a fixed-size array from the <array> header that adds STL conveniences like size() and bounds-checked at(), which a raw array doesn't have."
+        },
+        {
+          "question": "How does std::array differ from vector?",
+          "answer": "std::array has a fixed size, set as part of its type, and cannot grow or shrink; vector is resizable, growing automatically as elements are added."
+        },
+        {
+          "question": "When would you choose std::array over vector?",
+          "answer": "When the size is fixed and known at compile time, avoiding the (small) overhead vector carries for supporting resizing."
+        }
+      ],
+      "thirtySecondAnswer": "std::array, from <array>, is a fixed-size array — like a raw C-style array — but with STL conveniences layered on top: size() to check its length, and a bounds-checked at() alongside the unchecked []. Unlike vector, its size is baked into the type itself and can never change after declaration. It's the right choice when a fixed, compile-time-known size is genuinely enough; when the size might vary or is only known at runtime, vector remains the default."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember array",
+      "text": "std::array = a labeled, safety-checked ice cube tray. Fixed slots, but now it tells you how many and lets you check before reaching in."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-array-container-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <array>\n\nusing namespace std;\n\nint main()\n{\n    array<int, 5> scores = {90, 85, 78, 92, 88};\n\n    cout << scores.size() << endl;\n    cout << scores.at(2) << endl;\n\n    return 0;\n}", "output": "5\n78" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-array-container-basic",
+      "reference": "#include <iostream>\n#include <array>\n\nusing namespace std;\n\nint main()\n{\n    array<int, 5> scores = {90, 85, 78, 92, 88};\n\n    cout << scores.size() << endl;\n    cout << scores.at(2) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-array-container-basic"]
+  }
+}

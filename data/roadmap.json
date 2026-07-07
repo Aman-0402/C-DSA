@@ -117,7 +117,8 @@
         { "id": "cpp-stl-containers", "title": "STL Containers", "lesson": "cpp-stl-containers" },
         { "id": "cpp-stl-iterators", "title": "STL Iterators", "lesson": "cpp-stl-iterators" },
         { "id": "cpp-stl-algorithms", "title": "STL Algorithms", "lesson": "cpp-stl-algorithms" },
-        { "id": "cpp-vector", "title": "vector", "lesson": "cpp-vector" }
+        { "id": "cpp-vector", "title": "vector", "lesson": "cpp-vector" },
+        { "id": "cpp-array-container", "title": "array", "lesson": "cpp-array-container" }
       ]
     }
   ]
