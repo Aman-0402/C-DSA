@@ -1,0 +1,146 @@
+{
+  "id": "cpp-tuples",
+  "moduleId": "stl",
+  "title": "Tuples",
+  "description": "pair, generalized beyond two elements: bundling any fixed number of values with get<index>() and tie() for unpacking.",
+  "objectives": [
+    "Understand tuple as pair generalized to more than two elements",
+    "Create a tuple and access elements with get<index>()",
+    "Unpack a tuple into separate variables with tie()",
+    "Know when tuple is preferable to pair"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: pair's Two-Item Limit"
+    },
+    {
+      "type": "paragraph",
+      "text": "pair bundles exactly two values. What about three, four, or more related values that belong together? That's what tuple, from <tuple>, is for."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a tuple?"
+    },
+    {
+      "type": "definition",
+      "term": "tuple",
+      "text": "tuple<T1, T2, T3, ...> bundles any fixed number of values, possibly of different types, into a single object."
+    },
+    {
+      "type": "heading",
+      "text": "3. Creating a tuple"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <tuple>\n\ntuple<string, int, double> student = {\"Aman\", 20, 88.5};\n// or:\ntuple<string, int, double> student2 = make_tuple(\"Priya\", 22, 91.0);"
+    },
+    {
+      "type": "heading",
+      "text": "4. Accessing with get<index>()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <tuple>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    tuple<string, int, double> student = {\"Aman\", 20, 88.5};\n\n    cout << get<0>(student) << endl;\n    cout << get<1>(student) << endl;\n    cout << get<2>(student) << endl;\n\n    return 0;\n}",
+      "output": "Aman\n20\n88.5",
+      "retypePractice": true,
+      "retypeId": "cpp-tuples-basic"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike pair's named .first/.second, tuple elements are accessed by position using get<0>(student), get<1>(student), and so on — zero-indexed, exactly like the arrays and vectors we've used throughout. There's no .first for a tuple; the index must be known at compile time (it's inside <>, not ()) since each position can hold a different type."
+    },
+    {
+      "type": "heading",
+      "text": "5. Unpacking with tie()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string name;\nint age;\ndouble marks;\n\ntie(name, age, marks) = student; // unpacks all three values at once\n\ncout << name << \" \" << age << \" \" << marks;"
+    },
+    {
+      "type": "note",
+      "text": "tie() takes existing variables and assigns each element of the tuple into the matching one, all in a single line — a convenient way to \"unpack\" a tuple's contents without writing get<0>(), get<1>(), get<2>() separately."
+    },
+    {
+      "type": "heading",
+      "text": "6. tuple vs pair"
+    },
+    {
+      "type": "table",
+      "headers": ["pair", "tuple"],
+      "rows": [
+        ["Always exactly 2 elements", "Any fixed number of elements"],
+        ["Named access: .first, .second", "Positional access: get<0>(), get<1>(), ..."],
+        ["Simpler, common in map iteration", "More general, for 3+ related values"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "When exactly two values are needed, pair is generally preferred for its clearer .first/.second names. tuple is reached for when three or more values genuinely need to travel together."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A luggage tag with three fields instead of two",
+      "text": "Recall pair's luggage tag with a name and destination. A tuple is a luggage tag with more fields stapled on — name, destination, AND flight number — still one tag, just holding more glued-together information, referenced by which field number it is rather than a name."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to use .first/.second on a tuple — that syntax is specific to pair; tuple uses get<index>().",
+        "Using a runtime variable as the index inside get<>() — the index must be a compile-time constant, since each position can be a different type.",
+        "Forgetting #include <tuple>.",
+        "Reaching for tuple when pair would do — for exactly two values, pair's named members are usually clearer."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a tuple, and how does it relate to pair?",
+          "answer": "tuple bundles any fixed number of values of possibly different types into one object — a generalization of pair, which is limited to exactly two values."
+        },
+        {
+          "question": "How do you access an element of a tuple?",
+          "answer": "By position, using get<index>(t), with the index starting at 0 and required to be a compile-time constant."
+        },
+        {
+          "question": "What does tie() do with a tuple?",
+          "answer": "It unpacks a tuple's elements directly into a set of existing variables in one line, instead of retrieving each with get<index>() separately."
+        }
+      ],
+      "thirtySecondAnswer": "tuple<T1, T2, T3, ...> generalizes pair beyond two elements, bundling any fixed number of values of possibly different types. Elements are accessed by position with get<index>(t), zero-indexed and requiring a compile-time constant index, rather than pair's named .first/.second. tie(a, b, c) = t; is a convenient way to unpack all of a tuple's elements into existing variables at once. pair remains preferable for exactly two values, thanks to its clearer named members; tuple is reached for when three or more related values need to travel together."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Tuples",
+      "text": "tuple = a luggage tag with more than two fields, referenced by number: get<0>(), get<1>(), get<2>(). tie() unpacks them all at once."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-tuples-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <tuple>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    tuple<string, int, double> student = {\"Aman\", 20, 88.5};\n\n    cout << get<0>(student) << endl;\n    cout << get<1>(student) << endl;\n    cout << get<2>(student) << endl;\n\n    return 0;\n}", "output": "Aman\n20\n88.5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-tuples-basic",
+      "reference": "#include <iostream>\n#include <tuple>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    tuple<string, int, double> student = {\"Aman\", 20, 88.5};\n\n    cout << get<0>(student) << endl;\n    cout << get<1>(student) << endl;\n    cout << get<2>(student) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-tuples-basic"]
+  }
+}
