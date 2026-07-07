@@ -1,0 +1,186 @@
+{
+  "id": "cpp-delete",
+  "moduleId": "pointers-memory",
+  "title": "delete",
+  "description": "Giving memory back: why it's required, delete vs delete[], memory leaks, dangling pointers, and why nulling a pointer after delete is good practice.",
+  "objectives": [
+    "Understand why memory from new must be manually released",
+    "Match delete with new, and delete[] with new[]",
+    "Understand a memory leak and a dangling pointer",
+    "Adopt the habit of nulling a pointer immediately after delete"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Why delete Exists"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int *ptr = new int(25); // memory allocated on the heap\n// ... never freed"
+    },
+    {
+      "type": "warning",
+      "text": "Memory obtained with new does not clean itself up when a function ends, unlike an ordinary local variable. If nothing ever releases it, that memory stays reserved for the rest of the program's run, even if nothing can reach it anymore — this is called a memory leak."
+    },
+    {
+      "type": "definition",
+      "term": "Memory leak",
+      "text": "A memory leak occurs when dynamically allocated memory is never released, remaining reserved even though the program can no longer use it."
+    },
+    {
+      "type": "heading",
+      "text": "2. delete for a Single Value"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int(25);\n\n    cout << *ptr << endl;\n\n    delete ptr;\n\n    return 0;\n}",
+      "output": "25",
+      "retypePractice": true,
+      "retypeId": "cpp-delete-single"
+    },
+    {
+      "type": "note",
+      "text": "delete ptr; releases the single int that new int(25) allocated, giving that memory back for the system to reuse."
+    },
+    {
+      "type": "heading",
+      "text": "3. delete[] for an Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int *scores = new int[5];\n\n// ... use scores ...\n\ndelete[] scores; // note the [] — required for array allocations"
+    },
+    {
+      "type": "warning",
+      "text": "Memory allocated with new Type[n] must be released with delete[], not plain delete. Using the wrong form — mismatching new/delete or new[]/delete[] — is undefined behavior: it might seem to work, or it might corrupt memory in ways that only cause problems much later."
+    },
+    {
+      "type": "table",
+      "headers": ["Allocated with", "Must be released with"],
+      "rows": [
+        ["new Type", "delete ptr;"],
+        ["new Type[n]", "delete[] ptr;"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Dangling Pointers"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int *ptr = new int(25);\ndelete ptr;\n\ncout << *ptr; // DANGER — ptr still holds the old address, but that memory is no longer valid"
+    },
+    {
+      "type": "warning",
+      "text": "delete releases the memory, but it does not change what ptr itself contains — ptr still holds the same address it did before, now pointing at memory that's no longer valid to use. A pointer in this state is called dangling, and dereferencing it is undefined behavior."
+    },
+    {
+      "type": "definition",
+      "term": "Dangling pointer",
+      "text": "A dangling pointer still holds the address of memory that has already been released, making it unsafe to dereference."
+    },
+    {
+      "type": "heading",
+      "text": "5. Good Practice: Null It Immediately"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int(25);\n\n    delete ptr;\n    ptr = nullptr; // ptr no longer dangles\n\n    if (ptr == nullptr)\n    {\n        cout << \"ptr is safely null.\" << endl;\n    }\n\n    return 0;\n}",
+      "output": "ptr is safely null.",
+      "retypePractice": true,
+      "retypeId": "cpp-delete-nullptr"
+    },
+    {
+      "type": "tip",
+      "text": "nullptr is C++'s way of saying \"this pointer points to nothing.\" Setting a pointer to nullptr right after delete is a widely recommended habit — it turns an accidental later use of ptr into an easy-to-catch null check, rather than a silent, hard-to-trace bug."
+    },
+    {
+      "type": "heading",
+      "text": "6. Double Delete"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int *ptr = new int(25);\n\ndelete ptr;\ndelete ptr; // DANGER — deleting the same memory twice"
+    },
+    {
+      "type": "warning",
+      "text": "Calling delete twice on the same pointer is undefined behavior and can corrupt the program's memory management. Nulling ptr after the first delete prevents this too — delete nullptr; is explicitly safe and does nothing."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Returning a rented storage unit",
+      "text": "Renting a storage unit (new) means you're responsible for canceling it (delete) when you're done — nobody does it for you automatically. Keep the door key after canceling (a dangling pointer), and it might still open a unit that now belongs to someone else, or nothing at all. Throwing away the key (setting it to nullptr) the moment you cancel means you can never accidentally use it again."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to call delete at all — causes a memory leak, since the memory is never given back.",
+        "Using delete for something allocated with new[], or vice versa — must match exactly, delete with new, delete[] with new[].",
+        "Using a pointer after it's been deleted, without checking — it's dangling, and dereferencing it is undefined behavior.",
+        "Calling delete twice on the same pointer — also undefined behavior; setting the pointer to nullptr after the first delete prevents this."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Why must memory allocated with new be manually released?",
+          "answer": "Because it doesn't clean itself up automatically like an ordinary local variable does — without delete, that memory remains reserved for the program's entire run, causing a memory leak."
+        },
+        {
+          "question": "What is the difference between delete and delete[]?",
+          "answer": "delete releases a single value allocated with new; delete[] releases an array allocated with new[] — they must be matched correctly to the form of new that was used."
+        },
+        {
+          "question": "What is a dangling pointer?",
+          "answer": "A pointer that still holds the address of memory that has already been released with delete, making it unsafe to dereference."
+        },
+        {
+          "question": "Why is it good practice to set a pointer to nullptr after deleting it?",
+          "answer": "Because delete doesn't change the pointer's own value — it still holds the old address. Setting it to nullptr prevents accidental use of a dangling pointer and makes double-delete safe, since delete nullptr; does nothing."
+        }
+      ],
+      "thirtySecondAnswer": "Memory allocated with new must be manually released with delete, or delete[] for an array allocated with new[] — matching the wrong form is undefined behavior, and forgetting to release memory entirely causes a memory leak. After delete, the pointer itself still holds the old, now-invalid address, making it a dangling pointer if dereferenced again. The recommended habit is to immediately set the pointer to nullptr after deleting it, which prevents accidental dangling-pointer use and makes an accidental repeat delete harmless."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember delete",
+      "text": "new = rent it. delete = return it. Forget to return it = leak. Keep using the key after returning it = dangling pointer. Throw the key away (nullptr) the moment you return it."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-delete-single", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int(25);\n\n    cout << *ptr << endl;\n\n    delete ptr;\n\n    return 0;\n}", "output": "25" },
+    { "id": "cpp-delete-nullptr", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int(25);\n\n    delete ptr;\n    ptr = nullptr;\n\n    if (ptr == nullptr)\n    {\n        cout << \"ptr is safely null.\" << endl;\n    }\n\n    return 0;\n}", "output": "ptr is safely null." }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-delete-single",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int(25);\n\n    cout << *ptr << endl;\n\n    delete ptr;\n\n    return 0;\n}"
+    },
+    {
+      "id": "cpp-delete-nullptr",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int(25);\n\n    delete ptr;\n    ptr = nullptr;\n\n    if (ptr == nullptr)\n    {\n        cout << \"ptr is safely null.\" << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-delete-single", "cpp-delete-nullptr"]
+  }
+}
