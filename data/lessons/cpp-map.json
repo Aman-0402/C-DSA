@@ -1,0 +1,154 @@
+{
+  "id": "cpp-map",
+  "moduleId": "stl",
+  "title": "map",
+  "description": "Key-value pairs, unique keys, automatically sorted by key — plus the classic gotcha where [] silently creates a missing entry.",
+  "objectives": [
+    "Understand map as key-value pairs sorted automatically by key",
+    "Insert and access values using []",
+    "Understand the []-creates-a-missing-entry gotcha",
+    "Use find() and count() to check existence safely"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: set Stored Values; map Stores Pairs"
+    },
+    {
+      "type": "paragraph",
+      "text": "set held a collection of unique values. map holds unique keys, each paired with an associated value — like a real dictionary, where a word (the key) maps to its definition (the value)."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is map?"
+    },
+    {
+      "type": "definition",
+      "term": "map",
+      "text": "map stores key-value pairs with unique keys, automatically kept sorted by key, giving roughly logarithmic-time lookup by key."
+    },
+    {
+      "type": "heading",
+      "text": "3. Inserting and Accessing with []"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <map>\n\nmap<string, int> ages;\n\nages[\"Aman\"] = 20;   // insert or update\nages[\"Priya\"] = 22;\n\ncout << ages[\"Aman\"]; // 20 — access by key"
+    },
+    {
+      "type": "heading",
+      "text": "4. The []-Creates-Entry Gotcha"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "map<string, int> ages;\nages[\"Aman\"] = 20;\n\ncout << ages[\"Ghost\"]; // \"Ghost\" doesn't exist — but this doesn't error!\ncout << ages.size();   // 2 — \"Ghost\" got silently ADDED with value 0"
+    },
+    {
+      "type": "warning",
+      "text": "This is one of map's most notorious surprises: reading ages[\"Ghost\"] for a key that doesn't exist doesn't throw an error — it silently creates that key with a default value (0 for int) and returns that. Just checking whether a key exists using [] can accidentally insert it."
+    },
+    {
+      "type": "heading",
+      "text": "5. find() and count() — Checking Safely"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "map<string, int> ages;\nages[\"Aman\"] = 20;\n\nif (ages.count(\"Ghost\") == 0)\n{\n    cout << \"Not found — and nothing was inserted.\";\n}"
+    },
+    {
+      "type": "tip",
+      "text": "Recall count() from set — for map, it also only ever returns 0 or 1 (keys are unique), and unlike [], it never creates an entry as a side effect. find() works the same safe way, returning an iterator or end(). Checking existence with count() or find() rather than [] avoids the gotcha above."
+    },
+    {
+      "type": "heading",
+      "text": "6. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <map>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    map<string, int> ages;\n    ages[\"Priya\"] = 22;\n    ages[\"Aman\"] = 20;\n    ages[\"Zara\"] = 25;\n\n    for (auto pair : ages)\n    {\n        cout << pair.first << \": \" << pair.second << endl;\n    }\n\n    return 0;\n}",
+      "output": "Aman: 20\nPriya: 22\nZara: 25",
+      "retypePractice": true,
+      "retypeId": "cpp-map-basic"
+    },
+    {
+      "type": "warning",
+      "text": "auto and the range-based for loop are previews of upcoming topics. The key detail here: even though insertion order was Priya, Aman, Zara, the output comes out alphabetically by key (Aman, Priya, Zara) — map keeps itself sorted by key automatically, exactly like set does for values."
+    },
+    {
+      "type": "heading",
+      "text": "7. Each Element Is a Pair"
+    },
+    {
+      "type": "note",
+      "text": "Iterating a map gives you a pair for each entry — pair.first is the key, pair.second is the value. This is a preview of the dedicated pair topic coming up, which explains this structure properly."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A real, alphabetized dictionary",
+      "text": "A physical dictionary maps a unique word (key) to its definition (value), and every dictionary is naturally alphabetized (sorted by key) — exactly map's behavior. Looking up a word that isn't in the dictionary doesn't add a blank page for it automatically the way map[missingKey] silently does — that quirk is unique to map, worth remembering precisely because it's surprising."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using [] to check whether a key exists — it silently creates the key with a default value if it doesn't; use count() or find() instead.",
+        "Expecting map to preserve insertion order — it's always sorted by key automatically.",
+        "Forgetting map keys must be unique — assigning to an existing key with [] updates its value rather than creating a duplicate entry.",
+        "Forgetting #include <map>."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does map store, and how is it ordered?",
+          "answer": "Unique key-value pairs, automatically kept sorted by key."
+        },
+        {
+          "question": "What happens when you access a non-existent key using []?",
+          "answer": "It's silently created with a default value (e.g. 0 for int) instead of throwing an error — a classic gotcha when using [] just to check existence."
+        },
+        {
+          "question": "How should you safely check whether a key exists in a map?",
+          "answer": "Using count() (returns 0 or 1) or find() (returns an iterator or end()), neither of which inserts a new entry as a side effect, unlike []."
+        },
+        {
+          "question": "What does each element look like when iterating a map?",
+          "answer": "A pair, where .first is the key and .second is the associated value."
+        }
+      ],
+      "thirtySecondAnswer": "map stores unique key-value pairs, automatically kept sorted by key — accessed and inserted with [], like ages[\"Aman\"] = 20;. A classic gotcha: reading a missing key with [] doesn't error, it silently creates that key with a default value, so count() or find() should be used instead to safely check existence without side effects. Iterating a map yields entries in sorted key order, each as a pair with .first as the key and .second as the value, giving roughly logarithmic-time performance for lookups, insertions, and removals."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember map",
+      "text": "map = a real dictionary, word → definition, always alphabetized. [] on a missing key silently ADDS it — use count()/find() to just check."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-map-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <map>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    map<string, int> ages;\n    ages[\"Priya\"] = 22;\n    ages[\"Aman\"] = 20;\n    ages[\"Zara\"] = 25;\n\n    for (auto pair : ages)\n    {\n        cout << pair.first << \": \" << pair.second << endl;\n    }\n\n    return 0;\n}", "output": "Aman: 20\nPriya: 22\nZara: 25" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-map-basic",
+      "reference": "#include <iostream>\n#include <map>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    map<string, int> ages;\n    ages[\"Priya\"] = 22;\n    ages[\"Aman\"] = 20;\n    ages[\"Zara\"] = 25;\n\n    for (auto pair : ages)\n    {\n        cout << pair.first << \": \" << pair.second << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-map-basic"]
+  }
+}

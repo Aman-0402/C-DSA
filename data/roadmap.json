@@ -126,7 +126,8 @@
         { "id": "cpp-queue", "title": "queue", "lesson": "cpp-queue" },
         { "id": "cpp-priority-queue", "title": "priority_queue", "lesson": "cpp-priority-queue" },
         { "id": "cpp-set", "title": "set", "lesson": "cpp-set" },
-        { "id": "cpp-unordered-set", "title": "unordered_set", "lesson": "cpp-unordered-set" }
+        { "id": "cpp-unordered-set", "title": "unordered_set", "lesson": "cpp-unordered-set" },
+        { "id": "cpp-map", "title": "map", "lesson": "cpp-map" }
       ]
     }
   ]
