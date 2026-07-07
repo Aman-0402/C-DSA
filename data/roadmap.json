@@ -108,6 +108,13 @@
         { "id": "cpp-templates", "title": "Templates", "lesson": "cpp-templates" },
         { "id": "cpp-exception-handling", "title": "Exception Handling", "lesson": "cpp-exception-handling" }
       ]
+    },
+    {
+      "id": "stl",
+      "title": "Standard Template Library (STL)",
+      "topics": [
+        { "id": "cpp-stl", "title": "Standard Template Library — STL", "lesson": "cpp-stl" }
+      ]
     }
   ]
 }

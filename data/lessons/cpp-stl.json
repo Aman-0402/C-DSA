@@ -1,0 +1,150 @@
+{
+  "id": "cpp-stl",
+  "moduleId": "stl",
+  "title": "Standard Template Library — STL",
+  "description": "The payoff of everything so far: what the STL actually is, its three main parts, and why it's central to DSA and interviews.",
+  "objectives": [
+    "Understand what the STL is and what problem it solves",
+    "Know its three main parts: containers, algorithms, iterators",
+    "See the STL's connection to Templates",
+    "Get a first working taste with vector"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. This Was Foreshadowed From Lesson One"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in Introduction to C++, we previewed: \"Later, you will learn things like vector, stack, queue, map, unordered_map, set, priority_queue. These tools are part of the Standard Template Library, commonly called STL.\" We've been building toward this moment ever since."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is the STL?"
+    },
+    {
+      "type": "definition",
+      "term": "Standard Template Library (STL)",
+      "text": "The STL is a collection of ready-made, template-based containers, algorithms, and iterators, providing efficient, well-tested building blocks so you don't need to implement common data structures and operations from scratch."
+    },
+    {
+      "type": "heading",
+      "text": "3. The STL's Three Main Parts"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "What it provides"],
+      "rows": [
+        ["Containers", "Ready-made data structures — vector, stack, queue, map, and more, covered one by one next"],
+        ["Algorithms", "Ready-made operations on that data — sort(), find(), and others, from <algorithm>"],
+        ["Iterators", "A uniform way to walk through any container's elements, connecting containers and algorithms together"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Built on Templates"
+    },
+    {
+      "type": "note",
+      "text": "Recall Templates: template<typename T> class Box was our own tiny preview of a generic container. vector<int>, vector<string>, and every other STL container are exactly this idea, done properly — one generic implementation, instantiated for whatever type you actually need."
+    },
+    {
+      "type": "heading",
+      "text": "5. A First Taste: vector"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers;\n\n    numbers.push_back(10);\n    numbers.push_back(20);\n    numbers.push_back(30);\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-stl-vector-taste"
+    },
+    {
+      "type": "warning",
+      "text": "This is just a taste — vector gets its own full topic right after this one. Notice what it already solves from Arrays: no fixed size decided up front, push_back() grows it as needed, and size() tells you exactly how many elements exist, all without manually calling new/delete."
+    },
+    {
+      "type": "heading",
+      "text": "6. Why This Matters for DSA"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Recall Header Files, which listed these as upcoming",
+      "points": [
+        "<vector> — the vector container",
+        "<unordered_map> — extremely important during Hashing and LeetCode",
+        "<queue>, <stack> — standard queue and stack containers",
+        "<algorithm> — sort() and other standard algorithms"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Almost every DSA problem and coding interview leans on the STL constantly — reimplementing a hash map or a priority queue from scratch, every single time, would be both wasteful and error-prone. Learning the STL well is one of the highest-leverage things for C++ DSA practice."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A fully stocked toolbox instead of forging your own tools",
+      "text": "Recall the toolbox analogy from Header Files: standard headers organize related features. The STL is that toolbox filled with pre-made, tested tools — a proper wrench, screwdriver, and hammer — instead of needing to forge your own from raw metal every time a job comes up."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Reimplementing basic data structures (a dynamic array, a stack) from scratch out of habit, when a well-tested STL container already does the job.",
+        "Forgetting the specific #include for each STL piece used — vector needs <vector>, sort() needs <algorithm>, and so on, matching the Header Files rule of including exactly what you use.",
+        "Assuming STL containers work identically to raw arrays in every respect — they share ideas (indexing, iteration) but add real safety and convenience features on top.",
+        "Treating the STL as one single thing rather than three related parts — containers, algorithms, and iterators each play a distinct role."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the STL?",
+          "answer": "A collection of ready-made, template-based containers, algorithms, and iterators, providing efficient, well-tested building blocks instead of requiring common data structures and operations to be implemented from scratch."
+        },
+        {
+          "question": "What are the three main parts of the STL?",
+          "answer": "Containers (data structures like vector, stack, map), algorithms (operations like sort()), and iterators (a uniform way to walk through a container's elements)."
+        },
+        {
+          "question": "How does the STL relate to templates?",
+          "answer": "STL containers are implemented as class templates, allowing one generic implementation (like vector<T>) to be instantiated for any specific type, such as vector<int> or vector<string>."
+        },
+        {
+          "question": "Why is the STL especially important for DSA and coding interviews?",
+          "answer": "Because it provides efficient, tested implementations of the data structures and algorithms DSA problems rely on constantly, avoiding the need to reimplement them from scratch each time."
+        }
+      ],
+      "thirtySecondAnswer": "The STL is a collection of ready-made, template-based containers, algorithms, and iterators — the payoff of everything we've built toward since it was first mentioned in Introduction to C++. Containers like vector provide data structures, algorithms like sort() provide operations on that data, and iterators provide a uniform way to connect the two, walking through any container's elements. It's built directly on Templates, the same idea as our own Box<T> example, done properly and thoroughly. Because DSA problems and coding interviews rely on the STL constantly, learning it well is one of the highest-leverage skills for C++ DSA practice."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember the STL",
+      "text": "STL = a fully stocked toolbox. Containers = the tools. Algorithms = what you do with them. Iterators = the universal handle that fits every tool."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-stl-vector-taste", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers;\n\n    numbers.push_back(10);\n    numbers.push_back(20);\n    numbers.push_back(30);\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-stl-vector-taste",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers;\n\n    numbers.push_back(10);\n    numbers.push_back(20);\n    numbers.push_back(30);\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-stl-vector-taste"]
+  }
+}
