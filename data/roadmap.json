@@ -74,7 +74,8 @@
       "topics": [
         { "id": "cpp-pointers", "title": "Pointers", "lesson": "cpp-pointers" },
         { "id": "cpp-references", "title": "References", "lesson": "cpp-references" },
-        { "id": "cpp-memory-addresses", "title": "Memory Addresses", "lesson": "cpp-memory-addresses" }
+        { "id": "cpp-memory-addresses", "title": "Memory Addresses", "lesson": "cpp-memory-addresses" },
+        { "id": "cpp-dynamic-memory-allocation", "title": "Dynamic Memory Allocation", "lesson": "cpp-dynamic-memory-allocation" }
       ]
     }
   ]

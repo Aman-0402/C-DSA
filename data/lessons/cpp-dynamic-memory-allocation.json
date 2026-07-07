@@ -1,0 +1,144 @@
+{
+  "id": "cpp-dynamic-memory-allocation",
+  "moduleId": "pointers-memory",
+  "title": "Dynamic Memory Allocation",
+  "description": "The overview before new and delete: why a size fixed at compile time isn't always enough, and what allocating memory at runtime means.",
+  "objectives": [
+    "Understand the limitation dynamic memory allocation solves",
+    "Understand the difference between compile-time and runtime sizing",
+    "See a first glimpse of new and delete",
+    "Preview stack vs heap memory as upcoming topics"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Arrays Have a Fixed Size"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in Arrays, we learned: once declared with int scores[5];, that array can never hold more or fewer than 5 elements. That size has to be known and written into the code before the program even runs."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Sometimes the Size Isn't Known Yet"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int n;\ncin >> n;\n\nint scores[n]; // how many elements? we don't know until the program is RUNNING"
+    },
+    {
+      "type": "warning",
+      "text": "This is called a variable-length array, and while some compilers allow it as a non-standard extension, it isn't reliable, standard C++. The array's size, [n], needs to be a fixed number known at compile time — but here, n only becomes known once the user actually types something in, while the program is running."
+    },
+    {
+      "type": "heading",
+      "text": "3. Compile-Time vs Runtime"
+    },
+    {
+      "type": "table",
+      "headers": ["Compile-time", "Runtime"],
+      "rows": [
+        ["Known while the compiler is building the program", "Only known once the program is actually executing"],
+        ["int scores[5]; — 5 is fixed, baked into the program", "A value read via cin, or computed from user actions"]
+      ]
+    },
+    {
+      "type": "definition",
+      "term": "Dynamic memory allocation",
+      "text": "Dynamic memory allocation is requesting memory while the program is running, with a size that can depend on runtime information — rather than a fixed size decided in advance."
+    },
+    {
+      "type": "heading",
+      "text": "4. A First Glimpse: new and delete"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int; // allocate one int, at runtime\n    *ptr = 25;\n\n    cout << *ptr << endl;\n\n    delete ptr; // give the memory back when done\n\n    return 0;\n}",
+      "output": "25",
+      "retypePractice": true,
+      "retypeId": "cpp-dynamic-memory-allocation-basic"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — new and delete each get their own dedicated topic right after this one. The shape to notice for now: new requests memory while the program runs, and returns a pointer to it (recall Pointers); delete gives that memory back when it's no longer needed."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why \"Dynamic\"?"
+    },
+    {
+      "type": "note",
+      "text": "\"Dynamic\" here means \"decided while running,\" in contrast to the \"static\" (fixed, decided in advance) sizing of an ordinary array. This is what makes it possible to size storage based on something only known at runtime — like a value the user typed in."
+    },
+    {
+      "type": "heading",
+      "text": "6. A Preview: Stack vs Heap"
+    },
+    {
+      "type": "warning",
+      "text": "Another preview — Stack Memory and Heap Memory each get their own topic soon. The short version: ordinary variables (like int age = 25;) live on the stack, which is fast but fixed and automatically cleaned up. Memory from new lives on the heap, which is flexible in size but must be manually given back with delete."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Renting extra storage space when you need it",
+      "text": "Your house has a fixed number of built-in closets (like a normal array's fixed size) — decided when the house was built, and impossible to change later. Renting a storage unit only when you actually need extra space, for exactly as long as you need it, is dynamic memory allocation: requested at the moment it's needed, sized for the situation, and given back when you're done with it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to size a normal array with a variable determined at runtime — standard C++ requires a fixed, compile-time size for an ordinary array.",
+        "Assuming dynamic memory allocation is always necessary — for a size known in advance, an ordinary array or variable is simpler and sufficient.",
+        "Forgetting that memory obtained with new isn't automatically cleaned up — it must be explicitly released, which the next topics cover in detail.",
+        "Confusing 'dynamic' (decided at runtime) with anything related to dynamic typing in other languages — C++ is still a statically typed language throughout."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is dynamic memory allocation?",
+          "answer": "Requesting memory while a program is running, with a size that can depend on runtime information, rather than a fixed size decided at compile time."
+        },
+        {
+          "question": "Why can't an ordinary array be sized using a variable read from user input?",
+          "answer": "Because a standard C++ array's size must be known at compile time; a size only known once the program is running (like user input) can't be used directly for a fixed array's declared size."
+        },
+        {
+          "question": "What is the difference between compile-time and runtime, in this context?",
+          "answer": "Compile-time values are known while the program is being built, baked into the code; runtime values are only known once the program is actually executing, such as something read from user input."
+        }
+      ],
+      "thirtySecondAnswer": "Dynamic memory allocation means requesting memory while a program is running, letting its size depend on information only available at runtime — unlike an ordinary array, whose size must be a fixed value known at compile time. C++ provides new to request this memory, returning a pointer to it, and delete to release it once it's no longer needed. This connects to a broader distinction between the stack, where ordinary variables live and are automatically cleaned up, and the heap, where dynamically allocated memory lives and must be manually released."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Dynamic Memory Allocation",
+      "text": "Array = built-in closets, fixed at construction. Dynamic allocation = a rented storage unit, sized for the moment, given back when you're done."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-dynamic-memory-allocation-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int;\n    *ptr = 25;\n\n    cout << *ptr << endl;\n\n    delete ptr;\n\n    return 0;\n}", "output": "25" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-dynamic-memory-allocation-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int *ptr = new int;\n    *ptr = 25;\n\n    cout << *ptr << endl;\n\n    delete ptr;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-dynamic-memory-allocation-basic"]
+  }
+}
