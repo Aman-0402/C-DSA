@@ -1,0 +1,137 @@
+{
+  "id": "cpp-deque",
+  "moduleId": "stl",
+  "title": "deque",
+  "description": "A double-ended queue solving both vector's slow push_front() and list's missing []: cheap insertion at both ends, plus indexing.",
+  "objectives": [
+    "Understand deque as solving vector's and list's respective limitations",
+    "Use push_front() and push_back(), both cheap",
+    "Use [] indexing on a deque",
+    "Understand, at a high level, how deque is actually stored"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Two Separate Problems"
+    },
+    {
+      "type": "keyPoints",
+      "title": "So far",
+      "points": [
+        "vector — fast indexing, but push_front() is expensive (shifts every element)",
+        "list — cheap push_front()/push_back(), but no indexing at all"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "deque (pronounced \"deck\"), short for double-ended queue, from the <deque> header, is built to have neither weakness."
+    },
+    {
+      "type": "heading",
+      "text": "2. push_front() and push_back() — Both Cheap"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <deque>\n\ndeque<int> numbers;\n\nnumbers.push_back(20);\nnumbers.push_front(10); // cheap here, unlike vector\nnumbers.push_back(30);"
+    },
+    {
+      "type": "heading",
+      "text": "3. Indexing Still Works"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <deque>\n\nusing namespace std;\n\nint main()\n{\n    deque<int> numbers;\n    numbers.push_back(20);\n    numbers.push_front(10);\n    numbers.push_back(30);\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-deque-basic"
+    },
+    {
+      "type": "note",
+      "text": "numbers[i] and numbers.at(i) both work on a deque, exactly like vector — something list could never offer. deque genuinely combines both capabilities."
+    },
+    {
+      "type": "heading",
+      "text": "4. How deque Actually Works, Roughly"
+    },
+    {
+      "type": "note",
+      "text": "Unlike vector's single contiguous block, deque is typically implemented as a collection of smaller fixed-size blocks, with an index structure tracking where each block is. This layout is what allows growing efficiently at both ends — a new block can be added at either side without needing to shift all existing elements — while still supporting fast indexed access through that block index."
+    },
+    {
+      "type": "heading",
+      "text": "5. Three-Way Comparison"
+    },
+    {
+      "type": "table",
+      "headers": ["vector", "deque", "list"],
+      "rows": [
+        ["Fast [] indexing", "Fast [] indexing", "No indexing"],
+        ["Fast push_back(); slow push_front()", "Fast push_back() AND push_front()", "Fast push_back() AND push_front()"],
+        ["Fully contiguous memory", "Stored in blocks, not fully contiguous", "Scattered, linked nodes"],
+        ["Best general default", "Best when both ends need fast insertion, plus indexing", "Best for frequent middle insertion/removal"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A line of train carriages you can add to at either end",
+      "text": "Recall vector's accordion folder and list's treasure hunt. deque is like a train where new carriages can be coupled onto the front or the back with equal ease, yet passengers can still walk directly to \"carriage number 7\" without boarding every carriage before it — the flexibility of both earlier analogies, combined."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming deque is stored exactly like vector, in one single contiguous block — it's typically block-based instead, which is precisely what enables cheap front insertion.",
+        "Defaulting to deque everywhere just because it does more — vector is still simpler and usually the better default when front insertion isn't actually needed.",
+        "Forgetting #include <deque>.",
+        "Assuming middle insertion/removal is as cheap in deque as in list — deque optimizes the two ends specifically, not arbitrary middle positions."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What problem does deque solve compared to vector and list?",
+          "answer": "It supports fast insertion and removal at both the front and back, unlike vector (slow push_front()), while still supporting fast indexed access, unlike list (no indexing at all)."
+        },
+        {
+          "question": "How is deque typically implemented internally?",
+          "answer": "As a collection of smaller fixed-size blocks with an index structure tracking them, rather than one single contiguous block like vector — this layout is what allows growing efficiently at both ends."
+        },
+        {
+          "question": "When would you choose deque over vector?",
+          "answer": "When frequent insertion or removal at the front is needed in addition to fast indexed access — vector alone makes front insertion expensive."
+        }
+      ],
+      "thirtySecondAnswer": "deque, a double-ended queue, solves both vector's expensive push_front() and list's total lack of indexing: it supports fast push_front() and push_back(), and still allows [] and at() indexing. It achieves this by storing elements in a collection of blocks rather than one single contiguous chunk like vector, which lets it grow efficiently at either end without shifting existing elements. It's the right choice when both ends need fast insertion and indexed access is still required; vector remains the simpler default when front insertion isn't needed."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember deque",
+      "text": "deque = a train you can couple new carriages onto at either end, while still walking straight to any numbered carriage. Best of vector's indexing and list's cheap front insertion."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-deque-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <deque>\n\nusing namespace std;\n\nint main()\n{\n    deque<int> numbers;\n    numbers.push_back(20);\n    numbers.push_front(10);\n    numbers.push_back(30);\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-deque-basic",
+      "reference": "#include <iostream>\n#include <deque>\n\nusing namespace std;\n\nint main()\n{\n    deque<int> numbers;\n    numbers.push_back(20);\n    numbers.push_front(10);\n    numbers.push_back(30);\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        cout << numbers[i] << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-deque-basic"]
+  }
+}
