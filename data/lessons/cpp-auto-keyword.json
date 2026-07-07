@@ -1,0 +1,159 @@
+{
+  "id": "cpp-auto-keyword",
+  "moduleId": "stl",
+  "title": "auto Keyword",
+  "description": "Formalizing the recurring preview: type inference from the initializer, why it's still static typing, and where it genuinely helps.",
+  "objectives": [
+    "Understand auto as compile-time type inference, not dynamic typing",
+    "Know auto requires an initializer",
+    "See where auto meaningfully improves readability",
+    "Know when NOT to reach for auto"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: auto Has Shown Up Repeatedly, Unexplained"
+    },
+    {
+      "type": "paragraph",
+      "text": "auto quietly appeared in STL Algorithms' find(), map's range-based for loop, and storing a lambda in Lambda Functions. Time to explain it properly."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is auto?"
+    },
+    {
+      "type": "definition",
+      "term": "auto",
+      "text": "auto tells the compiler to deduce a variable's type automatically from its initializer, at compile time, instead of the programmer writing that type out explicitly."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "auto x = 5;       // compiler deduces: int\nauto y = 3.14;     // compiler deduces: double\nauto name = string(\"Aman\"); // compiler deduces: string"
+    },
+    {
+      "type": "heading",
+      "text": "3. auto Must Be Initialized"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "auto z; // ERROR — nothing to deduce the type FROM"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike int z; (which is legal, if uninitialized, as covered in Variables), auto absolutely requires an initializer — there's no value to infer a type from otherwise."
+    },
+    {
+      "type": "heading",
+      "text": "4. Where auto Genuinely Shines: Verbose Types"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    vector<int>::iterator it1 = numbers.begin(); // the full, explicit type\n    auto it2 = numbers.begin();                   // identical, far shorter\n\n    cout << (*it1 == *it2) << endl;\n\n    return 0;\n}",
+      "output": "1",
+      "retypePractice": true,
+      "retypeId": "cpp-auto-keyword-iterator"
+    },
+    {
+      "type": "note",
+      "text": "it1 and it2 have the exact same type — vector<int>::iterator — but auto avoids spelling that mouthful out. This is exactly why the map iteration example used auto: the real type there, something like map<string, int>::iterator or the pair it dereferences to, is genuinely long and not particularly informative to read."
+    },
+    {
+      "type": "heading",
+      "text": "5. Still Static Typing — Not Dynamic!"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "auto x = 5;\nx = \"hello\"; // ERROR — x's type was fixed as int at compile time, forever"
+    },
+    {
+      "type": "warning",
+      "text": "This is a common misconception, especially coming from other languages: auto does not make C++ dynamically typed. The type is deduced once, at compile time, and then fixed — x is genuinely an int from that point on, exactly as if you'd written int x = 5; yourself. auto is a convenience for the programmer, invisible to the compiler's actual type checking."
+    },
+    {
+      "type": "heading",
+      "text": "6. auto with References and const"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 3};\n\nfor (auto n : numbers) { }        // deduces int — a copy of each element\nfor (auto &n : numbers) { }        // deduces int&  — a reference to each element\nfor (const auto &n : numbers) { }  // deduces const int& — read-only reference, no copy"
+    },
+    {
+      "type": "note",
+      "text": "Recall Range-Based Loops: & and const still work exactly the same way alongside auto — auto only replaces writing out the base type, it doesn't change anything about reference or const semantics."
+    },
+    {
+      "type": "heading",
+      "text": "7. When Not to Overuse auto"
+    },
+    {
+      "type": "tip",
+      "text": "auto is great for verbose types (iterators, lambdas) where the exact type is obvious from context or genuinely unwieldy to write. For simple types like int or double, spelling out the type explicitly is often just as short and can be clearer to a reader — auto isn't a rule to apply everywhere by default."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Ordering \"the usual\" instead of reciting the full order",
+      "text": "Ordering \"the usual\" at a familiar coffee shop lets the barista figure out exactly what that means from context — it's not a vague or different order each time, just a shorter way of saying something specific and already determined. auto works the same way: the type is exactly as fixed and specific as if written out in full, just expressed more concisely."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Declaring auto x; with no initializer — there's nothing to deduce the type from.",
+        "Thinking auto makes a variable able to change type later — the type is fixed at compile time, just like any explicitly typed variable.",
+        "Overusing auto for simple, already-short types where it doesn't actually improve clarity.",
+        "Forgetting auto with & still means a reference, and auto with const still means read-only — auto doesn't replace those, it works alongside them."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does the auto keyword do?",
+          "answer": "It tells the compiler to deduce a variable's type automatically from its initializer at compile time, instead of requiring the type to be written explicitly."
+        },
+        {
+          "question": "Does auto make C++ dynamically typed?",
+          "answer": "No — the type is deduced once at compile time and then fixed permanently, exactly like an explicitly typed variable; it cannot later hold a value of a different type."
+        },
+        {
+          "question": "Why is auto especially useful with STL iterators?",
+          "answer": "Iterator types (like vector<int>::iterator or a map's iterator type) are often long and not particularly informative to spell out, so auto keeps the code shorter and easier to read without losing any type safety."
+        }
+      ],
+      "thirtySecondAnswer": "auto tells the compiler to deduce a variable's type from its initializer at compile time — auto x = 5; makes x an int, exactly as if written explicitly, and that type is then fixed forever, just like ordinary static typing. It requires an initializer, since there's nothing to deduce a type from otherwise. It's most valuable for genuinely verbose types, like STL iterators or lambda types, where writing the full type out adds length without adding clarity — but for simple types like int, writing it explicitly is often just as clear."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember auto",
+      "text": "auto = \"the usual,\" a specific, fixed order, just shorter to say. Deduced once, fixed forever — never dynamic. Needs an initializer to deduce from."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-auto-keyword-iterator", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    vector<int>::iterator it1 = numbers.begin();\n    auto it2 = numbers.begin();\n\n    cout << (*it1 == *it2) << endl;\n\n    return 0;\n}", "output": "1" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-auto-keyword-iterator",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    vector<int>::iterator it1 = numbers.begin();\n    auto it2 = numbers.begin();\n\n    cout << (*it1 == *it2) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-auto-keyword-iterator"]
+  }
+}
