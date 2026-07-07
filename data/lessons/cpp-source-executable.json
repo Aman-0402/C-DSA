@@ -1,0 +1,435 @@
+{
+  "id": "cpp-source-executable",
+  "moduleId": "cpp-fundamentals",
+  "title": "Source Code and Executable Files",
+  "description": "What source code and executable files are, how they differ, why rebuilding matters after code changes, and build vs run vs compile.",
+  "objectives": [
+    "Understand what source code and executable files are",
+    "Understand how a .cpp file becomes a runnable executable",
+    "Understand why changed source code must be rebuilt",
+    "Understand the difference between build, compile, and run",
+    "Understand source file vs object file vs executable file"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is Source Code?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Source code is the human-readable code written by a programmer. When you write C++ instructions, you are writing source code. You can read it, edit it — for example, changing the text inside a cout statement."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello Aman\";"
+    },
+    {
+      "type": "definition",
+      "term": "Source Code",
+      "text": "Source code is the original programming code written and edited by a programmer."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Do We Need Source Code?"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Suppose you want to tell a computer to",
+      "points": ["Take two numbers", "Add them", "Display the result"]
+    },
+    {
+      "type": "flow",
+      "steps": ["Programmer's Idea", "C++ Instructions", "Source Code"]
+    },
+    {
+      "type": "note",
+      "text": "Without a programming language, we would need to work with very low-level machine instructions — extremely difficult. Source code makes program development easier."
+    },
+    {
+      "type": "heading",
+      "text": "3. Where Is C++ Source Code Stored?"
+    },
+    {
+      "type": "paragraph",
+      "text": "C++ source code is commonly stored inside a file with the .cpp extension. It tells programmers and development tools that the file contains C++ source code."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Examples",
+      "points": ["main.cpp", "hello.cpp", "calculator.cpp", "student.cpp"]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "File extensions you already know",
+      "text": "You already know file extensions like photo.jpg, document.pdf, song.mp3. Similarly, program.cpp is a C++ source file."
+    },
+    {
+      "type": "memoryTrick",
+      "text": ".cpp = C++ source code file"
+    },
+    {
+      "type": "heading",
+      "text": "4. Example of a Source File"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose we create main.cpp:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello Aman\";\n\n    return 0;\n}",
+      "output": "Hello Aman",
+      "retypePractice": true,
+      "retypeId": "cpp-source-hello-aman"
+    },
+    {
+      "type": "table",
+      "headers": ["Concept", "What it is"],
+      "rows": [
+        ["main.cpp", "Source File"],
+        ["cout << \"Hello Aman\";", "Part of the Source Code (the content inside the file)"]
+      ]
+    },
+    {
+      "type": "keyPoints",
+      "title": "Think of it like",
+      "points": ["Notebook → File", "Words written inside → Content", ".cpp File → Source File", "C++ Instructions → Source Code"]
+    },
+    {
+      "type": "heading",
+      "text": "5. What is an Executable File?"
+    },
+    {
+      "type": "definition",
+      "term": "Executable File",
+      "text": "An executable file is a program that the operating system can load and run."
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Build Process", "Executable File"]
+    },
+    {
+      "type": "note",
+      "text": "On Windows, you commonly see program.exe — the .exe extension commonly represents a Windows executable file."
+    },
+    {
+      "type": "heading",
+      "text": "6. Source File vs Executable File"
+    },
+    {
+      "type": "table",
+      "headers": ["Source File", "Executable File"],
+      "rows": [
+        ["Written by programmer", "Created by build tools"],
+        ["Human-readable", "Machine-oriented binary program"],
+        ["Can be edited as C++ code", "Intended to be executed"],
+        ["Usually .cpp for C++ source", "Commonly .exe on Windows"],
+        ["Contains C++ source code", "Contains built program instructions"]
+      ]
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "BUILD", "main.exe"]
+    },
+    {
+      "type": "memoryTrick",
+      "text": ".cpp → WRITE. .exe → RUN. CPP = Code you write. EXE = Program you execute."
+    },
+    {
+      "type": "heading",
+      "text": "7. How Is an Executable Created?"
+    },
+    {
+      "type": "paragraph",
+      "text": "We learned this in the previous topic."
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Preprocessing", "Compilation", "Assembly", "Linking", "Executable"]
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "Preprocessor", "Compiler", "Assembler", "Linker", "main.exe"]
+    },
+    {
+      "type": "heading",
+      "text": "8. What Happens When You Run an Executable?"
+    },
+    {
+      "type": "paragraph",
+      "text": "When you run main.exe, the operating system helps load the program into memory and starts its execution."
+    },
+    {
+      "type": "flow",
+      "steps": ["Executable File", "Operating System Loads Program", "Program Is Placed in Memory", "CPU Executes Instructions", "Output"]
+    },
+    {
+      "type": "flow",
+      "steps": ["main.exe", "RUN", "Hello Aman"]
+    },
+    {
+      "type": "keyPoints",
+      "title": "New words introduced",
+      "points": [
+        "Operating System — software that manages the computer and programs (examples include Windows, macOS, and Linux)",
+        "Memory — a place where active program data and instructions can be kept while the program runs",
+        "CPU — the processor that executes machine instructions"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "We will understand memory much more deeply when learning Memory Addresses, Pointers, Stack Memory, Heap Memory, and Dynamic Memory Allocation. You are not expected to understand those concepts yet."
+    },
+    {
+      "type": "heading",
+      "text": "9. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The recipe and sandwich analogy",
+      "text": "Imagine you write a recipe: 1) Take bread, 2) Add cheese, 3) Heat the sandwich. Think of this as Source Code. Now imagine the sandwich is prepared — the finished sandwich is the result of following the recipe: Recipe → Source Code, Prepared Product → Built Program. The analogy is not technically exact, but it helps you remember the difference."
+    },
+    {
+      "type": "heading",
+      "text": "10. Can We Run a .cpp File Directly?"
+    },
+    {
+      "type": "tip",
+      "text": "In the normal native C++ build model: the CPU does not directly execute the C++ source code inside a .cpp file. The source code must first be built."
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "Build", "Executable", "Run"]
+    },
+    {
+      "type": "note",
+      "text": "You may click a Run button in an editor or IDE and feel like the .cpp file is directly running. But behind the scenes, the development tool automatically builds the program and then runs the generated executable."
+    },
+    {
+      "type": "flow",
+      "steps": ["You Click RUN", "Tool Builds Code", "Executable Created", "Executable Runs"]
+    },
+    {
+      "type": "heading",
+      "text": "11. What Happens When We Change the Source Code?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose the source code contains this, and you build the program — the executable displays \"Hello\":"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "Now you change the source code, but imagine you do not rebuild the program:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello Aman\";"
+    },
+    {
+      "type": "warning",
+      "text": "The existing executable still contains the previously built program, so it may still display \"Hello\". You need to build the changed source code again."
+    },
+    {
+      "type": "flow",
+      "steps": ["Change Source Code", "Rebuild", "New Executable", "Run"]
+    },
+    {
+      "type": "tip",
+      "text": "Important lesson: changing source code does not automatically change an already-created executable. The changed code must be rebuilt."
+    },
+    {
+      "type": "heading",
+      "text": "12. Build vs Run"
+    },
+    {
+      "type": "table",
+      "headers": ["Build", "Run"],
+      "rows": [["Preparing source code into a runnable program", "Executing the built program"]]
+    },
+    {
+      "type": "flow",
+      "steps": ["Source Code", "Build", "Executable"]
+    },
+    {
+      "type": "flow",
+      "steps": ["Executable", "Run", "Program Execution"]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The cooking analogy",
+      "text": "Think about cooking: Cook Food → BUILD, Eat Food → RUN. You cannot eat the final cooked meal before it has been prepared."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Build creates. Run executes."
+    },
+    {
+      "type": "heading",
+      "text": "13. Compile vs Build"
+    },
+    {
+      "type": "paragraph",
+      "text": "You will often hear developers say \"compile the program\" and \"build the program.\" In casual conversation, people sometimes use these words loosely. But conceptually, compilation is one stage: Preprocessing → Compilation → Assembly → Linking. A build generally refers to the broader process required to create the program output."
+    },
+    {
+      "type": "definition",
+      "term": "Compilation vs Build",
+      "text": "Compilation is a stage that translates code, while building generally refers to the overall process of producing the final executable or program output."
+    },
+    {
+      "type": "heading",
+      "text": "14. Source File, Object File, and Executable File"
+    },
+    {
+      "type": "table",
+      "headers": ["File", "Purpose"],
+      "rows": [
+        ["main.cpp", "Contains C++ source code"],
+        ["main.o / main.obj", "Contains compiled object code"],
+        ["main / main.exe", "Runnable executable program"]
+      ]
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "Compile / Assemble", "main.o", "Link", "main.exe"]
+    },
+    {
+      "type": "memoryTrick",
+      "text": ".cpp → SOURCE. .o / .obj → OBJECT. .exe → EXECUTABLE."
+    },
+    {
+      "type": "heading",
+      "text": "15. Simple Build Command"
+    },
+    {
+      "type": "paragraph",
+      "text": "We previously saw a build command. Let's trace it again:"
+    },
+    {
+      "type": "code",
+      "lang": "bash",
+      "code": "g++ main.cpp -o program"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Meaning"],
+      "rows": [
+        ["g++", "The C++ compiler driver/tool"],
+        ["main.cpp", "Our source file"],
+        ["-o", "Specifies the output file name"],
+        ["program", "The requested output name"]
+      ]
+    },
+    {
+      "type": "flow",
+      "steps": ["main.cpp", "g++ build process", "program"]
+    },
+    {
+      "type": "note",
+      "text": "On Windows, depending on the environment, the executable may appear as program.exe."
+    },
+    {
+      "type": "heading",
+      "text": "16. Line-by-Line Code Explanation"
+    },
+    {
+      "type": "paragraph",
+      "text": "We still have not learned the complete C++ program structure, so this program won't be explained line by line yet. For today's topic, we only care about this idea:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "flow",
+      "steps": ["This instruction exists in source code", "Source code is built", "Executable contains the built program", "Executable runs", "Hello is displayed"]
+    },
+    {
+      "type": "note",
+      "text": "We will officially learn cout later."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Thinking .cpp and .exe are the same — .cpp is source code, .exe is a Windows executable.",
+        "Thinking the CPU directly runs the .cpp source code — better: .cpp → Build → Executable → Run.",
+        "Changing code but forgetting to rebuild — if you keep running an older executable without rebuilding, you may still get the old behavior. Remember: CHANGE → REBUILD → RUN.",
+        "Confusing Build and Run — Build creates program output, Run executes the program.",
+        "Thinking object files are source files — main.o is an object file, not source code; main.cpp is the source file.",
+        "Thinking compilation is always identical to the entire build process — compilation is one stage, while the broader build process may include preprocessing, compilation, assembly, and linking."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is source code?",
+          "answer": "Source code is the human-readable programming code written and edited by a programmer."
+        },
+        {
+          "question": "What is an executable file?",
+          "answer": "An executable file is a built program that the operating system can load and run."
+        },
+        {
+          "question": "What is the difference between a source file and an executable file?",
+          "answer": "A source file contains human-readable programming code, while an executable contains the built program instructions intended for execution."
+        },
+        {
+          "question": "What is the difference between build and run?",
+          "answer": "Building creates the runnable program from source code, while running executes the built program."
+        },
+        {
+          "question": "What happens after changing C++ source code?",
+          "answer": "The program should be rebuilt so that the executable reflects the updated source code."
+        },
+        {
+          "question": "What is an object file?",
+          "answer": "An object file contains compiled machine-level code that may still need linking before becoming the final executable."
+        },
+        {
+          "question": "What is the difference between compilation and build?",
+          "answer": "Compilation is one translation stage, while a build generally refers to the broader process of producing the final program output."
+        }
+      ],
+      "thirtySecondAnswer": "C++ source code is the human-readable code written by a programmer and is commonly stored in .cpp files. The source code goes through the build process to produce an executable program. During this process, object files may be generated and linked together. The executable can then be loaded by the operating system and executed by the CPU. Building creates the runnable program, while running executes it."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember",
+      "text": "WRITE → BUILD → RUN. WRITE: main.cpp. BUILD: Source Code → Executable. RUN: Executable → Program Execution. Easiest trick: .cpp = I write it. Executable = Computer runs it."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-source-hello-aman", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello Aman\";\n\n    return 0;\n}", "output": "Hello Aman" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-source-hello-aman",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello Aman\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-source-hello-aman"]
+  }
+}

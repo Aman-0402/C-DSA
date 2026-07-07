@@ -6,7 +6,8 @@
       "topics": [
         { "id": "cpp-introduction", "title": "Introduction to C++", "lesson": "cpp-introduction" },
         { "id": "cpp-how-it-works", "title": "How C++ Works", "lesson": "cpp-how-it-works" },
-        { "id": "cpp-compiler", "title": "Compiler and Compilation Process", "lesson": "cpp-compiler" }
+        { "id": "cpp-compiler", "title": "Compiler and Compilation Process", "lesson": "cpp-compiler" },
+        { "id": "cpp-source-executable", "title": "Source Code and Executable Files", "lesson": "cpp-source-executable" }
       ]
     }
   ]
