@@ -1,0 +1,124 @@
+{
+  "id": "cpp-strings",
+  "moduleId": "arrays-strings",
+  "title": "Strings",
+  "description": "The overview before std::string: why C-style character arrays are painful for text, and what a better string type needs to solve.",
+  "objectives": [
+    "Recognize the pain points of C-style character arrays for everyday text handling",
+    "Understand what a proper string type needs to provide",
+    "See a first glimpse of std::string solving these problems",
+    "Preview std::string as the upcoming dedicated topic"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Character Arrays Are Painful"
+    },
+    {
+      "type": "paragraph",
+      "text": "In Character Arrays, we saw text represented as char word[6] = \"Hello\"; with a hidden '\\0' terminator. It works, but it comes with real friction."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Pain points",
+      "points": [
+        "Fixed size — chosen once, can't grow if the text turns out to be longer",
+        "Manual terminator bookkeeping — forget '\\0' or size it wrong, and things silently break",
+        "No built-in way to join two pieces of text together",
+        "No built-in way to ask how long the text is",
+        "cin >> only reads a single word, stopping at whitespace"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "2. What a Better String Type Needs"
+    },
+    {
+      "type": "paragraph",
+      "text": "A proper string type should let text grow and shrink as needed, handle its own memory and terminator internally, and provide simple built-in ways to combine, measure, and search text — without the programmer manually managing raw character arrays."
+    },
+    {
+      "type": "heading",
+      "text": "3. A First Glimpse: std::string"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string name = \"Aman\";\n\n    cout << name << endl;\n    cout << name.length() << endl;\n\n    return 0;\n}",
+      "output": "Aman\n4",
+      "retypePractice": true,
+      "retypeId": "cpp-strings-glimpse"
+    },
+    {
+      "type": "note",
+      "text": "No manual '\\0', no fixed size chosen up front, and a built-in .length() to ask how many characters it holds. This is std::string — from the <string> header — and it's what we'll actually use for text going forward."
+    },
+    {
+      "type": "heading",
+      "text": "4. Why We Still Covered Character Arrays First"
+    },
+    {
+      "type": "tip",
+      "text": "std::string is built on the same underlying idea as a character array — a sequence of characters — and C-style strings still show up in older code, some library interfaces, and low-level contexts. Understanding the character array first makes std::string's behavior easier to trust rather than treat as magic."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A notebook page vs a stretchy scroll",
+      "text": "A character array is like a notebook page with a fixed number of ruled lines — write more than it holds, and you're out of room, with no way to add lines later. std::string is more like a scroll that stretches automatically as you keep writing, without needing to plan its exact final length in advance."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming C-style character arrays and std::string are unrelated — std::string builds on the same character-sequence idea, just with far more convenience and safety.",
+        "Forgetting #include <string> when using std::string — it comes from its own header, separate from <iostream>.",
+        "Sticking with char arrays out of habit once std::string is available — for everyday text, std::string is almost always the better default."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What are the main limitations of C-style character arrays for handling text?",
+          "answer": "Fixed size chosen at declaration, manual management of the null terminator, and no built-in operations for joining, measuring, or searching text."
+        },
+        {
+          "question": "What problems does std::string solve compared to a character array?",
+          "answer": "It manages its own size and memory automatically, handles the terminator internally, and provides built-in operations like length(), concatenation, and searching."
+        },
+        {
+          "question": "Is std::string related to C-style character arrays?",
+          "answer": "Yes — conceptually both represent a sequence of characters; std::string is a safer, more convenient abstraction built on the same underlying idea."
+        }
+      ],
+      "thirtySecondAnswer": "C-style character arrays are painful for everyday text: their size is fixed at declaration, they require manually managing a null terminator, and they have no built-in way to join, measure, or search text. std::string, from the <string> header, solves all of this — it grows automatically, manages its own memory and terminator internally, and provides simple built-in operations like .length(). It's conceptually built on the same idea as a character array, which is why understanding character arrays first makes std::string's behavior easier to trust."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Strings",
+      "text": "Character array = fixed notebook page, manage it yourself. std::string = a scroll that stretches itself, manages itself."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-strings-glimpse", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string name = \"Aman\";\n\n    cout << name << endl;\n    cout << name.length() << endl;\n\n    return 0;\n}", "output": "Aman\n4" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-strings-glimpse",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    string name = \"Aman\";\n\n    cout << name << endl;\n    cout << name.length() << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-strings-glimpse"]
+  }
+}
