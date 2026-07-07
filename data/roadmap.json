@@ -24,6 +24,13 @@
         { "id": "cpp-operators", "title": "Operators", "lesson": "cpp-operators" },
         { "id": "cpp-input-output", "title": "Input and Output", "lesson": "cpp-input-output" }
       ]
+    },
+    {
+      "id": "control-flow",
+      "title": "Control Flow",
+      "topics": [
+        { "id": "cpp-conditional-statements", "title": "Conditional Statements", "lesson": "cpp-conditional-statements" }
+      ]
     }
   ]
 }

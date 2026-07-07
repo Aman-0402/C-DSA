@@ -1,0 +1,132 @@
+{
+  "id": "cpp-conditional-statements",
+  "moduleId": "control-flow",
+  "title": "Conditional Statements",
+  "description": "The overview before if, else if, else, and switch: what decision-making in code means, and how it changes a program's execution flow.",
+  "objectives": [
+    "Understand what a conditional statement is",
+    "Understand how conditions connect to the bool and comparison operators already learned",
+    "See how conditions change a program's execution flow",
+    "Preview if, else if, else, and switch as the upcoming subtopics"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Sequential Execution"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in C++ Program Structure, we said: simple statements execute sequentially in the order they are reached. Every program we've written so far has run top to bottom, every single time, with no branching. That's about to change."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Conditional Statement?"
+    },
+    {
+      "type": "definition",
+      "term": "Conditional statement",
+      "text": "A conditional statement lets a program choose between different paths of execution, based on whether a condition is true or false."
+    },
+    {
+      "type": "flow",
+      "steps": ["Condition", "Is it true?", "Yes → Do A", "No → Do B"]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The traffic light analogy",
+      "text": "A driver approaching a traffic light doesn't always do the same thing — the decision depends on the light's color: if it's red, stop; if it's green, go. A program works the same way: instead of always running the same fixed sequence, it checks a condition and picks a path."
+    },
+    {
+      "type": "heading",
+      "text": "3. Conditions Are bool Expressions"
+    },
+    {
+      "type": "paragraph",
+      "text": "This is where earlier lessons connect. A condition is any expression that evaluates to true or false — exactly the bool type from Data Types, and exactly what comparison operators like ==, <, and >= produce, as covered in Operators."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 20;\n\nage >= 18; // evaluates to true"
+    },
+    {
+      "type": "note",
+      "text": "age >= 18 isn't a statement on its own yet — by itself it just produces a bool value and does nothing with it. Conditional statements are what actually use that true/false result to decide what runs next."
+    },
+    {
+      "type": "heading",
+      "text": "4. How Conditions Change Execution Flow"
+    },
+    {
+      "type": "flow",
+      "steps": ["Statement 1", "Condition Check", "Branch A or Branch B", "Continue"]
+    },
+    {
+      "type": "paragraph",
+      "text": "Without a conditional statement, every line runs, every time, in order. With one, some lines might run and others might be skipped entirely, depending on the condition's result — the program's path can now differ from one run to the next."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Tools Ahead"
+    },
+    {
+      "type": "keyPoints",
+      "title": "C++ gives us a few ways to branch on a condition",
+      "points": [
+        "if — run a block only when a condition is true",
+        "else if — check another condition if the first was false",
+        "else — a fallback for when none of the conditions were true",
+        "switch — branch based on matching a value against several fixed cases"
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "This lesson is only the concept — the exact syntax for if, else if, else, and switch is covered in their own dedicated topics next."
+    },
+    {
+      "type": "heading",
+      "text": "6. Common Beginner Mistakes"
+    },
+    {
+      "type": "commonMistakes",
+      "items": [
+        "Thinking a comparison like age >= 18 by itself does something — it only produces a true/false value; a conditional statement is what acts on it.",
+        "Confusing = (assignment) with == (comparison) inside a condition — this becomes especially important once we write real if statements.",
+        "Assuming a program's output is always identical on every run once conditions are involved — different input can lead the program down a different path."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a conditional statement?",
+          "answer": "A conditional statement lets a program choose between different paths of execution based on whether a condition evaluates to true or false."
+        },
+        {
+          "question": "What type does a condition evaluate to?",
+          "answer": "A condition evaluates to a bool — true or false — commonly produced by comparison operators like ==, <, or >=."
+        },
+        {
+          "question": "How does a conditional statement change a program's execution flow?",
+          "answer": "Instead of every statement running in strict top-to-bottom order, some statements may be skipped or chosen based on a condition's result, so the program's path can differ between runs."
+        }
+      ],
+      "thirtySecondAnswer": "A conditional statement lets a program branch — choosing which code runs based on whether a condition is true or false. A condition is just a bool expression, often built from comparison operators like age >= 18. Without conditionals, a program always runs the same statements in the same order; with them, the program's path can change depending on input or state. C++ provides if, else if, else, and switch as the tools for this, each covered in their own topic next."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Conditional Statements",
+      "text": "Condition = a question with a true/false answer. Conditional statement = what the program does with that answer."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
