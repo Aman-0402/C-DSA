@@ -1,0 +1,150 @@
+{
+  "id": "cpp-range-based-loops",
+  "moduleId": "stl",
+  "title": "Range-Based Loops",
+  "description": "Formalizing the for (x : container) syntax previewed throughout the STL topics — what it desugars to, and the crucial value vs reference choice.",
+  "objectives": [
+    "Write a range-based for loop correctly",
+    "Understand what it actually desugars to under the hood",
+    "Choose between by-value, by-reference, and const-reference correctly",
+    "Know it works on any container with begin()/end()"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We've Been Previewing This All Along"
+    },
+    {
+      "type": "paragraph",
+      "text": "for (int n : numbers) has shown up as an unexplained preview since set. It's time to explain it properly."
+    },
+    {
+      "type": "heading",
+      "text": "2. Basic Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-range-based-loops-basic"
+    },
+    {
+      "type": "note",
+      "text": "Read for (int n : numbers) as \"for each int n in numbers.\" No index, no begin()/end(), no *it — it handles the entire traversal automatically."
+    },
+    {
+      "type": "heading",
+      "text": "3. What It Actually Desugars To"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// for (int n : numbers) { ... } is roughly equivalent to:\n\nfor (auto it = numbers.begin(); it != numbers.end(); it++)\n{\n    int n = *it;\n    // ...\n}"
+    },
+    {
+      "type": "note",
+      "text": "This is the exact begin()/end()/*it/it++ pattern from STL Iterators, just written for you automatically by the compiler. That's also why it works on any container that provides begin() and end() — vector, list, set, map, and even our std::array."
+    },
+    {
+      "type": "heading",
+      "text": "4. By Value vs By Reference"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 3};\n\nfor (int n : numbers)\n{\n    n = n * 10; // only changes the LOCAL COPY n — numbers is untouched\n}\n// numbers is still {1, 2, 3}\n\nfor (int &n : numbers)\n{\n    n = n * 10; // n is a REFERENCE to the real element — this DOES change numbers\n}\n// numbers is now {10, 20, 30}"
+    },
+    {
+      "type": "warning",
+      "text": "This is exactly Pass by Value vs Pass by Reference, applied to a loop variable. for (int n : numbers) gives n as a copy of each element — modifying n does nothing to the original. for (int &n : numbers) makes n an alias for the actual element (recall References), so modifying n genuinely modifies numbers."
+    },
+    {
+      "type": "heading",
+      "text": "5. const Reference — Read-Only, No Copying"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (const int &n : numbers)\n{\n    cout << n; // read freely, but n = 5; here would be a compile error\n}"
+    },
+    {
+      "type": "tip",
+      "text": "For read-only traversal, const int &n avoids copying each element (efficient, especially for larger types like string or a class object) while also preventing accidental modification — genuinely the best default for a loop that only reads. Use plain int n only for genuinely small types (like int) where the copy is essentially free, and int &n specifically when you intend to modify the container."
+    },
+    {
+      "type": "heading",
+      "text": "6. Works on Any Container with begin()/end()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "map<string, int> ages = {{\"Aman\", 20}, {\"Priya\", 22}};\n\nfor (const auto &entry : ages) // recall: iterating a map gives pair elements\n{\n    cout << entry.first << \": \" << entry.second << endl;\n}"
+    },
+    {
+      "type": "note",
+      "text": "This is the exact same pattern used unexplained back in map's example — now fully justified. auto here is a preview of the very next topic, auto Keyword."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "\"For each item on the list\" instead of \"check item 1, then item 2, then...\"",
+      "text": "\"For each book on the shelf, check its title\" doesn't require counting positions or naming an index variable — you just handle each book in turn. A range-based for loop is exactly that natural phrasing in code, versus the manual position-tracking of an index-based or iterator-based loop."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using for (int n : numbers) and expecting modifications to n to change the container — that requires for (int &n : numbers) instead.",
+        "Copying large elements unnecessarily with by-value range-based loops — const auto& (or const Type&) avoids the copy for read-only access.",
+        "Modifying a container's size (like push_back()) from inside a range-based loop over it — this can invalidate the loop's underlying iterators, exactly the danger covered in Iterators.",
+        "Forgetting range-based loops need begin()/end() to exist — they work on all our STL containers, but wouldn't work on some custom type lacking those."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does a range-based for loop actually desugar to?",
+          "answer": "A regular loop using begin(), end(), dereferencing, and incrementing an iterator — the compiler writes that boilerplate automatically."
+        },
+        {
+          "question": "What's the difference between for (int n : v) and for (int &n : v)?",
+          "answer": "The first gives n as a copy of each element, so modifying n doesn't affect v; the second makes n a reference to the actual element, so modifying n does modify v."
+        },
+        {
+          "question": "Why is const auto& (or const Type&) often recommended for read-only range-based loops?",
+          "answer": "It avoids copying each element (efficient for larger types) while also preventing accidental modification, since the reference is const."
+        }
+      ],
+      "thirtySecondAnswer": "A range-based for loop, for (Type x : container), automatically handles the begin()/end()/*it/it++ pattern from STL Iterators, working on any container that provides begin() and end(). The value-vs-reference choice matters just like Pass by Value vs Pass by Reference: for (Type x : container) copies each element, so modifications don't affect the original, while for (Type &x : container) references the real elements, allowing modification. const Type& is usually the best default for read-only iteration, avoiding both an unnecessary copy and accidental changes."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Range-Based Loops",
+      "text": "for (x : container) = \"for each x in container,\" auto-generated iterator loop underneath. Plain x = copy (safe, wasteful for big types). &x = the real thing (can modify). const &x = read the real thing, no copy, no accidents."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-range-based-loops-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-range-based-loops-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {10, 20, 30};\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-range-based-loops-basic"]
+  }
+}

@@ -131,7 +131,8 @@
         { "id": "cpp-unordered-map", "title": "unordered_map", "lesson": "cpp-unordered-map" },
         { "id": "cpp-pair", "title": "pair", "lesson": "cpp-pair" },
         { "id": "cpp-tuples", "title": "Tuples", "lesson": "cpp-tuples" },
-        { "id": "cpp-iterators", "title": "Iterators", "lesson": "cpp-iterators" }
+        { "id": "cpp-iterators", "title": "Iterators", "lesson": "cpp-iterators" },
+        { "id": "cpp-range-based-loops", "title": "Range-Based Loops", "lesson": "cpp-range-based-loops" }
       ]
     }
   ]
