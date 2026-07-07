@@ -1,0 +1,154 @@
+{
+  "id": "cpp-list",
+  "moduleId": "stl",
+  "title": "list",
+  "description": "A doubly linked list container: no [], fast insertion/removal anywhere, and the vector trade-off finally made concrete.",
+  "objectives": [
+    "Understand list as a doubly linked list with no direct indexing",
+    "Use push_front(), push_back(), pop_front(), and pop_back()",
+    "Traverse a list with an iterator, since [] isn't available",
+    "Compare list and vector's trade-offs directly"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: STL Iterators Foreshadowed This"
+    },
+    {
+      "type": "paragraph",
+      "text": "STL Iterators said: \"a list has no meaningful way to jump straight to element 5 without walking through the ones before it.\" Let's see exactly why, and what list is actually good at instead."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is list?"
+    },
+    {
+      "type": "definition",
+      "term": "list",
+      "text": "list is a doubly linked list — a sequence of elements where each one knows only its neighbors, not a fixed position in contiguous memory the way a vector's elements do."
+    },
+    {
+      "type": "note",
+      "text": "Because there's no contiguous block of memory, there's no way to jump directly to \"the 5th element\" the way array indexing does — reaching it means following links from the front (or back), one element at a time."
+    },
+    {
+      "type": "heading",
+      "text": "3. push_front(), push_back(), pop_front(), pop_back()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <list>\n\nlist<int> numbers;\n\nnumbers.push_back(20);   // add to the end\nnumbers.push_front(10);  // add to the front — vector has no equivalent this cheap!\nnumbers.push_back(30);\n\nnumbers.pop_front(); // remove from the front"
+    },
+    {
+      "type": "warning",
+      "text": "vector only had push_back()/pop_back(); adding to the front of a vector requires shifting every existing element over, an expensive operation. list's linked structure makes push_front()/pop_front() just as cheap as the back operations."
+    },
+    {
+      "type": "heading",
+      "text": "4. No [] — Iterators Are Required"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <list>\n\nusing namespace std;\n\nint main()\n{\n    list<int> numbers;\n    numbers.push_back(20);\n    numbers.push_front(10);\n    numbers.push_back(30);\n\n    for (list<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "cpp-list-basic"
+    },
+    {
+      "type": "warning",
+      "text": "numbers[1] would be a compile-time error — list simply has no operator[] at all. This is exactly the begin()/end()/*it/it++ pattern from STL Iterators, and it's the only way to walk through a list's elements."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why Insertion/Removal Is Fast Anywhere"
+    },
+    {
+      "type": "note",
+      "text": "Once you already have an iterator pointing at some position, list.insert(it, value) or list.erase(it) only needs to relink a couple of neighboring connections — it never has to shift other elements over, unlike vector's insert()/erase(), which may need to move every element after the insertion point."
+    },
+    {
+      "type": "heading",
+      "text": "6. list vs vector — Trade-offs"
+    },
+    {
+      "type": "table",
+      "headers": ["vector", "list"],
+      "rows": [
+        ["Direct indexing with [] and at()", "No indexing at all — only sequential access via iterators"],
+        ["Fast push_back(); push_front() is expensive (shifts everything)", "push_front() and push_back() are both cheap"],
+        ["insert()/erase() in the middle can be expensive (shifts elements)", "insert()/erase() at a known position is cheap (just relinks)"],
+        ["Elements stored contiguously — cache-friendly", "Elements scattered in memory — less cache-friendly"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "There's no universally \"better\" one — vector wins when indexing and iterating in order dominate; list wins when frequent insertion/removal at arbitrary positions dominates and indexing isn't needed."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A treasure hunt chain vs numbered parking spots",
+      "text": "Numbered parking spots (vector) let you walk straight to spot #47 without visiting the others. A treasure hunt (list), where each clue only tells you where the next clue is, has no such shortcut — you must follow the chain from the start. But inserting a brand-new clue into the middle of a treasure hunt is trivial (just point the previous clue somewhere new); inserting a new numbered spot into the middle of a parking lot means renumbering everything after it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to use [] on a list — it doesn't exist; use iterators instead.",
+        "Choosing list when frequent indexed access is actually needed — every indexed access degrades to a slow sequential walk.",
+        "Assuming list is always 'better' because insertion is cheap — vector is usually faster overall for typical DSA use, thanks to contiguous memory and simpler operations.",
+        "Forgetting #include <list>."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What kind of data structure is list?",
+          "answer": "A doubly linked list, where each element only knows its neighbors rather than occupying a fixed position in contiguous memory."
+        },
+        {
+          "question": "Why doesn't list support the [] operator?",
+          "answer": "Because reaching a specific position requires following links from the front or back one element at a time — there's no contiguous memory to jump into directly, unlike vector."
+        },
+        {
+          "question": "Why is insertion/removal at a known position generally cheaper in a list than in a vector?",
+          "answer": "A list only needs to relink a couple of neighboring connections, while a vector may need to shift every element after the insertion or removal point."
+        },
+        {
+          "question": "When would list be preferred over vector?",
+          "answer": "When frequent insertion or removal happens at arbitrary positions and direct indexed access isn't needed — vector remains the default otherwise."
+        }
+      ],
+      "thirtySecondAnswer": "list is a doubly linked list, where each element knows only its neighbors rather than sitting in contiguous memory like vector's elements do — this is exactly why it has no [] operator, and why traversal requires iterators via begin()/end(). Its strength is cheap insertion and removal at any known position, including the front with push_front()/pop_front(), since it only needs to relink neighboring connections rather than shift elements the way vector's insert()/erase() sometimes must. The trade-off is no direct indexing and generally worse cache performance, since elements aren't stored together in memory."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember list",
+      "text": "list = a treasure hunt chain, follow the clues, no jumping ahead. Cheap to insert a new clue anywhere; no shortcuts to a specific position."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-list-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <list>\n\nusing namespace std;\n\nint main()\n{\n    list<int> numbers;\n    numbers.push_back(20);\n    numbers.push_front(10);\n    numbers.push_back(30);\n\n    for (list<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-list-basic",
+      "reference": "#include <iostream>\n#include <list>\n\nusing namespace std;\n\nint main()\n{\n    list<int> numbers;\n    numbers.push_back(20);\n    numbers.push_front(10);\n    numbers.push_back(30);\n\n    for (list<int>::iterator it = numbers.begin(); it != numbers.end(); it++)\n    {\n        cout << *it << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-list-basic"]
+  }
+}
