@@ -1,0 +1,223 @@
+{
+  "id": "cpp-operators",
+  "moduleId": "cpp-fundamentals",
+  "title": "Operators",
+  "description": "Arithmetic, assignment, comparison, and logical operators, plus increment/decrement and the classic = vs == mistake.",
+  "objectives": [
+    "Use arithmetic operators: +, -, *, /, %",
+    "Use compound assignment operators: +=, -=, *=, /=",
+    "Use comparison operators to produce a bool result",
+    "Use logical operators: &&, ||, !",
+    "Understand pre-increment vs post-increment"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is an Operator?"
+    },
+    {
+      "type": "paragraph",
+      "text": "We've already used a few operators without naming them: = for assignment, + inside age = age + 1;, and << with cout. An operator is a symbol that performs an operation on one or more values."
+    },
+    {
+      "type": "definition",
+      "term": "Operator",
+      "text": "An operator is a symbol that performs an operation — such as arithmetic, comparison, or logic — on one or more values, called operands."
+    },
+    {
+      "type": "heading",
+      "text": "2. Arithmetic Operators"
+    },
+    {
+      "type": "table",
+      "headers": ["Operator", "Meaning", "Example"],
+      "rows": [
+        ["+", "Addition", "a + b"],
+        ["-", "Subtraction", "a - b"],
+        ["*", "Multiplication", "a * b"],
+        ["/", "Division", "a / b"],
+        ["%", "Modulus (remainder)", "a % b"]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a = 7;\nint b = 2;\n\ncout << a + b << endl; // 9\ncout << a - b << endl; // 5\ncout << a * b << endl; // 14\ncout << a / b << endl; // 3  (integer division, see Type Casting)\ncout << a % b << endl; // 1  (remainder of 7 / 2)"
+    },
+    {
+      "type": "note",
+      "text": "% (modulus) gives the remainder of integer division. 7 % 2 is 1, because 7 divided by 2 is 3 with 1 left over. This becomes very common in DSA — checking even/odd, cycling through indices, and more."
+    },
+    {
+      "type": "heading",
+      "text": "3. Assignment and Compound Assignment"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int score = 10;\n\nscore += 5;  // same as: score = score + 5;\nscore -= 2;  // same as: score = score - 2;\nscore *= 3;  // same as: score = score * 3;\nscore /= 2;  // same as: score = score / 2;"
+    },
+    {
+      "type": "note",
+      "text": "Recall age = age + 1; from the Variables lesson. age += 1; means exactly the same thing, just shorter — a compound assignment combines an operation with an assignment in one step."
+    },
+    {
+      "type": "heading",
+      "text": "4. Comparison Operators"
+    },
+    {
+      "type": "table",
+      "headers": ["Operator", "Meaning"],
+      "rows": [
+        ["==", "Equal to"],
+        ["!=", "Not equal to"],
+        [">", "Greater than"],
+        ["<", "Less than"],
+        [">=", "Greater than or equal to"],
+        ["<=", "Less than or equal to"]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a = 5;\nint b = 8;\n\ncout << (a == b) << endl; // 0 (false)\ncout << (a < b) << endl;  // 1 (true)"
+    },
+    {
+      "type": "note",
+      "text": "Every comparison produces a bool — printed as 1 or 0, exactly like we saw in Data Types. These will drive the if statements coming up next."
+    },
+    {
+      "type": "heading",
+      "text": "5. = vs == — A Critical Difference"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int a = 5; // assignment — sets a to 5\n\na == 5;    // comparison — checks whether a equals 5, produces true/false, changes nothing"
+    },
+    {
+      "type": "warning",
+      "text": "= assigns a value. == compares two values. Confusing them is one of the most common bugs in C-family languages — writing if (a = 5) instead of if (a == 5) silently assigns 5 to a and evaluates as true, instead of checking anything. We'll see exactly why this matters once we reach if statements."
+    },
+    {
+      "type": "heading",
+      "text": "6. Logical Operators"
+    },
+    {
+      "type": "table",
+      "headers": ["Operator", "Meaning"],
+      "rows": [
+        ["&&", "AND — true only if both sides are true"],
+        ["||", "OR — true if at least one side is true"],
+        ["!", "NOT — flips true to false, and false to true"]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "bool isAdult = true;\nbool hasTicket = false;\n\ncout << (isAdult && hasTicket) << endl; // 0 (false — needs both)\ncout << (isAdult || hasTicket) << endl; // 1 (true — needs at least one)\ncout << (!hasTicket) << endl;           // 1 (true — flips false to true)"
+    },
+    {
+      "type": "heading",
+      "text": "7. Increment and Decrement"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int count = 5;\n\ncount++; // same as: count = count + 1;\ncount--; // same as: count = count - 1;"
+    },
+    {
+      "type": "paragraph",
+      "text": "++ increases a variable by 1; -- decreases it by 1. These will be everywhere once we reach loops."
+    },
+    {
+      "type": "heading",
+      "text": "8. Pre-Increment vs Post-Increment"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a = 5;\n    int b = 5;\n\n    cout << a++ << endl; // prints 5, THEN increments a to 6\n    cout << ++b << endl; // increments b to 6 FIRST, then prints 6\n\n    return 0;\n}",
+      "output": "5\n6",
+      "retypePractice": true,
+      "retypeId": "cpp-operators-increment"
+    },
+    {
+      "type": "warning",
+      "text": "a++ (post-increment) uses the current value first, then increments. ++b (pre-increment) increments first, then uses the new value. Both end with a variable that's one higher, but what gets printed or used in that exact statement differs."
+    },
+    {
+      "type": "heading",
+      "text": "9. Operator Precedence (Just an Awareness)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int result = 2 + 3 * 4; // 14, not 20 — * runs before +"
+    },
+    {
+      "type": "note",
+      "text": "Like ordinary math, * and / are evaluated before + and - unless parentheses say otherwise. When in doubt, parentheses make intent explicit: 2 + (3 * 4)."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing = when == is meant — if (a = 5) assigns instead of comparing, and is a classic hard-to-spot bug.",
+        "Forgetting that / between two ints truncates, and that % gives the remainder, not the quotient.",
+        "Mixing up && and || — && needs both sides true, || only needs one.",
+        "Confusing a++ and ++a — they both increment a, but differ in what value is used in the surrounding expression.",
+        "Assuming +, -, *, / all run strictly left to right — multiplication and division are evaluated before addition and subtraction."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the difference between = and ==?",
+          "answer": "= is the assignment operator, setting a variable to a value; == is the comparison operator, checking whether two values are equal and producing a bool result."
+        },
+        {
+          "question": "What does the % operator do?",
+          "answer": "It returns the remainder of integer division — for example, 7 % 2 is 1."
+        },
+        {
+          "question": "What is the difference between a++ and ++a?",
+          "answer": "a++ (post-increment) uses the current value of a in the expression, then increments it afterward; ++a (pre-increment) increments a first, then uses the new value."
+        },
+        {
+          "question": "What's the difference between && and ||?",
+          "answer": "&& (AND) is true only when both operands are true; || (OR) is true when at least one operand is true."
+        },
+        {
+          "question": "What does score += 5; do?",
+          "answer": "It's a compound assignment equivalent to score = score + 5;, adding 5 to score's current value and storing the result back into score."
+        }
+      ],
+      "thirtySecondAnswer": "C++ operators include arithmetic (+, -, *, /, %), assignment and compound assignment (=, +=, -=), comparison (==, !=, <, >, <=, >=), and logical operators (&&, ||, !). A critical distinction is = for assignment versus == for comparison — mixing them up is a classic bug. Increment and decrement operators, ++ and --, come in pre and post forms: a++ uses the current value before incrementing, while ++a increments first. Comparisons and logical operators always produce a bool, which becomes essential once we reach conditional statements."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Operators",
+      "text": "= sets. == asks. % gives what's left over. && needs both. || needs one. a++ uses then adds. ++a adds then uses."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-operators-increment", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a = 5;\n    int b = 5;\n\n    cout << a++ << endl;\n    cout << ++b << endl;\n\n    return 0;\n}", "output": "5\n6" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-operators-increment",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int a = 5;\n    int b = 5;\n\n    cout << a++ << endl;\n    cout << ++b << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-operators-increment"]
+  }
+}
