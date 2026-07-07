@@ -1,0 +1,256 @@
+{
+  "id": "cpp-namespace",
+  "moduleId": "cpp-fundamentals",
+  "title": "Namespace",
+  "description": "What a namespace is, why std::cout needs a namespace at all, using namespace vs using declarations, and creating your own namespace.",
+  "objectives": [
+    "Understand why namespaces exist (avoiding name collisions)",
+    "Understand the scope resolution operator ::",
+    "Understand the difference between using namespace std; and a targeted using declaration",
+    "Read a basic custom namespace definition",
+    "Know that nested namespaces exist without needing them yet"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Namespace?"
+    },
+    {
+      "type": "paragraph",
+      "text": "You've already typed using namespace std; at the top of every program so far. Today we look at what that line actually means."
+    },
+    {
+      "type": "definition",
+      "term": "Namespace",
+      "text": "A namespace is a named region that groups related names together, so the same name can exist in different namespaces without conflicting."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Do We Need Namespaces?"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Two files with the same name",
+      "text": "Imagine two files both named report.txt — one inside a Sales folder, another inside an HR folder. The name report.txt alone is ambiguous, but Sales/report.txt and HR/report.txt are not. A namespace works like that folder: it prefixes a name so it stays unambiguous even if the same short name is used elsewhere."
+    },
+    {
+      "type": "note",
+      "text": "Without namespaces, if two different libraries both declared something named cout (or add, or List), the compiler wouldn't know which one you meant."
+    },
+    {
+      "type": "heading",
+      "text": "3. The std Namespace"
+    },
+    {
+      "type": "paragraph",
+      "text": "The entire C++ Standard Library — cout, cin, vector, string, and everything else we'll learn — is grouped inside one namespace called std (short for \"standard\")."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "std::cout << \"Hello\";"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Meaning"],
+      "rows": [
+        ["std", "The namespace (Standard Library)"],
+        ["::", "Scope resolution operator"],
+        ["cout", "The name we're accessing, from inside std"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. The Scope Resolution Operator ::"
+    },
+    {
+      "type": "definition",
+      "term": "Scope resolution operator (::)",
+      "text": ":: is used to say exactly which namespace (or scope) a name should be looked up in."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "std::cout"
+    },
+    {
+      "type": "note",
+      "text": "Read std::cout as: \"cout, specifically the one that lives inside std.\""
+    },
+    {
+      "type": "heading",
+      "text": "5. using namespace std;"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "std::cout << \"Hello\";"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "using namespace std;\n\ncout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "using namespace std; tells the compiler: for the rest of this scope, let me refer to every name inside std without writing std:: each time."
+    },
+    {
+      "type": "warning",
+      "text": "This is convenient for small learning programs, but in larger real-world projects it can pull in far more names than you need and occasionally cause naming clashes. Many teams avoid using namespace std; at the top of header files for this reason — an interview-worthy detail, even though we'll keep using it for simplicity while learning."
+    },
+    {
+      "type": "heading",
+      "text": "6. A More Targeted Option: using Declaration"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "using std::cout;\n\ncout << \"Hello\";"
+    },
+    {
+      "type": "table",
+      "headers": ["Statement", "Effect"],
+      "rows": [
+        ["using namespace std;", "Brings in every name from std"],
+        ["using std::cout;", "Brings in only cout from std"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "A using declaration for just the names you actually use is generally considered a more precise habit than importing an entire namespace."
+    },
+    {
+      "type": "heading",
+      "text": "7. Creating Your Own Namespace"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "mymath.h",
+      "code": "namespace MyMath\n{\n    int add(int, int);\n}"
+    },
+    {
+      "type": "warning",
+      "text": "We have not learned functions yet, so don't worry about the int add(int, int); syntax — only understand that a namespace can group declarations together."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "MyMath::add(2, 3);"
+    },
+    {
+      "type": "note",
+      "text": "This conceptually means: use the add function that lives inside the MyMath namespace."
+    },
+    {
+      "type": "heading",
+      "text": "8. Why Create Custom Namespaces?"
+    },
+    {
+      "type": "paragraph",
+      "text": "In a large project, different parts of the code — or different libraries you depend on — might reasonably want to use the same short name, like add or List. Wrapping each part's code in its own namespace (MyMath, MyApp, ThirdPartyLib) keeps those names from colliding."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Custom namespaces help with",
+      "points": ["Avoiding name collisions between your code and libraries", "Grouping related declarations together, similar to how std groups the Standard Library", "Making large codebases easier to navigate"]
+    },
+    {
+      "type": "heading",
+      "text": "9. Nested Namespaces (Just a Preview)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "namespace Company\n{\n    namespace Project\n    {\n        // declarations here\n    }\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — namespaces can be nested inside each other, accessed as Company::Project::something. Not needed for our current learning stage."
+    },
+    {
+      "type": "heading",
+      "text": "10. Simple Example Without using namespace std;"
+    },
+    {
+      "type": "paragraph",
+      "text": "To make the connection concrete, here's a program that uses std::cout directly, without importing the whole namespace:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello\";\n\n    return 0;\n}",
+      "output": "Hello",
+      "retypePractice": true,
+      "retypeId": "cpp-namespace-std-cout"
+    },
+    {
+      "type": "note",
+      "text": "Notice there's no using namespace std; line here — we simply write std::cout directly, and it works exactly the same way."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Thinking std is a keyword — std is just the name of a namespace, the Standard Library's namespace specifically.",
+        "Forgetting :: and writing something like std cout — the scope resolution operator :: is required between the namespace and the name.",
+        "Thinking using namespace std; is required — it's a convenience, not a requirement; std::cout works fine on its own.",
+        "Thinking namespaces are only for the Standard Library — any project can define its own namespaces to organize its own code."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a namespace in C++?",
+          "answer": "A namespace is a named region that groups related names together, preventing naming conflicts between different parts of a program or different libraries."
+        },
+        {
+          "question": "What does the :: operator do?",
+          "answer": "The scope resolution operator :: specifies which namespace (or scope) a name should be looked up in, e.g. std::cout."
+        },
+        {
+          "question": "What does using namespace std; do?",
+          "answer": "It brings every name from the std namespace into the current scope, so they can be used without the std:: prefix."
+        },
+        {
+          "question": "Why might using namespace std; be discouraged in larger projects?",
+          "answer": "It imports every name from std at once, which can pull in more than needed and occasionally cause naming conflicts — especially risky inside header files that get included elsewhere."
+        },
+        {
+          "question": "What is the difference between using namespace std; and using std::cout;?",
+          "answer": "using namespace std; imports all names from std, while using std::cout; imports only cout — a more targeted, precise choice."
+        },
+        {
+          "question": "Can you create your own namespace?",
+          "answer": "Yes. Any project can define its own namespace to group related declarations and avoid name collisions with other code."
+        }
+      ],
+      "thirtySecondAnswer": "A namespace groups related names together so the same short name can be reused in different parts of a program without conflicting. The entire C++ Standard Library lives inside the std namespace, which is why we write std::cout, using the scope resolution operator ::. using namespace std; is a convenience that imports every std name at once, while a targeted using declaration like using std::cout; imports just what's needed. Projects can also define their own custom namespaces for the same reason."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Namespace",
+      "text": "Namespace = Folder for names. :: = \"inside\". std::cout = \"cout, inside std.\" using namespace std; = \"stop making me write std:: every time.\""
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-namespace-std-cout", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello\";\n\n    return 0;\n}", "output": "Hello" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-namespace-std-cout",
+      "reference": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-namespace-std-cout"]
+  }
+}

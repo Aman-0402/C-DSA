@@ -11,7 +11,8 @@
         { "id": "cpp-program-structure", "title": "C++ Program Structure", "lesson": "cpp-program-structure" },
         { "id": "cpp-header-files", "title": "Header Files", "lesson": "cpp-header-files" },
         { "id": "cpp-include", "title": "#include", "lesson": "cpp-include" },
-        { "id": "cpp-iostream", "title": "iostream", "lesson": "cpp-iostream" }
+        { "id": "cpp-iostream", "title": "iostream", "lesson": "cpp-iostream" },
+        { "id": "cpp-namespace", "title": "Namespace", "lesson": "cpp-namespace" }
       ]
     }
   ]
