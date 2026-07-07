@@ -71,6 +71,7 @@
   font-family: var(--font-code);
   font-size: 13px;
   color: #7ee787;
+  white-space: pre-line;
 }
 .code-output .co-label {
   color: var(--text-faint);
