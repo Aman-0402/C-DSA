@@ -1,0 +1,163 @@
+{
+  "id": "cpp-function-definition",
+  "moduleId": "functions",
+  "title": "Function Definition",
+  "description": "The function's actual body: the header line, matching a declaration, and what happens when definition and declaration disagree.",
+  "objectives": [
+    "Understand what a function definition is, as distinct from its declaration",
+    "Write a function definition with a matching header and a body",
+    "Know that a definition must match its declaration exactly",
+    "Understand a function can only be defined once (One Definition Rule, informally)"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Function Definition?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "definition",
+      "term": "Function definition",
+      "text": "A function definition provides the function's actual body — the real code that runs when the function is called."
+    },
+    {
+      "type": "note",
+      "text": "Where a declaration (int add(int, int);) only promises the function exists, a definition delivers on that promise with real, runnable code."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Two Halves of a Definition"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "Example", "Purpose"],
+      "rows": [
+        ["Header", "int add(int a, int b)", "Return type, name, and parameters — same shape as a declaration"],
+        ["Body", "{ return a + b; }", "The actual statements that run"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "A definition's header looks exactly like a declaration, minus the semicolon — because a definition includes a declaration inside it; it just adds the body right after."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Header Must Match the Declaration"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b); // declaration\n\ndouble add(int a, int b) // ERROR — return type doesn't match\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "If a declaration says add returns int, the definition must also return int — the return type, name, and parameter types all need to agree. A mismatch is a compilation error, not a warning."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint square(int n); // declaration\n\nint main()\n{\n    cout << square(6) << endl;\n\n    return 0;\n}\n\nint square(int n) // definition\n{\n    return n * n;\n}",
+      "output": "36",
+      "retypePractice": true,
+      "retypeId": "cpp-function-definition-square"
+    },
+    {
+      "type": "heading",
+      "text": "5. Only One Definition Allowed"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b;\n}\n\nint add(int a, int b) // ERROR — already defined\n{\n    return a + b + 1;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Unlike a declaration, which can technically appear multiple times (as long as they all agree), a function can only be defined once in a program. Defining add twice, even identically, is a compilation error — recall from main() Function that having two definitions of the same function causes exactly this kind of conflict."
+    },
+    {
+      "type": "heading",
+      "text": "6. Definition Without a Separate Declaration"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b) // this line also acts as the declaration\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(2, 3); // fine — add was already fully defined above main()\n}"
+    },
+    {
+      "type": "note",
+      "text": "A separate declaration is only necessary when the function is called before its definition appears in the file. If the full definition comes first, it already tells the compiler everything it needs — no separate prototype required."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The chapter itself, not just its listing",
+      "text": "If a declaration is a table-of-contents entry promising \"Chapter 5 exists,\" the definition is the actual Chapter 5 — the real content someone can read and follow. A book can only have one \"real\" Chapter 5; two different versions of the same chapter in one book would be a contradiction."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing a definition whose header doesn't match its declaration — return type, name, and parameter types must all agree.",
+        "Defining the same function twice in the same program — even identical definitions conflict; only one is allowed.",
+        "Forgetting the body entirely and leaving just a header with a semicolon — that's a declaration, not a definition.",
+        "Assuming a declaration is always required — it's only needed when the function is called before its definition appears."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a function definition?",
+          "answer": "The function's actual body — the real, runnable code that executes when the function is called, as opposed to just its declaration."
+        },
+        {
+          "question": "Does a function definition's header need to match its declaration?",
+          "answer": "Yes — the return type, name, and parameter types must all agree between the declaration and the definition."
+        },
+        {
+          "question": "Can a function be defined more than once in a program?",
+          "answer": "No — a function can only have one definition; defining it twice, even identically, is a compilation error."
+        },
+        {
+          "question": "Is a separate declaration always required before a function definition?",
+          "answer": "No — a declaration is only needed if the function is called before its definition appears in the file; a definition placed before its first use already provides everything the compiler needs."
+        }
+      ],
+      "thirtySecondAnswer": "A function definition provides the actual body of a function — the real code that runs when it's called — unlike a declaration, which only announces that the function exists. A definition's header must exactly match any earlier declaration in return type, name, and parameters, and a function can only be defined once in a program. If a function is fully defined before it's first called, no separate declaration is needed; a declaration only matters when the call happens earlier in the file than the definition."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Function Definition",
+      "text": "Definition = the real chapter, not just its listing. Header must match the promise made earlier. Only one real chapter allowed per book."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-function-definition-square", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint square(int n);\n\nint main()\n{\n    cout << square(6) << endl;\n\n    return 0;\n}\n\nint square(int n)\n{\n    return n * n;\n}", "output": "36" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-function-definition-square",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint square(int n);\n\nint main()\n{\n    cout << square(6) << endl;\n\n    return 0;\n}\n\nint square(int n)\n{\n    return n * n;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-function-definition-square"]
+  }
+}
