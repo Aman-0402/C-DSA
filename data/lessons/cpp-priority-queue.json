@@ -1,0 +1,137 @@
+{
+  "id": "cpp-priority-queue",
+  "moduleId": "stl",
+  "title": "priority_queue",
+  "description": "Not insertion order, not FIFO — always the highest-priority element first. Built on a heap, with a preview of switching to a min-heap.",
+  "objectives": [
+    "Understand priority_queue as always returning the highest-priority element",
+    "Use push(), pop(), and top()",
+    "Know priority_queue defaults to a max-heap",
+    "Get a first glimpse of switching to a min-heap"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: queue Preserves Arrival Order"
+    },
+    {
+      "type": "paragraph",
+      "text": "queue always gives back elements in the exact order they arrived — first in, first out. priority_queue, from the same <queue> header, ignores arrival order entirely and always gives back whichever element currently has the highest priority."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is priority_queue?"
+    },
+    {
+      "type": "definition",
+      "term": "priority_queue",
+      "text": "priority_queue is a container adaptor that always keeps the highest-priority element accessible at the front, regardless of the order elements were inserted in."
+    },
+    {
+      "type": "heading",
+      "text": "3. push(), pop(), top()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <queue>\n\npriority_queue<int> pq;\n\npq.push(30);\npq.push(10);\npq.push(50);\npq.push(20);\n\ncout << pq.top(); // 50 — the LARGEST value, regardless of insertion order"
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    priority_queue<int> pq;\n    pq.push(30);\n    pq.push(10);\n    pq.push(50);\n    pq.push(20);\n\n    while (!pq.empty())\n    {\n        cout << pq.top() << \" \";\n        pq.pop();\n    }\n\n    return 0;\n}",
+      "output": "50 30 20 10 ",
+      "retypePractice": true,
+      "retypeId": "cpp-priority-queue-basic"
+    },
+    {
+      "type": "warning",
+      "text": "Notice the elements were pushed in the order 30, 10, 50, 20 — completely unsorted — but they come back out in descending order: 50, 30, 20, 10. priority_queue reorganizes internally so top() is always the current maximum, no matter what order things were pushed."
+    },
+    {
+      "type": "heading",
+      "text": "5. Default Is a Max-Heap; a Preview of Min-Heap"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "priority_queue<int, vector<int>, greater<int>> minHeap; // now top() gives the SMALLEST"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — the full explanation of that vector<int> and greater<int> comes with Custom Comparators, right after this topic. For now, just know: by default, priority_queue's top() is always the largest value (a max-heap); adding greater<int> flips it to always return the smallest instead (a min-heap)."
+    },
+    {
+      "type": "heading",
+      "text": "6. How It Works Internally"
+    },
+    {
+      "type": "note",
+      "text": "priority_queue is typically implemented as a binary heap, built on top of a vector — a structure organized so the maximum (or minimum) is always quickly reachable at the top, without needing every element to be fully sorted. This gives push() and pop() efficient logarithmic-time performance, much better than re-sorting an entire collection on every insertion."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A hospital emergency room, not a checkout line",
+      "text": "Recall queue's checkout line, first come first served. An emergency room works differently: the most critical patient is treated next, regardless of who arrived first — a patient who just walked in with a life-threatening injury is seen before someone who's been waiting for a routine issue. That's exactly priority_queue: order of arrival doesn't matter, only priority does."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming priority_queue preserves insertion order like queue — it doesn't; only priority determines the order elements come out.",
+        "Forgetting the default is a max-heap — expecting the smallest element first without specifying greater<int> for a min-heap.",
+        "Expecting pop() to return the removed value — same as stack and queue, it only removes; call top() first if the value is needed.",
+        "Trying to access anything other than the current top element — like stack and queue, there's no indexing or iteration into the middle."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does priority_queue guarantee about the order elements come out in?",
+          "answer": "The highest-priority element (by default, the largest value) is always at the top, regardless of the order elements were inserted."
+        },
+        {
+          "question": "Is priority_queue a max-heap or a min-heap by default?",
+          "answer": "A max-heap by default — top() returns the largest element unless configured otherwise."
+        },
+        {
+          "question": "How is priority_queue typically implemented internally?",
+          "answer": "As a binary heap, usually built on top of a vector, giving efficient logarithmic-time push() and pop() without needing to fully sort every element."
+        }
+      ],
+      "thirtySecondAnswer": "priority_queue always keeps the highest-priority element accessible through top(), completely ignoring the order elements were inserted in — by default that means the largest value, a max-heap. It's typically implemented as a binary heap over a vector, giving efficient logarithmic-time push() and pop() rather than requiring a full sort on every insertion. It can be configured as a min-heap instead using a custom comparator, covered fully in Custom Comparators. Unlike queue's first-come-first-served behavior, priority_queue behaves like a hospital emergency room: the most urgent element is always served next, regardless of arrival order."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember priority_queue",
+      "text": "priority_queue = an emergency room, not a checkout line. Most critical (biggest, by default) goes first, no matter who arrived when."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-priority-queue-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    priority_queue<int> pq;\n    pq.push(30);\n    pq.push(10);\n    pq.push(50);\n    pq.push(20);\n\n    while (!pq.empty())\n    {\n        cout << pq.top() << \" \";\n        pq.pop();\n    }\n\n    return 0;\n}", "output": "50 30 20 10 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-priority-queue-basic",
+      "reference": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    priority_queue<int> pq;\n    pq.push(30);\n    pq.push(10);\n    pq.push(50);\n    pq.push(20);\n\n    while (!pq.empty())\n    {\n        cout << pq.top() << \" \";\n        pq.pop();\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-priority-queue-basic"]
+  }
+}
