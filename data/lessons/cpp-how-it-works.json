@@ -1,0 +1,298 @@
+{
+  "id": "cpp-how-it-works",
+  "moduleId": "cpp-fundamentals",
+  "title": "How C++ Works",
+  "description": "Why C++ code needs translation, the five-step journey from source code to output, and source code vs machine code.",
+  "objectives": [
+    "Understand why C++ code cannot run directly on a processor",
+    "Understand the five-step flow: write, save, translate, execute, output",
+    "Understand what source code and machine code are, and how they differ",
+    "Understand what happens when C++ syntax is incorrect",
+    "Answer the interview question: does the CPU execute C++ directly?"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What does \"How C++ Works\" mean?"
+    },
+    {
+      "type": "paragraph",
+      "text": "When you write C++ code, the computer cannot directly understand your C++ instructions. A computer processor does not directly understand cout or Hello. At the lowest level, the computer executes machine instructions. So C++ code must go through a process before the computer can run it."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "flow",
+      "title": "The simple flow",
+      "steps": ["C++ Code", "Translation", "Machine Code", "Execution", "Output"]
+    },
+    {
+      "type": "definition",
+      "term": "How C++ Works",
+      "text": "C++ works by translating human-written C++ code into machine instructions that the computer can execute."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why do we need translation?"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The translator analogy",
+      "text": "Imagine you speak English and tell someone \"Open the door,\" but that person only understands Japanese. Your instruction is correct, but they cannot understand it — you need a translator. English → Translator → Japanese."
+    },
+    {
+      "type": "flow",
+      "steps": ["C++ Code", "Compiler", "Machine Code"]
+    },
+    {
+      "type": "warning",
+      "text": "The compiler and complete compilation process will be our next separate topic. For now, understand only its basic role: Compiler = C++ translator."
+    },
+    {
+      "type": "heading",
+      "text": "3. How does a C++ program work?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose you create a C++ program. Conceptually, five things happen: Write Code → Save Code → Translate Code → Execute Program → Get Output. Let's understand them one by one."
+    },
+    {
+      "type": "heading",
+      "text": "Step 1: Write C++ Code"
+    },
+    {
+      "type": "paragraph",
+      "text": "You write instructions using C++. For example, this tells the program to display \"Hello Aman\":"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello Aman\";"
+    },
+    {
+      "type": "note",
+      "text": "We have not learned cout officially yet. For now, just understand that it is being used to display something."
+    },
+    {
+      "type": "heading",
+      "text": "Step 2: Save the C++ Code"
+    },
+    {
+      "type": "paragraph",
+      "text": "C++ source code is commonly stored in a file ending with the .cpp file extension."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Common .cpp file names",
+      "points": ["hello.cpp", "main.cpp", "program.cpp"]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "File extensions you already know",
+      "text": "You may have seen photo.jpg, song.mp3, document.pdf. Similarly, program.cpp usually represents a C++ source file."
+    },
+    {
+      "type": "memoryTrick",
+      "text": "C++ → .cpp"
+    },
+    {
+      "type": "heading",
+      "text": "Step 3: C++ Code is Translated"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose our file contains cout << \"Hello\";. The processor cannot directly execute this C++ statement — it must be translated into instructions suitable for the computer. The compiler is involved in this process; we will learn exactly how compilation works in the next topic."
+    },
+    {
+      "type": "flow",
+      "steps": ["cout << \"Hello\";", "Translation", "Machine Instructions"]
+    },
+    {
+      "type": "heading",
+      "text": "Step 4: The Program is Executed"
+    },
+    {
+      "type": "paragraph",
+      "text": "After the program has been successfully prepared for execution, the computer can run it. The processor executes the program's machine instructions, following them in order."
+    },
+    {
+      "type": "flow",
+      "steps": ["Instruction 1", "Instruction 2", "Instruction 3", "Instruction 4"]
+    },
+    {
+      "type": "note",
+      "text": "The computer follows instructions according to the program's execution flow. Later, conditions and loops can change this flow (for example: Is age >= 18? → Yes → Do A, No → Do B). We have not learned conditions yet, so we will study this properly later."
+    },
+    {
+      "type": "heading",
+      "text": "Step 5: We Get the Output"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";",
+      "output": "Hello"
+    },
+    {
+      "type": "flow",
+      "title": "The complete basic idea",
+      "steps": ["Write C++ Code", "Save as .cpp", "Translate", "Execute", "See Output"]
+    },
+    {
+      "type": "heading",
+      "text": "4. Source Code"
+    },
+    {
+      "type": "paragraph",
+      "text": "The code written by a programmer is called source code. For example, cout << \"Hello\"; is C++ source code."
+    },
+    {
+      "type": "definition",
+      "term": "Source Code",
+      "text": "Source code is the human-readable programming code written by a programmer."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The recipe analogy",
+      "text": "Think about a recipe: 1) Boil water, 2) Add tea, 3) Add milk, 4) Add sugar. The written recipe contains instructions. Similarly, cout << \"Hello\"; contains a programming instruction. Recipe → Instructions for Chef. Source Code → Instructions for Computer Program."
+    },
+    {
+      "type": "heading",
+      "text": "5. Machine Code"
+    },
+    {
+      "type": "paragraph",
+      "text": "The computer's processor executes machine instructions. At a simplified conceptual level, beginners often represent machine code using binary (0s and 1s). You do not need to write machine code yourself — that would be extremely difficult. Instead, we write cout << \"Hello\"; and translation tools handle the lower-level work."
+    },
+    {
+      "type": "code",
+      "lang": "text",
+      "code": "10101010\n00110101\n11100010"
+    },
+    {
+      "type": "heading",
+      "text": "6. Source Code vs Machine Code"
+    },
+    {
+      "type": "table",
+      "headers": ["Source Code", "Machine Code"],
+      "rows": [
+        ["Written by programmer", "Executed by computer processor"],
+        ["Human-readable", "Low-level machine instructions"],
+        ["C++ syntax", "Processor instructions"],
+        ["Easier for humans", "Designed for machine execution"]
+      ]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "SOURCE → Human writes. MACHINE → Computer executes."
+    },
+    {
+      "type": "heading",
+      "text": "7. What happens if our C++ code is wrong?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose we write incorrect C++ syntax. The C++ tools may report an error, because C++ expects specific syntax."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout \"Hello\";"
+    },
+    {
+      "type": "note",
+      "text": "The correct form for this example is: cout << \"Hello\";. Remember: Syntax means the rules for correctly writing code. Correct Syntax → Translation can continue. Incorrect Syntax → Error."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "warning",
+      "text": "Later, you will learn different categories of programming errors. For now, remember: incorrect C++ syntax can prevent the program from being successfully built."
+    },
+    {
+      "type": "heading",
+      "text": "8. Does the computer execute C++ directly?"
+    },
+    {
+      "type": "tip",
+      "text": "This is an important interview question. The simple answer is: No. The processor does not directly execute C++ source code. C++ code must be translated into machine instructions before execution."
+    },
+    {
+      "type": "note",
+      "text": "Do not say \"the computer understands C++.\" A better explanation is: we write C++ because it is easier for programmers to understand, and the code is then translated into machine instructions for execution."
+    },
+    {
+      "type": "heading",
+      "text": "9. Simple Flow Example"
+    },
+    {
+      "type": "paragraph",
+      "text": "Imagine we have a file hello.cpp. Inside it, we eventually write a complete C++ program that displays \"Hello Aman\". The conceptual process is:"
+    },
+    {
+      "type": "flow",
+      "steps": ["hello.cpp", "C++ Source Code", "Translation Process", "Machine Instructions", "Program Executes", "Hello Aman"]
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Mistakes",
+      "items": [
+        "Thinking C++ code is directly understood by the CPU — the correct idea is C++ Source Code → Translation → Machine Instructions → CPU Executes Instructions.",
+        "Thinking .cpp is a programming language — .cpp is commonly a file extension for C++ source files (e.g. main.cpp).",
+        "Thinking source code and machine code are the same — Source Code is human-readable programming instructions; Machine Code is low-level instructions executed by the processor.",
+        "Memorizing the flow (Code → Compiler → Machine) without understanding why: humans need readable programming languages, while processors execute machine instructions — that difference creates the need for translation."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does C++ work?",
+          "answer": "C++ code is written as source code. It is translated into machine instructions through the compilation process, and the resulting program can then be executed by the computer."
+        },
+        {
+          "question": "What is source code?",
+          "answer": "Source code is the human-readable code written by a programmer using a programming language such as C++."
+        },
+        {
+          "question": "Does the CPU directly understand C++?",
+          "answer": "No. The CPU executes machine instructions. C++ source code must first be translated into machine code."
+        },
+        {
+          "question": "What is a .cpp file?",
+          "answer": "A .cpp file is commonly a C++ source file that contains C++ source code."
+        },
+        {
+          "question": "Why don't programmers normally write machine code directly?",
+          "answer": "Machine code is difficult for humans to read, write, and maintain. C++ provides a more human-readable way to write instructions that can later be translated for the computer."
+        }
+      ],
+      "thirtySecondAnswer": "A C++ program starts as human-readable source code, usually stored in a .cpp file. The source code goes through a compilation process where it is translated into machine instructions. The computer can then execute those machine instructions and produce the required output."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember",
+      "text": "W → T → E → O: Write → Translate → Execute → Output. Or simply: Humans write C++. Computers execute machine instructions."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-how-hello", "lang": "cpp", "code": "cout << \"Hello\";", "output": "Hello" },
+    { "id": "cpp-how-hello-aman", "lang": "cpp", "code": "cout << \"Hello Aman\";" }
+  ],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}

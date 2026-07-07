@@ -4,7 +4,8 @@
       "id": "cpp-fundamentals",
       "title": "C++ Fundamentals",
       "topics": [
-        { "id": "cpp-introduction", "title": "Introduction to C++", "lesson": "cpp-introduction" }
+        { "id": "cpp-introduction", "title": "Introduction to C++", "lesson": "cpp-introduction" },
+        { "id": "cpp-how-it-works", "title": "How C++ Works", "lesson": "cpp-how-it-works" }
       ]
     }
   ]
