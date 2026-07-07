@@ -1,0 +1,11 @@
+{
+  "modules": [
+    {
+      "id": "cpp-fundamentals",
+      "title": "C++ Fundamentals",
+      "topics": [
+        { "id": "cpp-introduction", "title": "Introduction to C++", "lesson": "cpp-introduction" }
+      ]
+    }
+  ]
+}

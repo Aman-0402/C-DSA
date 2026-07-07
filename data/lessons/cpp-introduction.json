@@ -1,0 +1,255 @@
+{
+  "id": "cpp-introduction",
+  "moduleId": "cpp-fundamentals",
+  "title": "Introduction to C++",
+  "description": "What C++ is, why it's used, how it works, and why it matters for DSA and interviews.",
+  "objectives": [
+    "Understand what a programming language is and what C++ is",
+    "Understand why C++ is used and where",
+    "Understand the C++ Code → Compiler → Machine Code flow at a high level",
+    "Understand why C++ suits DSA and coding interviews",
+    "Read a first C++ program without needing to fully explain it yet"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is C++?"
+    },
+    {
+      "type": "paragraph",
+      "text": "C++ is a programming language. A programming language allows us to give instructions to a computer. Think of a computer like a very fast worker — but it does not understand normal English instructions. You cannot simply tell a computer \"Add two numbers and show me the answer.\" Instead, we write instructions using a programming language."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "example.cpp",
+      "code": "int a = 10;\nint b = 20;\n\ncout << a + b;",
+      "output": "30"
+    },
+    {
+      "type": "definition",
+      "term": "C++",
+      "text": "C++ is a general-purpose programming language used to create fast and efficient software."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why do we use C++?"
+    },
+    {
+      "type": "paragraph",
+      "text": "One major reason is performance. C++ programs can be very fast. C++ also gives programmers more control over how a computer uses its memory and resources."
+    },
+    {
+      "type": "keyPoints",
+      "title": "Commonly used in",
+      "points": [
+        "Operating systems",
+        "Game development / game engines",
+        "Browsers",
+        "Database systems",
+        "Embedded systems",
+        "High-performance applications",
+        "Competitive programming",
+        "Data Structures and Algorithms"
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "For our learning journey, we are mainly using C++ for: DSA + LeetCode + Coding Interviews."
+    },
+    {
+      "type": "heading",
+      "text": "3. How does C++ work?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose we write this C++ code:"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "The computer's processor cannot directly understand this C++ code. The processor understands machine instructions. Conceptually, we can imagine them as binary instructions like 10110100, 11001010, 00110101. So our C++ code must be translated."
+    },
+    {
+      "type": "flow",
+      "title": "Compilation flow",
+      "steps": ["C++ Code", "Compiler", "Machine Code", "Computer Executes It"]
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Translator analogy",
+      "text": "Imagine you speak English. Another person understands only Japanese. You say \"Hello\". A translator converts your message into Japanese. Similarly: C++ Code → Compiler → Machine Instructions. The compiler acts like a translator."
+    },
+    {
+      "type": "warning",
+      "text": "We have not officially learned the Compiler yet — only the word is introduced here. We will study the Compiler and Compilation Process as a separate topic."
+    },
+    {
+      "type": "heading",
+      "text": "4. Why is C++ good for DSA?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suppose we want to store many numbers. C++ provides powerful tools for this. Later, you will learn things like vector, stack, queue, map, unordered_map, set, priority_queue. These tools are part of the Standard Template Library, commonly called STL."
+    },
+    {
+      "type": "warning",
+      "text": "Do not worry about these names now. You are not expected to understand or use them yet — each one will be learned separately before being used in DSA problems."
+    },
+    {
+      "type": "heading",
+      "text": "5. When should we use C++?"
+    },
+    {
+      "type": "keyPoints",
+      "title": "C++ is a strong choice when",
+      "points": [
+        "Performance is important",
+        "We need better control over memory",
+        "We are solving DSA problems",
+        "We are doing competitive programming",
+        "We are building system-level software",
+        "We are developing game engines",
+        "We are preparing for coding interviews"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "For example, imagine we need to process 1,000,000 numbers — efficiency becomes important. Later, you will learn how C++ and DSA help us write efficient solutions."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Chef and recipe",
+      "text": "A recipe says: 1) Take two eggs, 2) Break the eggs, 3) Mix them, 4) Heat the pan, 5) Cook the eggs. The chef follows the instructions step by step. Programming works similarly — we write instructions (Step 1, Step 2, Step 3, Step 4) and the computer executes them."
+    },
+    {
+      "type": "table",
+      "title": "Analogy",
+      "headers": ["Recipe World", "Programming World"],
+      "rows": [
+        ["C++ Program", "Recipe"],
+        ["Computer", "Chef"],
+        ["Instructions", "C++ Code"]
+      ]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "Programming is giving step-by-step instructions to a computer."
+    },
+    {
+      "type": "heading",
+      "text": "7. First Look at C++ Syntax"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello World\";\n\n    return 0;\n}",
+      "output": "Hello World",
+      "retypePractice": true,
+      "retypeId": "cpp-intro-hello-world"
+    },
+    {
+      "type": "warning",
+      "text": "You do not need to understand this code yet. It contains multiple new concepts — #include, iostream, namespace, std, main(), cout, return. We learn a concept before expecting you to use it, so these are covered one by one later. For now, only understand: this is an example of a C++ program."
+    },
+    {
+      "type": "heading",
+      "text": "8. C++ Syntax"
+    },
+    {
+      "type": "paragraph",
+      "text": "Syntax means the rules for writing code. In English, we may write \"I am learning C++.\" Writing \"Learning am I C++.\" does not follow normal English sentence structure. Programming languages also have rules."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "note",
+      "text": "Writing something incorrectly may cause an error. For example: cout \"Hello\"; — C++ may reject this instruction because the syntax is incorrect."
+    },
+    {
+      "type": "definition",
+      "term": "Syntax",
+      "text": "Syntax is the set of rules used to correctly write code in a programming language."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to memorize code like #include <iostream> / using namespace std; / int main() without understanding it.",
+        "Thinking you need to learn all C++ syntax before writing any code — instead, build gradually: Concept → Understand → See Example → Trace Code → Practice → Use in DSA.",
+        "Jumping straight into LeetCode before arrays, loops, hashing, STL containers, and complexity analysis are clear — this leads to memorizing solutions instead of learning problem solving."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is C++?",
+          "answer": "C++ is a general-purpose programming language known for high performance and control over system resources. It is commonly used in system programming, game development, competitive programming, and Data Structures and Algorithms."
+        },
+        {
+          "question": "Why is C++ popular for DSA?",
+          "answer": "C++ is popular for DSA because it is fast and provides the Standard Template Library, which contains useful data structures and algorithms. (STL itself is studied later.)"
+        },
+        {
+          "question": "Is C++ a compiled language?",
+          "answer": "Yes. C++ source code is translated into machine code using a compiler before the program is executed. The exact compilation process is a later topic."
+        },
+        {
+          "question": "What is syntax?",
+          "answer": "Syntax is the set of rules that defines how code must be written correctly in a programming language."
+        },
+        {
+          "question": "Why are we learning C++ for coding interviews?",
+          "answer": "C++ provides good performance and powerful STL containers and algorithms that help us implement DSA solutions efficiently."
+        }
+      ],
+      "thirtySecondAnswer": "C++ is a general-purpose, compiled programming language known for its performance and control over system resources. It is widely used in system programming, game development, competitive programming, and DSA. C++ is also popular in coding interviews because its Standard Template Library provides useful containers and algorithms for implementing efficient solutions."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember C++",
+      "text": "C++ = SPEED + CONTROL + DSA — SPEED (fast programs), CONTROL (better control over computer resources), DSA (excellent ecosystem for coding problems)."
+    },
+    {
+      "type": "quickCheck",
+      "title": "Quick Understanding Check",
+      "questions": [
+        "What is C++ in your own words?",
+        "Why is C++ popular for DSA and coding interviews?",
+        "What is the role of a compiler?",
+        "What does syntax mean?"
+      ]
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-intro-two-numbers", "lang": "cpp", "code": "int a = 10;\nint b = 20;\n\ncout << a + b;", "output": "30" },
+    { "id": "cpp-intro-hello-world", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello World\";\n\n    return 0;\n}", "output": "Hello World" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-intro-hello-world",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello World\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-intro-hello-world"]
+  }
+}

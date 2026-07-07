@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ · DSA · LeetCode — Interactive eBook</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/sidebar.css" />
+  <link rel="stylesheet" href="css/lesson.css" />
+  <link rel="stylesheet" href="css/code.css" />
+  <link rel="stylesheet" href="css/practice.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+    <i data-lucide="menu" class="icon"></i>
+  </button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-mark">C+</div>
+        <div class="brand-text">
+          <span class="brand-title">C++ · DSA · LeetCode</span>
+          <span class="brand-sub">Interactive eBook</span>
+        </div>
+      </div>
+
+      <div class="sidebar-progress">
+        <div class="progress-label">
+          <span>Overall Progress</span>
+          <span id="progressLabelValue">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+
+      <div class="sidebar-search">
+        <input type="text" id="sidebarSearchInput" placeholder="Search topics..." aria-label="Search topics" />
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav" aria-label="Course roadmap"></nav>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="themeToggleBtn"><i data-lucide="moon" class="icon"></i> Theme</button>
+      </div>
+    </aside>
+
+    <main class="main-scroll">
+      <div class="main-content" id="lessonContent"></div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-clike.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-cpp.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
