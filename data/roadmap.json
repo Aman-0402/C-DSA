@@ -18,7 +18,8 @@
         { "id": "cpp-cout-cin", "title": "cout & cin", "lesson": "cpp-cout-cin" },
         { "id": "cpp-variables", "title": "Variables", "lesson": "cpp-variables" },
         { "id": "cpp-constants", "title": "Constants", "lesson": "cpp-constants" },
-        { "id": "cpp-data-types", "title": "Data Types", "lesson": "cpp-data-types" }
+        { "id": "cpp-data-types", "title": "Data Types", "lesson": "cpp-data-types" },
+        { "id": "cpp-type-modifiers", "title": "Type Modifiers", "lesson": "cpp-type-modifiers" }
       ]
     }
   ]

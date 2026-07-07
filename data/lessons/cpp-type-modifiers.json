@@ -1,0 +1,176 @@
+{
+  "id": "cpp-type-modifiers",
+  "moduleId": "cpp-fundamentals",
+  "title": "Type Modifiers",
+  "description": "signed, unsigned, short, and long — how they adjust a type's range, and the classic unsigned wraparound gotcha.",
+  "objectives": [
+    "Understand what a type modifier does to a base type",
+    "Know signed vs unsigned and what each means for negative numbers",
+    "Know short vs long and how they trade range for memory",
+    "Understand unsigned integer wraparound with a concrete example",
+    "Combine modifiers with int correctly"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Type Modifier?"
+    },
+    {
+      "type": "paragraph",
+      "text": "int is really a family of related types. Type modifiers are keywords placed before a base type (usually int) to adjust its range — how large or small a value it can hold."
+    },
+    {
+      "type": "definition",
+      "term": "Type modifier",
+      "text": "A type modifier is a keyword (signed, unsigned, short, long) that adjusts the size or range of a base data type."
+    },
+    {
+      "type": "heading",
+      "text": "2. signed and unsigned"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "signed int temperature = -10;\nunsigned int distance = 500;"
+    },
+    {
+      "type": "table",
+      "headers": ["Modifier", "Meaning"],
+      "rows": [
+        ["signed", "Can hold negative and positive values (this is the default for int)"],
+        ["unsigned", "Can only hold zero and positive values — but gets roughly double the positive range in exchange"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Plain int is signed by default — writing signed int is the same as writing int. unsigned is the one you actually need to write explicitly."
+    },
+    {
+      "type": "heading",
+      "text": "3. The unsigned Wraparound Gotcha"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    unsigned int x = -1;\n\n    cout << x << endl;\n\n    return 0;\n}",
+      "output": "4294967295",
+      "retypePractice": true,
+      "retypeId": "cpp-type-modifiers-wraparound"
+    },
+    {
+      "type": "warning",
+      "text": "unsigned int can never be negative — it has no concept of a sign at all. Assigning -1 doesn't error; it wraps around to the largest possible unsigned value instead (4294967295 on a typical 4-byte int). This is a well-known source of subtle bugs and a classic interview question."
+    },
+    {
+      "type": "heading",
+      "text": "4. short and long"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "short int smallNumber = 100;\nlong int bigNumber = 1000000000L;\nlong long int veryBigNumber = 9000000000000000000LL;"
+    },
+    {
+      "type": "table",
+      "headers": ["Modifier", "Effect"],
+      "rows": [
+        ["short", "Uses less memory, smaller range"],
+        ["long", "Uses more memory, larger range"],
+        ["long long", "Even more memory, even larger range"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "int can usually be dropped after short, long, or long long — short number; means the same as short int number;. The exact sizes of short, int, long, and long long can vary by platform, but the language guarantees long is at least as large as int, and long long is at least as large as long."
+    },
+    {
+      "type": "heading",
+      "text": "5. Combining Modifiers"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "unsigned long int population = 8000000000UL;"
+    },
+    {
+      "type": "paragraph",
+      "text": "Modifiers can be combined — unsigned long is a real, valid type, meaning: no negatives, and extra range from long."
+    },
+    {
+      "type": "heading",
+      "text": "6. Why long long for DSA?"
+    },
+    {
+      "type": "paragraph",
+      "text": "This will matter later: a plain int typically maxes out around 2.1 billion. Many DSA problems involve sums, products, or counts that exceed that — a classic bug is overflow, where a calculation silently wraps around because it didn't fit in int. long long is the common fix, since its range is far larger."
+    },
+    {
+      "type": "tip",
+      "text": "\"Did I need long long here?\" is a habitual DSA/interview question to ask yourself once numbers can get large — we'll return to this properly once we reach arithmetic operators and larger problems."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Different sized containers",
+      "text": "Think of short, int, and long as small, medium, and large boxes for the same kind of item — all hold whole numbers, but a bigger box holds a bigger quantity. unsigned is like a box with a sign on it saying \"no negative items allowed\" — in exchange, it can be packed a bit fuller on the positive side."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assigning a negative number to an unsigned variable — it doesn't error, it wraps around to a very large positive number instead.",
+        "Assuming short, int, and long always have fixed, identical sizes on every platform — the C++ standard only guarantees minimum ranges and relative ordering, not exact byte sizes.",
+        "Forgetting that plain int is already signed — writing signed int is valid but redundant.",
+        "Using a plain int for very large counts or sums in DSA problems and hitting silent overflow — long long is the common fix."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What do signed and unsigned mean?",
+          "answer": "signed allows both negative and positive values (the default for int); unsigned allows only zero and positive values, gaining extra positive range in exchange."
+        },
+        {
+          "question": "What happens if you assign a negative number to an unsigned variable?",
+          "answer": "It wraps around to a very large positive value instead of causing an error, since unsigned types cannot represent negative numbers at all."
+        },
+        {
+          "question": "What's the difference between short, int, long, and long long?",
+          "answer": "They trade memory usage for range — short uses the least memory and has the smallest range, while long long uses the most memory and has the largest range."
+        },
+        {
+          "question": "Why might a DSA solution use long long instead of int?",
+          "answer": "To avoid overflow — int typically maxes out around 2.1 billion, and sums, products, or counts in some problems can exceed that limit."
+        }
+      ],
+      "thirtySecondAnswer": "Type modifiers like signed, unsigned, short, and long adjust the range of a base type such as int. signed allows negative values and is the default; unsigned allows only non-negative values but gains extra positive range — assigning a negative number to an unsigned variable wraps around to a huge positive number instead of erroring. short, long, and long long trade memory for range, with long long commonly used in DSA to avoid overflow when values might exceed what a plain int can hold."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Type Modifiers",
+      "text": "signed = can go negative. unsigned = never negative, wraps around if you try. short/int/long/long long = small to large boxes for the same kind of number."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-type-modifiers-wraparound", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    unsigned int x = -1;\n\n    cout << x << endl;\n\n    return 0;\n}", "output": "4294967295" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-type-modifiers-wraparound",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    unsigned int x = -1;\n\n    cout << x << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-type-modifiers-wraparound"]
+  }
+}
