@@ -1,0 +1,142 @@
+{
+  "id": "cpp-abstraction",
+  "moduleId": "oop",
+  "title": "Abstraction",
+  "description": "The fourth pillar of OOP: hiding complexity behind a simple interface — and how it differs from Encapsulation, its frequently confused neighbor.",
+  "objectives": [
+    "Define abstraction as hiding implementation complexity behind a simple interface",
+    "Distinguish abstraction from encapsulation clearly",
+    "Design a class that hides complex logic behind simple public methods",
+    "Recognize abstraction we've already relied on throughout these lessons"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. We've Been Using Abstraction All Along"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "Since the very first lesson, cout << \"Hello\"; has printed text to the screen. Not once have we needed to know how it actually communicates with the display hardware, manages buffering, or talks to the operating system — that entire complexity is hidden behind one simple, familiar interface: <<."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Abstraction?"
+    },
+    {
+      "type": "definition",
+      "term": "Abstraction",
+      "text": "Abstraction is hiding complex implementation details behind a simple, well-defined interface, exposing only what a user of that interface actually needs to know."
+    },
+    {
+      "type": "heading",
+      "text": "3. Abstraction vs Encapsulation — a Classic Point of Confusion"
+    },
+    {
+      "type": "table",
+      "headers": ["Encapsulation", "Abstraction"],
+      "rows": [
+        ["Bundles data with behavior, and restricts direct access to that data", "Hides complexity, exposing only a simple interface to work with"],
+        ["Answers: \"who is allowed to touch this?\"", "Answers: \"how much detail does the user need to see?\""],
+        ["Mechanism: private/public, getters/setters", "Mechanism: simple public methods hiding complex private logic (and, more strictly, abstract classes/interfaces — next topic)"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "They usually work together and are easy to blur, but they answer different questions. Encapsulation is about access control; abstraction is about hiding complexity. A private member variable is encapsulation; a simple calculateTotal() method hiding a complicated formula inside is abstraction."
+    },
+    {
+      "type": "heading",
+      "text": "4. A Class That Hides Complexity"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Invoice\n{\nprivate:\n    double subtotal;\n\n    double calculateTax() // complex detail, hidden\n    {\n        return subtotal * 0.08;\n    }\n\n    double calculateDiscount() // complex detail, hidden\n    {\n        return subtotal > 100 ? subtotal * 0.1 : 0;\n    }\n\npublic:\n    Invoice(double amount)\n    {\n        subtotal = amount;\n    }\n\n    double getTotal() // the ONLY thing a user actually needs\n    {\n        return subtotal + calculateTax() - calculateDiscount();\n    }\n};\n\nint main()\n{\n    Invoice inv(200);\n\n    cout << inv.getTotal() << endl;\n\n    return 0;\n}",
+      "output": "196",
+      "retypePractice": true,
+      "retypeId": "cpp-abstraction-invoice"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What's abstracted away here",
+      "points": [
+        "Whoever uses Invoice only ever calls getTotal() — one simple method",
+        "Tax rules and discount rules are complex, private details the caller never has to think about",
+        "If the tax rate or discount rule changes later, only calculateTax() or calculateDiscount() need updating — getTotal()'s interface stays exactly the same"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Driving a car without knowing the engine",
+      "text": "Driving a car requires knowing the steering wheel, the pedals, and the gear shift — a small, simple interface. It doesn't require understanding combustion, fuel injection timing, or the transmission's internal gear ratios. All of that genuine complexity is abstracted away behind a handful of simple controls, exactly like cout << hides the real mechanics of writing to a screen."
+    },
+    {
+      "type": "heading",
+      "text": "6. A Preview: Abstract Classes"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — Abstract Classes, next, is C++'s formal mechanism for enforcing abstraction: a class that defines an interface without providing (or even allowing) a full implementation, forcing derived classes to supply it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Treating abstraction and encapsulation as the same idea — encapsulation is about access control, abstraction is about hiding complexity; related, but distinct questions.",
+        "Exposing every internal helper method as public 'just in case' — defeats abstraction, since the user is now faced with implementation detail they never needed.",
+        "Assuming abstraction only applies to formal abstract classes — a simple class with a clean public interface and hidden private helpers is already practicing abstraction.",
+        "Forgetting that good abstraction makes future changes easier — a well-abstracted class's internals can change freely as long as its public interface stays the same."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is abstraction?",
+          "answer": "Hiding complex implementation details behind a simple, well-defined interface, exposing only what a user actually needs to know."
+        },
+        {
+          "question": "What is the difference between abstraction and encapsulation?",
+          "answer": "Encapsulation controls who can access data by bundling it with behavior and restricting direct access; abstraction hides implementation complexity, exposing only a simple interface — they often work together but answer different questions."
+        },
+        {
+          "question": "Give an everyday example of abstraction we've relied on throughout these lessons.",
+          "answer": "cout << \"Hello\"; — using it requires no knowledge of how text actually reaches the screen, which is hidden behind the simple << interface."
+        }
+      ],
+      "thirtySecondAnswer": "Abstraction is hiding complex implementation details behind a simple interface, exposing only what's actually needed — something we've relied on since the very first lesson, using cout << without ever needing to know how it truly communicates with the screen. It's frequently confused with encapsulation, but they answer different questions: encapsulation controls who can access data, while abstraction controls how much complexity is exposed at all. A class with a simple public method like getTotal() hiding complicated private tax and discount calculations is abstraction in practice — the caller only ever needs the simple interface, not the details behind it."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Abstraction",
+      "text": "Abstraction = driving a car without knowing the engine. Simple interface out front, real complexity hidden behind it. Encapsulation controls access; abstraction controls how much detail is shown."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-abstraction-invoice", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Invoice\n{\nprivate:\n    double subtotal;\n\n    double calculateTax()\n    {\n        return subtotal * 0.08;\n    }\n\n    double calculateDiscount()\n    {\n        return subtotal > 100 ? subtotal * 0.1 : 0;\n    }\n\npublic:\n    Invoice(double amount)\n    {\n        subtotal = amount;\n    }\n\n    double getTotal()\n    {\n        return subtotal + calculateTax() - calculateDiscount();\n    }\n};\n\nint main()\n{\n    Invoice inv(200);\n\n    cout << inv.getTotal() << endl;\n\n    return 0;\n}", "output": "196" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-abstraction-invoice",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Invoice\n{\nprivate:\n    double subtotal;\n\n    double calculateTax()\n    {\n        return subtotal * 0.08;\n    }\n\n    double calculateDiscount()\n    {\n        return subtotal > 100 ? subtotal * 0.1 : 0;\n    }\n\npublic:\n    Invoice(double amount)\n    {\n        subtotal = amount;\n    }\n\n    double getTotal()\n    {\n        return subtotal + calculateTax() - calculateDiscount();\n    }\n};\n\nint main()\n{\n    Invoice inv(200);\n\n    cout << inv.getTotal() << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-abstraction-invoice"]
+  }
+}

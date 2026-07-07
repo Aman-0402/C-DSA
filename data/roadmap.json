@@ -96,7 +96,8 @@
         { "id": "cpp-inheritance", "title": "Inheritance", "lesson": "cpp-inheritance" },
         { "id": "cpp-polymorphism", "title": "Polymorphism", "lesson": "cpp-polymorphism" },
         { "id": "cpp-function-overriding", "title": "Function Overriding", "lesson": "cpp-function-overriding" },
-        { "id": "cpp-virtual-functions", "title": "Virtual Functions", "lesson": "cpp-virtual-functions" }
+        { "id": "cpp-virtual-functions", "title": "Virtual Functions", "lesson": "cpp-virtual-functions" },
+        { "id": "cpp-abstraction", "title": "Abstraction", "lesson": "cpp-abstraction" }
       ]
     }
   ]
