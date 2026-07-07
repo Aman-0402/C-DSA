@@ -1,0 +1,177 @@
+{
+  "id": "cpp-pointers",
+  "moduleId": "pointers-memory",
+  "title": "Pointers",
+  "description": "A variable that stores an address: the & and * operators, declaring a pointer, and how it connects to the & we already used in Pass by Reference.",
+  "objectives": [
+    "Understand what a pointer is: a variable that stores a memory address",
+    "Use & to get a variable's address and * to dereference a pointer",
+    "Declare and use a basic pointer",
+    "Connect pointers back to the & seen in Pass by Reference"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Every Variable Lives Somewhere"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall from Source Code and Executable Files: a running program's data lives in memory. Every variable we've created — int age = 25; and so on — occupies some specific location in that memory, called its address. A pointer is a variable built specifically to store one of these addresses."
+    },
+    {
+      "type": "definition",
+      "term": "Pointer",
+      "text": "A pointer is a variable that stores the memory address of another variable, rather than storing an ordinary value directly."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Address-of Operator &"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 25;\ncout << &age; // prints age's memory address, something like 0x7ffee3"
+    },
+    {
+      "type": "note",
+      "text": "Placed before a variable, & means \"give me this variable's address\" rather than its value. This is the exact same & symbol from Pass by Reference — it's the same underlying idea, just used slightly differently there."
+    },
+    {
+      "type": "heading",
+      "text": "3. Declaring a Pointer"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 25;\nint *agePtr = &age; // agePtr stores age's address"
+    },
+    {
+      "type": "table",
+      "headers": ["Piece", "Meaning"],
+      "rows": [
+        ["int *agePtr", "Declares agePtr as a pointer to an int"],
+        ["&age", "The address being stored inside agePtr"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "A pointer's declared type must match what it points to — int *agePtr can only validly point to an int, not a double or a char. The * here, in a declaration, means \"this is a pointer,\" not multiplication."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Dereference Operator *"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 25;\nint *agePtr = &age;\n\ncout << *agePtr; // 25 — the VALUE stored at the address agePtr holds"
+    },
+    {
+      "type": "warning",
+      "text": "* is used two different ways, and beginners often mix them up: in a declaration (int *agePtr), it means \"this variable is a pointer.\" In an expression (*agePtr), it means \"go to the address stored here, and give me the value.\" That second use is called dereferencing."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    int *agePtr = &age;\n\n    cout << \"Value of age: \" << age << endl;\n    cout << \"Value via pointer: \" << *agePtr << endl;\n\n    return 0;\n}",
+      "output": "Value of age: 25\nValue via pointer: 25",
+      "retypePractice": true,
+      "retypeId": "cpp-pointers-basic"
+    },
+    {
+      "type": "note",
+      "text": "age's actual memory address isn't printed here, since it's different on every run of the program — but *agePtr always resolves to whatever value currently lives at that address, which is 25."
+    },
+    {
+      "type": "heading",
+      "text": "6. Modifying Through a Pointer"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    int *agePtr = &age;\n\n    *agePtr = 30; // changes age itself, through the pointer\n\n    cout << age << endl;\n\n    return 0;\n}",
+      "output": "30"
+    },
+    {
+      "type": "note",
+      "text": "*agePtr = 30; means \"go to the address agePtr holds, and put 30 there.\" Since that address is age's own address, age itself becomes 30 — a pointer lets you reach out and modify a variable indirectly, through its address."
+    },
+    {
+      "type": "heading",
+      "text": "7. Pointers vs References — a Quick Preview"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — References gets its own dedicated topic right after this one. The short version: a reference (like the &n from Pass by Reference) is a simpler alias for a variable, always tied to something, and used mostly in function parameters. A pointer is a variable in its own right, can be reassigned to point elsewhere, and can even point to nothing at all — more powerful, but with more ways to go wrong."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A house's address on a slip of paper",
+      "text": "A pointer is like writing a house's street address on a slip of paper, rather than carrying the house itself. & is asking \"what's this house's address?\" — writing it down. * is following that slip of paper to actually walk into the house and see what's inside. The slip of paper (the pointer) is small and easy to carry, hand off, or update to point to a different house entirely."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing the two meanings of * — \"this is a pointer\" in a declaration versus \"give me the value at this address\" when used on an existing pointer.",
+        "Dereferencing a pointer that was never assigned a valid address — reading or writing through it is undefined behavior.",
+        "Forgetting that a pointer's type must match what it points to — int *p = &someDouble; is a type mismatch.",
+        "Mixing up & (address-of, applied to a variable) with * (dereference, applied to a pointer) — they are opposite operations."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a pointer?",
+          "answer": "A variable that stores the memory address of another variable, rather than storing an ordinary value directly."
+        },
+        {
+          "question": "What does the & operator do when applied to a variable?",
+          "answer": "It returns that variable's memory address."
+        },
+        {
+          "question": "What does the * operator do when applied to a pointer (not in a declaration)?",
+          "answer": "It dereferences the pointer, meaning it accesses the value stored at the address the pointer holds."
+        },
+        {
+          "question": "What are the two different meanings of * in pointer code?",
+          "answer": "In a declaration like int *p, it means \"p is a pointer.\" In an expression like *p, it means \"the value at the address p holds\" — dereferencing."
+        }
+      ],
+      "thirtySecondAnswer": "A pointer is a variable that stores a memory address instead of an ordinary value. & applied to a variable gives its address, used to initialize a pointer like int *agePtr = &age;. * has two different meanings: in a declaration it marks the variable as a pointer, and applied to an existing pointer it dereferences it, accessing or modifying the value at that address — so *agePtr = 30; actually changes age itself. Pointers are more flexible than the references seen in Pass by Reference, since they can be reassigned to point elsewhere or point to nothing at all."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Pointers",
+      "text": "& = \"what's the address?\" (write it down). * = \"go to that address\" (walk in and look/change what's there). Declaration's * just labels the variable as a pointer."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-pointers-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    int *agePtr = &age;\n\n    cout << \"Value of age: \" << age << endl;\n    cout << \"Value via pointer: \" << *agePtr << endl;\n\n    return 0;\n}", "output": "Value of age: 25\nValue via pointer: 25" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-pointers-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    int *agePtr = &age;\n\n    cout << \"Value of age: \" << age << endl;\n    cout << \"Value via pointer: \" << *agePtr << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-pointers-basic"]
+  }
+}
