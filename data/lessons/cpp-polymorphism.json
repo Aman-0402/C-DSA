@@ -1,0 +1,140 @@
+{
+  "id": "cpp-polymorphism",
+  "moduleId": "oop",
+  "title": "Polymorphism",
+  "description": "The third pillar of OOP, \"many forms\": the compile-time overloading we already know, and a first glimpse of runtime polymorphism through a base pointer.",
+  "objectives": [
+    "Understand polymorphism as \"one interface, many behaviors\"",
+    "Recognize function overloading as compile-time polymorphism, already covered",
+    "See a first glimpse of runtime polymorphism via a base class pointer",
+    "Preview Function Overriding and Virtual Functions as the upcoming deep dives"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What Does \"Polymorphism\" Mean?"
+    },
+    {
+      "type": "definition",
+      "term": "Polymorphism",
+      "text": "Polymorphism (\"many forms\") is the ability to use one shared interface — the same function name or call — to trigger different behavior depending on the actual type involved."
+    },
+    {
+      "type": "heading",
+      "text": "2. We've Already Met One Kind: Compile-Time Polymorphism"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b) { return a + b; }\ndouble add(double a, double b) { return a + b; }\n\nadd(2, 3);      // calls the int version\nadd(2.5, 3.5);  // calls the double version"
+    },
+    {
+      "type": "note",
+      "text": "This is exactly Function Overloading from earlier — the same name, add, behaves differently depending on the argument types, and the compiler decides which version to use while compiling the program. This is called compile-time polymorphism, since the choice is settled before the program ever runs."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Other Kind: Runtime Polymorphism"
+    },
+    {
+      "type": "paragraph",
+      "text": "There's a second kind, where the specific behavior isn't decided until the program is actually running — commonly through Inheritance, calling a function on a base class pointer that actually behaves according to whichever derived object it's really pointing at."
+    },
+    {
+      "type": "heading",
+      "text": "4. A First Glimpse"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() override\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog(); // an Animal pointer, but pointing at an actual Dog\n\n    a->makeSound(); // which version runs?\n\n    delete a;\n\n    return 0;\n}",
+      "output": "Woof!",
+      "retypePractice": true,
+      "retypeId": "cpp-polymorphism-glimpse"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a glimpse — virtual and override each get their own full explanation in Function Overriding and Virtual Functions, right after this topic. The key thing to notice for now: a->makeSound() prints \"Woof!\", the Dog version, even though a is declared as an Animal* — the actual behavior was decided by what a really points to, at runtime, not by a's declared type."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why This Matters"
+    },
+    {
+      "type": "note",
+      "text": "Runtime polymorphism lets code written once, using only the base class's interface (a->makeSound();), automatically do the right thing for whatever specific derived object it's actually handed — a Dog, a Cat, or any other Animal subtype yet to be written — without that calling code needing to know or check which one it is."
+    },
+    {
+      "type": "heading",
+      "text": "6. Two Kinds, Side by Side"
+    },
+    {
+      "type": "table",
+      "headers": ["Compile-time polymorphism", "Runtime polymorphism"],
+      "rows": [
+        ["Decided while the program is being compiled", "Decided while the program is actually running"],
+        ["Function overloading — different parameter types/counts", "Function overriding through virtual functions and inheritance"],
+        ["Already covered, in Function Overloading", "Covered next, in Function Overriding and Virtual Functions"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Pressing \"play\" on any device",
+      "text": "Pressing \"play\" is the same action on a phone, a TV, or a car stereo — one shared interface — but what actually happens differs depending on the specific device you're holding. You don't need a different button for each device type; each device just knows how to handle \"play\" in its own way. That's polymorphism: one call, behavior that depends on the real object behind it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Thinking polymorphism only means function overloading — that's just the compile-time half; runtime polymorphism through inheritance is the other, equally important half.",
+        "Assuming a->makeSound() always calls Animal's version because a is declared as Animal* — with virtual involved, it actually calls whichever version matches the real object a points to.",
+        "Confusing polymorphism (many forms, one interface) with inheritance (reuse of members) — they're related but distinct ideas; inheritance is often what makes runtime polymorphism possible."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does polymorphism mean in OOP?",
+          "answer": "The ability to use one shared interface — the same function name or call — to trigger different behavior depending on the actual type involved."
+        },
+        {
+          "question": "What is the difference between compile-time and runtime polymorphism?",
+          "answer": "Compile-time polymorphism, like function overloading, is resolved while the program is being compiled; runtime polymorphism, through virtual functions and inheritance, is resolved while the program is actually executing, based on the real object involved."
+        },
+        {
+          "question": "Give an example of compile-time polymorphism already covered.",
+          "answer": "Function overloading — multiple functions sharing a name but differing in their parameter lists, with the compiler choosing the right one based on the call's arguments."
+        }
+      ],
+      "thirtySecondAnswer": "Polymorphism means using one shared interface to get different behavior depending on the actual type involved. Function overloading, already covered, is compile-time polymorphism — the compiler picks the right version based on argument types while building the program. Runtime polymorphism is resolved later, while the program is actually running: calling a function through a base class pointer can trigger a derived class's specific behavior, based on the real object being pointed to rather than the pointer's declared type. That runtime mechanism relies on virtual functions and overriding, covered in detail in the next two topics."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Polymorphism",
+      "text": "Polymorphism = \"many forms.\" Same call, different result depending on who's actually answering. Overloading = decided at compile time. Overriding (via virtual) = decided at runtime."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-polymorphism-glimpse", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() override\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    a->makeSound();\n\n    delete a;\n\n    return 0;\n}", "output": "Woof!" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-polymorphism-glimpse",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual void makeSound()\n    {\n        cout << \"Some generic animal sound\" << endl;\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    void makeSound() override\n    {\n        cout << \"Woof!\" << endl;\n    }\n};\n\nint main()\n{\n    Animal *a = new Dog();\n\n    a->makeSound();\n\n    delete a;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-polymorphism-glimpse"]
+  }
+}
