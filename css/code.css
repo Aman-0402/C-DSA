@@ -34,8 +34,8 @@
 .code-body {
   display: flex;
   overflow-x: auto;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
 }
 .code-body.protected { cursor: default; }
 
@@ -46,6 +46,8 @@
   font-family: var(--font-code);
   font-size: 13px;
   line-height: 1.6;
+  white-space: pre;
+  -webkit-user-select: none;
   user-select: none;
   border-right: 1px solid rgba(255,255,255,0.06);
 }
