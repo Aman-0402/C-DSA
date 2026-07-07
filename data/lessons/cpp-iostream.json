@@ -1,0 +1,273 @@
+{
+  "id": "cpp-iostream",
+  "moduleId": "cpp-fundamentals",
+  "title": "iostream",
+  "description": "What the iostream header actually provides: the standard stream objects cout, cin, cerr, and clog, and the idea of a stream.",
+  "objectives": [
+    "Understand what a stream is",
+    "Know the four standard stream objects iostream provides: cout, cin, cerr, clog",
+    "Understand the basic difference between cout, cerr, and clog",
+    "Understand how iostream connects to the std namespace",
+    "Know that other I/O-related headers exist (sstream, fstream) without needing them yet"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is iostream?"
+    },
+    {
+      "type": "paragraph",
+      "text": "You've written #include <iostream> many times already. So far we only used it to unlock cout. Today we look at what iostream actually provides."
+    },
+    {
+      "type": "definition",
+      "term": "iostream",
+      "text": "iostream is a C++ Standard Library header that declares the standard input/output stream objects and related functionality."
+    },
+    {
+      "type": "heading",
+      "text": "2. What Does the Name iostream Mean?"
+    },
+    {
+      "type": "keyPoints",
+      "points": ["io → Input / Output", "stream → a flow of data, moving from one place to another"]
+    },
+    {
+      "type": "memoryTrick",
+      "text": "iostream = Input / Output Stream"
+    },
+    {
+      "type": "heading",
+      "text": "3. What is a Stream?"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "The water pipe analogy",
+      "text": "Think of a pipe carrying water from a tank into a cup — water flows continuously in one direction. A stream in C++ is similar: it's a flow of data between your program and someplace else, like the keyboard or the console screen."
+    },
+    {
+      "type": "flow",
+      "steps": ["Keyboard", "Input Stream", "Program"]
+    },
+    {
+      "type": "flow",
+      "steps": ["Program", "Output Stream", "Console"]
+    },
+    {
+      "type": "definition",
+      "term": "Stream",
+      "text": "A stream is a sequence of data flowing between a program and an input or output device."
+    },
+    {
+      "type": "heading",
+      "text": "4. Why Do We Need iostream?"
+    },
+    {
+      "type": "paragraph",
+      "text": "C++ itself doesn't have a built-in \"print\" or \"read\" keyword baked into the core language. Input/output ability comes from the Standard Library, through iostream."
+    },
+    {
+      "type": "note",
+      "text": "Without #include <iostream>, no declaration for cout or cin is available, and the compiler will not understand what those names mean."
+    },
+    {
+      "type": "heading",
+      "text": "5. What Does iostream Provide?"
+    },
+    {
+      "type": "table",
+      "headers": ["Stream Object", "Purpose"],
+      "rows": [
+        ["cout", "Standard output — displays text to the console"],
+        ["cin", "Standard input — reads values typed by the user"],
+        ["cerr", "Standard error — displays error messages, unbuffered"],
+        ["clog", "Standard log — displays log messages, buffered"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "We'll study each of these properly in their own dedicated topics. Today is only an overview of what iostream unlocks."
+    },
+    {
+      "type": "heading",
+      "text": "6. cout — Standard Output Stream"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << \"Hello\";",
+      "output": "Hello"
+    },
+    {
+      "type": "memoryTrick",
+      "text": "c + out → console output"
+    },
+    {
+      "type": "note",
+      "text": "We've already used cout in earlier lessons. Formatting, chaining multiple values, and endl will be covered in a dedicated cout topic."
+    },
+    {
+      "type": "heading",
+      "text": "7. cin — Standard Input Stream"
+    },
+    {
+      "type": "paragraph",
+      "text": "cin lets a program read values typed by the user at the keyboard."
+    },
+    {
+      "type": "flow",
+      "steps": ["Keyboard", "cin", "Program Variable"]
+    },
+    {
+      "type": "warning",
+      "text": "Using cin properly requires variables, which we haven't learned yet. We'll cover the exact cin syntax in its own topic — for now, just know it exists as the counterpart to cout."
+    },
+    {
+      "type": "heading",
+      "text": "8. cerr — Standard Error Stream"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cerr << \"Error!\";"
+    },
+    {
+      "type": "note",
+      "text": "cerr is commonly used to display error messages, separately from normal program output. It is unbuffered, meaning it's written out immediately rather than held back."
+    },
+    {
+      "type": "heading",
+      "text": "9. clog — Standard Log Stream"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "clog << \"Log message\";"
+    },
+    {
+      "type": "note",
+      "text": "clog is intended for logging messages. Unlike cerr, it is buffered. Beginners rarely need it directly."
+    },
+    {
+      "type": "heading",
+      "text": "10. Buffered vs Unbuffered (Just a Preview)"
+    },
+    {
+      "type": "table",
+      "headers": ["Stream", "Buffering"],
+      "rows": [
+        ["cout", "Buffered"],
+        ["cerr", "Unbuffered"],
+        ["clog", "Buffered"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "This is an advanced detail — don't worry about buffering right now. It's mentioned only so the terms aren't a surprise later."
+    },
+    {
+      "type": "heading",
+      "text": "11. iostream Is Not the Only I/O-Related Header"
+    },
+    {
+      "type": "keyPoints",
+      "title": "You may later encounter",
+      "points": [
+        "<sstream> — string streams, for treating strings like input/output streams",
+        "<fstream> — file streams, for reading and writing files"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "These are not needed yet — mentioned only so the names look familiar when we reach them."
+    },
+    {
+      "type": "heading",
+      "text": "12. iostream and the std Namespace"
+    },
+    {
+      "type": "paragraph",
+      "text": "Everything iostream declares — cout, cin, cerr, clog — lives inside the std namespace, same as we saw in the Namespace topic."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "std::cout << \"Hello\";"
+    },
+    {
+      "type": "paragraph",
+      "text": "That's why using namespace std; lets us write just cout instead of std::cout every time."
+    },
+    {
+      "type": "heading",
+      "text": "13. Simple Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}",
+      "output": "Hello",
+      "retypePractice": true,
+      "retypeId": "cpp-iostream-hello"
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Thinking iostream is only for output — the name means Input/Output, and it also provides cin.",
+        "Thinking cout, cin, cerr, and clog are separate headers — they're all declared by the single iostream header.",
+        "Using cerr and clog interchangeably — cerr is for immediate error output, clog is for buffered logging.",
+        "Trying to use cin before learning variables — cin needs a variable to store the input into, which comes in a later topic."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is iostream?",
+          "answer": "iostream is a C++ Standard Library header that declares the standard input/output stream objects — cout, cin, cerr, and clog."
+        },
+        {
+          "question": "What is a stream in C++?",
+          "answer": "A stream is a sequence of data flowing between a program and an input or output device, such as the keyboard or the console."
+        },
+        {
+          "question": "What is the difference between cout and cerr?",
+          "answer": "cout is the standard output stream and is buffered, while cerr is the standard error stream and is unbuffered, meaning it writes output immediately."
+        },
+        {
+          "question": "What is the difference between cerr and clog?",
+          "answer": "Both are used for diagnostic output, but cerr is unbuffered while clog is buffered."
+        },
+        {
+          "question": "Why do cout and cin work without writing std:: every time?",
+          "answer": "Because using namespace std; brings names from the std namespace, where cout and cin are declared, into scope."
+        }
+      ],
+      "thirtySecondAnswer": "iostream is the C++ Standard Library header that provides the standard stream objects: cout for output, cin for input, and cerr and clog for error and log messages. All of them live in the std namespace, which is why using namespace std; lets us write cout instead of std::cout. cout and clog are buffered, while cerr is unbuffered so error messages appear immediately."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember iostream",
+      "text": "iostream gives you four streams: OUT (cout), IN (cin), ERR (cerr), LOG (clog). io = Input/Output, stream = flow of data."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-iostream-hello", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}", "output": "Hello" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-iostream-hello",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    cout << \"Hello\";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-iostream-hello"]
+  }
+}
