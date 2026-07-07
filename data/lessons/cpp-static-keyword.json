@@ -1,0 +1,147 @@
+{
+  "id": "cpp-static-keyword",
+  "moduleId": "oop",
+  "title": "static Keyword",
+  "description": "One keyword, three meanings: a static member shared by every object, a static member function callable without one, and a static local variable that remembers its value.",
+  "objectives": [
+    "Use a static member variable shared across every object of a class",
+    "Use a static member function, callable without an object",
+    "Use a static local variable that persists between function calls",
+    "Recognize which meaning of static applies in a given context"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. static Means Different Things in Different Places"
+    },
+    {
+      "type": "warning",
+      "text": "static is one of C++'s more overloaded keywords — its exact meaning depends on where it's written. We'll cover the three most common uses one at a time."
+    },
+    {
+      "type": "heading",
+      "text": "2. static Member Variable: One Copy, Shared by All Objects"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    static int totalStudents; // declared here\n};\n\nint Student::totalStudents = 0; // defined ONCE, outside the class"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recall Classes and Objects: every object normally gets its own independent copy of each member variable. static breaks that rule — every object of the class shares the exact same single copy of totalStudents."
+    },
+    {
+      "type": "warning",
+      "text": "A static member variable must be defined once outside the class, in addition to being declared inside it — Student::totalStudents = 0; uses the scope resolution operator :: from Namespace to say \"this definition belongs to Student.\""
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example: Counting Objects"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    static int totalStudents;\n\n    Student()\n    {\n        totalStudents++; // shared counter, incremented by every constructor call\n    }\n};\n\nint Student::totalStudents = 0;\n\nint main()\n{\n    Student s1;\n    Student s2;\n    Student s3;\n\n    cout << Student::totalStudents << endl;\n\n    return 0;\n}",
+      "output": "3",
+      "retypePractice": true,
+      "retypeId": "cpp-static-keyword-counter"
+    },
+    {
+      "type": "note",
+      "text": "Every constructor call increments the exact same shared totalStudents, no matter which object it happens to run for — s1, s2, and s3 don't each get their own separate counter. Student::totalStudents accesses it directly through the class, without needing any particular object at all."
+    },
+    {
+      "type": "heading",
+      "text": "4. static Member Function: No Object Needed"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "class Student\n{\npublic:\n    static int totalStudents;\n\n    static int getTotalStudents() // static member function\n    {\n        return totalStudents;\n    }\n};\n\ncout << Student::getTotalStudents(); // called directly on the CLASS, no object needed"
+    },
+    {
+      "type": "warning",
+      "text": "Recall this Pointer: an ordinary member function implicitly receives this, pointing at the specific object it was called on. A static member function has no this at all — it can only access other static members, never an individual object's own data, since it isn't tied to any particular object in the first place."
+    },
+    {
+      "type": "heading",
+      "text": "5. static Local Variable: Remembers Its Value"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nvoid trackCalls()\n{\n    static int callCount = 0; // initialized ONCE, ever\n    callCount++;\n    cout << \"Called \" << callCount << \" time(s)\" << endl;\n}\n\nint main()\n{\n    trackCalls();\n    trackCalls();\n    trackCalls();\n\n    return 0;\n}",
+      "output": "Called 1 time(s)\nCalled 2 time(s)\nCalled 3 time(s)"
+    },
+    {
+      "type": "note",
+      "text": "This is a completely different use of static, applied to an ordinary function's local variable rather than a class member. Recall Stack Memory: a normal local variable is destroyed and recreated fresh on every call. static int callCount = 0; is initialized only the very first time trackCalls() runs — after that, it survives between calls, quietly remembering its value instead of resetting to 0 each time."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A shared office whiteboard vs everyone's private notebook",
+      "text": "Every employee's personal notebook (an ordinary member variable) is theirs alone — writing in one doesn't affect anyone else's. A single whiteboard in the shared office (a static member variable) is the same board for everyone — anyone who writes on it, or reads from it, is looking at the exact same thing every other employee sees."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to define a static member variable outside the class — declaring it inside the class alone isn't enough; it needs a matching Type ClassName::member = value; line.",
+        "Trying to access this inside a static member function — it doesn't exist there, since a static function isn't tied to any specific object.",
+        "Confusing a static member variable (shared across all objects of a class) with a static local variable (persists across calls to one function) — they're related by keyword only, used in very different contexts.",
+        "Assuming a static local variable resets every time its function is called — it's only initialized once, the first time, and keeps its value after that."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does a static member variable represent?",
+          "answer": "A single copy of that variable, shared by every object of the class, rather than each object getting its own independent copy."
+        },
+        {
+          "question": "Why must a static member variable be defined outside the class?",
+          "answer": "The class declaration only announces that the static member exists; a separate definition outside the class actually allocates its single shared storage."
+        },
+        {
+          "question": "Can a static member function use this?",
+          "answer": "No — a static member function isn't tied to any particular object, so it has no this pointer and can only access other static members."
+        },
+        {
+          "question": "What does static mean when applied to a local variable inside an ordinary function?",
+          "answer": "That variable is initialized only once, the first time the function runs, and retains its value across subsequent calls, instead of being recreated fresh each time."
+        }
+      ],
+      "thirtySecondAnswer": "static has three common but distinct meanings in C++. A static member variable is a single copy shared by every object of a class, rather than each object having its own — and it needs a separate definition outside the class in addition to its declaration inside. A static member function belongs to the class itself rather than any specific object, has no this pointer, and can be called without creating an object at all. Unrelated to classes, a static local variable inside an ordinary function is initialized only once and retains its value between separate calls to that function, instead of resetting each time."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember static",
+      "text": "static member = the shared office whiteboard, one for everyone. static function = doesn't need a person (object) to use the whiteboard. static local variable = a sticky note that survives between visits."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-static-keyword-counter", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    static int totalStudents;\n\n    Student()\n    {\n        totalStudents++;\n    }\n};\n\nint Student::totalStudents = 0;\n\nint main()\n{\n    Student s1;\n    Student s2;\n    Student s3;\n\n    cout << Student::totalStudents << endl;\n\n    return 0;\n}", "output": "3" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-static-keyword-counter",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass Student\n{\npublic:\n    static int totalStudents;\n\n    Student()\n    {\n        totalStudents++;\n    }\n};\n\nint Student::totalStudents = 0;\n\nint main()\n{\n    Student s1;\n    Student s2;\n    Student s3;\n\n    cout << Student::totalStudents << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-static-keyword-counter"]
+  }
+}
