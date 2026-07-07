@@ -100,6 +100,13 @@
         { "id": "cpp-abstraction", "title": "Abstraction", "lesson": "cpp-abstraction" },
         { "id": "cpp-abstract-classes", "title": "Abstract Classes", "lesson": "cpp-abstract-classes" }
       ]
+    },
+    {
+      "id": "advanced-cpp",
+      "title": "Advanced C++",
+      "topics": [
+        { "id": "cpp-templates", "title": "Templates", "lesson": "cpp-templates" }
+      ]
     }
   ]
 }

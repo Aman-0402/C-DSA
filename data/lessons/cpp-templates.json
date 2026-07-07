@@ -1,0 +1,159 @@
+{
+  "id": "cpp-templates",
+  "moduleId": "advanced-cpp",
+  "title": "Templates",
+  "description": "Writing one function or class that works for any type: template<typename T>, and how it goes beyond what Function Overloading could offer.",
+  "objectives": [
+    "Understand the limitation templates solve, beyond overloading",
+    "Write a function template with template<typename T>",
+    "Understand how the compiler generates real code from a template",
+    "Preview class templates"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Overloading's Limitation"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b) { return a + b; }\ndouble add(double a, double b) { return a + b; }\nchar add(char a, char b) { return a + b; } // and so on..."
+    },
+    {
+      "type": "paragraph",
+      "text": "Function Overloading let add work for both int and double, but the actual logic — a + b — is identical every single time. Every new type needs yet another near-identical overload written by hand."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Template?"
+    },
+    {
+      "type": "definition",
+      "term": "Template",
+      "text": "A template lets a function or class be written once, generically, for a placeholder type — the compiler then generates a real, specific version automatically for whatever actual type is used."
+    },
+    {
+      "type": "heading",
+      "text": "3. A Function Template"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "template <typename T>\nT add(T a, T b)\n{\n    return a + b;\n}"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Breaking it down",
+      "points": [
+        "template <typename T> — declares T as a placeholder for \"some type, to be decided later\"",
+        "T add(T a, T b) — an ordinary-looking function, except int/double/char has been replaced everywhere with T",
+        "One definition, works for any type that supports +"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\ntemplate <typename T>\nT add(T a, T b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 3.5) << endl;\n\n    return 0;\n}",
+      "output": "5\n6",
+      "retypePractice": true,
+      "retypeId": "cpp-templates-add"
+    },
+    {
+      "type": "note",
+      "text": "add(2, 3) infers T as int; add(2.5, 3.5) infers T as double. There's still only ONE add function written in the source code — unlike Function Overloading, which needed a separate, hand-written definition for every type."
+    },
+    {
+      "type": "heading",
+      "text": "5. How the Compiler Actually Uses This"
+    },
+    {
+      "type": "flow",
+      "steps": ["template<typename T> T add(T a, T b) written once", "Compiler sees add(2, 3)", "Generates a real int version behind the scenes", "Compiler sees add(2.5, 3.5)", "Generates a real double version behind the scenes"]
+    },
+    {
+      "type": "note",
+      "text": "This process is called template instantiation — the compiler produces a genuine, fully-typed function for each distinct type actually used, based on the one generic template you wrote. You never see this generated code directly, but it's real code, compiled like any other."
+    },
+    {
+      "type": "heading",
+      "text": "6. A Preview: Class Templates"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "template <typename T>\nclass Box\n{\nprivate:\n    T value;\n\npublic:\n    Box(T v) { value = v; }\n    T getValue() { return value; }\n};\n\nBox<int> intBox(42);\nBox<string> stringBox(\"Hello\");"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — classes can be templated too, not just functions. Box<int> and Box<string> are both generated from the exact same one Box definition. This exact mechanism is what powers the STL containers we'll meet soon, like vector<int> and vector<string>."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A form letter with a blank for the name",
+      "text": "A form letter says \"Dear [NAME], thank you for your order.\" It's written once, generically — [NAME] is filled in with a real name each time a specific letter is actually printed. A template is that form letter: written once with a placeholder (T), and the compiler \"prints\" a real, specific version each time a concrete type is actually used."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting template <typename T> above the function — T is meaningless without that declaration.",
+        "Assuming a template function works for every conceivable type automatically — it only works for types that actually support the operations used inside it (here, +).",
+        "Confusing a template with a regular function taking a generic-looking parameter — a template genuinely generates a distinct, fully-typed version of the code per type used.",
+        "Writing near-identical overloads by hand when a single template would do the same job more concisely."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What problem do templates solve that overloading alone doesn't?",
+          "answer": "They avoid writing nearly identical function definitions by hand for every type — a single generic template can work for any type, instead of requiring a separate hand-written overload each time."
+        },
+        {
+          "question": "What does template <typename T> mean?",
+          "answer": "It declares T as a placeholder representing some type to be determined later, based on how the template is actually used."
+        },
+        {
+          "question": "What is template instantiation?",
+          "answer": "The process where the compiler generates a real, fully-typed version of a template's function or class for each distinct type it's actually used with."
+        },
+        {
+          "question": "Can templates be applied to classes as well as functions?",
+          "answer": "Yes — class templates work the same way, and this is the mechanism behind STL containers like vector<int> and vector<string>."
+        }
+      ],
+      "thirtySecondAnswer": "A template lets a function or class be written once, generically, using a placeholder type like T declared with template <typename T>, instead of needing a separate hand-written version for every actual type — solving the repetition that plain Function Overloading still required. When the template is actually used, like add(2, 3) or add(2.5, 3.5), the compiler generates a real, fully-typed version for that specific type, a process called template instantiation. Classes can be templated the same way, and this exact mechanism is what powers STL containers like vector<int>, which we'll meet soon."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Templates",
+      "text": "Template = a form letter with a blank (T). Write it once, the compiler fills in and 'prints' a real version for each type actually used."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-templates-add", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\ntemplate <typename T>\nT add(T a, T b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 3.5) << endl;\n\n    return 0;\n}", "output": "5\n6" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-templates-add",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\ntemplate <typename T>\nT add(T a, T b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 3.5) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-templates-add"]
+  }
+}
