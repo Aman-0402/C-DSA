@@ -1,0 +1,157 @@
+{
+  "id": "cpp-heap-memory",
+  "moduleId": "pointers-memory",
+  "title": "Heap Memory",
+  "description": "Where new/delete memory actually lives: why it outlives the function that created it, and a full stack vs heap comparison.",
+  "objectives": [
+    "Understand the heap as the memory new allocates from",
+    "See heap memory survive beyond the function that created it, unlike stack memory",
+    "Compare stack and heap directly, side by side",
+    "Know when heap memory is the right tool"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Where new Allocates From"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dynamic Memory Allocation previewed this: memory from new lives on the heap, which is flexible in size but must be manually given back with delete. Now let's see exactly what makes the heap different from the stack."
+    },
+    {
+      "type": "definition",
+      "term": "Heap (memory)",
+      "text": "The heap is a large, flexible region of memory used for dynamic allocation — memory requested with new stays reserved until explicitly released with delete, independent of any particular function call."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Key Difference: Heap Memory Outlives Its Function"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint *createValue()\n{\n    int *ptr = new int(42); // allocated on the HEAP\n    return ptr;             // the heap memory survives, even though ptr itself goes away\n}\n\nint main()\n{\n    int *result = createValue();\n\n    cout << *result << endl;\n\n    delete result;\n\n    return 0;\n}",
+      "output": "42",
+      "retypePractice": true,
+      "retypeId": "cpp-heap-memory-survives"
+    },
+    {
+      "type": "warning",
+      "text": "Recall Stack Memory: createValue()'s stack frame — including its local ptr variable — is popped and gone the instant createValue() returns. But the int(42) that ptr pointed to lives on the heap, which is completely unaffected by createValue()'s stack frame disappearing. That value is still there, reachable through result in main(), until delete result; explicitly releases it."
+    },
+    {
+      "type": "heading",
+      "text": "3. Why This Would Fail with a Local (Stack) Variable"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int *createValueBroken()\n{\n    int localValue = 42;   // lives on the STACK, inside this function's frame\n    return &localValue;    // DANGER — returning the address of a variable about to be destroyed!\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This compiles, but it's a bug: localValue's entire stack frame is popped the moment createValueBroken() returns, making the returned address dangling immediately — pointing at memory that's no longer valid. This is exactly the problem the heap solves: heap memory doesn't depend on any function's frame, so it's safe to \"hand back\" from a function this way, as long as it's eventually deleted."
+    },
+    {
+      "type": "heading",
+      "text": "4. Stack vs Heap, Side by Side"
+    },
+    {
+      "type": "table",
+      "headers": ["Stack", "Heap"],
+      "rows": [
+        ["Automatically managed — cleaned up when a function returns", "Manually managed — must be released with delete / delete[]"],
+        ["Fast to allocate", "Slower to allocate than the stack"],
+        ["Comparatively small, fixed size", "Much larger, more flexible size"],
+        ["Size must be known at compile time", "Size can be decided at runtime (new Type[n])"],
+        ["Tied to the function call that created it", "Independent of any particular function call"],
+        ["Risk: stack overflow from too much nesting", "Risk: memory leaks and dangling pointers"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Why the Heap Is Slower"
+    },
+    {
+      "type": "note",
+      "text": "The stack's LIFO discipline (from Stack Memory) makes allocation almost trivially fast — just move a pointer up or down. The heap has to track which chunks of memory are free and which are in use, in no particular order, which takes real bookkeeping work every time new or delete runs."
+    },
+    {
+      "type": "heading",
+      "text": "6. When to Reach for the Heap"
+    },
+    {
+      "type": "keyPoints",
+      "title": "The heap earns its cost when",
+      "points": [
+        "The size isn't known until runtime (new int[n], where n comes from user input)",
+        "The data needs to outlive the function that created it, as in createValue() above",
+        "The data is large enough that the stack's limited size becomes a concern"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A rented warehouse vs your desk drawer",
+      "text": "Your desk drawer (the stack) is fast to reach into, but it's small and gets cleared out automatically when you leave your desk (when a function returns). A rented warehouse (the heap) holds far more, can be sized to whatever you need, and stays exactly as you left it — packed with your things — no matter where you personally go, until you explicitly go cancel the lease (delete)."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Returning the address of a local (stack) variable — that memory is destroyed the moment the function returns, unlike heap memory.",
+        "Assuming heap memory is always the better choice — for data with a known, modest, function-scoped size, the stack is faster and requires no manual cleanup.",
+        "Forgetting the heap requires manual release — every new needs a matching delete, or the memory leaks, as covered in delete.",
+        "Thinking the heap and stack are interchangeable terms for 'memory in general' — they're two genuinely different regions with different rules."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the heap?",
+          "answer": "A large, flexible region of memory used for dynamic allocation via new, which stays reserved until explicitly released with delete, independent of any particular function call."
+        },
+        {
+          "question": "Why can heap memory be safely returned from a function, while a stack variable's address cannot?",
+          "answer": "Heap memory doesn't belong to any function's stack frame, so it isn't destroyed when a function returns; a stack variable's memory is part of its function's frame and is popped the instant the function ends, making its address dangling."
+        },
+        {
+          "question": "Why is the stack generally faster than the heap?",
+          "answer": "The stack follows a simple LIFO discipline, making allocation nearly instant; the heap must track which memory chunks are free or in use, requiring more bookkeeping on every allocation and release."
+        },
+        {
+          "question": "Give one situation where heap allocation is necessary rather than optional.",
+          "answer": "When the required size is only known at runtime, such as new int[n] where n comes from user input — an ordinary stack array requires a fixed, compile-time size."
+        }
+      ],
+      "thirtySecondAnswer": "The heap is where new allocates memory from — a large, flexible region that stays reserved until explicitly released with delete, unlike the stack, which automatically cleans up the moment a function returns. This is why heap memory can safely be returned from a function and used elsewhere, while returning the address of a stack-local variable is a dangling-pointer bug. The tradeoff is speed and management: the stack is fast and automatic but small and function-scoped, while the heap is larger and more flexible but slower and requires manual cleanup via delete to avoid memory leaks."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Heap Memory",
+      "text": "Stack = desk drawer, fast, auto-cleared when you leave. Heap = rented warehouse, bigger, flexible, stays until YOU cancel the lease (delete)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-heap-memory-survives", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint *createValue()\n{\n    int *ptr = new int(42);\n    return ptr;\n}\n\nint main()\n{\n    int *result = createValue();\n\n    cout << *result << endl;\n\n    delete result;\n\n    return 0;\n}", "output": "42" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-heap-memory-survives",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint *createValue()\n{\n    int *ptr = new int(42);\n    return ptr;\n}\n\nint main()\n{\n    int *result = createValue();\n\n    cout << *result << endl;\n\n    delete result;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-heap-memory-survives"]
+  }
+}
