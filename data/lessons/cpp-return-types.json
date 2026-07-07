@@ -1,0 +1,174 @@
+{
+  "id": "cpp-return-types",
+  "moduleId": "functions",
+  "title": "Return Types",
+  "description": "What a function's return type means, formalizing void, multiple return statements, and why code after a return never runs.",
+  "objectives": [
+    "Understand what a function's return type declares",
+    "Formalize void, previously only previewed",
+    "Understand that return immediately exits the function",
+    "Use multiple return statements for different paths"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: main()'s Return Type"
+    },
+    {
+      "type": "paragraph",
+      "text": "Back in main() Function, we covered int main() returning an exit status. Every function has a return type, not just main() — it's the type of value the function promises to hand back to whoever calls it."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Return Type Must Match What's Returned"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b; // returns an int — matches the declared return type\n}"
+    },
+    {
+      "type": "definition",
+      "term": "Return type",
+      "text": "A function's return type declares what kind of value the function will send back to its caller when it finishes."
+    },
+    {
+      "type": "warning",
+      "text": "double half(int n) { return n; } is technically allowed — n implicitly converts from int to double, as covered in Type Casting — but return \"hello\"; inside a function declared int would be a type mismatch and a compilation error."
+    },
+    {
+      "type": "heading",
+      "text": "3. void — No Return Value"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nvoid greet(string name)\n{\n    cout << \"Hello, \" << name << \"!\" << endl;\n}\n\nint main()\n{\n    greet(\"Aman\");\n\n    return 0;\n}",
+      "output": "Hello, Aman!",
+      "retypePractice": true,
+      "retypeId": "cpp-return-types-void"
+    },
+    {
+      "type": "note",
+      "text": "void formally means \"this function does not return a value.\" We previewed this in Function Calling — greet() is called purely for what it does (printing), not for a value to use. (This example also uses string, previewed here — we'll cover it properly soon.)"
+    },
+    {
+      "type": "heading",
+      "text": "4. void Functions Can Still Use return"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void printIfPositive(int n)\n{\n    if (n <= 0)\n    {\n        return; // exit early, no value\n    }\n    cout << n;\n}"
+    },
+    {
+      "type": "note",
+      "text": "A void function can still write return; on its own — with no value after it — to exit the function early. It just can't write return someValue; since it has nothing to return."
+    },
+    {
+      "type": "heading",
+      "text": "5. return Exits Immediately"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int checkSign(int n)\n{\n    if (n > 0)\n    {\n        return 1; // function ends HERE if n > 0\n    }\n    if (n < 0)\n    {\n        return -1; // function ends HERE if n < 0\n    }\n    return 0; // only reached if neither above matched\n}"
+    },
+    {
+      "type": "warning",
+      "text": "The moment a return statement runs, the function ends immediately — no code after it, even in the same function, executes for that call. checkSign(5) returns 1 and never even looks at the second if."
+    },
+    {
+      "type": "heading",
+      "text": "6. Full Dry Run"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint checkSign(int n)\n{\n    if (n > 0)\n    {\n        return 1;\n    }\n    if (n < 0)\n    {\n        return -1;\n    }\n    return 0;\n}\n\nint main()\n{\n    cout << checkSign(5) << endl;\n    cout << checkSign(-5) << endl;\n    cout << checkSign(0) << endl;\n\n    return 0;\n}",
+      "output": "1\n-1\n0"
+    },
+    {
+      "type": "heading",
+      "text": "7. Every Path Should Return (for a Non-void Function)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int classify(int n)\n{\n    if (n > 0)\n    {\n        return 1;\n    }\n    // if n <= 0, this function falls off the end with no return value!\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Recall from main() Function: only main() is allowed to implicitly return 0. Every other function that declares a non-void return type must actually return a value on every possible path — falling off the end without one leads to undefined behavior, and most compilers will warn about it."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A vending machine that always dispenses something",
+      "text": "A vending machine that promises to return a snack for any valid button press had better actually dispense something for every button, not just some of them. A function's return type is that same promise — declare int, and every path through the function needs to deliver an int, no exceptions."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Declaring a non-void return type but leaving a path that doesn't return anything — undefined behavior, since the caller expects a value that was never produced.",
+        "Writing return someValue; inside a void function — a void function can only use a bare return; with no value.",
+        "Expecting code after a return statement (in the same block) to still run — it never does; return exits immediately.",
+        "Assuming a value like a string can be returned from an int function without any conversion — types must match or be convertible, as in Type Casting."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does a function's return type declare?",
+          "answer": "The type of value the function promises to send back to its caller when it finishes."
+        },
+        {
+          "question": "What does void mean as a return type?",
+          "answer": "That the function does not return any value; it's called purely for its effect."
+        },
+        {
+          "question": "Can a void function use the return keyword?",
+          "answer": "Yes — a void function can use a bare return; with no value, to exit the function early, but it cannot return an actual value."
+        },
+        {
+          "question": "What happens immediately when a return statement executes?",
+          "answer": "The function ends immediately at that point — no further code in that function call executes, even if more statements follow in the same block."
+        },
+        {
+          "question": "What's expected of every path through a non-void function?",
+          "answer": "Every possible path through the function should reach a return statement with a value of the declared return type — falling off the end without one leads to undefined behavior."
+        }
+      ],
+      "thirtySecondAnswer": "A function's return type declares what kind of value it promises to hand back to its caller — void means it returns nothing at all, and is called purely for its effect. A return statement exits the function immediately, so any code after it in that call never runs, and a non-void function needs a return with a matching value on every possible path through it, or the behavior is undefined. A void function can still use a bare return; to exit early, just without a value attached."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Return Types",
+      "text": "Return type = the promise. void = no promise made. return = keeps the promise and leaves immediately, no exceptions."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-return-types-void", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nvoid greet(string name)\n{\n    cout << \"Hello, \" << name << \"!\" << endl;\n}\n\nint main()\n{\n    greet(\"Aman\");\n\n    return 0;\n}", "output": "Hello, Aman!" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-return-types-void",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nvoid greet(string name)\n{\n    cout << \"Hello, \" << name << \"!\" << endl;\n}\n\nint main()\n{\n    greet(\"Aman\");\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-return-types-void"]
+  }
+}
