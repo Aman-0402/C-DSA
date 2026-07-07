@@ -1,0 +1,149 @@
+{
+  "id": "cpp-encapsulation",
+  "moduleId": "oop",
+  "title": "Encapsulation",
+  "description": "The first pillar of OOP, formalized: bundling data with the behavior that manages it, and controlling access to protect an object's own rules.",
+  "objectives": [
+    "Define encapsulation precisely, as one of OOP's four pillars",
+    "Understand its two parts: bundling and access control",
+    "Enforce an invariant through a class's own methods",
+    "Preview the remaining three pillars of OOP"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We've Already Been Doing This"
+    },
+    {
+      "type": "paragraph",
+      "text": "Classes and Objects bundled related data and behavior together. Access Specifiers made data private and exposed it only through public getters and setters. Both of those are encapsulation in action — now let's name and formalize the idea properly."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Encapsulation?"
+    },
+    {
+      "type": "definition",
+      "term": "Encapsulation",
+      "text": "Encapsulation is the bundling of data and the behavior that operates on it into a single unit (a class), combined with controlling access to that data so it can only be changed in valid ways."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Two Parts of Encapsulation"
+    },
+    {
+      "type": "table",
+      "headers": ["Part", "What it means"],
+      "rows": [
+        ["Bundling", "Related data and functions live together in one class, instead of scattered loose variables and functions"],
+        ["Access control", "Data is kept private, reachable only through the class's own public methods"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Enforcing a Rule (an Invariant)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nclass BankAccount\n{\nprivate:\n    double balance;\n\npublic:\n    BankAccount()\n    {\n        balance = 0;\n    }\n\n    void deposit(double amount)\n    {\n        if (amount > 0)\n        {\n            balance += amount;\n        }\n    }\n\n    void withdraw(double amount)\n    {\n        if (amount > 0 && amount <= balance) // enforce the rule: never go negative\n        {\n            balance -= amount;\n        }\n        else\n        {\n            cout << \"Withdrawal denied.\" << endl;\n        }\n    }\n\n    double getBalance()\n    {\n        return balance;\n    }\n};\n\nint main()\n{\n    BankAccount acc;\n    acc.deposit(500);\n    acc.withdraw(1000); // more than the balance\n\n    cout << acc.getBalance() << endl;\n\n    return 0;\n}",
+      "output": "Withdrawal denied.\n500",
+      "retypePractice": true,
+      "retypeId": "cpp-encapsulation-bank"
+    },
+    {
+      "type": "keyPoints",
+      "title": "This is encapsulation doing real work",
+      "points": [
+        "balance is private — no outside code can set it directly, bypassing the rules",
+        "The only way to change balance is through deposit() and withdraw(), which enforce the account's own invariant: balance can never go negative",
+        "Trying to withdraw more than the balance is rejected inside the class itself, not left to whoever happens to be using BankAccount to remember to check"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Why This Matters"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Encapsulation's payoff",
+      "points": [
+        "The class's rules are enforced in exactly one place, not repeated (or forgotten) everywhere the class is used",
+        "The internal representation (how balance is actually stored) can change later without breaking code that only ever used deposit()/withdraw()/getBalance()",
+        "Bugs caused by invalid state are caught at the source, inside the class, rather than discovered later somewhere else entirely"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. A Preview: The Four Pillars of OOP"
+    },
+    {
+      "type": "warning",
+      "text": "Encapsulation is the first of four commonly cited OOP pillars. The other three — Inheritance, Polymorphism, and Abstraction — each get their own dedicated topic soon."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A pharmacy counter, not a self-serve shelf",
+      "text": "Medication isn't stocked on an open shelf where anyone can grab whatever they want (that would be like public data with no rules). It's kept behind the counter, and a pharmacist (the class's public methods) checks the prescription before handing anything over — the rules are enforced at the one point of access, not left to hope that every customer knows and follows them correctly."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Making every member public just to avoid writing getters and setters — this discards the entire point of encapsulation.",
+        "Writing a setter that blindly accepts any value without validation — a setter with no rules provides no real protection over a public member.",
+        "Thinking encapsulation is just \"using private\" — it's the combination of bundling data with behavior AND controlling access; either half alone is incomplete.",
+        "Exposing a private member through a getter that returns something that can still be freely modified from outside, defeating the original protection."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is encapsulation?",
+          "answer": "The bundling of data and the behavior that operates on it into a single class, combined with controlling access so the data can only be changed in valid ways."
+        },
+        {
+          "question": "What are the two parts of encapsulation?",
+          "answer": "Bundling related data and functions together into one class, and restricting direct access to that data so it's only reachable through the class's own controlled methods."
+        },
+        {
+          "question": "How does encapsulation help enforce rules like 'a bank balance can never go negative'?",
+          "answer": "By keeping the balance private and only allowing changes through methods like deposit() and withdraw(), which can validate every change before applying it, rather than letting any code set the balance directly."
+        },
+        {
+          "question": "What are the four pillars of OOP?",
+          "answer": "Encapsulation, Inheritance, Polymorphism, and Abstraction."
+        }
+      ],
+      "thirtySecondAnswer": "Encapsulation is the bundling of data and the behavior that operates on it into a single class, paired with restricting direct access to that data so it can only be changed through the class's own controlled methods. This is why BankAccount keeps balance private and only allows changes through deposit() and withdraw(), which can enforce a rule like never allowing a negative balance — a rule that's guaranteed to be checked in exactly one place, rather than something every caller has to remember to verify themselves. Encapsulation is the first of OOP's four pillars, alongside Inheritance, Polymorphism, and Abstraction."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Encapsulation",
+      "text": "Encapsulation = the pharmacy counter, not the open shelf. Data stays behind the counter (private); the class's own methods are the pharmacist who enforces the rules."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-encapsulation-bank", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nclass BankAccount\n{\nprivate:\n    double balance;\n\npublic:\n    BankAccount()\n    {\n        balance = 0;\n    }\n\n    void deposit(double amount)\n    {\n        if (amount > 0)\n        {\n            balance += amount;\n        }\n    }\n\n    void withdraw(double amount)\n    {\n        if (amount > 0 && amount <= balance)\n        {\n            balance -= amount;\n        }\n        else\n        {\n            cout << \"Withdrawal denied.\" << endl;\n        }\n    }\n\n    double getBalance()\n    {\n        return balance;\n    }\n};\n\nint main()\n{\n    BankAccount acc;\n    acc.deposit(500);\n    acc.withdraw(1000);\n\n    cout << acc.getBalance() << endl;\n\n    return 0;\n}", "output": "Withdrawal denied.\n500" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-encapsulation-bank",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nclass BankAccount\n{\nprivate:\n    double balance;\n\npublic:\n    BankAccount()\n    {\n        balance = 0;\n    }\n\n    void deposit(double amount)\n    {\n        if (amount > 0)\n        {\n            balance += amount;\n        }\n    }\n\n    void withdraw(double amount)\n    {\n        if (amount > 0 && amount <= balance)\n        {\n            balance -= amount;\n        }\n        else\n        {\n            cout << \"Withdrawal denied.\" << endl;\n        }\n    }\n\n    double getBalance()\n    {\n        return balance;\n    }\n};\n\nint main()\n{\n    BankAccount acc;\n    acc.deposit(500);\n    acc.withdraw(1000);\n\n    cout << acc.getBalance() << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-encapsulation-bank"]
+  }
+}
