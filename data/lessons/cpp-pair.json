@@ -1,0 +1,144 @@
+{
+  "id": "cpp-pair",
+  "moduleId": "stl",
+  "title": "pair",
+  "description": "Formalizing .first and .second from map: bundling exactly two values together, and storing pairs inside other containers.",
+  "objectives": [
+    "Understand pair as a simple bundle of exactly two values",
+    "Create a pair and access .first/.second",
+    "Store pairs inside a vector",
+    "Know how pairs compare to each other"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We Already Used This"
+    },
+    {
+      "type": "paragraph",
+      "text": "In map, iterating gave us entries as pair objects: pair.first for the key, pair.second for the value. Let's look at pair directly, on its own."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is pair?"
+    },
+    {
+      "type": "definition",
+      "term": "pair",
+      "text": "pair<T1, T2> bundles exactly two values, possibly of different types, into a single object with two members: .first and .second."
+    },
+    {
+      "type": "heading",
+      "text": "3. Creating a pair"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "#include <utility>\n\npair<string, int> student1 = {\"Aman\", 20};\npair<string, int> student2 = make_pair(\"Priya\", 22);\n\ncout << student1.first;  // \"Aman\"\ncout << student1.second; // 20"
+    },
+    {
+      "type": "note",
+      "text": "Both forms work identically — {} brace initialization and the make_pair() helper function. pair comes from <utility>, though it's commonly available already through headers like <map> that use it internally."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <utility>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    pair<string, int> student = {\"Aman\", 20};\n\n    cout << student.first << \" is \" << student.second << \" years old.\" << endl;\n\n    return 0;\n}",
+      "output": "Aman is 20 years old.",
+      "retypePractice": true,
+      "retypeId": "cpp-pair-basic"
+    },
+    {
+      "type": "heading",
+      "text": "5. Storing Pairs Inside Other Containers"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <utility>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    vector<pair<string, int>> students;\n    students.push_back({\"Aman\", 20});\n    students.push_back({\"Priya\", 22});\n\n    for (int i = 0; i < students.size(); i++)\n    {\n        cout << students[i].first << \": \" << students[i].second << endl;\n    }\n\n    return 0;\n}",
+      "output": "Aman: 20\nPriya: 22"
+    },
+    {
+      "type": "note",
+      "text": "This combines vector from earlier with pair — a very common DSA pattern for holding a list of related two-value items, like (name, score), (index, value), or (row, column)."
+    },
+    {
+      "type": "heading",
+      "text": "6. Comparing Pairs"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "pair<int, int> a = {1, 5};\npair<int, int> b = {1, 3};\n\ncout << (a > b); // 1 (true) — .first is equal (1 == 1), so .second decides (5 > 3)"
+    },
+    {
+      "type": "note",
+      "text": "pair supports comparison operators out of the box: it compares .first first, and only looks at .second to break a tie if .first is equal — this is called lexicographic comparison, the same idea as alphabetical dictionary ordering."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A luggage tag with a name and a destination",
+      "text": "A luggage tag holds exactly two pieces of information glued together — a passenger's name and their destination city. pair works the same way: two related values, bundled as one unit, wherever it's more convenient to carry them together than as two separate loose variables."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting .first and .second are the actual member names — not .key/.value or .0/.1.",
+        "Assuming pair's two types must match — pair<string, int> mixes types freely, just like map's key and value types.",
+        "Forgetting #include <utility> (though it's often pulled in transitively by headers like <map>).",
+        "Trying to compare pairs of genuinely unrelated types with < or > when .first types don't support ordering — comparison relies on both element types being comparable."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is pair, and what are its two members called?",
+          "answer": "pair<T1, T2> bundles exactly two values into one object, with members named .first and .second."
+        },
+        {
+          "question": "How do you create a pair?",
+          "answer": "Using brace initialization, like pair<string, int> p = {\"Aman\", 20};, or the make_pair() helper function."
+        },
+        {
+          "question": "How does C++ compare two pairs with < or >?",
+          "answer": "Lexicographically — comparing .first first, and only comparing .second to break a tie if .first is equal."
+        }
+      ],
+      "thirtySecondAnswer": "pair<T1, T2> bundles exactly two values, possibly of different types, into one object with members .first and .second — exactly what map returns when iterated. It can be created with brace initialization or make_pair(), and is commonly stored inside other containers, like vector<pair<string, int>>, for lists of related two-value items such as (name, score) or (index, value). Pairs support comparison operators out of the box, comparing .first first and using .second only to break a tie, following the same logic as alphabetical dictionary ordering."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember pair",
+      "text": "pair = a luggage tag, two glued-together values. .first and .second, never .key/.value. Compares .first first, .second breaks ties."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-pair-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <utility>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    pair<string, int> student = {\"Aman\", 20};\n\n    cout << student.first << \" is \" << student.second << \" years old.\" << endl;\n\n    return 0;\n}", "output": "Aman is 20 years old." }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-pair-basic",
+      "reference": "#include <iostream>\n#include <utility>\n#include <string>\n\nusing namespace std;\n\nint main()\n{\n    pair<string, int> student = {\"Aman\", 20};\n\n    cout << student.first << \" is \" << student.second << \" years old.\" << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-pair-basic"]
+  }
+}

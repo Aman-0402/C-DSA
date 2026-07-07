@@ -128,7 +128,8 @@
         { "id": "cpp-set", "title": "set", "lesson": "cpp-set" },
         { "id": "cpp-unordered-set", "title": "unordered_set", "lesson": "cpp-unordered-set" },
         { "id": "cpp-map", "title": "map", "lesson": "cpp-map" },
-        { "id": "cpp-unordered-map", "title": "unordered_map", "lesson": "cpp-unordered-map" }
+        { "id": "cpp-unordered-map", "title": "unordered_map", "lesson": "cpp-unordered-map" },
+        { "id": "cpp-pair", "title": "pair", "lesson": "cpp-pair" }
       ]
     }
   ]
