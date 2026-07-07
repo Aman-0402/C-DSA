@@ -1,0 +1,157 @@
+{
+  "id": "cpp-function-calling",
+  "moduleId": "functions",
+  "title": "Function Calling",
+  "description": "What actually happens when a function is called: control jumps to its body, runs, then jumps back to exactly where it left off.",
+  "objectives": [
+    "Understand what happens, step by step, when a function is called",
+    "Trace control flow jumping into and back out of a function",
+    "Call a function that returns void, with no value to use",
+    "Understand functions calling other functions"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What Happens When You Call a Function?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "add(5, 3);"
+    },
+    {
+      "type": "paragraph",
+      "text": "Writing a function's name followed by parentheses is a function call. When this line runs, execution doesn't just continue to the next line — it jumps into add's body entirely."
+    },
+    {
+      "type": "flow",
+      "steps": ["Call add(5, 3)", "Jump into add's body", "Run add's statements", "return sends a value back", "Jump back to right after the call"]
+    },
+    {
+      "type": "heading",
+      "text": "2. A Full Dry Run"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << \"Before call\" << endl;\n    int result = add(5, 3);\n    cout << \"After call: \" << result << endl;\n\n    return 0;\n}",
+      "output": "Before call\nAfter call: 8",
+      "retypePractice": true,
+      "retypeId": "cpp-function-calling-add"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "\"Before call\" prints",
+        "add(5, 3) is called — execution jumps into add's body, with a = 5, b = 3",
+        "return a + b; computes 8 and sends control back to main(), right where the call happened",
+        "8 is stored into result",
+        "\"After call: 8\" prints"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Functions Calling Other Functions"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int square(int n)\n{\n    return n * n;\n}\n\nint sumOfSquares(int a, int b)\n{\n    return square(a) + square(b); // one function calling another\n}"
+    },
+    {
+      "type": "note",
+      "text": "A function's body can call other functions, just like main() calls add. sumOfSquares calls square twice, once for each argument, before combining the results — building bigger behavior out of smaller, already-working pieces."
+    },
+    {
+      "type": "heading",
+      "text": "4. Calling a Function That Returns Nothing"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void greet()\n{\n    cout << \"Hello!\" << endl;\n}\n\nint main()\n{\n    greet(); // called for its action, not for a value\n\n    return 0;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "void means \"this function doesn't return a value\" — a preview of the next topic, Return Types. Calling greet() just runs its body for what it does (printing), and there's nothing to store the way we stored add's result into a variable."
+    },
+    {
+      "type": "heading",
+      "text": "5. Arguments Are Evaluated Before the Call Happens"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int x = 5;\nint y = 3;\n\nadd(x + 1, y * 2); // (5 + 1) and (3 * 2) are computed FIRST, then add(6, 6) runs"
+    },
+    {
+      "type": "note",
+      "text": "Whatever's inside the parentheses at the call site is fully evaluated first — the function only ever sees the final computed values, not the expressions that produced them."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Delegating a task and waiting for the result",
+      "text": "Asking a colleague \"can you calculate the total?\" is a function call: you hand over the inputs, they go do the work in their own space, and you pick back up exactly where you left off once they hand the answer back. You don't watch every step of their calculation — you just wait for the return value."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the parentheses when calling a function — greet; is not a call, greet(); is.",
+        "Expecting to use a value from a void function — there is no returned value to store or print.",
+        "Assuming a function call runs \"alongside\" the rest of the program — execution actually pauses at the call site and waits until the function fully finishes before continuing.",
+        "Forgetting arguments are fully evaluated before the call — add(x++, x) can be confusing exactly because both arguments are computed before add even starts running."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What happens when a function is called?",
+          "answer": "Execution jumps from the call site into the function's body, runs its statements, and then jumps back to right after the call once the function finishes (via return or reaching the end)."
+        },
+        {
+          "question": "Can a function call another function?",
+          "answer": "Yes — a function's body can call any other function, allowing bigger behavior to be built from smaller, already-defined functions."
+        },
+        {
+          "question": "What does it mean to call a void function?",
+          "answer": "It runs the function's body for its effect (like printing something), but there is no return value to store or use afterward."
+        },
+        {
+          "question": "Are a function's arguments evaluated before or during the call?",
+          "answer": "Before — any expressions passed as arguments are fully computed first, and the function only receives their final values."
+        }
+      ],
+      "thirtySecondAnswer": "Calling a function — writing its name with parentheses — transfers control from the call site into the function's body. The function runs its statements, and if it returns a value, execution jumps back to exactly where the call happened, with that value available to use. Functions can call other functions, building larger behavior from smaller pieces, and a void function can be called purely for its effect, with no value returned. Arguments inside the call's parentheses are fully evaluated before the function itself starts running."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Function Calling",
+      "text": "Calling a function = delegate the task, pause, wait for the result, then continue exactly where you left off."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-function-calling-add", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << \"Before call\" << endl;\n    int result = add(5, 3);\n    cout << \"After call: \" << result << endl;\n\n    return 0;\n}", "output": "Before call\nAfter call: 8" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-function-calling-add",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << \"Before call\" << endl;\n    int result = add(5, 3);\n    cout << \"After call: \" << result << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-function-calling-add"]
+  }
+}
