@@ -1,0 +1,217 @@
+{
+  "id": "cpp-data-types",
+  "moduleId": "cpp-fundamentals",
+  "title": "Data Types",
+  "description": "The fundamental types int, double, char, and bool, their approximate storage sizes, and what happens when a value doesn't fit its type.",
+  "objectives": [
+    "Know C++'s core fundamental types: int, double, char, bool",
+    "Understand why every variable needs a type",
+    "Recognize each type's typical use case and value shape",
+    "Understand what happens when a value overflows or gets truncated",
+    "Declare variables of each fundamental type"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Why Variables Need a Type"
+    },
+    {
+      "type": "paragraph",
+      "text": "We've only used int so far. int means a whole number, but that's just one of C++'s fundamental types. The type tells the compiler what kind of value a variable can hold, and roughly how much memory to set aside for it."
+    },
+    {
+      "type": "heading",
+      "text": "2. int — Whole Numbers"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int age = 25;\nint score = -10;"
+    },
+    {
+      "type": "paragraph",
+      "text": "int stores whole numbers — positive, negative, or zero. No decimal point."
+    },
+    {
+      "type": "heading",
+      "text": "3. double — Decimal Numbers"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "double price = 19.99;\ndouble pi = 3.14159;"
+    },
+    {
+      "type": "paragraph",
+      "text": "double stores numbers with a decimal point — sometimes called floating-point numbers. Use it whenever a fractional part matters."
+    },
+    {
+      "type": "note",
+      "text": "There's also a float type, similar to double but generally less precise and taking less memory. We'll stick with double as the default choice for decimals unless memory is tightly constrained — a topic for later."
+    },
+    {
+      "type": "heading",
+      "text": "4. char — A Single Character"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "char grade = 'A';\nchar initial = 'M';"
+    },
+    {
+      "type": "paragraph",
+      "text": "char stores exactly one character, written in single quotes — not double quotes."
+    },
+    {
+      "type": "warning",
+      "text": "Double quotes like \"A\" create a string literal (text), not a char. A char must use single quotes: 'A'. We'll cover text made of multiple characters — strings — in a separate topic."
+    },
+    {
+      "type": "heading",
+      "text": "5. bool — True or False"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "bool isPassed = true;\nbool isEmpty = false;"
+    },
+    {
+      "type": "paragraph",
+      "text": "bool stores only one of two values: true or false. It's the type behind yes/no, on/off style decisions — we'll rely on it heavily once we reach conditional statements."
+    },
+    {
+      "type": "heading",
+      "text": "6. Quick Reference Table"
+    },
+    {
+      "type": "table",
+      "headers": ["Type", "Holds", "Example"],
+      "rows": [
+        ["int", "Whole numbers", "int age = 25;"],
+        ["double", "Decimal numbers", "double price = 19.99;"],
+        ["char", "A single character", "char grade = 'A';"],
+        ["bool", "true or false", "bool isPassed = true;"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Each Type Has a Size"
+    },
+    {
+      "type": "paragraph",
+      "text": "Every type reserves a certain amount of memory, measured in bytes. On most common systems today:"
+    },
+    {
+      "type": "table",
+      "headers": ["Type", "Typical size"],
+      "rows": [
+        ["int", "4 bytes"],
+        ["double", "8 bytes"],
+        ["char", "1 byte"],
+        ["bool", "1 byte"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "These sizes can technically vary by platform and compiler — C++ guarantees minimums, not exact sizes. We'll measure this ourselves with the sizeof operator in a later topic."
+    },
+    {
+      "type": "heading",
+      "text": "8. What Happens When a Value Doesn't Fit?"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int wholeNumber = 9.7; // decimal part is dropped\ncout << wholeNumber;",
+      "output": "9"
+    },
+    {
+      "type": "warning",
+      "text": "Assigning a double to an int doesn't round — it truncates, simply chopping off everything after the decimal point. 9.7 becomes 9, not 10. We'll cover this properly under Type Casting."
+    },
+    {
+      "type": "heading",
+      "text": "9. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Different containers for different things",
+      "text": "You wouldn't store soup in a shoebox or shoes in a bowl — each container fits what it's meant to hold. int is a container shaped for whole numbers, double for decimals, char for a single letter, bool for a yes/no switch. Picking the right type is picking the right container."
+    },
+    {
+      "type": "heading",
+      "text": "10. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    double price = 19.99;\n    char grade = 'A';\n    bool isPassed = true;\n\n    cout << \"Age: \" << age << endl;\n    cout << \"Price: \" << price << endl;\n    cout << \"Grade: \" << grade << endl;\n    cout << \"Passed: \" << isPassed << endl;\n\n    return 0;\n}",
+      "output": "Age: 25\nPrice: 19.99\nGrade: A\nPassed: 1",
+      "retypePractice": true,
+      "retypeId": "cpp-data-types-basic"
+    },
+    {
+      "type": "note",
+      "text": "Notice Passed: 1, not Passed: true. By default, cout prints bool values as 1 (true) or 0 (false). Formatting it as the word \"true\" is possible but is a detail for a later topic."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using double quotes for a char — char grade = \"A\"; is wrong; use single quotes: char grade = 'A';.",
+        "Assigning a decimal to an int and expecting rounding — int x = 9.7; gives 9, not 10, since it truncates rather than rounds.",
+        "Expecting cout to print true/false for a bool — it prints 1 or 0 by default.",
+        "Using float and double interchangeably without knowing the difference — double is generally the safer default for precision."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What are C++'s fundamental data types?",
+          "answer": "The core fundamental types include int for whole numbers, double (and float) for decimal numbers, char for a single character, and bool for true/false values."
+        },
+        {
+          "question": "What is the difference between int and double?",
+          "answer": "int stores whole numbers with no fractional part, while double stores numbers that can include a decimal point."
+        },
+        {
+          "question": "Why does char use single quotes instead of double quotes?",
+          "answer": "Single quotes denote a single character literal in C++; double quotes denote a string literal, which is a different type."
+        },
+        {
+          "question": "What happens when a decimal value is assigned to an int?",
+          "answer": "The value is truncated — the fractional part is simply dropped, not rounded. 9.7 becomes 9."
+        },
+        {
+          "question": "How does cout print a bool value by default?",
+          "answer": "cout prints 1 for true and 0 for false by default."
+        }
+      ],
+      "thirtySecondAnswer": "C++'s core fundamental types are int for whole numbers, double for decimal numbers, char for a single character written in single quotes, and bool for true/false values. Each type reserves a different amount of memory and is meant for a different shape of data. Assigning a value that doesn't fit its type can cause truncation — for example, assigning 9.7 to an int drops the decimal part and stores 9 rather than rounding."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Data Types",
+      "text": "int = whole numbers. double = decimals. char = one letter, single quotes. bool = true/false, prints as 1/0."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-data-types-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    double price = 19.99;\n    char grade = 'A';\n    bool isPassed = true;\n\n    cout << \"Age: \" << age << endl;\n    cout << \"Price: \" << price << endl;\n    cout << \"Grade: \" << grade << endl;\n    cout << \"Passed: \" << isPassed << endl;\n\n    return 0;\n}", "output": "Age: 25\nPrice: 19.99\nGrade: A\nPassed: 1" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-data-types-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int age = 25;\n    double price = 19.99;\n    char grade = 'A';\n    bool isPassed = true;\n\n    cout << \"Age: \" << age << endl;\n    cout << \"Price: \" << price << endl;\n    cout << \"Grade: \" << grade << endl;\n    cout << \"Passed: \" << isPassed << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-data-types-basic"]
+  }
+}
