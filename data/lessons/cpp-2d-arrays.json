@@ -1,0 +1,160 @@
+{
+  "id": "cpp-2d-arrays",
+  "moduleId": "arrays-strings",
+  "title": "2D Arrays",
+  "description": "A grid of values: declaring a 2D array, row/column indexing, and nested loops to visit every cell — essential for grid-based DSA problems.",
+  "objectives": [
+    "Declare and initialize a 2D array",
+    "Access an element using [row][column]",
+    "Loop through a 2D array with nested for loops",
+    "Understand a 2D array as an array of arrays"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. From a Row to a Grid"
+    },
+    {
+      "type": "paragraph",
+      "text": "A regular array is a single row of values. A 2D array is a grid — rows and columns — useful for things like a tic-tac-toe board, a seating chart, or a matrix."
+    },
+    {
+      "type": "heading",
+      "text": "2. Declaring a 2D Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int grid[2][3] = {\n    {1, 2, 3},\n    {4, 5, 6}\n};"
+    },
+    {
+      "type": "note",
+      "text": "[2][3] means 2 rows and 3 columns — 6 total elements. Each inner {} represents one row."
+    },
+    {
+      "type": "table",
+      "headers": ["", "Column 0", "Column 1", "Column 2"],
+      "rows": [
+        ["Row 0", "1", "2", "3"],
+        ["Row 1", "4", "5", "6"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Accessing an Element: [row][column]"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "cout << grid[0][0]; // 1 — row 0, column 0\ncout << grid[1][2]; // 6 — row 1, column 2"
+    },
+    {
+      "type": "warning",
+      "text": "Just like regular arrays, both the row and column indices are zero-based. grid[2][3] itself was only the size declaration — a 2-row, 3-column grid has valid row indices 0-1 and valid column indices 0-2, following the same rule from Arrays."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int grid[2][3] = {\n        {1, 2, 3},\n        {4, 5, 6}\n    };\n\n    cout << grid[0][0] << endl;\n    cout << grid[1][2] << endl;\n\n    return 0;\n}",
+      "output": "1\n6",
+      "retypePractice": true,
+      "retypeId": "cpp-2d-arrays-basic"
+    },
+    {
+      "type": "heading",
+      "text": "5. Visiting Every Cell: Nested Loops"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int grid[2][3] = {\n        {1, 2, 3},\n        {4, 5, 6}\n    };\n\n    for (int row = 0; row < 2; row++)\n    {\n        for (int col = 0; col < 3; col++)\n        {\n            cout << grid[row][col] << \" \";\n        }\n        cout << endl;\n    }\n\n    return 0;\n}",
+      "output": "1 2 3 \n4 5 6 "
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "Outer loop: row = 0 — inner loop runs col = 0, 1, 2, printing grid[0][0], grid[0][1], grid[0][2] → 1 2 3, then a newline",
+        "Outer loop: row = 1 — inner loop runs again, printing grid[1][0], grid[1][1], grid[1][2] → 4 5 6, then a newline",
+        "This is the standard pattern for visiting every cell of a 2D array: outer loop for rows, inner loop for columns"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. A 2D Array Is an Array of Arrays"
+    },
+    {
+      "type": "note",
+      "text": "Conceptually, grid is an array of 2 rows, and each row is itself an array of 3 ints. grid[0] refers to the entire first row; grid[0][0] reaches into that row for its first element. This mental model — array of arrays — becomes useful once we reach more advanced STL containers."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A movie theater seating chart",
+      "text": "A theater's seats are naturally described by row and seat number — \"Row 3, Seat 7\" pinpoints exactly one seat out of the whole grid. seats[3][7] works the same way: two coordinates locate exactly one cell out of the whole grid."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Mixing up row and column order — grid[row][col] is the convention; swapping them accesses the wrong cell.",
+        "Using the same loop variable name for both nested loops — like i for both row and column — causing confusion or overwriting the outer loop's counter.",
+        "Forgetting that both dimensions are zero-indexed — a 3x4 grid has valid rows 0-2 and valid columns 0-3.",
+        "Going out of bounds on either dimension — just like 1D arrays, C++ does not check this, and it's undefined behavior."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How do you declare a 2D array with 3 rows and 4 columns?",
+          "answer": "int grid[3][4]; — the first size is the number of rows, the second is the number of columns."
+        },
+        {
+          "question": "How is a specific element accessed in a 2D array?",
+          "answer": "Using two indices, grid[row][col], both zero-based."
+        },
+        {
+          "question": "What's the typical pattern for visiting every element of a 2D array?",
+          "answer": "Nested for loops — an outer loop over the rows and an inner loop over the columns, accessing grid[row][col] inside the innermost loop."
+        },
+        {
+          "question": "How can a 2D array be thought of conceptually?",
+          "answer": "As an array of arrays — grid is an array of rows, and each row is itself an array of individual elements."
+        }
+      ],
+      "thirtySecondAnswer": "A 2D array stores data in a grid of rows and columns, declared like int grid[2][3]; for 2 rows and 3 columns, and accessed with two zero-based indices, grid[row][col]. It can be thought of as an array of arrays — one outer array of rows, where each row is itself an array of elements. Visiting every element typically uses nested for loops: an outer loop over rows and an inner loop over columns, which is the standard pattern for grid-based problems in DSA."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember 2D Arrays",
+      "text": "2D array = a seating chart. [row][col] pinpoints one seat. Outer loop walks the rows, inner loop walks the seats in each row."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-2d-arrays-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int grid[2][3] = {\n        {1, 2, 3},\n        {4, 5, 6}\n    };\n\n    cout << grid[0][0] << endl;\n    cout << grid[1][2] << endl;\n\n    return 0;\n}", "output": "1\n6" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-2d-arrays-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint main()\n{\n    int grid[2][3] = {\n        {1, 2, 3},\n        {4, 5, 6}\n    };\n\n    cout << grid[0][0] << endl;\n    cout << grid[1][2] << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-2d-arrays-basic"]
+  }
+}
