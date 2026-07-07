@@ -1,0 +1,154 @@
+{
+  "id": "cpp-stl-containers",
+  "moduleId": "stl",
+  "title": "STL Containers",
+  "description": "The map before the territory: the three container categories — sequence, associative, and adaptors — before diving into each one individually.",
+  "objectives": [
+    "Understand what an STL container is, in general",
+    "Know the three broad categories of STL containers",
+    "See which containers fall into each category",
+    "Get oriented before the individual container deep dives"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Container?"
+    },
+    {
+      "type": "definition",
+      "term": "Container",
+      "text": "A container is an object that stores a collection of other objects, providing ways to add, remove, and access them."
+    },
+    {
+      "type": "note",
+      "text": "vector, previewed in the last topic, is one container. The STL provides quite a few more, each suited to different needs — the rest of this module goes through them one at a time."
+    },
+    {
+      "type": "heading",
+      "text": "2. Three Broad Categories"
+    },
+    {
+      "type": "table",
+      "headers": ["Category", "What it means"],
+      "rows": [
+        ["Sequence containers", "Store elements in a linear order, position matters — like an array, but smarter"],
+        ["Associative containers", "Store elements organized for fast lookup, often by key, not by position"],
+        ["Container adaptors", "Restrict a sequence container's interface to a specific, simpler usage pattern"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Sequence Containers"
+    },
+    {
+      "type": "table",
+      "headers": ["Container", "Shape"],
+      "rows": [
+        ["vector", "A resizable array — the default choice for most cases"],
+        ["array", "A fixed-size array with STL conveniences on top"],
+        ["list", "A doubly linked list — fast insertion/removal anywhere, no direct indexing"],
+        ["forward_list", "A singly linked list — even lighter than list, one direction only"],
+        ["deque", "A double-ended queue — fast insertion/removal at both ends"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Associative Containers"
+    },
+    {
+      "type": "table",
+      "headers": ["Container", "Shape"],
+      "rows": [
+        ["set", "A collection of unique values, automatically kept in sorted order"],
+        ["unordered_set", "A collection of unique values, unsorted, optimized for fast lookup"],
+        ["map", "Key-value pairs, unique keys, automatically kept sorted by key"],
+        ["unordered_map", "Key-value pairs, unique keys, unsorted, optimized for fast lookup"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Container Adaptors"
+    },
+    {
+      "type": "table",
+      "headers": ["Adaptor", "Restricted to"],
+      "rows": [
+        ["stack", "LIFO access only — push/pop from one end (recall Stack Memory's plates analogy)"],
+        ["queue", "FIFO access only — add at one end, remove from the other"],
+        ["priority_queue", "Always gives you the highest (or lowest) priority element first"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "\"Adaptor\" means these aren't built from scratch — they're typically implemented using an underlying sequence container (often deque or vector), just with a deliberately narrower interface that matches one specific usage pattern."
+    },
+    {
+      "type": "heading",
+      "text": "6. Choosing the Right Container — A Quick Compass"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Rough starting guidance (each gets full detail in its own topic)",
+      "points": [
+        "Need indexed access and growth? → vector, almost always the default",
+        "Need fast membership checks or key lookups? → unordered_set / unordered_map",
+        "Need sorted order maintained automatically? → set / map",
+        "Need strict Last-In-First-Out behavior? → stack",
+        "Need strict First-In-First-Out behavior? → queue",
+        "Need 'always get the biggest/smallest next'? → priority_queue"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Different containers for different kitchen items",
+      "text": "A kitchen doesn't store everything in one identical box — a spice rack (sequence, ordered by position), a labeled set of spice jars organized alphabetically (associative), and a stack of plates you can only take from the top (an adaptor) each suit a different way of finding and using what's inside. Choosing the right STL container is choosing the right kind of storage for how the data will actually be used."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Reaching for vector out of habit even when fast key lookups are actually needed — an unordered_map often fits that job far better.",
+        "Confusing an associative container's automatic ordering — set and map stay sorted; unordered_set and unordered_map do not.",
+        "Forgetting container adaptors are built on other containers, with a narrower interface, not something entirely separate.",
+        "Assuming there's one universally 'best' container — the right choice always depends on which operations the actual problem needs to be fast."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What are the three broad categories of STL containers?",
+          "answer": "Sequence containers (linear order, like vector and list), associative containers (organized for fast lookup, like set and map), and container adaptors (a restricted interface over another container, like stack and queue)."
+        },
+        {
+          "question": "What's the difference between set and unordered_set?",
+          "answer": "set keeps its elements automatically sorted; unordered_set does not maintain any particular order, trading that off for typically faster lookups."
+        },
+        {
+          "question": "What is a container adaptor?",
+          "answer": "A container that restricts another underlying container's interface to a specific, simpler usage pattern — like stack restricting access to LIFO-only operations."
+        }
+      ],
+      "thirtySecondAnswer": "STL containers fall into three broad categories: sequence containers like vector, array, list, forward_list, and deque, which store elements in linear order; associative containers like set, unordered_set, map, and unordered_map, organized for fast lookup rather than position; and container adaptors like stack, queue, and priority_queue, which restrict an underlying container's interface to one specific, simpler usage pattern. Picking the right one comes down to which operations actually need to be fast for the problem at hand — indexed access, key lookup, sorted order, or strict LIFO/FIFO behavior."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember STL Containers",
+      "text": "Sequence = order matters, like a line. Associative = organized for lookup, like a dictionary. Adaptor = the same underlying storage, wearing a narrower interface."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
