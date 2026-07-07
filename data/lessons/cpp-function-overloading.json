@@ -1,0 +1,174 @@
+{
+  "id": "cpp-function-overloading",
+  "moduleId": "functions",
+  "title": "Function Overloading",
+  "description": "Multiple functions sharing one name, distinguished by their parameters — and why the return type alone isn't enough to tell them apart.",
+  "objectives": [
+    "Define multiple functions with the same name but different parameters",
+    "Understand how the compiler picks which overload to call",
+    "Know that return type alone cannot distinguish overloads",
+    "Recognize ambiguous overload calls"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: One Name, Different Inputs"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int addInts(int a, int b) { return a + b; }\ndouble addDoubles(double a, double b) { return a + b; }"
+    },
+    {
+      "type": "paragraph",
+      "text": "Both functions do conceptually the same thing — add two numbers — but need different names because their parameter types differ. Having to invent addInts, addDoubles, addFloats and so on for the same idea is repetitive."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Function Overloading?"
+    },
+    {
+      "type": "definition",
+      "term": "Function overloading",
+      "text": "Function overloading lets multiple functions share the same name, as long as their parameter lists differ — the compiler picks the right one based on the arguments used at each call."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b) { return a + b; }\ndouble add(double a, double b) { return a + b; }"
+    },
+    {
+      "type": "heading",
+      "text": "3. A Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\ndouble add(double a, double b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 3.5) << endl;\n\n    return 0;\n}",
+      "output": "5\n6",
+      "retypePractice": true,
+      "retypeId": "cpp-function-overloading-add"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "add(2, 3) — both arguments are int, so the compiler picks the int, int overload; result: 5",
+        "add(2.5, 3.5) — both arguments are double, so the compiler picks the double, double overload; result: 6",
+        "One name, two different behaviors, chosen automatically based on the arguments"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. What Actually Distinguishes Overloads"
+    },
+    {
+      "type": "table",
+      "headers": ["Can differ between overloads?", "Answer"],
+      "rows": [
+        ["Number of parameters", "Yes — add(int) and add(int, int) are different overloads"],
+        ["Types of parameters", "Yes — add(int, int) and add(double, double) are different overloads"],
+        ["Return type alone", "No — this alone does not create a valid overload"]
+      ]
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int getValue() { return 1; }\ndouble getValue() { return 1.5; } // ERROR — same parameters, only return type differs"
+    },
+    {
+      "type": "warning",
+      "text": "The compiler chooses an overload based on the arguments in the call — it has no way to know which version you meant if only the return type differs, since a call like getValue(); doesn't reveal that on its own. Overloads must differ in their parameter list (count and/or types), never by return type alone."
+    },
+    {
+      "type": "heading",
+      "text": "5. Overloading by Parameter Count"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int add(int a, int b)\n{\n    return a + b;\n}\n\nint add(int a, int b, int c)\n{\n    return a + b + c;\n}"
+    },
+    {
+      "type": "note",
+      "text": "add(2, 3) calls the two-parameter version; add(2, 3, 4) calls the three-parameter version. The compiler counts the arguments at the call site and matches accordingly."
+    },
+    {
+      "type": "heading",
+      "text": "6. Ambiguous Calls"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void show(int n) { cout << \"int\"; }\nvoid show(double n) { cout << \"double\"; }\n\nshow(5);    // calls show(int) — exact match\nshow(5.0);  // calls show(double) — exact match\nshow('A');  // which one? char can convert to either..."
+    },
+    {
+      "type": "warning",
+      "text": "When an argument doesn't exactly match any overload, C++ tries implicit conversions (recall Type Casting) to find a fit. If more than one overload is an equally reasonable match, the call is ambiguous, and the compiler reports an error rather than guessing."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "One word, chosen meaning from context",
+      "text": "The word \"pour\" means something slightly different for \"pour water\" versus \"pour concrete\" — same word, but you (a human) automatically pick the right meaning based on what's being poured. Function overloading is the compiler doing the same thing: same function name, different meaning chosen automatically based on the arguments' types."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to overload two functions that differ only in return type — this is not a valid overload and is a compilation error.",
+        "Assuming overloading means the functions must do the same thing — the compiler only cares that the signatures differ; the bodies can do anything.",
+        "Writing an ambiguous call that could match multiple overloads equally well through implicit conversion, and being surprised by a compiler error instead of a chosen 'best guess'.",
+        "Confusing overloading (same name, different parameters, chosen at compile time) with something that changes behavior based on a value at runtime — those are different concepts entirely."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is function overloading?",
+          "answer": "Defining multiple functions with the same name but different parameter lists, letting the compiler choose the correct one based on the arguments used in each call."
+        },
+        {
+          "question": "Can two functions be overloaded if they only differ by return type?",
+          "answer": "No — the parameter list (count and/or types) must differ; return type alone is not enough to distinguish an overload."
+        },
+        {
+          "question": "How does the compiler decide which overload to call?",
+          "answer": "It matches the number and types of arguments at the call site against each overload's parameter list, using exact matches first and implicit conversions if needed."
+        },
+        {
+          "question": "What happens if a call could match multiple overloads equally well?",
+          "answer": "The call is ambiguous, and the compiler reports an error rather than guessing which overload was intended."
+        }
+      ],
+      "thirtySecondAnswer": "Function overloading lets several functions share the same name as long as their parameter lists differ in count or type, letting the compiler automatically pick the right one based on the arguments at each call site. Overloading cannot be based on return type alone — two functions with identical parameters but different return types are not valid overloads, since the compiler has no way to choose between them from the call alone. If an argument could match more than one overload equally well through implicit conversion, the call becomes ambiguous and results in a compilation error."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Function Overloading",
+      "text": "Overloading = same name, different inputs, compiler picks the right one. Same name + same parameters + only return type differs = not allowed."
+    }
+  ],
+  "codeExamples": [
+    { "id": "cpp-function-overloading-add", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\ndouble add(double a, double b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 3.5) << endl;\n\n    return 0;\n}", "output": "5\n6" }
+  ],
+  "retypePractice": [
+    {
+      "id": "cpp-function-overloading-add",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\ndouble add(double a, double b)\n{\n    return a + b;\n}\n\nint main()\n{\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 3.5) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["cpp-function-overloading-add"]
+  }
+}
