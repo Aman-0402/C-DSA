@@ -261,6 +261,42 @@
           "spaceComplexity": "O(total key characters) for the trie"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-212",
+      "number": 212,
+      "title": "Word Search II",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/word-search-ii/",
+      "problemStatement": "Given an m x n board of characters and a list of words, return all words that can be formed by a path of adjacent cells (up/down/left/right), not reusing a cell within one word.",
+      "examples": [
+        { "input": "board = [[\"o\",\"a\",\"a\",\"n\"],[\"e\",\"t\",\"a\",\"e\"],[\"i\",\"h\",\"k\",\"r\"],[\"i\",\"f\",\"l\",\"v\"]], words = [\"oath\",\"pea\",\"eat\",\"rain\"]", "output": "[\"eat\",\"oath\"]" }
+      ],
+      "constraints": ["1 <= board rows, cols <= 12", "1 <= words.length <= 3 * 10^4", "1 <= word length <= 10"],
+      "hints": [
+        "Running a separate word-search DFS per word (like a classic 'Word Search I') re-walks the board from scratch for every word — wasteful when words share prefixes.",
+        "Build one trie from all words first (LC 208's insert()), then do a SINGLE DFS pass over the board, descending into the trie alongside the board path.",
+        "Store the full word string at the trie node where isEndOfWord becomes true, so a match can be reported without rebuilding the string from the path."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Classic backtracking word search, run independently once per word in the list.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nbool dfs(vector<vector<char>>& board, string &word, int r, int c, int index, vector<vector<bool>>& visited)\n{\n    if (index == (int)word.size()) return true;\n    if (r < 0 || r >= (int)board.size() || c < 0 || c >= (int)board[0].size()) return false;\n    if (visited[r][c] || board[r][c] != word[index]) return false;\n\n    visited[r][c] = true;\n    bool found = dfs(board, word, r + 1, c, index + 1, visited) ||\n                 dfs(board, word, r - 1, c, index + 1, visited) ||\n                 dfs(board, word, r, c + 1, index + 1, visited) ||\n                 dfs(board, word, r, c - 1, index + 1, visited);\n    visited[r][c] = false;\n    return found;\n}\n\nbool exists(vector<vector<char>>& board, string word)\n{\n    int rows = board.size(), cols = board[0].size();\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n            if (dfs(board, word, r, c, 0, visited)) return true;\n    return false;\n}\n\nvector<string> findWords(vector<vector<char>>& board, vector<string>& words)\n{\n    vector<string> result;\n    for (auto &w : words)\n        if (exists(board, w)) result.push_back(w);\n    return result;\n}\n\nint main()\n{\n    vector<vector<char>> board = {\n        {'o', 'a', 'a', 'n'},\n        {'e', 't', 'a', 'e'},\n        {'i', 'h', 'k', 'r'},\n        {'i', 'f', 'l', 'v'}\n    };\n    vector<string> words = {\"oath\", \"pea\", \"eat\", \"rain\"};\n\n    vector<string> result = findWords(board, words);\n    for (auto &w : result) cout << w << \" \";\n\n    return 0;\n}",
+          "output": "oath eat ",
+          "timeComplexity": "O(words * rows * cols * 4^L)",
+          "spaceComplexity": "O(rows * cols) for the visited grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Build one trie from all words, then a single DFS pass over the board descends the trie and board simultaneously, collecting words found at isEndOfWord.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    string word = \"\";\n};\n\nvoid insert(TrieNode* root, const string &word)\n{\n    TrieNode* node = root;\n    for (char c : word)\n    {\n        if (node->children.find(c) == node->children.end())\n            node->children[c] = new TrieNode();\n        node = node->children[c];\n    }\n    node->word = word;\n}\n\nvoid dfs(vector<vector<char>>& board, int r, int c, TrieNode* node, vector<string>& result)\n{\n    if (r < 0 || r >= (int)board.size() || c < 0 || c >= (int)board[0].size()) return;\n    char ch = board[r][c];\n    if (ch == '#' || node->children.find(ch) == node->children.end()) return;\n\n    TrieNode* next = node->children[ch];\n    if (!next->word.empty())\n    {\n        result.push_back(next->word);\n        next->word = \"\"; // avoid duplicate reporting of the same word\n    }\n\n    board[r][c] = '#'; // mark visited in-place\n    dfs(board, r + 1, c, next, result);\n    dfs(board, r - 1, c, next, result);\n    dfs(board, r, c + 1, next, result);\n    dfs(board, r, c - 1, next, result);\n    board[r][c] = ch;\n}\n\nvector<string> findWords(vector<vector<char>>& board, vector<string>& words)\n{\n    TrieNode* root = new TrieNode();\n    for (auto &w : words) insert(root, w);\n\n    vector<string> result;\n    int rows = board.size(), cols = board[0].size();\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n            dfs(board, r, c, root, result);\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<char>> board = {\n        {'o', 'a', 'a', 'n'},\n        {'e', 't', 'a', 'e'},\n        {'i', 'h', 'k', 'r'},\n        {'i', 'f', 'l', 'v'}\n    };\n    vector<string> words = {\"oath\", \"pea\", \"eat\", \"rain\"};\n\n    vector<string> result = findWords(board, words);\n    for (auto &w : result) cout << w << \" \";\n\n    return 0;\n}",
+          "output": "oath eat ",
+          "timeComplexity": "O(rows * cols * 4^L) for the single DFS pass, plus O(total word characters) to build the trie",
+          "spaceComplexity": "O(total word characters) for the trie"
+        }
+      ]
     }
   ],
   "codeExamples": [
