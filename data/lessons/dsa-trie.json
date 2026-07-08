@@ -189,6 +189,42 @@
           "spaceComplexity": "O(total characters stored), plus O(L) recursion depth"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-648",
+      "number": 648,
+      "title": "Replace Words",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/replace-words/",
+      "problemStatement": "Given a dictionary of root words and a sentence, replace every word in the sentence that has a root in the dictionary with its shortest matching root.",
+      "examples": [
+        { "input": "dictionary = [\"cat\",\"bat\",\"rat\"], sentence = \"the cattle was rattled by the battery\"", "output": "\"the cat was rat by the bat\"" }
+      ],
+      "constraints": ["1 <= dictionary.length <= 1000", "1 <= dictionary[i].length <= 100", "1 <= sentence words <= 1000"],
+      "hints": [
+        "Insert every root into a trie exactly like LC 208's insert().",
+        "For each word in the sentence, walk the trie character by character; the moment you hit a node with isEndOfWord true, stop — that's the shortest root.",
+        "If the walk falls off the trie (no matching child) or never hits isEndOfWord, the word keeps its original form."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each sentence word, check every dictionary root as a literal prefix and keep the shortest match.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n\nusing namespace std;\n\nstring replaceWords(vector<string>& dictionary, string sentence)\n{\n    stringstream ss(sentence);\n    string word;\n    string result;\n\n    while (ss >> word)\n    {\n        string best = word;\n        for (auto &root : dictionary)\n        {\n            if (root.size() < best.size() && word.compare(0, root.size(), root) == 0)\n                best = root;\n        }\n        if (!result.empty()) result += \" \";\n        result += best;\n    }\n    return result;\n}\n\nint main()\n{\n    vector<string> dictionary = {\"cat\", \"bat\", \"rat\"};\n    string sentence = \"the cattle was rattled by the battery\";\n\n    cout << replaceWords(dictionary, sentence);\n\n    return 0;\n}",
+          "output": "the cat was rat by the bat",
+          "timeComplexity": "O(words * roots * root length)",
+          "spaceComplexity": "O(n) for the result string"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Insert all roots into a trie, then for each sentence word walk the trie until isEndOfWord is hit or the path breaks.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n#include <unordered_map>\n\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    bool isEndOfWord = false;\n};\n\nclass Trie {\npublic:\n    TrieNode* root;\n\n    Trie()\n    {\n        root = new TrieNode();\n    }\n\n    void insert(const string &word)\n    {\n        TrieNode* node = root;\n        for (char c : word)\n        {\n            if (node->children.find(c) == node->children.end())\n                node->children[c] = new TrieNode();\n            node = node->children[c];\n        }\n        node->isEndOfWord = true;\n    }\n\n    string shortestRoot(const string &word)\n    {\n        TrieNode* node = root;\n        string prefix;\n        for (char c : word)\n        {\n            if (node->children.find(c) == node->children.end()) return word;\n            prefix += c;\n            node = node->children[c];\n            if (node->isEndOfWord) return prefix;\n        }\n        return word;\n    }\n};\n\nstring replaceWords(vector<string>& dictionary, string sentence)\n{\n    Trie trie;\n    for (auto &root : dictionary) trie.insert(root);\n\n    stringstream ss(sentence);\n    string word;\n    string result;\n\n    while (ss >> word)\n    {\n        if (!result.empty()) result += \" \";\n        result += trie.shortestRoot(word);\n    }\n    return result;\n}\n\nint main()\n{\n    vector<string> dictionary = {\"cat\", \"bat\", \"rat\"};\n    string sentence = \"the cattle was rattled by the battery\";\n\n    cout << replaceWords(dictionary, sentence);\n\n    return 0;\n}",
+          "output": "the cat was rat by the bat",
+          "timeComplexity": "O(total root characters + total sentence characters)",
+          "spaceComplexity": "O(total root characters) for the trie"
+        }
+      ]
     }
   ],
   "codeExamples": [
