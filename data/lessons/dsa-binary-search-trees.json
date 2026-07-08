@@ -275,6 +275,42 @@
           "spaceComplexity": "O(log n) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-230-bst",
+      "number": 230,
+      "title": "Kth Smallest Element in a BST",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
+      "problemStatement": "Given the root of a BST and an integer k, return the kth smallest value in the tree.",
+      "examples": [
+        { "input": "root = [3,1,4,null,2], k = 1", "output": "1" }
+      ],
+      "constraints": ["1 <= k <= number of nodes"],
+      "hints": [
+        "Recall Inorder Traversal's proof: inorder traversal of a BST visits every value in fully sorted order — this fact, not any BST-specific search shortcut, is what solves this problem.",
+        "The kth value inorder-visits IS the kth smallest, directly.",
+        "An iterative inorder walk with an early-exit counter avoids ever building the full sorted list."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect the entire inorder traversal into a vector, then index directly.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid inorder(TreeNode* node, vector<int> &result)\n{\n    if (node == nullptr) return;\n    inorder(node->left, result);\n    result.push_back(node->val);\n    inorder(node->right, result);\n}\n\nint kthSmallest(TreeNode* root, int k)\n{\n    vector<int> values;\n    inorder(root, values);\n    return values[k - 1];\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(3);\n    root->left = new TreeNode(1);\n    root->left->right = new TreeNode(2);\n    root->right = new TreeNode(4);\n\n    cout << kthSmallest(root, 1) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative inorder walk with an early exit at the kth visit — never processes more of the tree than necessary.",
+          "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nint kthSmallest(TreeNode* root, int k)\n{\n    stack<TreeNode*> st;\n    TreeNode* current = root;\n    int count = 0;\n\n    while (current != nullptr || !st.empty())\n    {\n        while (current != nullptr)\n        {\n            st.push(current);\n            current = current->left;\n        }\n\n        current = st.top();\n        st.pop();\n        count++;\n\n        if (count == k) return current->val;\n\n        current = current->right;\n    }\n\n    return -1;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(3);\n    root->left = new TreeNode(1);\n    root->left->right = new TreeNode(2);\n    root->right = new TreeNode(4);\n\n    cout << kthSmallest(root, 1) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(h + k)",
+          "spaceComplexity": "O(h) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
