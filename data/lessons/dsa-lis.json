@@ -199,6 +199,42 @@
           "spaceComplexity": "O(n) for the dp and count arrays"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-354",
+      "number": 354,
+      "title": "Russian Doll Envelopes",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/russian-doll-envelopes/",
+      "problemStatement": "Given envelopes as [width, height] pairs, one envelope fits inside another only if both its width AND height are strictly smaller. Return the maximum number of envelopes that can be Russian-dolled (nested one inside another).",
+      "examples": [
+        { "input": "envelopes = [[5,4],[6,4],[6,7],[2,3]]", "output": "3" }
+      ],
+      "constraints": ["1 <= envelopes.length <= 10^5"],
+      "hints": [
+        "This is a 2D nesting problem hiding a 1D LIS problem: sort envelopes by WIDTH ascending, and for TIES in width, sort by HEIGHT DESCENDING.",
+        "The descending-height tiebreak is essential — it prevents two envelopes with the same width from ever being counted together in the LIS pass, since one can never actually fit inside the other.",
+        "After that sort, the answer is simply the LIS of the HEIGHT sequence alone — width order is already guaranteed increasing, so only height needs to strictly increase."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort by width/height, then run this lesson's O(n^2) LIS on the height sequence.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint maxEnvelopes(vector<vector<int>>& envelopes)\n{\n    sort(envelopes.begin(), envelopes.end(), [](const vector<int>& a, const vector<int>& b) {\n        if (a[0] != b[0]) return a[0] < b[0];\n        return a[1] > b[1];\n    });\n\n    int n = envelopes.size();\n    vector<int> dp(n, 1);\n\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < i; j++)\n            if (envelopes[j][1] < envelopes[i][1])\n                dp[i] = max(dp[i], dp[j] + 1);\n\n    int best = 0;\n    for (int val : dp) best = max(best, val);\n    return best;\n}\n\nint main()\n{\n    vector<vector<int>> envelopes = {{5, 4}, {6, 4}, {6, 7}, {2, 3}};\n    cout << maxEnvelopes(envelopes);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n log n) for sorting, O(n^2) for the LIS pass",
+          "spaceComplexity": "O(n) for the dp array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same sort, then the O(n log n) patience-sorting LIS on heights.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint maxEnvelopes(vector<vector<int>>& envelopes)\n{\n    sort(envelopes.begin(), envelopes.end(), [](const vector<int>& a, const vector<int>& b) {\n        if (a[0] != b[0]) return a[0] < b[0];\n        return a[1] > b[1];\n    });\n\n    vector<int> tails;\n    for (auto &e : envelopes)\n    {\n        int height = e[1];\n        auto it = lower_bound(tails.begin(), tails.end(), height);\n        if (it == tails.end()) tails.push_back(height);\n        else *it = height;\n    }\n\n    return tails.size();\n}\n\nint main()\n{\n    vector<vector<int>> envelopes = {{5, 4}, {6, 4}, {6, 7}, {2, 3}};\n    cout << maxEnvelopes(envelopes);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(n) for the tails array"
+        }
+      ]
     }
   ],
   "codeExamples": [
