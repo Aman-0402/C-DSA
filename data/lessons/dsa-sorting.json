@@ -357,6 +357,42 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-274",
+      "number": 274,
+      "title": "H-Index",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/h-index/",
+      "problemStatement": "Given an array citations where citations[i] is the number of citations for the researcher's i-th paper, return the researcher's h-index — the maximum h such that h papers have each been cited at least h times.",
+      "examples": [
+        { "input": "citations = [3,0,6,1,5]", "output": "3", "explanation": "3 papers (with 3, 6, 5 citations) have at least 3 citations each." }
+      ],
+      "constraints": ["1 <= citations.length <= 5000"],
+      "hints": [
+        "Sorting citations in DESCENDING order lines up the most-cited papers first — the h-index is about counting how many papers 'keep up' with their own rank.",
+        "After sorting descending, at position i (0-indexed), ask: does citations[i] >= i+1? That means at least i+1 papers (this one and everything before it) have at least i+1 citations.",
+        "The h-index is the largest such i+1 where that condition still holds — the moment it fails, the answer has already been found."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each candidate h from n down to 0, count how many papers have at least h citations, returning the first h that qualifies.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint hIndex(vector<int> &citations)\n{\n    int n = citations.size();\n\n    for (int h = n; h >= 0; h--)\n    {\n        int count = 0;\n        for (int c : citations)\n        {\n            if (c >= h) count++;\n        }\n        if (count >= h) return h;\n    }\n\n    return 0;\n}\n\nint main()\n{\n    vector<int> citations = {3, 0, 6, 1, 5};\n\n    cout << hIndex(citations) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sort descending, then scan once checking citations[i] >= i+1, stopping at the first failure.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint hIndex(vector<int> &citations)\n{\n    sort(citations.begin(), citations.end(), greater<int>());\n\n    int h = 0;\n    for (int i = 0; i < citations.size(); i++)\n    {\n        if (citations[i] >= i + 1) h = i + 1;\n        else break;\n    }\n\n    return h;\n}\n\nint main()\n{\n    vector<int> citations = {3, 0, 6, 1, 5};\n\n    cout << hIndex(citations) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(1) extra beyond the sort"
+        }
+      ]
     }
   ],
   "codeExamples": [
