@@ -262,6 +262,42 @@
           "spaceComplexity": "O(n) for the result array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-190",
+      "number": 190,
+      "title": "Reverse Bits",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/reverse-bits/",
+      "problemStatement": "Given a 32-bit unsigned integer, return the integer obtained by reversing the order of its bits.",
+      "examples": [
+        { "input": "n = 43261596", "output": "964176192" }
+      ],
+      "constraints": ["input is a 32-bit unsigned integer"],
+      "hints": [
+        "Build the result one bit at a time: extract n's LOWEST bit with n & 1, and place it into the result's CORRESPONDING position from the opposite end.",
+        "Shift the result LEFT by one before (or after) placing each extracted bit, and shift n RIGHT by one to move to its next bit — 32 iterations total, covering every bit position.",
+        "This is the same check/set bit-trick vocabulary from this lesson's 'check, set, clear, toggle' section, applied 32 times in a loop instead of at one fixed position."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Convert to a string of '0'/'1' characters, reverse the string, then parse it back into an integer.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n#include <cstdint>\n\nusing namespace std;\n\nuint32_t reverseBits(uint32_t n)\n{\n    string bits;\n    for (int i = 0; i < 32; i++)\n    {\n        bits += ((n >> i) & 1) ? '1' : '0';\n    }\n\n    uint32_t result = 0;\n    for (int i = 0; i < 32; i++)\n        if (bits[i] == '1') result |= (1u << (31 - i));\n\n    return result;\n}\n\nint main()\n{\n    cout << reverseBits(43261596);\n\n    return 0;\n}",
+          "output": "964176192",
+          "timeComplexity": "O(32)",
+          "spaceComplexity": "O(32) for the intermediate string"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Build the reversed value directly with shifts — no intermediate string.",
+          "code": "#include <iostream>\n#include <cstdint>\n\nusing namespace std;\n\nuint32_t reverseBits(uint32_t n)\n{\n    uint32_t result = 0;\n    for (int i = 0; i < 32; i++)\n    {\n        result <<= 1;          // make room for the next bit\n        result |= (n & 1);     // place n's current lowest bit\n        n >>= 1;                // move to n's next bit\n    }\n    return result;\n}\n\nint main()\n{\n    cout << reverseBits(43261596);\n\n    return 0;\n}",
+          "output": "964176192",
+          "timeComplexity": "O(32)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
