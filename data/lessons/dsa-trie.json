@@ -113,6 +113,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Trie",
       "text": "Trie = predictive text, one keystroke narrows the branch. Shared prefixes share the same path. isEndOfWord = a real word ends HERE, not just a prefix passing through."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Trie in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-208",
+      "number": 208,
+      "title": "Implement Trie (Prefix Tree)",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+      "problemStatement": "Implement a trie with insert(word), search(word), and startsWith(prefix) methods.",
+      "examples": [
+        { "input": "insert(\"apple\"); search(\"apple\"); search(\"app\"); startsWith(\"app\"); insert(\"app\"); search(\"app\")", "output": "true, false, true, true" }
+      ],
+      "constraints": ["1 <= word.length, prefix.length <= 2000", "word and prefix consist of lowercase English letters", "up to 3 * 10^4 total calls"],
+      "hints": [
+        "This is exactly this lesson's TrieNode + unordered_map<char, TrieNode*> structure — insert walks/creates nodes per character, marking isEndOfWord at the last one.",
+        "search and startsWith share almost identical logic — the only difference is search additionally requires isEndOfWord to be true at the final node.",
+        "A single private helper that walks to the node for a given string (or returns nullptr if the path breaks) can back both search() and startsWith()."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Store all inserted words in a vector and linearly scan it for search/startsWith — no trie structure at all.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nclass Trie {\npublic:\n    vector<string> words;\n\n    void insert(string word)\n    {\n        words.push_back(word);\n    }\n\n    bool search(string word)\n    {\n        for (auto &w : words) if (w == word) return true;\n        return false;\n    }\n\n    bool startsWith(string prefix)\n    {\n        for (auto &w : words)\n            if (w.size() >= prefix.size() && w.substr(0, prefix.size()) == prefix) return true;\n        return false;\n    }\n};\n\nint main()\n{\n    Trie trie;\n    trie.insert(\"apple\");\n    cout << boolalpha << trie.search(\"apple\") << \", \";\n    cout << trie.search(\"app\") << \", \";\n    cout << trie.startsWith(\"app\") << \", \";\n    trie.insert(\"app\");\n    cout << trie.search(\"app\");\n\n    return 0;\n}",
+          "output": "true, false, true, true",
+          "timeComplexity": "O(n) per search/startsWith call, where n is the number of stored words times word length",
+          "spaceComplexity": "O(total characters stored)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Real trie: each node branches by character via unordered_map<char, TrieNode*>, with isEndOfWord marking complete words.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    bool isEndOfWord = false;\n};\n\nclass Trie {\npublic:\n    TrieNode* root;\n\n    Trie()\n    {\n        root = new TrieNode();\n    }\n\n    void insert(string word)\n    {\n        TrieNode* node = root;\n        for (char c : word)\n        {\n            if (node->children.find(c) == node->children.end())\n                node->children[c] = new TrieNode();\n            node = node->children[c];\n        }\n        node->isEndOfWord = true;\n    }\n\n    TrieNode* findNode(string s)\n    {\n        TrieNode* node = root;\n        for (char c : s)\n        {\n            if (node->children.find(c) == node->children.end()) return nullptr;\n            node = node->children[c];\n        }\n        return node;\n    }\n\n    bool search(string word)\n    {\n        TrieNode* node = findNode(word);\n        return node != nullptr && node->isEndOfWord;\n    }\n\n    bool startsWith(string prefix)\n    {\n        return findNode(prefix) != nullptr;\n    }\n};\n\nint main()\n{\n    Trie trie;\n    trie.insert(\"apple\");\n    cout << boolalpha << trie.search(\"apple\") << \", \";\n    cout << trie.search(\"app\") << \", \";\n    cout << trie.startsWith(\"app\") << \", \";\n    trie.insert(\"app\");\n    cout << trie.search(\"app\");\n\n    return 0;\n}",
+          "output": "true, false, true, true",
+          "timeComplexity": "O(word length) per insert/search/startsWith call",
+          "spaceComplexity": "O(total characters stored)"
+        }
+      ]
     }
   ],
   "codeExamples": [
