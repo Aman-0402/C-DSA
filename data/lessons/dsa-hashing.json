@@ -322,6 +322,43 @@
           "spaceComplexity": "O(n) for the hash map"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-205-hashing",
+      "number": 205,
+      "title": "Isomorphic Strings",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/isomorphic-strings/",
+      "problemStatement": "Given strings s and t, return true if the characters of s can be replaced to get t, where every occurrence of a character maps to the same character, and different characters never map to the same character.",
+      "examples": [
+        { "input": "s = \"egg\", t = \"add\"", "output": "true", "explanation": "e->a, g->d, consistently." },
+        { "input": "s = \"foo\", t = \"bar\"", "output": "false", "explanation": "o would need to map to both a and r." }
+      ],
+      "constraints": ["1 <= s.length <= 5*10^4", "t.length == s.length"],
+      "hints": [
+        "This needs a mapping in BOTH directions — s's character to t's character, AND t's character back to s's — a hash map tracks exactly this kind of key-to-value relationship.",
+        "At each position, check: does s[i] already have a mapped partner, and does it match t[i]? Does t[i] already have a mapped partner, and does it match s[i]?",
+        "If either check ever conflicts with an existing mapping, the strings aren't isomorphic — otherwise, record the new mapping and continue."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every character in s, check that ALL of its other occurrences map consistently to the same character in t, and vice versa — recomputed for every position.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nbool isIsomorphic(string s, string t)\n{\n    for (int i = 0; i < s.size(); i++)\n    {\n        for (int j = 0; j < s.size(); j++)\n        {\n            if ((s[i] == s[j]) != (t[i] == t[j])) return false;\n        }\n    }\n    return true;\n}\n\nint main()\n{\n    cout << (isIsomorphic(\"egg\", \"add\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two hash maps track the mapping in both directions simultaneously, checked and updated in a single pass.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool isIsomorphic(string s, string t)\n{\n    unordered_map<char, char> sToT, tToS;\n\n    for (int i = 0; i < s.size(); i++)\n    {\n        char a = s[i], b = t[i];\n\n        if (sToT.count(a) && sToT[a] != b) return false;\n        if (tToS.count(b) && tToS[b] != a) return false;\n\n        sToT[a] = b;\n        tToS[b] = a;\n    }\n\n    return true;\n}\n\nint main()\n{\n    cout << (isIsomorphic(\"egg\", \"add\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k) for the two hash maps, k = distinct characters"
+        }
+      ]
     }
   ],
   "codeExamples": [
