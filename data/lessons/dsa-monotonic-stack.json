@@ -124,6 +124,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Monotonic Stack",
       "text": "Monotonic stack = people in line watching for someone taller. New taller arrival resolves and removes everyone shorter still waiting. Each person waits once, resolved once — O(n) total, not O(n²)."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Monotonic Stack in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-496",
+      "number": 496,
+      "title": "Next Greater Element I",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/next-greater-element-i/",
+      "problemStatement": "Given nums1 (a subset of nums2) and nums2 (unique elements), for each element in nums1, find its next greater element in nums2 (the first element to its right that is greater), or -1 if none exists.",
+      "examples": [
+        { "input": "nums1 = [4,1,2], nums2 = [1,3,4,2]", "output": "[-1,3,-1]", "explanation": "4 has nothing bigger after it; 1's next bigger is 3; 2 is the last element in nums2 so nothing follows it." }
+      ],
+      "constraints": ["1 <= nums1.length <= nums2.length <= 1000"],
+      "hints": [
+        "This is exactly this lesson's own Next Greater Element example, computed once for all of nums2, then looked up for each nums1 value.",
+        "Run the monotonic stack pass over nums2 to build a value-to-next-greater map (instead of an index-to-value result array, since nums2's values are unique).",
+        "For each value in nums1, the answer is a simple O(1) hash map lookup into that precomputed map."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each nums1 element, scan forward in nums2 from its position until a larger value is found.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> nextGreaterElement(vector<int> &nums1, vector<int> &nums2)\n{\n    vector<int> result;\n\n    for (int target : nums1)\n    {\n        int pos = 0;\n        while (nums2[pos] != target) pos++;\n\n        int answer = -1;\n        for (int j = pos + 1; j < nums2.size(); j++)\n        {\n            if (nums2[j] > target) { answer = nums2[j]; break; }\n        }\n        result.push_back(answer);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums1 = {4, 1, 2};\n    vector<int> nums2 = {1, 3, 4, 2};\n\n    vector<int> result = nextGreaterElement(nums1, nums2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "-1 3 -1 ",
+          "timeComplexity": "O(n × m)",
+          "spaceComplexity": "O(n) for the result"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "One monotonic stack pass over nums2 builds a value-to-next-greater hash map; nums1's answers are then O(1) lookups.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<int> nextGreaterElement(vector<int> &nums1, vector<int> &nums2)\n{\n    unordered_map<int, int> nextGreater;\n    stack<int> pending;\n\n    for (int num : nums2)\n    {\n        while (!pending.empty() && pending.top() < num)\n        {\n            nextGreater[pending.top()] = num;\n            pending.pop();\n        }\n        pending.push(num);\n    }\n\n    vector<int> result;\n    for (int target : nums1)\n    {\n        result.push_back(nextGreater.count(target) ? nextGreater[target] : -1);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums1 = {4, 1, 2};\n    vector<int> nums2 = {1, 3, 4, 2};\n\n    vector<int> result = nextGreaterElement(nums1, nums2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "-1 3 -1 ",
+          "timeComplexity": "O(n + m)",
+          "spaceComplexity": "O(m) for the map and stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
