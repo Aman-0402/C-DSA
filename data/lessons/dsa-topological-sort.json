@@ -159,6 +159,42 @@
           "spaceComplexity": "O(vertices + edges) for the adjacency list, O(vertices) for state and recursion"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-210",
+      "number": 210,
+      "title": "Course Schedule II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/course-schedule-ii/",
+      "problemStatement": "Given numCourses and prerequisite pairs, return a valid order to take all courses, or an empty array if it's impossible.",
+      "examples": [
+        { "input": "numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]", "output": "[0,1,2,3]" }
+      ],
+      "constraints": ["1 <= numCourses <= 2000", "0 <= prerequisites.length <= 5000"],
+      "hints": [
+        "This lesson's DFS + stack topological sort directly produces the order LC 207 only needed a boolean for — the pop order of the stack IS the answer array.",
+        "Kahn's BFS approach (this lesson's alternative) also directly builds the order: whatever gets dequeued, in order, forms the answer.",
+        "Either way: if the produced order has fewer than numCourses entries, a cycle exists — return an empty array instead."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Repeatedly scan for any remaining course with zero in-degree, take it, and decrement its neighbors — O(V) scan per course.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites)\n{\n    vector<vector<int>> adj(numCourses);\n    vector<int> inDegree(numCourses, 0);\n\n    for (auto &p : prerequisites)\n    {\n        adj[p[1]].push_back(p[0]);\n        inDegree[p[0]]++;\n    }\n\n    vector<bool> taken(numCourses, false);\n    vector<int> order;\n\n    for (int count = 0; count < numCourses; count++)\n    {\n        int next = -1;\n        for (int course = 0; course < numCourses; course++)\n            if (!taken[course] && inDegree[course] == 0) { next = course; break; }\n\n        if (next == -1) return {};\n\n        taken[next] = true;\n        order.push_back(next);\n        for (int neighbor : adj[next]) inDegree[neighbor]--;\n    }\n\n    return order;\n}\n\nint main()\n{\n    vector<vector<int>> prerequisites = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};\n    vector<int> result = findOrder(4, prerequisites);\n    for (int c : result) cout << c << \" \";\n\n    return 0;\n}",
+          "output": "0 1 2 3 ",
+          "timeComplexity": "O(vertices^2 + edges)",
+          "spaceComplexity": "O(vertices + edges) for the adjacency list"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Kahn's BFS: a queue holds all current zero-in-degree courses directly, avoiding the O(V) rescan per course.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nvector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites)\n{\n    vector<vector<int>> adj(numCourses);\n    vector<int> inDegree(numCourses, 0);\n\n    for (auto &p : prerequisites)\n    {\n        adj[p[1]].push_back(p[0]);\n        inDegree[p[0]]++;\n    }\n\n    queue<int> q;\n    for (int i = 0; i < numCourses; i++)\n        if (inDegree[i] == 0) q.push(i);\n\n    vector<int> order;\n    while (!q.empty())\n    {\n        int course = q.front(); q.pop();\n        order.push_back(course);\n        for (int next : adj[course])\n        {\n            inDegree[next]--;\n            if (inDegree[next] == 0) q.push(next);\n        }\n    }\n\n    return (int)order.size() == numCourses ? order : vector<int>();\n}\n\nint main()\n{\n    vector<vector<int>> prerequisites = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};\n    vector<int> result = findOrder(4, prerequisites);\n    for (int c : result) cout << c << \" \";\n\n    return 0;\n}",
+          "output": "0 1 2 3 ",
+          "timeComplexity": "O(vertices + edges)",
+          "spaceComplexity": "O(vertices + edges) for the adjacency list and queue"
+        }
+      ]
     }
   ],
   "codeExamples": [
