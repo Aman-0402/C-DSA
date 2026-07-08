@@ -372,6 +372,42 @@
           "spaceComplexity": "O(n × k)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-560",
+      "number": 560,
+      "title": "Subarray Sum Equals K",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/subarray-sum-equals-k/",
+      "problemStatement": "Given an integer array nums and an integer k, return the total number of contiguous subarrays whose sum equals k.",
+      "examples": [
+        { "input": "nums = [1,1,1], k = 2", "output": "2", "explanation": "Two subarrays sum to 2: [1,1] (indices 0-1) and [1,1] (indices 1-2)." }
+      ],
+      "constraints": ["1 <= nums.length <= 2*10^4", "-1000 <= nums[i], k <= 1000"],
+      "hints": [
+        "Recall Prefix Sum: a subarray's sum from l to r equals prefix[r] - prefix[l-1]. A subarray sums to k exactly when prefix[r] - prefix[l-1] == k.",
+        "Rearranged, that's prefix[l-1] == prefix[r] - k — so at each index r, the question becomes 'how many earlier prefix sums equal prefix[r] - k?'",
+        "unordered_map<prefixSum, count> tracks how many times each prefix sum has occurred so far — the exact combination of Prefix Sum's technique with this lesson's frequency-counting pattern."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every subarray's sum directly with nested loops.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint subarraySum(vector<int> &nums, int k)\n{\n    int count = 0;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int sum = 0;\n        for (int j = i; j < nums.size(); j++)\n        {\n            sum += nums[j];\n            if (sum == k) count++;\n        }\n    }\n\n    return count;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1};\n\n    cout << subarraySum(nums, 2) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A running prefix sum combined with a hash map counting how many times each prefix sum value has occurred — at each index, add the count of (currentSum - k) seen so far.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nint subarraySum(vector<int> &nums, int k)\n{\n    unordered_map<int, int> prefixCount;\n    prefixCount[0] = 1; // empty prefix, sum 0, seen once\n\n    int sum = 0;\n    int count = 0;\n\n    for (int num : nums)\n    {\n        sum += num;\n        count += prefixCount[sum - k];\n        prefixCount[sum]++;\n    }\n\n    return count;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1};\n\n    cout << subarraySum(nums, 2) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the prefix sum count map"
+        }
+      ]
     }
   ],
   "codeExamples": [
