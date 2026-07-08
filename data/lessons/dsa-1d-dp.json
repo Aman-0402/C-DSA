@@ -120,6 +120,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember 1D DP",
       "text": "1D DP recipe: 1) Define what dp[i] MEANS. 2) Find the recurrence from that meaning. 3) Fill base cases. 4) Loop upward. House Robber: skip it, or rob it + dp[i-2] — take the best."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: 1D DP in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-300-1d",
+      "number": 300,
+      "title": "Longest Increasing Subsequence",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/longest-increasing-subsequence/",
+      "problemStatement": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+      "examples": [
+        { "input": "nums = [10,9,2,5,3,7,101,18]", "output": "4" }
+      ],
+      "constraints": ["1 <= nums.length <= 2500"],
+      "hints": [
+        "Follow this lesson's recipe: define dp[i] = the length of the longest increasing subsequence that ENDS exactly at index i (not just 'somewhere within 0..i').",
+        "Recurrence: dp[i] = 1 + max(dp[j]) over every j < i where nums[j] < nums[i] — extend any earlier increasing subsequence that nums[i] can legally follow.",
+        "Base case: every dp[i] starts at 1 (the element alone is a valid subsequence of length 1). The final answer is the MAX across the whole dp array, not dp[n-1]."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "The dp[i] = 1 + max(dp[j] for valid j < i) recurrence directly, an O(n^2) nested loop.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint lengthOfLIS(vector<int>& nums)\n{\n    int n = nums.size();\n    vector<int> dp(n, 1);\n\n    for (int i = 1; i < n; i++)\n        for (int j = 0; j < i; j++)\n            if (nums[j] < nums[i])\n                dp[i] = max(dp[i], dp[j] + 1);\n\n    int best = 1;\n    for (int val : dp) best = max(best, val);\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {10, 9, 2, 5, 3, 7, 101, 18};\n    cout << lengthOfLIS(nums);\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n) for the dp array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Patience sorting: maintain a 'tails' array where tails[k] is the smallest possible tail of an increasing subsequence of length k+1, using binary search to place each element.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint lengthOfLIS(vector<int>& nums)\n{\n    vector<int> tails;\n\n    for (int num : nums)\n    {\n        auto it = lower_bound(tails.begin(), tails.end(), num);\n        if (it == tails.end()) tails.push_back(num);\n        else *it = num;\n    }\n\n    return tails.size();\n}\n\nint main()\n{\n    vector<int> nums = {10, 9, 2, 5, 3, 7, 101, 18};\n    cout << lengthOfLIS(nums);\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(n) for the tails array"
+        }
+      ]
     }
   ],
   "codeExamples": [
