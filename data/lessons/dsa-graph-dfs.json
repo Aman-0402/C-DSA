@@ -1,0 +1,107 @@
+{
+  "id": "dsa-graph-dfs",
+  "moduleId": "graphs",
+  "title": "Graph DFS",
+  "description": "DFS on the same adjacency list, side by side with Graph BFS on the exact same graph — proving the two really do explore differently.",
+  "objectives": [
+    "Implement recursive DFS on a graph stored as an adjacency list",
+    "Trace DFS on the same graph used for Graph BFS",
+    "See the exploration order difference directly, side by side",
+    "Recognize this as the same DFS template applied to a new representation"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Same DFS, New Representation"
+    },
+    {
+      "type": "paragraph",
+      "text": "DFS was demonstrated on a grid. Here it is on the exact same graph used in Graph BFS, so the two exploration orders can be compared directly, side by side, on identical data."
+    },
+    {
+      "type": "heading",
+      "text": "2. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(int current, vector<vector<int>> &adj, vector<bool> &visited)\n{\n    visited[current] = true;\n    cout << current << \" \";\n\n    for (int neighbor : adj[current])\n    {\n        if (!visited[neighbor])\n        {\n            dfs(neighbor, adj, visited); // commit FULLY to this neighbor before trying the next\n        }\n    }\n}\n\nint main()\n{\n    int vertices = 5;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {0, 3};\n    adj[2] = {0, 3};\n    adj[3] = {1, 2, 4};\n    adj[4] = {3};\n\n    vector<bool> visited(vertices, false);\n\n    dfs(0, adj, visited);\n\n    return 0;\n}",
+      "output": "0 1 3 2 4 ",
+      "retypePractice": true,
+      "retypeId": "dsa-graph-dfs-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it, and comparing to Graph BFS's result",
+      "points": [
+        "dfs(0): visit 0. First neighbor is 1 → commit fully to dfs(1) before ever looking at 0's second neighbor, 2",
+        "dfs(1): visit 1. First unvisited neighbor is 3 → commit fully to dfs(3)",
+        "dfs(3): visit 3. First unvisited neighbor is 2 → commit fully to dfs(2)",
+        "dfs(2): visit 2. Both neighbors (0, 3) already visited → return, backtrack to 3",
+        "Back in dfs(3): next neighbor is 4, unvisited → dfs(4). Visit 4, no unvisited neighbors → return",
+        "Backtrack all the way up: 3 done, 1 done, back to 0's second neighbor (2) — but 2 is ALREADY visited (from deep inside 3's exploration) → skip",
+        "Result: 0 1 3 2 4 — compare to Graph BFS's 0 1 2 3 4: BFS visited 2 right after 0 (breadth-first), DFS didn't reach 2 until diving through 1 and 3 first (depth-first)"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Exploring a friend network by following one thread of conversation to its end",
+      "text": "Recall DFS's maze-corridor analogy. On a social network, DFS is like following one friend's entire chain of connections as deep as it goes — their friend, that friend's friend, and so on — before ever circling back to your own second direct friend. BFS, by contrast, would check all of your direct friends first, together, before going any deeper."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the visited check before recursing — without it, a cyclic graph causes infinite recursion.",
+        "Assuming DFS and BFS visit vertices in the same order — as this trace shows directly, they genuinely differ, even on the identical graph and identical starting vertex.",
+        "Marking visited too late (after the recursive calls, instead of at the very start of the function) — allows a vertex to be entered multiple times before being marked.",
+        "Assuming the specific DFS order shown is the only valid one — the order in which adj[current]'s neighbors happen to be listed affects which specific order DFS explores them in."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does Graph DFS differ in implementation from Graph BFS?",
+          "answer": "DFS uses recursion (or an explicit stack), committing fully to one neighbor before trying the next; BFS uses a queue, processing neighbors in the order they were discovered, spreading outward level by level."
+        },
+        {
+          "question": "On the same graph and starting vertex, do BFS and DFS necessarily visit vertices in the same order?",
+          "answer": "No — they commonly differ; BFS visits all direct neighbors before going deeper, while DFS dives as deep as possible down one path before backtracking."
+        },
+        {
+          "question": "Why is the visited check essential in Graph DFS?",
+          "answer": "Because a graph can contain cycles, and without tracking visited vertices, DFS could recurse into an already-visited vertex indefinitely."
+        }
+      ],
+      "thirtySecondAnswer": "Graph DFS applies the same recursive template from DFS to an adjacency list: mark the current vertex visited, then recursively dive into each unvisited neighbor, committing fully to one before trying the next. Traced on the exact same graph as Graph BFS, the two produce genuinely different orders — 0 1 3 2 4 for DFS versus 0 1 2 3 4 for BFS — because DFS dives as deep as possible down the first available path before ever backtracking to try a vertex's other neighbors, while BFS processes all of a vertex's neighbors together before going any deeper."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Graph DFS",
+      "text": "Graph DFS = follow one friend's entire chain deep before checking your other direct friends. Compare directly to Graph BFS on the same graph — the orders genuinely differ."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-graph-dfs-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(int current, vector<vector<int>> &adj, vector<bool> &visited)\n{\n    visited[current] = true;\n    cout << current << \" \";\n\n    for (int neighbor : adj[current])\n    {\n        if (!visited[neighbor])\n        {\n            dfs(neighbor, adj, visited);\n        }\n    }\n}\n\nint main()\n{\n    int vertices = 5;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {0, 3};\n    adj[2] = {0, 3};\n    adj[3] = {1, 2, 4};\n    adj[4] = {3};\n\n    vector<bool> visited(vertices, false);\n\n    dfs(0, adj, visited);\n\n    return 0;\n}", "output": "0 1 3 2 4 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-graph-dfs-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(int current, vector<vector<int>> &adj, vector<bool> &visited)\n{\n    visited[current] = true;\n    cout << current << \" \";\n\n    for (int neighbor : adj[current])\n    {\n        if (!visited[neighbor])\n        {\n            dfs(neighbor, adj, visited);\n        }\n    }\n}\n\nint main()\n{\n    int vertices = 5;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {0, 3};\n    adj[2] = {0, 3};\n    adj[3] = {1, 2, 4};\n    adj[4] = {3};\n\n    vector<bool> visited(vertices, false);\n\n    dfs(0, adj, visited);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-graph-dfs-basic"]
+  }
+}
