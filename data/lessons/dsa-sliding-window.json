@@ -322,6 +322,43 @@
           "spaceComplexity": "O(1) — fixed 26-size arrays, output not counted"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-424",
+      "number": 424,
+      "title": "Longest Repeating Character Replacement",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/longest-repeating-character-replacement/",
+      "problemStatement": "Given a string s and an integer k, you may change up to k characters to any other uppercase letter. Return the length of the longest substring containing only one repeating letter after such changes.",
+      "examples": [
+        { "input": "s = \"ABAB\", k = 2", "output": "4", "explanation": "Replace both 'A's or both 'B's to get \"AAAA\" or \"BBBB\"." },
+        { "input": "s = \"AABABBA\", k = 1", "output": "4" }
+      ],
+      "constraints": ["1 <= s.length <= 10^5", "s uppercase English letters", "0 <= k <= s.length"],
+      "hints": [
+        "A window is 'achievable' if you could turn it all into one letter using at most k replacements — that means (window length) - (count of its MOST frequent letter) <= k.",
+        "Track the count of the most frequent letter seen in the current window (maxFreq) as you expand right, using a 26-letter frequency array.",
+        "If a window ever becomes invalid (needs more than k replacements), shrink from the left by one — you don't need to recompute maxFreq exactly when shrinking, since the answer can only grow from a window at least as large as the best one already found."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every substring, counting its most frequent letter, to see if it's achievable within k replacements.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n\nusing namespace std;\n\nint characterReplacement(string s, int k)\n{\n    int best = 0;\n\n    for (int i = 0; i < s.size(); i++)\n    {\n        vector<int> counts(26, 0);\n        int maxFreq = 0;\n\n        for (int j = i; j < s.size(); j++)\n        {\n            counts[s[j] - 'A']++;\n            maxFreq = max(maxFreq, counts[s[j] - 'A']);\n\n            int windowLen = j - i + 1;\n            if (windowLen - maxFreq <= k) best = max(best, windowLen);\n        }\n    }\n\n    return best;\n}\n\nint main()\n{\n    cout << characterReplacement(\"ABAB\", 2) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1) — fixed 26-size array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sliding window tracking maxFreq as it grows; shrinks by one from the left whenever the window becomes invalid, without ever needing to shrink maxFreq back down.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n\nusing namespace std;\n\nint characterReplacement(string s, int k)\n{\n    vector<int> counts(26, 0);\n    int left = 0;\n    int maxFreq = 0;\n    int best = 0;\n\n    for (int right = 0; right < s.size(); right++)\n    {\n        counts[s[right] - 'A']++;\n        maxFreq = max(maxFreq, counts[s[right] - 'A']);\n\n        int windowLen = right - left + 1;\n        if (windowLen - maxFreq > k)\n        {\n            counts[s[left] - 'A']--;\n            left++;\n        }\n\n        best = max(best, right - left + 1);\n    }\n\n    return best;\n}\n\nint main()\n{\n    cout << characterReplacement(\"ABAB\", 2) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — fixed 26-size array"
+        }
+      ]
     }
   ],
   "codeExamples": [
