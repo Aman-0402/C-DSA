@@ -272,6 +272,42 @@
           "spaceComplexity": "O(n) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-84",
+      "number": 84,
+      "title": "Largest Rectangle in Histogram",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+      "problemStatement": "Given an array of bar heights representing a histogram, return the area of the largest rectangle that fits entirely within the histogram.",
+      "examples": [
+        { "input": "heights = [2,1,5,6,2,3]", "output": "10", "explanation": "The rectangle formed by heights 5 and 6 (width 2) gives area 10." }
+      ],
+      "constraints": ["1 <= heights.length <= 10^5"],
+      "hints": [
+        "For each bar, the largest rectangle USING that bar's height extends left and right until a SHORTER bar blocks it — 'how far can this height extend' is a next-smaller-element question in both directions.",
+        "A monotonic INCREASING stack of indices tracks bars still waiting to find their left AND right boundary: when a shorter bar arrives, every taller bar still on the stack has just found its right boundary.",
+        "When popping a bar to compute its area, its width is (current index) - (the new stack top's index) - 1 — the gap between the two bars that finally bound it, on both sides."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each bar, expand left and right as far as the height allows, tracking the resulting area.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint largestRectangleArea(vector<int> &heights)\n{\n    int best = 0;\n\n    for (int i = 0; i < heights.size(); i++)\n    {\n        int height = heights[i];\n        int left = i, right = i;\n\n        while (left > 0 && heights[left - 1] >= height) left--;\n        while (right < heights.size() - 1 && heights[right + 1] >= height) right++;\n\n        best = max(best, height * (right - left + 1));\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> heights = {2, 1, 5, 6, 2, 3};\n\n    cout << largestRectangleArea(heights) << endl;\n\n    return 0;\n}",
+          "output": "10",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A monotonic increasing stack of indices — a shorter bar triggers resolving every taller bar still waiting, computing each one's true width in O(1).",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nint largestRectangleArea(vector<int> &heights)\n{\n    stack<int> indices;\n    int best = 0;\n    int n = heights.size();\n\n    for (int i = 0; i <= n; i++)\n    {\n        int h = (i == n) ? 0 : heights[i]; // sentinel: force-flush the stack at the end\n\n        while (!indices.empty() && heights[indices.top()] >= h)\n        {\n            int height = heights[indices.top()];\n            indices.pop();\n\n            int width = indices.empty() ? i : i - indices.top() - 1;\n            best = max(best, height * width);\n        }\n\n        indices.push(i);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> heights = {2, 1, 5, 6, 2, 3};\n\n    cout << largestRectangleArea(heights) << endl;\n\n    return 0;\n}",
+          "output": "10",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
