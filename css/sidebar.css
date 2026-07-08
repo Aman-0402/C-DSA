@@ -99,7 +99,9 @@
   text-transform: uppercase;
   letter-spacing: 0.03em;
   color: var(--text-muted);
+  text-align: left;
 }
+.nav-module-header span { text-align: left; }
 .nav-module-header:hover { background: var(--bg-sunken); }
 .nav-module-header .chevron { transition: transform 0.15s; }
 .nav-module-header.collapsed .chevron { transform: rotate(-90deg); }
