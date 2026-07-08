@@ -250,6 +250,13 @@
         { "id": "dsa-topological-sort", "title": "Topological Sort", "lesson": "dsa-topological-sort" },
         { "id": "dsa-union-find", "title": "Union Find / Disjoint Set", "lesson": "dsa-union-find" }
       ]
+    },
+    {
+      "id": "greedy-dp",
+      "title": "Greedy & Dynamic Programming",
+      "topics": [
+        { "id": "dsa-greedy-algorithms", "title": "Greedy Algorithms", "lesson": "dsa-greedy-algorithms" }
+      ]
     }
   ]
 }

@@ -1,0 +1,128 @@
+{
+  "id": "dsa-greedy-algorithms",
+  "moduleId": "greedy-dp",
+  "title": "Greedy Algorithms",
+  "description": "Making the locally best choice at every step and hoping it adds up to the best overall answer — plus the important caveat of when that hope fails.",
+  "objectives": [
+    "Understand what a greedy algorithm is",
+    "Solve minimum-coin change greedily",
+    "Recognize when a greedy approach gives the correct answer",
+    "Understand a concrete case where greedy fails"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. What is a Greedy Algorithm?"
+    },
+    {
+      "type": "definition",
+      "term": "Greedy algorithm",
+      "text": "A greedy algorithm builds a solution by always making the choice that looks best at the current step, without reconsidering that choice later, hoping the sequence of locally best choices adds up to a globally best result."
+    },
+    {
+      "type": "heading",
+      "text": "2. Classic Example: Minimum Coins for Change"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Coins available: 25, 10, 5, 1\n// Make 41 cents using the FEWEST coins possible\n\n// Greedy: always take the LARGEST coin that still fits\n// 41 -> take 25 (16 left) -> take 10 (6 left) -> take 5 (1 left) -> take 1 (0 left)\n// Total: 4 coins"
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint minCoins(vector<int> &coins, int amount)\n{\n    int count = 0;\n\n    for (int i = 0; i < coins.size(); i++) // coins assumed sorted LARGEST to smallest\n    {\n        while (amount >= coins[i])\n        {\n            amount -= coins[i]; // take this coin greedily, as many times as fits\n            count++;\n        }\n    }\n    return count;\n}\n\nint main()\n{\n    vector<int> coins = {25, 10, 5, 1};\n\n    cout << minCoins(coins, 41) << endl;\n\n    return 0;\n}",
+      "output": "4",
+      "retypePractice": true,
+      "retypeId": "dsa-greedy-algorithms-coins"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "amount=41: take 25 (largest that fits) → amount=16, count=1",
+        "amount=16: 25 too big; take 10 → amount=6, count=2",
+        "amount=6: take 5 → amount=1, count=3",
+        "amount=1: take 1 → amount=0, count=4",
+        "Result: 4 coins — and this genuinely IS the minimum possible for this coin system"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. When Greedy Fails"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Coins available: 4, 3, 1 — a DIFFERENT, non-standard coin system\n// Make 6 cents using the FEWEST coins possible\n\n// Greedy: take 4 (largest that fits) -> 2 left -> no 4 or 3 fits -> take 1, 1 -> total 3 coins (4+1+1)\n// But the ACTUAL best answer is 3+3 -> only 2 coins!"
+    },
+    {
+      "type": "warning",
+      "text": "This is the critical caveat: greedy's \"take the biggest coin now\" reasoning gave a WRONG (non-optimal) answer here, because taking 4 first left a remainder (2) that couldn't be efficiently completed. Greedy happens to work for common real-world coin denominations like {25, 10, 5, 1}, but it is not guaranteed to work for every possible coin system — and it doesn't. Recognizing which problems greedy actually solves correctly is the hard, important part."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Packing a suitcase by always grabbing the most valuable item first",
+      "text": "Packing by always grabbing the single most valuable remaining item that still fits sounds reasonable, but it can leave awkward, wasted space at the end — a smarter combination of slightly less \"individually valuable\" items might have used the space better overall. That's exactly the risk of greedy reasoning: locally reasonable choices don't always add up to the best possible outcome."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming greedy always gives the correct answer just because it's simple and intuitive — it must be proven correct for the specific problem, as the coin example shows.",
+        "Applying the coin-change greedy solution to an arbitrary set of denominations — it only works correctly for certain ('canonical') coin systems, not all of them.",
+        "Confusing 'a reasonable-sounding strategy' with 'a proven greedy algorithm' — real greedy algorithms come with a justification for why the locally best choice never hurts the final answer.",
+        "Forgetting greedy makes each choice permanently — unlike Backtracking, there's no reconsidering an earlier decision once it's made."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a greedy algorithm?",
+          "answer": "An algorithm that always makes the choice that looks best at the current step, without reconsidering it later, hoping the sequence of locally best choices produces the globally best result."
+        },
+        {
+          "question": "Does the greedy 'always take the largest coin' strategy work for every possible set of coin denominations?",
+          "answer": "No — it works for common denominations like {25, 10, 5, 1}, but can give a non-optimal answer for other coin systems, such as {4, 3, 1} when making 6 cents."
+        },
+        {
+          "question": "What is the key risk of using a greedy approach?",
+          "answer": "A sequence of locally optimal choices isn't guaranteed to add up to the globally optimal solution — greedy must be proven correct for the specific problem, not just assumed to work."
+        }
+      ],
+      "thirtySecondAnswer": "A greedy algorithm builds a solution by always making the locally best-looking choice at each step, without revisiting that decision later. For making change with common denominations like {25, 10, 5, 1}, always taking the largest coin that fits genuinely produces the minimum number of coins. But greedy isn't universally correct — with a different coin system like {4, 3, 1}, greedily taking a 4 first when making 6 cents gives 3 coins (4+1+1), while the true optimal answer is 2 coins (3+3). This is the critical caveat: a greedy strategy must be proven correct for the specific problem, since locally reasonable choices don't always add up to the globally best outcome."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Greedy Algorithms",
+      "text": "Greedy = grab the biggest thing that fits, right now, never look back. Works for standard coins. Can fail on other systems — always verify greedy is actually correct for the problem."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-greedy-algorithms-coins", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint minCoins(vector<int> &coins, int amount)\n{\n    int count = 0;\n\n    for (int i = 0; i < coins.size(); i++)\n    {\n        while (amount >= coins[i])\n        {\n            amount -= coins[i];\n            count++;\n        }\n    }\n    return count;\n}\n\nint main()\n{\n    vector<int> coins = {25, 10, 5, 1};\n\n    cout << minCoins(coins, 41) << endl;\n\n    return 0;\n}", "output": "4" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-greedy-algorithms-coins",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint minCoins(vector<int> &coins, int amount)\n{\n    int count = 0;\n\n    for (int i = 0; i < coins.size(); i++)\n    {\n        while (amount >= coins[i])\n        {\n            amount -= coins[i];\n            count++;\n        }\n    }\n    return count;\n}\n\nint main()\n{\n    vector<int> coins = {25, 10, 5, 1};\n\n    cout << minCoins(coins, 41) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-greedy-algorithms-coins"]
+  }
+}
