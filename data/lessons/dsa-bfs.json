@@ -1,0 +1,121 @@
+{
+  "id": "dsa-bfs",
+  "moduleId": "trees",
+  "title": "BFS",
+  "description": "Generalizing Level Order beyond trees: BFS on any graph-like structure, and why a visited set becomes essential once cycles are possible.",
+  "objectives": [
+    "Understand BFS as Level Order Traversal's general form",
+    "Understand why a visited set is required outside of trees",
+    "Implement BFS on a grid",
+    "Trace BFS's queue-driven, level-by-level expansion"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Level Order Was BFS on a Tree"
+    },
+    {
+      "type": "paragraph",
+      "text": "Level Order Traversal used a queue to visit a tree level by level. That algorithm is actually a specific case of a more general technique: Breadth-First Search (BFS), which works on any graph-like structure, not just trees."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is BFS?"
+    },
+    {
+      "type": "definition",
+      "term": "Breadth-First Search (BFS)",
+      "text": "BFS explores a structure outward in layers, visiting everything reachable in 1 step, then everything reachable in 2 steps, and so on — using a queue to process nodes in the order they were discovered."
+    },
+    {
+      "type": "heading",
+      "text": "3. The New Problem: Cycles"
+    },
+    {
+      "type": "warning",
+      "text": "A tree has no cycles — you can never revisit a node by following its structure. Graphs and grids can, though: BFS on such structures needs an explicit visited set (recall unordered_set or, here, a simple 2D array of booleans) to avoid processing the same location over and over, which could otherwise loop forever."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example: BFS on a Grid"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    int rows = 3, cols = 3;\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n    queue<pair<int, int>> q;\n\n    int dr[] = {1, -1, 0, 0};\n    int dc[] = {0, 0, 1, -1};\n\n    q.push({0, 0});\n    visited[0][0] = true;\n\n    while (!q.empty())\n    {\n        pair<int, int> current = q.front();\n        q.pop();\n\n        cout << current.first << \",\" << current.second << \" \";\n\n        for (int i = 0; i < 4; i++)\n        {\n            int newRow = current.first + dr[i];\n            int newCol = current.second + dc[i];\n\n            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && !visited[newRow][newCol])\n            {\n                visited[newRow][newCol] = true; // mark BEFORE pushing — avoid duplicate queueing\n                q.push({newRow, newCol});\n            }\n        }\n    }\n\n    return 0;\n}",
+      "output": "0,0 1,0 0,1 2,0 1,1 0,2 2,1 1,2 2,2 ",
+      "retypePractice": true,
+      "retypeId": "dsa-bfs-grid"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What's new compared to Level Order Traversal",
+      "points": [
+        "pair<int,int> (recall pair) represents a grid cell's (row, col) — there's no TreeNode here, just coordinates",
+        "visited[][] prevents the same cell from being queued more than once — no tree has this problem, but a grid can revisit a cell via multiple paths",
+        "Marking visited BEFORE pushing (not after popping) prevents the same cell from being queued twice while it's still waiting in the queue",
+        "The four dr[]/dc[] direction offsets check all four neighboring cells (down, up, right, left) from the current position"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A rumor spreading through a friend network, one degree at a time",
+      "text": "A rumor spreads to all of your direct friends first, then to their friends who haven't heard it yet, then to their friends' friends, and so on. Anyone who already heard it doesn't need to \"hear it again\" — the visited set is exactly that memory, preventing the rumor from bouncing back and forth between two friends who both already know."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the visited check on a graph or grid — without it, BFS can loop forever on structures with cycles, unlike a tree.",
+        "Marking a cell visited only after popping it from the queue, instead of before pushing — this allows the same cell to be queued multiple times while waiting.",
+        "Forgetting boundary checks (newRow/newCol within range) before checking visited — accessing visited[-1][...] or an out-of-range index is undefined behavior.",
+        "Confusing BFS with DFS — BFS explores outward layer by layer using a queue; DFS (the next topic) commits to one path at a time using a stack or recursion."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does BFS generalize Level Order Traversal?",
+          "answer": "Level Order Traversal is BFS specifically applied to a tree; BFS itself works on any graph-like structure, not just trees, using the same queue-driven, layer-by-layer expansion."
+        },
+        {
+          "question": "Why is a visited set necessary for BFS on a graph or grid, but not strictly necessary on a tree?",
+          "answer": "A tree has no cycles, so a node can never be reached twice; a graph or grid can have multiple paths to the same node, so without tracking visited nodes, BFS could revisit them indefinitely."
+        },
+        {
+          "question": "Why is it important to mark a node visited before pushing it, rather than after popping it, in BFS?",
+          "answer": "Marking after popping allows the same node to be pushed multiple times while it's still waiting in the queue, since other in-progress expansions haven't yet seen it marked as visited."
+        }
+      ],
+      "thirtySecondAnswer": "BFS generalizes Level Order Traversal beyond trees, exploring any graph-like structure outward in layers using a queue — everything reachable in 1 step, then 2 steps, and so on. Unlike a tree, graphs and grids can have cycles or multiple paths to the same location, so BFS requires an explicit visited set to avoid processing the same node repeatedly, potentially looping forever without it. On a grid, this looks like storing (row, col) pairs in a queue, checking four directional neighbors, and marking each cell visited the moment it's pushed — before it's popped — to prevent it from being queued more than once."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember BFS",
+      "text": "BFS = a rumor spreading friend-of-a-friend, one degree at a time. Queue drives the layers. visited = 'already heard it,' stops infinite bouncing between friends."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-bfs-grid", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    int rows = 3, cols = 3;\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n    queue<pair<int, int>> q;\n\n    int dr[] = {1, -1, 0, 0};\n    int dc[] = {0, 0, 1, -1};\n\n    q.push({0, 0});\n    visited[0][0] = true;\n\n    while (!q.empty())\n    {\n        pair<int, int> current = q.front();\n        q.pop();\n\n        cout << current.first << \",\" << current.second << \" \";\n\n        for (int i = 0; i < 4; i++)\n        {\n            int newRow = current.first + dr[i];\n            int newCol = current.second + dc[i];\n\n            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && !visited[newRow][newCol])\n            {\n                visited[newRow][newCol] = true;\n                q.push({newRow, newCol});\n            }\n        }\n    }\n\n    return 0;\n}", "output": "0,0 1,0 0,1 2,0 1,1 0,2 2,1 1,2 2,2 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-bfs-grid",
+      "reference": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    int rows = 3, cols = 3;\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n    queue<pair<int, int>> q;\n\n    int dr[] = {1, -1, 0, 0};\n    int dc[] = {0, 0, 1, -1};\n\n    q.push({0, 0});\n    visited[0][0] = true;\n\n    while (!q.empty())\n    {\n        pair<int, int> current = q.front();\n        q.pop();\n\n        cout << current.first << \",\" << current.second << \" \";\n\n        for (int i = 0; i < 4; i++)\n        {\n            int newRow = current.first + dr[i];\n            int newCol = current.second + dc[i];\n\n            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && !visited[newRow][newCol])\n            {\n                visited[newRow][newCol] = true;\n                q.push({newRow, newCol});\n            }\n        }\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-bfs-grid"]
+  }
+}

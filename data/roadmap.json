@@ -231,7 +231,8 @@
         { "id": "dsa-preorder-traversal", "title": "Preorder Traversal", "lesson": "dsa-preorder-traversal" },
         { "id": "dsa-inorder-traversal", "title": "Inorder Traversal", "lesson": "dsa-inorder-traversal" },
         { "id": "dsa-postorder-traversal", "title": "Postorder Traversal", "lesson": "dsa-postorder-traversal" },
-        { "id": "dsa-level-order-traversal", "title": "Level Order Traversal", "lesson": "dsa-level-order-traversal" }
+        { "id": "dsa-level-order-traversal", "title": "Level Order Traversal", "lesson": "dsa-level-order-traversal" },
+        { "id": "dsa-bfs", "title": "BFS", "lesson": "dsa-bfs" }
       ]
     }
   ]
