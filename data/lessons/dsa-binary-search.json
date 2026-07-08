@@ -274,6 +274,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-374",
+      "number": 374,
+      "title": "Guess Number Higher or Lower",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/guess-number-higher-or-lower/",
+      "problemStatement": "A number pick is chosen between 1 and n. A pre-built API guess(num) returns -1 (pick is lower), 1 (pick is higher), or 0 (correct). Find pick using the fewest calls.",
+      "examples": [
+        { "input": "n = 10, pick = 6", "output": "6" }
+      ],
+      "constraints": ["1 <= n <= 2^31 - 1"],
+      "hints": [
+        "This is binary search wearing a costume — the 'array' is just the range [1, n], and guess(mid) tells you which half pick is in, just like comparing to nums[mid] would.",
+        "guess(mid) == -1 means pick is lower — search the left half. guess(mid) == 1 means search the right half.",
+        "guess(mid) == 0 means mid IS pick — done."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Call guess() on every number from 1 to n until the correct one is found.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint pickedNumber = 6; // simulates the hidden pick for this demo\n\nint guess(int num)\n{\n    if (num > pickedNumber) return -1;\n    if (num < pickedNumber) return 1;\n    return 0;\n}\n\nint guessNumber(int n)\n{\n    for (int i = 1; i <= n; i++)\n    {\n        if (guess(i) == 0) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    cout << guessNumber(10) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Binary search over [1, n], using guess(mid)'s return value exactly like comparing to a sorted array's middle element.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint pickedNumber = 6; // simulates the hidden pick for this demo\n\nint guess(int num)\n{\n    if (num > pickedNumber) return -1;\n    if (num < pickedNumber) return 1;\n    return 0;\n}\n\nint guessNumber(int n)\n{\n    int left = 1, right = n;\n\n    while (left <= right)\n    {\n        int mid = left + (right - left) / 2;\n        int result = guess(mid);\n\n        if (result == 0) return mid;\n        else if (result == -1) right = mid - 1;\n        else left = mid + 1;\n    }\n\n    return -1;\n}\n\nint main()\n{\n    cout << guessNumber(10) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(log n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
