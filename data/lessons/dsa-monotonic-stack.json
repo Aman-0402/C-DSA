@@ -308,6 +308,42 @@
           "spaceComplexity": "O(n) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-42-monostack",
+      "number": 42,
+      "title": "Trapping Rain Water",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/trapping-rain-water/",
+      "problemStatement": "Given n non-negative integers representing an elevation map's bar heights, compute how much water it can trap after raining.",
+      "examples": [
+        { "input": "height = [0,1,0,2,1,0,1,3,2,1,2,1]", "output": "6" }
+      ],
+      "constraints": ["1 <= height.length <= 2*10^5"],
+      "hints": [
+        "Two Pointers solved this by tracking leftMax/rightMax directly — a monotonic stack solves it differently, by finding water trapped between pairs of bars as they're resolved.",
+        "A decreasing monotonic stack of indices: when a bar TALLER than the stack's top arrives, the popped bar was sitting in a 'valley' — water can be trapped above it, bounded by the new bar on the right and whatever is now the stack's top on the left.",
+        "The trapped water's height is min(leftBoundary, rightBoundary) - poppedHeight, and its width is the gap between the new top and the current index."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each index, scan left and right separately to find leftMax and rightMax from scratch.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint trap(vector<int> &height)\n{\n    int n = height.size();\n    int total = 0;\n\n    for (int i = 0; i < n; i++)\n    {\n        int leftMax = 0, rightMax = 0;\n        for (int j = 0; j <= i; j++) leftMax = max(leftMax, height[j]);\n        for (int j = i; j < n; j++) rightMax = max(rightMax, height[j]);\n        total += min(leftMax, rightMax) - height[i];\n    }\n\n    return total;\n}\n\nint main()\n{\n    vector<int> height = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};\n\n    cout << trap(height) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A monotonic decreasing stack of indices: each time a taller bar arrives, it resolves the 'valley' bar just popped, computing trapped water bounded by both sides.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nint trap(vector<int> &height)\n{\n    stack<int> indices;\n    int total = 0;\n\n    for (int i = 0; i < height.size(); i++)\n    {\n        while (!indices.empty() && height[indices.top()] < height[i])\n        {\n            int valley = indices.top();\n            indices.pop();\n\n            if (indices.empty()) break; // no left boundary — can't trap water\n\n            int leftBoundary = indices.top();\n            int boundedHeight = min(height[leftBoundary], height[i]) - height[valley];\n            int width = i - leftBoundary - 1;\n\n            total += boundedHeight * width;\n        }\n        indices.push(i);\n    }\n\n    return total;\n}\n\nint main()\n{\n    vector<int> height = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};\n\n    cout << trap(height) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
