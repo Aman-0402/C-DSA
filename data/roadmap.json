@@ -166,6 +166,13 @@
         { "id": "dsa-sliding-window", "title": "Sliding Window", "lesson": "dsa-sliding-window" },
         { "id": "dsa-strings", "title": "Strings", "lesson": "dsa-strings" }
       ]
+    },
+    {
+      "id": "hashing",
+      "title": "Hashing",
+      "topics": [
+        { "id": "dsa-hashing", "title": "Hashing", "lesson": "dsa-hashing" }
+      ]
     }
   ]
 }

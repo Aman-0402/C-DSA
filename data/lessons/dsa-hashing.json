@@ -1,0 +1,154 @@
+{
+  "id": "dsa-hashing",
+  "moduleId": "hashing",
+  "title": "Hashing",
+  "description": "The mechanism behind unordered_map/unordered_set's speed, formalized — hash functions, collisions, and the classic Two Sum problem.",
+  "objectives": [
+    "Understand what a hash function actually does",
+    "Understand hash collisions and how they're handled",
+    "Understand why hashing gives average O(1) operations",
+    "Solve the classic Two Sum problem using hashing"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We've Used the Result, Not the Mechanism"
+    },
+    {
+      "type": "paragraph",
+      "text": "unordered_set and unordered_map both mentioned \"using hashing internally\" for average O(1) performance, without explaining exactly how. Let's open that up."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Hash Function?"
+    },
+    {
+      "type": "definition",
+      "term": "Hash function",
+      "text": "A hash function converts a key into a number (a hash code), used to determine roughly where that key's data should be stored, so it can later be found again almost directly."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Conceptually (simplified):\nint simpleHash(string key, int bucketCount)\n{\n    int sum = 0;\n    for (char c : key)\n    {\n        sum += c; // add up character codes\n    }\n    return sum % bucketCount; // squeeze into a fixed number of \"buckets\"\n}"
+    },
+    {
+      "type": "heading",
+      "text": "3. From Key to Bucket"
+    },
+    {
+      "type": "flow",
+      "steps": ["Key (e.g. \"Aman\")", "Hash function", "A number", "% bucketCount", "A specific bucket index", "Stored/found there directly"]
+    },
+    {
+      "type": "note",
+      "text": "Instead of scanning through every stored key to find a match (like set's tree search, or a plain linear scan), hashing jumps almost straight to the right neighborhood — the specific bucket — cutting out most of the searching entirely."
+    },
+    {
+      "type": "heading",
+      "text": "4. Collisions"
+    },
+    {
+      "type": "definition",
+      "term": "Collision",
+      "text": "A collision happens when two different keys hash to the same bucket — handled internally (commonly by storing a small list of entries per bucket) so both keys can still coexist correctly."
+    },
+    {
+      "type": "warning",
+      "text": "Collisions are normal and expected, not a bug — a good hash function just tries to keep them rare. When a bucket ends up with too many entries (many collisions), operations on that bucket degrade toward O(n) in the worst case, which is why unordered_map's guarantee is average O(1), not guaranteed O(1)."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why This Gives Average O(1)"
+    },
+    {
+      "type": "note",
+      "text": "With a reasonable hash function and few collisions, computing a key's hash and jumping to its bucket takes constant time, regardless of how many total keys are stored — this is fundamentally different from set's O(log n) tree search, which genuinely gets slower as more elements are added."
+    },
+    {
+      "type": "heading",
+      "text": "6. The Classic Application: Two Sum"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 7, 11, 15};\n    int target = 9;\n\n    unordered_map<int, int> seen; // value -> index\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        int complement = target - numbers[i];\n\n        if (seen.count(complement))\n        {\n            cout << seen[complement] << \" \" << i << endl;\n            break;\n        }\n\n        seen[numbers[i]] = i;\n    }\n\n    return 0;\n}",
+      "output": "0 1",
+      "retypePractice": true,
+      "retypeId": "dsa-hashing-two-sum"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why this beats the naive O(n²) nested-loop approach",
+      "points": [
+        "For each number, we ask: 'have I already seen its complement (target - number)?' — an O(1) hash lookup instead of an O(n) inner scan",
+        "seen[complement] check + insertion, both O(1) average, replace what would otherwise be a full nested loop",
+        "Overall: O(n) time, O(n) space — trading space for a dramatic time improvement, another time-space tradeoff"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A library's call-number system",
+      "text": "A library doesn't search shelf by shelf for a book — a call number (derived from the book's category) sends you almost directly to the right shelf section. A hash function does the same for data: convert the key into a number that points nearly straight to where it's stored, instead of searching everything."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming hashing guarantees O(1) in every single case — it's average-case O(1); a poor hash function or adversarial input can degrade performance.",
+        "Reaching for a nested loop out of habit when a single pass with a hash map ('have I seen this before?') solves it in O(n).",
+        "In Two Sum, checking seen[complement] after inserting the current number instead of before — that could incorrectly match a number with itself.",
+        "Forgetting hashing trades space for time — an unordered_map/unordered_set uses extra O(n) memory to achieve its speed."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does a hash function do?",
+          "answer": "Converts a key into a number used to determine which bucket that key's data should be stored in, allowing it to be found again almost directly rather than searched for."
+        },
+        {
+          "question": "What is a hash collision, and is it a problem?",
+          "answer": "When two different keys hash to the same bucket — it's expected and handled internally (e.g. multiple entries per bucket), not an error, though too many collisions degrade performance."
+        },
+        {
+          "question": "Why is unordered_map's complexity described as 'average' O(1) rather than guaranteed O(1)?",
+          "answer": "Because a bucket with many collisions can degrade lookup toward O(n) in the worst case; average performance assumes a reasonably even distribution across buckets."
+        },
+        {
+          "question": "How does hashing solve Two Sum in O(n) time?",
+          "answer": "By storing each number's index in a hash map as it's processed, then checking in O(1) whether the current number's complement (target - number) has already been seen, replacing an O(n) inner search with an O(1) lookup."
+        }
+      ],
+      "thirtySecondAnswer": "A hash function converts a key into a number used to place it into a specific bucket, letting it be found again almost directly rather than searched for — this is the mechanism behind unordered_map and unordered_set's average O(1) operations. Collisions, where two keys hash to the same bucket, are expected and handled internally, though heavy collisions can degrade performance toward O(n) in the worst case. The classic application is Two Sum: instead of checking every pair with nested loops (O(n²)), a hash map tracks numbers already seen, letting each number's complement be checked in O(1), for an overall O(n) time solution at the cost of O(n) extra space."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Hashing",
+      "text": "Hash function = a library call number, sends you almost straight to the shelf. Collision = two books with the same call number, handled, not broken. Two Sum = 'have I seen the complement?' — O(1) lookup instead of O(n) scan."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-hashing-two-sum", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 7, 11, 15};\n    int target = 9;\n\n    unordered_map<int, int> seen;\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        int complement = target - numbers[i];\n\n        if (seen.count(complement))\n        {\n            cout << seen[complement] << \" \" << i << endl;\n            break;\n        }\n\n        seen[numbers[i]] = i;\n    }\n\n    return 0;\n}", "output": "0 1" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-hashing-two-sum",
+      "reference": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 7, 11, 15};\n    int target = 9;\n\n    unordered_map<int, int> seen;\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        int complement = target - numbers[i];\n\n        if (seen.count(complement))\n        {\n            cout << seen[complement] << \" \" << i << endl;\n            break;\n        }\n\n        seen[numbers[i]] = i;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-hashing-two-sum"]
+  }
+}
