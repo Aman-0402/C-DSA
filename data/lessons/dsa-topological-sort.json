@@ -119,6 +119,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Topological Sort",
       "text": "Topological sort = getting dressed in valid order, socks before shoes. DFS pushes a vertex AFTER its dependencies finish (postorder). Pop the stack to read the correct order. Needs a DAG — no contradictory cycles."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Topological Sort in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-207",
+      "number": 207,
+      "title": "Course Schedule",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/course-schedule/",
+      "problemStatement": "Given numCourses and a list of prerequisite pairs [a, b] (must take b before a), return true if it's possible to finish all courses.",
+      "examples": [
+        { "input": "numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]", "output": "true" }
+      ],
+      "constraints": ["1 <= numCourses <= 2000", "0 <= prerequisites.length <= 5000"],
+      "hints": [
+        "This is exactly 'can a valid topological order exist' — which is only possible if the prerequisite graph has NO CYCLE.",
+        "The DFS-based topological sort in this lesson doesn't detect cycles by itself — add a third state (visiting vs visited) to catch a vertex revisited while still on the current DFS path.",
+        "If DFS ever reaches a vertex that is currently 'in progress' (on the recursion stack), that's a cycle — finishing is impossible."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Kahn's algorithm (BFS-based topological sort via in-degree) — build the order and check if all courses got included.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nbool canFinish(int numCourses, vector<vector<int>>& prerequisites)\n{\n    vector<vector<int>> adj(numCourses);\n    vector<int> inDegree(numCourses, 0);\n\n    for (auto &p : prerequisites)\n    {\n        adj[p[1]].push_back(p[0]);\n        inDegree[p[0]]++;\n    }\n\n    queue<int> q;\n    for (int i = 0; i < numCourses; i++)\n        if (inDegree[i] == 0) q.push(i);\n\n    int completed = 0;\n    while (!q.empty())\n    {\n        int course = q.front(); q.pop();\n        completed++;\n        for (int next : adj[course])\n        {\n            inDegree[next]--;\n            if (inDegree[next] == 0) q.push(next);\n        }\n    }\n\n    return completed == numCourses;\n}\n\nint main()\n{\n    vector<vector<int>> prerequisites = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};\n    cout << boolalpha << canFinish(4, prerequisites);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(vertices + edges)",
+          "spaceComplexity": "O(vertices + edges) for the adjacency list and queue"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "DFS-based cycle detection using a 3-state marker (unvisited, visiting, visited) — this lesson's DFS topological sort extended to detect cycles directly.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool hasCycle(int course, vector<vector<int>>& adj, vector<int>& state)\n{\n    state[course] = 1; // visiting — currently on the recursion path\n\n    for (int next : adj[course])\n    {\n        if (state[next] == 1) return true; // back edge to an in-progress vertex — cycle\n        if (state[next] == 0 && hasCycle(next, adj, state)) return true;\n    }\n\n    state[course] = 2; // visited — fully explored, safe\n    return false;\n}\n\nbool canFinish(int numCourses, vector<vector<int>>& prerequisites)\n{\n    vector<vector<int>> adj(numCourses);\n    for (auto &p : prerequisites) adj[p[1]].push_back(p[0]);\n\n    vector<int> state(numCourses, 0);\n    for (int course = 0; course < numCourses; course++)\n        if (state[course] == 0 && hasCycle(course, adj, state)) return false;\n\n    return true;\n}\n\nint main()\n{\n    vector<vector<int>> prerequisites = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};\n    cout << boolalpha << canFinish(4, prerequisites);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(vertices + edges)",
+          "spaceComplexity": "O(vertices + edges) for the adjacency list, O(vertices) for state and recursion"
+        }
+      ]
     }
   ],
   "codeExamples": [
