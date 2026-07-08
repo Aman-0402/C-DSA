@@ -236,6 +236,13 @@
         { "id": "dsa-dfs", "title": "DFS", "lesson": "dsa-dfs" },
         { "id": "dsa-trie", "title": "Trie", "lesson": "dsa-trie" }
       ]
+    },
+    {
+      "id": "graphs",
+      "title": "Graphs",
+      "topics": [
+        { "id": "dsa-graphs", "title": "Graphs", "lesson": "dsa-graphs" }
+      ]
     }
   ]
 }

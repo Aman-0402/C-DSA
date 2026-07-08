@@ -1,0 +1,146 @@
+{
+  "id": "dsa-graphs",
+  "moduleId": "graphs",
+  "title": "Graphs",
+  "description": "A tree, generalized fully: multiple connections, real cycles, and the vocabulary — vertex, edge, directed/undirected, weighted/unweighted.",
+  "objectives": [
+    "Understand a tree as a special, restricted case of a graph",
+    "Know core graph vocabulary: vertex, edge, directed, undirected, weighted, cycle",
+    "Understand what makes a graph fundamentally more general than a tree",
+    "Preview graph representation, traversal, and algorithms as upcoming topics"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: A Tree Was Already a Special Kind of Graph"
+    },
+    {
+      "type": "paragraph",
+      "text": "BFS and DFS were both already introduced as working on \"any graph-like structure,\" with trees as one specific case. Now let's define graphs properly, and see exactly what a tree was restricting."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Graph?"
+    },
+    {
+      "type": "definition",
+      "term": "Graph",
+      "text": "A graph is a set of vertices (nodes) connected by edges, with no restriction on how many connections a vertex can have, and no requirement that it be free of cycles."
+    },
+    {
+      "type": "note",
+      "text": "A tree is exactly a graph with two extra restrictions: it's connected (every vertex reachable from every other) and it has no cycles (exactly one path between any two vertices). Remove those restrictions, and you have a general graph."
+    },
+    {
+      "type": "heading",
+      "text": "3. Graph Vocabulary"
+    },
+    {
+      "type": "table",
+      "headers": ["Term", "Meaning"],
+      "rows": [
+        ["Vertex (node)", "A single point in the graph"],
+        ["Edge", "A connection between two vertices"],
+        ["Adjacent", "Two vertices directly connected by an edge"],
+        ["Path", "A sequence of edges connecting one vertex to another"],
+        ["Cycle", "A path that starts and ends at the same vertex, using no edge twice"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Directed vs Undirected"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Undirected: A - B means you can travel A -> B AND B -> A\n// Directed:   A -> B means you can ONLY travel A -> B, not automatically the reverse"
+    },
+    {
+      "type": "definition",
+      "term": "Directed graph",
+      "text": "A directed graph's edges have a direction — an edge from A to B does not imply a connection from B to A."
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Two-way streets vs one-way streets",
+      "text": "An undirected graph is a city of two-way streets — if you can drive from A to B, you can drive back. A directed graph is a city with one-way streets — being able to reach B from A says nothing about whether you can get back the same way."
+    },
+    {
+      "type": "heading",
+      "text": "5. Weighted vs Unweighted"
+    },
+    {
+      "type": "definition",
+      "term": "Weighted graph",
+      "text": "A weighted graph assigns a numeric cost (a weight) to each edge, representing something like distance, time, or price, rather than treating every connection as equal."
+    },
+    {
+      "type": "note",
+      "text": "Recall BFS finding shortest path by counting STEPS — that assumes every edge is equally \"expensive,\" an unweighted graph. A weighted graph (like a road network with real distances) needs different algorithms to find the truly cheapest path, since the fewest number of edges isn't necessarily the lowest total cost."
+    },
+    {
+      "type": "heading",
+      "text": "6. Cycles — Now Fully Allowed"
+    },
+    {
+      "type": "warning",
+      "text": "This is exactly why BFS and DFS both needed an explicit visited set once we moved off of trees — a graph can have cycles, meaning a path can loop back to a vertex already seen, something a tree's structure could never do."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A social network, not an org chart",
+      "text": "Recall the org chart from Trees — strictly hierarchical, one path down from any manager to any employee. A social network is a graph instead: any two people might be connected, connections go both ways, friend groups form actual cycles (A knows B, B knows C, C knows A), and there's no single 'root' person everyone traces back to."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming every graph algorithm from Trees (BFS, DFS) works unchanged — the visited set becomes mandatory, not optional, the moment cycles are possible.",
+        "Forgetting directed edges aren't automatically two-way — A -> B existing says nothing about B -> A.",
+        "Treating a weighted graph's shortest path the same as an unweighted one's — fewest edges (BFS) and lowest total cost (needs different algorithms) can give different answers.",
+        "Thinking a tree and a graph are unrelated concepts — a tree is simply a graph with no cycles and full connectivity, a special case, not a separate category."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a graph?",
+          "answer": "A set of vertices connected by edges, with no restriction on the number of connections per vertex and no requirement of being cycle-free."
+        },
+        {
+          "question": "How does a tree relate to a graph?",
+          "answer": "A tree is a special case of a graph — one that is connected and has no cycles, giving exactly one path between any two vertices."
+        },
+        {
+          "question": "What is the difference between a directed and an undirected graph?",
+          "answer": "In an undirected graph, an edge between two vertices implies travel is possible in both directions; in a directed graph, an edge has a direction, and connectivity one way doesn't imply the reverse."
+        },
+        {
+          "question": "Why does BFS's shortest-path guarantee not directly apply to a weighted graph?",
+          "answer": "BFS counts the fewest number of edges, assuming every edge costs the same; in a weighted graph, the path with the fewest edges isn't necessarily the one with the lowest total cost."
+        }
+      ],
+      "thirtySecondAnswer": "A graph is a set of vertices connected by edges, without a tree's restrictions of being fully connected and cycle-free — a tree is simply a special, more restricted case of a graph. Edges can be directed (one-way, like a city's one-way streets) or undirected (two-way), and weighted (carrying a numeric cost like distance) or unweighted (every edge treated equally). Because general graphs can have cycles, the visited-set requirement introduced for BFS and DFS on grids becomes mandatory rather than optional — and because edges can carry weights, finding the 'shortest' path requires different algorithms depending on whether 'shortest' means fewest edges or lowest total cost."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Graphs",
+      "text": "Graph = a social network, not an org chart. Tree = a graph with training wheels (connected, no cycles). Directed = one-way streets. Weighted = streets with real distances, not just step counts."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
