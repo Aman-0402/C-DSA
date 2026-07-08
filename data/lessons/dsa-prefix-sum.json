@@ -370,6 +370,51 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-238",
+      "number": 238,
+      "title": "Product of Array Except Self",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/product-of-array-except-self/",
+      "problemStatement": "Given an array nums, return an array answer where answer[i] is the product of all elements of nums except nums[i], without using division, in O(n) time.",
+      "examples": [
+        { "input": "nums = [1,2,3,4]", "output": "[24,12,8,6]" },
+        { "input": "nums = [-1,1,0,-3,3]", "output": "[0,0,9,0,0]" }
+      ],
+      "constraints": ["2 <= nums.length <= 10^5", "-30 <= nums[i] <= 30", "the product of any prefix/suffix fits in a 32-bit int"],
+      "hints": [
+        "answer[i] is exactly (product of everything to the LEFT of i) times (product of everything to the RIGHT of i) — this is a prefix AND suffix version of prefix sum, but with multiplication.",
+        "Build a prefix-product array (like prefix[i-1] in this lesson, but multiplying instead of adding) and a suffix-product array the same way from the right.",
+        "You can avoid allocating a second array for the suffix products by folding them into the answer array with a second pass, using just one extra running variable."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every index, multiply every OTHER element from scratch — the disallowed-division problem's naive nested-loop version.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> productExceptSelf(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<int> answer(n);\n\n    for (int i = 0; i < n; i++)\n    {\n        int product = 1;\n        for (int j = 0; j < n; j++)\n        {\n            if (j != i) product *= nums[j];\n        }\n        answer[i] = product;\n    }\n\n    return answer;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> answer = productExceptSelf(nums);\n\n    for (int a : answer) cout << a << \" \";\n\n    return 0;\n}",
+          "output": "24 12 8 6 ",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the output"
+        },
+        {
+          "label": "Better",
+          "explanation": "Build a prefix-product array and a suffix-product array (this lesson's prefix sum idea, using multiplication), then combine them: answer[i] = prefix[i-1] * suffix[i+1].",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> productExceptSelf(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<int> prefix(n), suffix(n), answer(n);\n\n    prefix[0] = nums[0];\n    for (int i = 1; i < n; i++) prefix[i] = prefix[i - 1] * nums[i];\n\n    suffix[n - 1] = nums[n - 1];\n    for (int i = n - 2; i >= 0; i--) suffix[i] = suffix[i + 1] * nums[i];\n\n    for (int i = 0; i < n; i++)\n    {\n        int left = (i == 0) ? 1 : prefix[i - 1];\n        int right = (i == n - 1) ? 1 : suffix[i + 1];\n        answer[i] = left * right;\n    }\n\n    return answer;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> answer = productExceptSelf(nums);\n\n    for (int a : answer) cout << a << \" \";\n\n    return 0;\n}",
+          "output": "24 12 8 6 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for prefix + suffix + answer"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Use the answer array itself to hold prefix products on the first pass, then multiply in the suffix product with a single running variable on the second pass — only O(1) extra space beyond the required output.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> productExceptSelf(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<int> answer(n, 1);\n\n    for (int i = 1; i < n; i++)\n    {\n        answer[i] = answer[i - 1] * nums[i - 1]; // answer[i] = product of everything left of i\n    }\n\n    int rightProduct = 1;\n    for (int i = n - 1; i >= 0; i--)\n    {\n        answer[i] *= rightProduct; // fold in product of everything right of i\n        rightProduct *= nums[i];\n    }\n\n    return answer;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> answer = productExceptSelf(nums);\n\n    for (int a : answer) cout << a << \" \";\n\n    return 0;\n}",
+          "output": "24 12 8 6 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) extra, excluding the required output array"
+        }
+      ]
     }
   ],
   "codeExamples": [
