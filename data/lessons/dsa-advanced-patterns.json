@@ -201,6 +201,42 @@
           "spaceComplexity": "O(1) extra space, not counting the output array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-560",
+      "number": 560,
+      "title": "Subarray Sum Equals K",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/subarray-sum-equals-k/",
+      "problemStatement": "Given an array of integers nums and an integer k, return the total number of contiguous subarrays whose sum equals k.",
+      "examples": [
+        { "input": "nums = [1,1,1], k = 2", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 2 * 10^4"],
+      "hints": [
+        "Clue: 'contiguous subarray sum' — Prefix Sum. Clue: 'count how many', combined with negative numbers allowed (so Sliding Window's shrink logic doesn't cleanly apply) — Hashing.",
+        "A subarray from index j+1 to i sums to k exactly when prefix[i] - prefix[j] == k, i.e. prefix[j] == prefix[i] - k.",
+        "Track a running prefix sum and a hash map of how many times each prefix sum value has been seen so far; at each index, add the count of (currentPrefix - k) seen before now."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every subarray's sum directly.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint subarraySum(vector<int>& nums, int k)\n{\n    int count = 0;\n    for (int i = 0; i < (int)nums.size(); i++)\n    {\n        int sum = 0;\n        for (int j = i; j < (int)nums.size(); j++)\n        {\n            sum += nums[j];\n            if (sum == k) count++;\n        }\n    }\n    return count;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1};\n    cout << subarraySum(nums, 2);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Prefix sum plus a hash map of prefix-sum frequencies — the exact sliding-window-plus-hashing combination this lesson's own worked example demonstrates, applied to a running sum instead of a substring window.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nint subarraySum(vector<int>& nums, int k)\n{\n    unordered_map<int, int> prefixCount;\n    prefixCount[0] = 1; // an empty prefix (sum 0) has occurred once, before any elements\n\n    int sum = 0, count = 0;\n    for (int num : nums)\n    {\n        sum += num;\n        if (prefixCount.count(sum - k)) count += prefixCount[sum - k];\n        prefixCount[sum]++;\n    }\n    return count;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1};\n    cout << subarraySum(nums, 2);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the prefix-sum frequency map"
+        }
+      ]
     }
   ],
   "codeExamples": [
