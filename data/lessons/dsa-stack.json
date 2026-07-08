@@ -215,6 +215,42 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-150",
+      "number": 150,
+      "title": "Evaluate Reverse Polish Notation",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+      "problemStatement": "Evaluate an arithmetic expression given in Reverse Polish Notation (postfix), where operators come after their operands.",
+      "examples": [
+        { "input": "tokens = [\"2\",\"1\",\"+\",\"3\",\"*\"]", "output": "9", "explanation": "((2 + 1) * 3) = 9." }
+      ],
+      "constraints": ["1 <= tokens.length <= 10^4"],
+      "hints": [
+        "In postfix notation, an operator always applies to the two MOST RECENTLY seen numbers — another direct stack signal.",
+        "Push numbers as they're seen. When an operator is seen, pop the top two values, apply the operator, and push the result back.",
+        "Watch operand order carefully for '-' and '/': the second-popped value is the left-hand operand, the first-popped is the right-hand one."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use a vector with back()/pop_back() to simulate the same stack-based evaluation.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint evalRPN(vector<string> &tokens)\n{\n    vector<int> values;\n\n    for (string &t : tokens)\n    {\n        if (t == \"+\" || t == \"-\" || t == \"*\" || t == \"/\")\n        {\n            int b = values.back(); values.pop_back();\n            int a = values.back(); values.pop_back();\n\n            if (t == \"+\") values.push_back(a + b);\n            else if (t == \"-\") values.push_back(a - b);\n            else if (t == \"*\") values.push_back(a * b);\n            else values.push_back(a / b);\n        }\n        else\n        {\n            values.push_back(stoi(t));\n        }\n    }\n\n    return values.back();\n}\n\nint main()\n{\n    vector<string> tokens = {\"2\", \"1\", \"+\", \"3\", \"*\"};\n\n    cout << evalRPN(tokens) << endl;\n\n    return 0;\n}",
+          "output": "9",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A genuine stack<int>, matching the operate-on-most-recent-values shape directly.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n#include <string>\n\nusing namespace std;\n\nint evalRPN(vector<string> &tokens)\n{\n    stack<int> values;\n\n    for (string &t : tokens)\n    {\n        if (t == \"+\" || t == \"-\" || t == \"*\" || t == \"/\")\n        {\n            int b = values.top(); values.pop();\n            int a = values.top(); values.pop();\n\n            if (t == \"+\") values.push(a + b);\n            else if (t == \"-\") values.push(a - b);\n            else if (t == \"*\") values.push(a * b);\n            else values.push(a / b);\n        }\n        else\n        {\n            values.push(stoi(t));\n        }\n    }\n\n    return values.top();\n}\n\nint main()\n{\n    vector<string> tokens = {\"2\", \"1\", \"+\", \"3\", \"*\"};\n\n    cout << evalRPN(tokens) << endl;\n\n    return 0;\n}",
+          "output": "9",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
