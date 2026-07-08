@@ -1,0 +1,133 @@
+{
+  "id": "dsa-tree-traversals",
+  "moduleId": "trees",
+  "title": "Tree Traversals",
+  "description": "The overview before Preorder, Inorder, Postorder, and Level Order: the two families of tree traversal, and why the visiting order matters.",
+  "objectives": [
+    "Understand what a tree traversal is",
+    "Know the two families: depth-first and breadth-first",
+    "Preview the three depth-first orders and the one breadth-first order",
+    "Understand why the same tree can be read in genuinely different valid orders"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We've Been Visiting Nodes Already"
+    },
+    {
+      "type": "paragraph",
+      "text": "height() and countNodes() from Trees and Binary Trees both \"visited\" every node in the tree, recursively. A traversal is the formal name for this: a systematic way of visiting every node exactly once."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Traversal?"
+    },
+    {
+      "type": "definition",
+      "term": "Tree traversal",
+      "text": "A tree traversal is a systematic method for visiting every node in a tree exactly once, in some defined order."
+    },
+    {
+      "type": "heading",
+      "text": "3. Two Families: Depth-First vs Breadth-First"
+    },
+    {
+      "type": "table",
+      "headers": ["Family", "Idea"],
+      "rows": [
+        ["Depth-first", "Go as deep as possible down one path before backtracking to explore another"],
+        ["Breadth-first", "Visit every node at the current depth/level before moving to the next level"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. A Preview: The Depth-First Family"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — Preorder Traversal, Inorder Traversal, and Postorder Traversal each get their own dedicated topic right after this. All three are depth-first; they differ only in WHEN a node itself gets visited relative to its children."
+    },
+    {
+      "type": "table",
+      "headers": ["Order", "When the current node is visited"],
+      "rows": [
+        ["Preorder", "Before visiting either child"],
+        ["Inorder", "Between visiting the left and right child"],
+        ["Postorder", "After visiting both children"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. A Preview: The Breadth-First Family"
+    },
+    {
+      "type": "warning",
+      "text": "This is also only a preview — Level Order Traversal, the breadth-first approach, gets its own topic soon too. Instead of going deep first, it visits every node on one level before moving to the next, naturally requiring a queue (recall Queue) rather than the natural recursion used by the depth-first orders."
+    },
+    {
+      "type": "heading",
+      "text": "6. Why the Order Matters"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "//         2\n//        / \\\n//       1   3\n\n// Preorder:  2, 1, 3\n// Inorder:   1, 2, 3   <-- notice: SORTED for a BST!\n// Postorder: 1, 3, 2"
+    },
+    {
+      "type": "note",
+      "text": "This isn't just trivia — a specific order can be exactly the right tool for a specific job. Inorder traversal of a binary search tree (recall Binary Search Trees' ordering property) visits values in fully sorted order automatically, which is genuinely useful and is exactly why Inorder Traversal gets its own dedicated topic."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Reading an org chart three different ways",
+      "text": "Recall the org chart from Trees. Reading it \"manager first, then each report\" is preorder — good for printing an outline. Reading it \"finish everyone below a manager before mentioning the manager\" is postorder — good for tasks like calculating a department's total headcount, where subtotals must be known before the total. The specific reason each order exists becomes clear once its own topic is reached."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming there's one single 'correct' way to traverse a tree — the right order depends entirely on what the traversal is being used for.",
+        "Confusing depth-first and breadth-first — depth-first commits to one path before backtracking; breadth-first spreads level by level.",
+        "Assuming all traversals are recursive — depth-first orders are naturally recursive, but breadth-first (level order) is naturally iterative, using a queue.",
+        "Forgetting Inorder traversal's special property for a BST specifically — it doesn't produce sorted output for an arbitrary, non-BST binary tree."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a tree traversal?",
+          "answer": "A systematic method for visiting every node in a tree exactly once, in some defined order."
+        },
+        {
+          "question": "What is the difference between depth-first and breadth-first traversal?",
+          "answer": "Depth-first goes as deep as possible down one path before backtracking to explore others; breadth-first visits every node at the current level before moving to the next level."
+        },
+        {
+          "question": "What distinguishes preorder, inorder, and postorder from each other?",
+          "answer": "They're all depth-first, differing only in when the current node itself is visited relative to its children: before both (preorder), between them (inorder), or after both (postorder)."
+        }
+      ],
+      "thirtySecondAnswer": "A tree traversal systematically visits every node exactly once, falling into two families: depth-first, which commits to one path before backtracking, and breadth-first, which visits every node level by level. The three depth-first orders — preorder, inorder, postorder — differ only in when the current node is visited relative to its children: before, between, or after. Breadth-first (level order) is naturally iterative, using a queue, unlike the naturally recursive depth-first orders. The choice of order genuinely matters: inorder traversal of a binary search tree visits values in fully sorted order, a direct consequence of the BST ordering property."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Tree Traversals",
+      "text": "Depth-first = commit to one path, backtrack later. Breadth-first = spread level by level. Pre/In/Post = node visited before/between/after its children."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
