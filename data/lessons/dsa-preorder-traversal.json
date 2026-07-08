@@ -136,6 +136,42 @@
           "spaceComplexity": "O(n) for the stack, no recursion call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-589",
+      "number": 589,
+      "title": "N-ary Tree Preorder Traversal",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/n-ary-tree-preorder-traversal/",
+      "problemStatement": "Given the root of an n-ary tree (each node has a LIST of children instead of just left/right), return its preorder traversal.",
+      "examples": [
+        { "input": "root = 1 with children [3,2,4]; 3 has children [5,6]", "output": "[1,3,5,6,2,4]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 10^4"],
+      "hints": [
+        "Preorder's core rule doesn't change: visit the node FIRST, then its subtrees — only the number of subtrees changes, from exactly 2 (left, right) to however many children the node has.",
+        "Instead of two recursive calls (left, right), loop over the node's children vector, recursing into each in order.",
+        "The iterative stack version needs the same adjustment: push all children in REVERSE order so the first child is popped and processed first."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recursive: visit the node, then recurse into each child in order.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    vector<Node*> children;\n    Node(int x) : val(x) {}\n};\n\nvoid preorder(Node* node, vector<int> &result)\n{\n    if (node == nullptr) return;\n    result.push_back(node->val);\n    for (Node* child : node->children) preorder(child, result);\n}\n\nvector<int> preorder(Node* root)\n{\n    vector<int> result;\n    preorder(root, result);\n    return result;\n}\n\nint main()\n{\n    Node* n5 = new Node(5);\n    Node* n6 = new Node(6);\n    Node* n3 = new Node(3); n3->children = {n5, n6};\n    Node* n2 = new Node(2);\n    Node* n4 = new Node(4);\n    Node* root = new Node(1); root->children = {n3, n2, n4};\n\n    vector<int> result = preorder(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 3 5 6 2 4 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result, O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative with an explicit stack — children pushed in reverse order so the first child is processed first.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    vector<Node*> children;\n    Node(int x) : val(x) {}\n};\n\nvector<int> preorder(Node* root)\n{\n    vector<int> result;\n    if (root == nullptr) return result;\n\n    stack<Node*> st;\n    st.push(root);\n\n    while (!st.empty())\n    {\n        Node* node = st.top();\n        st.pop();\n\n        result.push_back(node->val);\n\n        for (int i = node->children.size() - 1; i >= 0; i--)\n        {\n            st.push(node->children[i]);\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    Node* n5 = new Node(5);\n    Node* n6 = new Node(6);\n    Node* n3 = new Node(3); n3->children = {n5, n6};\n    Node* n2 = new Node(2);\n    Node* n4 = new Node(4);\n    Node* root = new Node(1); root->children = {n3, n2, n4};\n\n    vector<int> result = preorder(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 3 5 6 2 4 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack, no recursion call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
