@@ -159,7 +159,8 @@
       "id": "array-string-techniques",
       "title": "Array & String Techniques",
       "topics": [
-        { "id": "dsa-arrays", "title": "Arrays", "lesson": "dsa-arrays" }
+        { "id": "dsa-arrays", "title": "Arrays", "lesson": "dsa-arrays" },
+        { "id": "dsa-prefix-sum", "title": "Prefix Sum", "lesson": "dsa-prefix-sum" }
       ]
     }
   ]

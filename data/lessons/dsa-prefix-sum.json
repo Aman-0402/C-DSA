@@ -1,0 +1,163 @@
+{
+  "id": "dsa-prefix-sum",
+  "moduleId": "array-string-techniques",
+  "title": "Prefix Sum",
+  "description": "Precompute once, answer range-sum queries in O(1): the classic prefix sum technique.",
+  "objectives": [
+    "Understand the problem prefix sums solve",
+    "Build a prefix sum array in O(n)",
+    "Answer any range-sum query in O(1) using it",
+    "Know the exact formula and why it works"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Repeated Range Sum Queries"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {2, 4, 1, 7, 3, 6};\n\n// \"What's the sum from index 1 to 4?\" — naive: loop through indices 1-4 each time, O(n) PER query\n// If asked 1,000 different range questions, that's O(n * 1000) total"
+    },
+    {
+      "type": "paragraph",
+      "text": "If a range-sum question gets asked many times on the same array, recomputing the sum by looping every single time wastes a lot of repeated work."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Prefix Sum?"
+    },
+    {
+      "type": "definition",
+      "term": "Prefix sum",
+      "text": "A prefix sum array stores, at each index i, the running total of all elements from the start up to and including i — enabling any range sum to be computed in O(1) afterward."
+    },
+    {
+      "type": "heading",
+      "text": "3. Building the Prefix Sum Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {2, 4, 1, 7, 3, 6};\nvector<int> prefix(numbers.size());\n\nprefix[0] = numbers[0];\nfor (int i = 1; i < numbers.size(); i++)\n{\n    prefix[i] = prefix[i - 1] + numbers[i]; // running total\n}\n// prefix = {2, 6, 7, 14, 17, 23}"
+    },
+    {
+      "type": "note",
+      "text": "prefix[i] always means \"the sum of everything from index 0 through index i.\" prefix[3] = 14 means numbers[0] + numbers[1] + numbers[2] + numbers[3] = 2+4+1+7 = 14."
+    },
+    {
+      "type": "heading",
+      "text": "4. Answering Range Queries in O(1)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// sum of indices l through r (inclusive):\nint rangeSum = (l == 0) ? prefix[r] : prefix[r] - prefix[l - 1];"
+    },
+    {
+      "type": "note",
+      "text": "Sum from l to r = (sum from 0 to r) minus (sum from 0 to l-1) — subtracting away everything before l leaves exactly the range wanted. This is a single subtraction, O(1), no matter how large the range is."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 4, 1, 7, 3, 6};\n    vector<int> prefix(numbers.size());\n\n    prefix[0] = numbers[0];\n    for (int i = 1; i < numbers.size(); i++)\n    {\n        prefix[i] = prefix[i - 1] + numbers[i];\n    }\n\n    int l = 1, r = 4;\n    int rangeSum = (l == 0) ? prefix[r] : prefix[r] - prefix[l - 1];\n\n    cout << rangeSum << endl;\n\n    return 0;\n}",
+      "output": "15",
+      "retypePractice": true,
+      "retypeId": "dsa-prefix-sum-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Verifying the answer",
+      "points": [
+        "Indices 1 through 4 are: 4, 1, 7, 3",
+        "4 + 1 + 7 + 3 = 15 — matches",
+        "prefix[4] - prefix[0] = 17 - 2 = 15 — same answer, computed without touching those middle elements directly"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Complexity: O(n) Build, O(1) Per Query"
+    },
+    {
+      "type": "table",
+      "headers": ["Approach", "Build cost", "Cost per query"],
+      "rows": [
+        ["Naive re-summing", "None needed", "O(n) every single time"],
+        ["Prefix sum", "O(n), once", "O(1) every time afterward"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "This is a textbook time-space tradeoff (recall Space Complexity): spending O(n) extra space and O(n) upfront time in exchange for every future query becoming instant. Worth it whenever many range-sum queries will be made on the same, unchanging array."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A bank statement's running balance column",
+      "text": "A bank statement doesn't force you to re-add every single transaction to find your balance on a given day — it shows a running total after each transaction. Finding \"how much did I spend between March 3rd and March 10th\" is just subtracting one running total from another, instead of re-adding every transaction in between."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the special case when l == 0 — there's no prefix[-1] to subtract, so the range sum is just prefix[r] directly.",
+        "Off-by-one errors in the range formula — double check whether the range is meant to be inclusive or exclusive of r.",
+        "Rebuilding the prefix sum array for every single query — it should be built once, up front, and reused for all queries.",
+        "Using prefix sum when the underlying array changes frequently — recomputing the whole prefix array after every update defeats the technique's benefit; that scenario calls for a different structure entirely."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What problem does the prefix sum technique solve?",
+          "answer": "Answering many range-sum queries on the same array efficiently, avoiding the O(n) cost of re-summing a range from scratch every time."
+        },
+        {
+          "question": "What does prefix[i] represent?",
+          "answer": "The sum of all elements from index 0 through index i, inclusive."
+        },
+        {
+          "question": "How do you compute the sum of elements from index l to r using a prefix sum array?",
+          "answer": "prefix[r] - prefix[l - 1], with the special case that if l is 0, the answer is simply prefix[r]."
+        },
+        {
+          "question": "What is the time complexity of building the prefix sum array, and of each query afterward?",
+          "answer": "O(n) to build it once, and O(1) per query afterward."
+        }
+      ],
+      "thirtySecondAnswer": "Prefix sum precomputes, in O(n), a running total array where prefix[i] holds the sum of all elements from index 0 through i. Once built, any range sum from index l to r can be answered in O(1) with prefix[r] - prefix[l - 1] (or just prefix[r] when l is 0), since subtracting away everything before l leaves exactly the desired range. This trades O(n) upfront time and space for turning every future range-sum query into a single subtraction, making it ideal whenever many range queries are made against the same unchanging array."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Prefix Sum",
+      "text": "prefix[i] = running total through i, like a bank statement's balance column. Range sum = prefix[r] - prefix[l-1]. Subtract away what came before."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-prefix-sum-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 4, 1, 7, 3, 6};\n    vector<int> prefix(numbers.size());\n\n    prefix[0] = numbers[0];\n    for (int i = 1; i < numbers.size(); i++)\n    {\n        prefix[i] = prefix[i - 1] + numbers[i];\n    }\n\n    int l = 1, r = 4;\n    int rangeSum = (l == 0) ? prefix[r] : prefix[r] - prefix[l - 1];\n\n    cout << rangeSum << endl;\n\n    return 0;\n}", "output": "15" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-prefix-sum-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 4, 1, 7, 3, 6};\n    vector<int> prefix(numbers.size());\n\n    prefix[0] = numbers[0];\n    for (int i = 1; i < numbers.size(); i++)\n    {\n        prefix[i] = prefix[i - 1] + numbers[i];\n    }\n\n    int l = 1, r = 4;\n    int rangeSum = (l == 0) ? prefix[r] : prefix[r] - prefix[l - 1];\n\n    cout << rangeSum << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-prefix-sum-basic"]
+  }
+}
