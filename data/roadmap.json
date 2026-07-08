@@ -255,7 +255,8 @@
       "id": "greedy-dp",
       "title": "Greedy & Dynamic Programming",
       "topics": [
-        { "id": "dsa-greedy-algorithms", "title": "Greedy Algorithms", "lesson": "dsa-greedy-algorithms" }
+        { "id": "dsa-greedy-algorithms", "title": "Greedy Algorithms", "lesson": "dsa-greedy-algorithms" },
+        { "id": "dsa-dynamic-programming", "title": "Dynamic Programming", "lesson": "dsa-dynamic-programming" }
       ]
     }
   ]

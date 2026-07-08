@@ -1,0 +1,115 @@
+{
+  "id": "dsa-dynamic-programming",
+  "moduleId": "greedy-dp",
+  "title": "Dynamic Programming",
+  "description": "Finally resolving Fibonacci's O(2ⁿ) cliffhanger from Recursion in DSA: the two properties that make DP applicable, and a preview of its two approaches.",
+  "objectives": [
+    "Understand what dynamic programming is",
+    "Know the two required properties: overlapping subproblems and optimal substructure",
+    "Connect DP directly back to naive Fibonacci's inefficiency",
+    "Preview memoization and tabulation as the two DP approaches"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Cliffhanger from Recursion in DSA"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recursion in DSA ended with a promise: naive Fibonacci's O(2ⁿ) time, caused by overlapping subproblems (fibonacci(2) computed repeatedly, independently, many times), would be fixed by \"remembering an already-computed answer instead of recalculating it from scratch.\" That fix is dynamic programming."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Dynamic Programming?"
+    },
+    {
+      "type": "definition",
+      "term": "Dynamic programming (DP)",
+      "text": "Dynamic programming solves a problem by breaking it into overlapping subproblems, solving each subproblem only once, and storing (remembering) its result for reuse."
+    },
+    {
+      "type": "heading",
+      "text": "3. Two Required Properties"
+    },
+    {
+      "type": "table",
+      "headers": ["Property", "Meaning"],
+      "rows": [
+        ["Overlapping subproblems", "The same smaller subproblem is needed multiple times while solving the bigger problem — exactly Fibonacci's fibonacci(2) being recomputed repeatedly"],
+        ["Optimal substructure", "The problem's overall solution can be built directly from the solutions to its subproblems — Fibonacci's fibonacci(n) is built directly from fibonacci(n-1) and fibonacci(n-2)"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Both properties are required. A problem with optimal substructure but NO overlapping subproblems doesn't benefit from DP — there's nothing being wastefully recomputed to save. Recall Merge Sort's divide-and-conquer from Sorting: it has optimal substructure (a sorted array is built from two sorted halves), but its subproblems don't overlap — each half is genuinely distinct — which is exactly why merge sort isn't described as \"dynamic programming.\""
+    },
+    {
+      "type": "heading",
+      "text": "4. Two Approaches, Previewed"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — Memoization and Tabulation, the two ways to actually implement DP, each get their own dedicated topic right after this."
+    },
+    {
+      "type": "table",
+      "headers": ["Approach", "Basic idea"],
+      "rows": [
+        ["Memoization", "Keep the natural recursive structure, but cache each subproblem's answer the first time it's computed (\"top-down\")"],
+        ["Tabulation", "Build the answer iteratively from the smallest subproblems upward, filling a table (\"bottom-up\")"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Answering the same question once, then just checking your notes",
+      "text": "Recall Recursion in DSA's analogy: everyone in a chain re-asking and re-answering the same question independently. Dynamic programming is that same chain, except now the first person to answer any given question writes it down — anyone asking that exact question again just reads the note instead of redoing the work from scratch."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Applying DP to a problem with no overlapping subproblems — there's nothing to save by remembering answers that are never actually needed twice.",
+        "Assuming any recursive problem automatically benefits from DP — both overlapping subproblems AND optimal substructure are required.",
+        "Confusing DP with plain recursion — plain recursion (like naive Fibonacci) can recompute the same subproblem endlessly; DP specifically adds the 'remember it' step.",
+        "Confusing DP with divide-and-conquer (like Merge Sort) — divide-and-conquer's subproblems are typically distinct, not overlapping, so there's nothing to cache."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is dynamic programming?",
+          "answer": "A technique that solves a problem by breaking it into overlapping subproblems, solving each one only once, and storing its result for reuse."
+        },
+        {
+          "question": "What two properties must a problem have for dynamic programming to apply?",
+          "answer": "Overlapping subproblems (the same smaller subproblem is needed multiple times) and optimal substructure (the overall solution can be built directly from subproblem solutions)."
+        },
+        {
+          "question": "Why doesn't Merge Sort count as dynamic programming, despite being recursive?",
+          "answer": "It has optimal substructure, but its subproblems (the two halves being sorted) don't overlap — each half is genuinely distinct, so there's no repeated work to save by remembering answers."
+        }
+      ],
+      "thirtySecondAnswer": "Dynamic programming solves the exact inefficiency left open by naive Fibonacci in Recursion in DSA: it breaks a problem into overlapping subproblems and solves each one only once, remembering its result instead of recomputing it. This requires two properties: overlapping subproblems (the same smaller subproblem genuinely needed multiple times) and optimal substructure (the full solution can be built directly from subproblem solutions). Two approaches implement this — memoization, caching results within the natural recursive structure, and tabulation, building the answer iteratively from the smallest subproblems upward — both covered next."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Dynamic Programming",
+      "text": "DP = answer the same question once, write it down, read the note next time. Needs overlapping subproblems (repeated work to save) AND optimal substructure (answer built from smaller answers)."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
