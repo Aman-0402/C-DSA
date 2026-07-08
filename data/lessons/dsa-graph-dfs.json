@@ -198,6 +198,42 @@
           "spaceComplexity": "O(rows * cols) worst case recursion stack, O(1) extra grid space"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-547",
+      "number": 547,
+      "title": "Number of Provinces",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/number-of-provinces/",
+      "problemStatement": "Given an n x n adjacency matrix isConnected where isConnected[i][j] = 1 means city i and city j are directly connected, return the number of provinces (connected groups of cities).",
+      "examples": [
+        { "input": "isConnected = [[1,1,0],[1,1,0],[0,0,1]]", "output": "2" }
+      ],
+      "constraints": ["1 <= n <= 200"],
+      "hints": [
+        "The input IS an adjacency matrix — n cities are vertices, isConnected[i][j] == 1 is a direct edge. This is the exact representation from the Graph Representation lesson.",
+        "Counting provinces is identical to counting islands (LC 200): start a fresh DFS from every unvisited vertex, and each fresh start is one more province.",
+        "A vertex's neighbors here are found by scanning row i of the matrix for 1s, instead of checking 4 grid directions."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "DFS using the matrix directly, with a separate visited array.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(vector<vector<int>>& isConnected, int city, vector<bool>& visited)\n{\n    int n = isConnected.size();\n    visited[city] = true;\n    for (int other = 0; other < n; other++)\n        if (isConnected[city][other] == 1 && !visited[other])\n            dfs(isConnected, other, visited);\n}\n\nint findCircleNum(vector<vector<int>>& isConnected)\n{\n    int n = isConnected.size();\n    vector<bool> visited(n, false);\n    int provinces = 0;\n\n    for (int city = 0; city < n; city++)\n    {\n        if (!visited[city])\n        {\n            provinces++;\n            dfs(isConnected, city, visited);\n        }\n    }\n    return provinces;\n}\n\nint main()\n{\n    vector<vector<int>> isConnected = {\n        {1, 1, 0},\n        {1, 1, 0},\n        {0, 0, 1}\n    };\n\n    cout << findCircleNum(isConnected);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n) for visited plus O(n) recursion stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same DFS approach — matrix scanning is already the minimal cost for a matrix representation, so this converts to an adjacency list first to skip re-scanning full rows.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(int city, vector<vector<int>>& adj, vector<bool>& visited)\n{\n    visited[city] = true;\n    for (int neighbor : adj[city])\n        if (!visited[neighbor])\n            dfs(neighbor, adj, visited);\n}\n\nint findCircleNum(vector<vector<int>>& isConnected)\n{\n    int n = isConnected.size();\n    vector<vector<int>> adj(n);\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < n; j++)\n            if (i != j && isConnected[i][j] == 1) adj[i].push_back(j);\n\n    vector<bool> visited(n, false);\n    int provinces = 0;\n\n    for (int city = 0; city < n; city++)\n    {\n        if (!visited[city])\n        {\n            provinces++;\n            dfs(city, adj, visited);\n        }\n    }\n    return provinces;\n}\n\nint main()\n{\n    vector<vector<int>> isConnected = {\n        {1, 1, 0},\n        {1, 1, 0},\n        {0, 0, 1}\n    };\n\n    cout << findCircleNum(isConnected);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n^2) to build the list once, then O(vertices + edges) for the traversal",
+          "spaceComplexity": "O(n^2) worst case for the adjacency list"
+        }
+      ]
     }
   ],
   "codeExamples": [
