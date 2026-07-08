@@ -342,6 +342,42 @@
           "spaceComplexity": "O(1) — no special-case branch needed"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-19",
+      "number": 19,
+      "title": "Remove Nth Node From End of List",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+      "problemStatement": "Given the head of a linked list, remove the n-th node from the END of the list, and return its head.",
+      "examples": [
+        { "input": "head = [1,2,3,4,5], n = 2", "output": "[1,2,3,5]" }
+      ],
+      "constraints": ["1 <= list length <= 30"],
+      "hints": [
+        "Without a length property, 'nth from the end' normally requires counting the length first, then walking again — two passes.",
+        "A single-pass trick: advance a 'fast' pointer n steps ahead first, THEN move both slow and fast together — by the time fast reaches the end, slow is exactly n nodes from the end.",
+        "A dummy node before head, same as Remove Linked List Elements, handles the edge case of removing the head itself cleanly."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Count the list's length first, then walk again to the node just before the one to remove.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* removeNthFromEnd(ListNode* head, int n)\n{\n    int length = 0;\n    for (ListNode* node = head; node; node = node->next) length++;\n\n    ListNode dummy(0);\n    dummy.next = head;\n    ListNode* current = &dummy;\n\n    for (int i = 0; i < length - n; i++) current = current->next;\n\n    ListNode* toDelete = current->next;\n    current->next = current->next->next;\n    delete toDelete;\n\n    return dummy.next;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n    head->next->next->next = new ListNode(4);\n    head->next->next->next->next = new ListNode(5);\n\n    ListNode* result = removeNthFromEnd(head, 2);\n    for (ListNode* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 5 ",
+          "timeComplexity": "O(n), but two passes",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two pointers with an n-node gap: advance fast n steps first, then move both together until fast reaches the end.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* removeNthFromEnd(ListNode* head, int n)\n{\n    ListNode dummy(0);\n    dummy.next = head;\n    ListNode* slow = &dummy;\n    ListNode* fast = &dummy;\n\n    for (int i = 0; i < n; i++) fast = fast->next;\n\n    while (fast->next != nullptr)\n    {\n        slow = slow->next;\n        fast = fast->next;\n    }\n\n    ListNode* toDelete = slow->next;\n    slow->next = slow->next->next;\n    delete toDelete;\n\n    return dummy.next;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n    head->next->next->next = new ListNode(4);\n    head->next->next->next->next = new ListNode(5);\n\n    ListNode* result = removeNthFromEnd(head, 2);\n    for (ListNode* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 5 ",
+          "timeComplexity": "O(n), single pass",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
