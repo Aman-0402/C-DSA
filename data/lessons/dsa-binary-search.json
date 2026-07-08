@@ -454,6 +454,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-875",
+      "number": 875,
+      "title": "Koko Eating Bananas",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/koko-eating-bananas/",
+      "problemStatement": "Koko eats bananas from piles at a constant speed k (bananas/hour), finishing one pile before starting the next, within h hours total. Return the minimum integer k that lets her finish all piles within h hours.",
+      "examples": [
+        { "input": "piles = [3,6,7,11], h = 8", "output": "4" }
+      ],
+      "constraints": ["1 <= piles.length <= 10^4", "piles.length <= h <= 10^9"],
+      "hints": [
+        "This is binary search on the ANSWER again (like Sqrt(x)): the candidate isn't an array index, it's a possible eating speed k, ranging from 1 to the largest pile.",
+        "For a fixed speed k, the total hours needed is completely determined: sum of ceil(pile / k) across all piles — write a feasibility check for 'can Koko finish within h hours at speed k?'",
+        "A faster speed only ever helps (never hurts) finishing within h hours — that monotonic relationship is exactly what makes binary searching for the minimum feasible k valid."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every possible speed starting from 1, checking feasibility, until the smallest working speed is found.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nlong hoursNeeded(vector<int> &piles, int k)\n{\n    long hours = 0;\n    for (int pile : piles) hours += (pile + k - 1) / k; // ceil division\n    return hours;\n}\n\nint minEatingSpeed(vector<int> &piles, int h)\n{\n    int maxPile = 0;\n    for (int p : piles) maxPile = max(maxPile, p);\n\n    for (int k = 1; k <= maxPile; k++)\n    {\n        if (hoursNeeded(piles, k) <= h) return k;\n    }\n\n    return maxPile;\n}\n\nint main()\n{\n    vector<int> piles = {3, 6, 7, 11};\n\n    cout << minEatingSpeed(piles, 8) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(maxPile × n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Binary search the speed range [1, maxPile], keeping the smallest speed found feasible so far.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nlong hoursNeeded(vector<int> &piles, int k)\n{\n    long hours = 0;\n    for (int pile : piles) hours += (pile + k - 1) / k;\n    return hours;\n}\n\nint minEatingSpeed(vector<int> &piles, int h)\n{\n    int left = 1, right = 0;\n    for (int p : piles) right = max(right, p);\n\n    while (left < right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (hoursNeeded(piles, mid) <= h)\n        {\n            right = mid; // feasible — try slower\n        }\n        else\n        {\n            left = mid + 1; // too slow — need faster\n        }\n    }\n\n    return left;\n}\n\nint main()\n{\n    vector<int> piles = {3, 6, 7, 11};\n\n    cout << minEatingSpeed(piles, 8) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n log(maxPile))",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
