@@ -251,6 +251,42 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-155",
+      "number": 155,
+      "title": "Min Stack",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/min-stack/",
+      "problemStatement": "Design a stack supporting push, pop, top, and getMin, all in O(1) time.",
+      "examples": [
+        { "input": "push(-2); push(0); push(-3); getMin(); pop(); top(); getMin()", "output": "-3, 0, -2" }
+      ],
+      "constraints": ["-2^31 <= val <= 2^31 - 1", "at most 3*10^4 calls"],
+      "hints": [
+        "A regular stack has no idea what its minimum is without scanning everything — O(1) getMin() needs that information tracked ALONGSIDE every push, not recomputed on demand.",
+        "A second, parallel stack can track 'the minimum value at this point in the main stack's history' — push the new minimum (current value vs the second stack's current top) every time the main stack grows.",
+        "When popping the main stack, pop the min-stack too, in lockstep — the min-stack's top is then automatically restored to whatever the minimum was before the popped push."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "A plain stack, with getMin() scanning every element — technically works, but violates the O(1) requirement.",
+          "code": "#include <iostream>\n#include <stack>\n#include <vector>\n#include <climits>\n\nusing namespace std;\n\nclass MinStack {\npublic:\n    vector<int> data;\n\n    void push(int val) { data.push_back(val); }\n    void pop() { data.pop_back(); }\n    int top() { return data.back(); }\n\n    int getMin()\n    {\n        int minVal = INT_MAX;\n        for (int v : data) minVal = min(minVal, v);\n        return minVal;\n    }\n};\n\nint main()\n{\n    MinStack ms;\n    ms.push(-2); ms.push(0); ms.push(-3);\n    cout << ms.getMin() << \", \";\n    ms.pop();\n    cout << ms.top() << \", \" << ms.getMin() << endl;\n\n    return 0;\n}",
+          "output": "-3, 0, -2",
+          "timeComplexity": "O(1) push/pop/top, O(n) getMin",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A second stack tracks the running minimum in lockstep with the main stack — every operation becomes O(1).",
+          "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nclass MinStack {\npublic:\n    stack<int> data;\n    stack<int> minTracker;\n\n    void push(int val)\n    {\n        data.push(val);\n        if (minTracker.empty() || val <= minTracker.top())\n        {\n            minTracker.push(val);\n        }\n        else\n        {\n            minTracker.push(minTracker.top());\n        }\n    }\n\n    void pop()\n    {\n        data.pop();\n        minTracker.pop();\n    }\n\n    int top() { return data.top(); }\n    int getMin() { return minTracker.top(); }\n};\n\nint main()\n{\n    MinStack ms;\n    ms.push(-2); ms.push(0); ms.push(-3);\n    cout << ms.getMin() << \", \";\n    ms.pop();\n    cout << ms.top() << \", \" << ms.getMin() << endl;\n\n    return 0;\n}",
+          "output": "-3, 0, -2",
+          "timeComplexity": "O(1) for every operation",
+          "spaceComplexity": "O(n) for the second stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
