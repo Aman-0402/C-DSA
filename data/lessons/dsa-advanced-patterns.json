@@ -165,6 +165,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-238",
+      "number": 238,
+      "title": "Product of Array Except Self",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/product-of-array-except-self/",
+      "problemStatement": "Given an array nums, return an array where each element is the product of all other elements, without using division and in O(n) time.",
+      "examples": [
+        { "input": "nums = [1,2,3,4]", "output": "[24,12,8,6]" }
+      ],
+      "constraints": ["2 <= nums.length <= 10^5"],
+      "hints": [
+        "Clue: 'product of everything except position i' — this is Prefix Sum's structure, but with multiplication instead of addition, run in BOTH directions.",
+        "A prefix product array (product of everything to the LEFT of i) combined with a suffix product array (product of everything to the RIGHT of i) gives result[i] = prefix[i] * suffix[i] directly.",
+        "The O(1) extra space version reuses the output array itself for prefix products first, then folds in a single running suffix product variable in a second pass — no separate suffix array needed."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Separate prefix and suffix product arrays, then combine.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> productExceptSelf(vector<int>& nums)\n{\n    int n = nums.size();\n    vector<int> prefix(n), suffix(n), result(n);\n\n    prefix[0] = 1;\n    for (int i = 1; i < n; i++) prefix[i] = prefix[i - 1] * nums[i - 1];\n\n    suffix[n - 1] = 1;\n    for (int i = n - 2; i >= 0; i--) suffix[i] = suffix[i + 1] * nums[i + 1];\n\n    for (int i = 0; i < n; i++) result[i] = prefix[i] * suffix[i];\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> result = productExceptSelf(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "24 12 8 6 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the prefix and suffix arrays"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Build prefix products directly into the output array, then fold in the suffix product with a single running variable — no separate suffix array.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> productExceptSelf(vector<int>& nums)\n{\n    int n = nums.size();\n    vector<int> result(n);\n\n    result[0] = 1;\n    for (int i = 1; i < n; i++) result[i] = result[i - 1] * nums[i - 1];\n\n    int suffix = 1;\n    for (int i = n - 1; i >= 0; i--)\n    {\n        result[i] *= suffix;\n        suffix *= nums[i];\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> result = productExceptSelf(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "24 12 8 6 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) extra space, not counting the output array"
+        }
+      ]
     }
   ],
   "codeExamples": [
