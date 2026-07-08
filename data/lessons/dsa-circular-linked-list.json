@@ -183,6 +183,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-708",
+      "number": 708,
+      "title": "Insert into a Sorted Circular Linked List",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/insert-into-a-sorted-circular-linked-list/",
+      "problemStatement": "Given a node from a sorted, ascending, circular linked list (or nullptr for an empty list), insert a new value while keeping it sorted and circular, and return any node from the list.",
+      "examples": [
+        { "input": "head = [3,4,1], insertVal = 2", "output": "[3,4,1,2]", "explanation": "The circular list 3->4->1->(back to 3) gets 2 inserted between 1 and 3." }
+      ],
+      "constraints": ["0 <= number of nodes <= 5*10^3"],
+      "hints": [
+        "Because the list is circular, there's exactly one place where the sorted order 'wraps around' (a node whose value is bigger than the NEXT node's value) — that's the boundary between the largest and smallest values.",
+        "Walk the list looking for two adjacent nodes prev and prev->next where prev.val <= insertVal <= prev->next.val — the normal, non-wraparound case.",
+        "Handle the wraparound explicitly: at the boundary node (prev.val > prev->next.val), insertVal belongs there if it's >= prev.val (bigger than everything) OR <= prev->next.val (smaller than everything). If the loop returns to the start without finding a spot (all values equal), insert anywhere."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect all values into a vector, sort them with the new value included, then rebuild the circular list from scratch.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node* next;\n    Node(int v) : val(v), next(nullptr) {}\n};\n\nNode* insert(Node* head, int insertVal)\n{\n    vector<int> values;\n    if (head != nullptr)\n    {\n        Node* cur = head;\n        do { values.push_back(cur->val); cur = cur->next; } while (cur != head);\n    }\n    values.push_back(insertVal);\n    sort(values.begin(), values.end());\n\n    Node* newHead = new Node(values[0]);\n    Node* tail = newHead;\n    for (int i = 1; i < values.size(); i++)\n    {\n        tail->next = new Node(values[i]);\n        tail = tail->next;\n    }\n    tail->next = newHead;\n\n    return newHead;\n}\n\nint main()\n{\n    Node* a = new Node(3);\n    Node* b = new Node(4);\n    Node* c = new Node(1);\n    a->next = b; b->next = c; c->next = a;\n\n    Node* result = insert(a, 2);\n    Node* cur = result;\n    do { cout << cur->val << \" \"; cur = cur->next; } while (cur != result);\n\n    return 0;\n}",
+          "output": "1 2 3 4 ",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(n) for values and new nodes"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Single pass finding the correct insertion point directly, handling the wraparound boundary and all-equal edge cases explicitly — the new node is spliced in without touching any other node.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node* next;\n    Node(int v) : val(v), next(nullptr) {}\n};\n\nNode* insert(Node* head, int insertVal)\n{\n    Node* newNode = new Node(insertVal);\n\n    if (head == nullptr)\n    {\n        newNode->next = newNode;\n        return newNode;\n    }\n\n    Node* prev = head;\n    Node* curr = head->next;\n\n    while (curr != head)\n    {\n        if (prev->val <= insertVal && insertVal <= curr->val) break; // normal case\n        if (prev->val > curr->val && (insertVal >= prev->val || insertVal <= curr->val)) break; // wraparound\n        prev = curr;\n        curr = curr->next;\n    }\n\n    prev->next = newNode;\n    newNode->next = curr;\n\n    return head;\n}\n\nint main()\n{\n    Node* a = new Node(3);\n    Node* b = new Node(4);\n    Node* c = new Node(1);\n    a->next = b; b->next = c; c->next = a;\n\n    Node* result = insert(a, 2);\n    Node* cur = result;\n    do { cout << cur->val << \" \"; cur = cur->next; } while (cur != result);\n\n    return 0;\n}",
+          "output": "3 4 1 2 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
