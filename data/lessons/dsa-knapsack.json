@@ -114,6 +114,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Knapsack",
       "text": "Knapsack = House Robber with a weight budget instead of an adjacency rule. Skip it (dp[i-1][w]), or take it if it fits (value + dp[i-1][w-weight]) — keep the best."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Knapsack in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-416",
+      "number": 416,
+      "title": "Partition Equal Subset Sum",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/partition-equal-subset-sum/",
+      "problemStatement": "Given an array of positive integers, return true if it can be partitioned into two subsets with equal sums.",
+      "examples": [
+        { "input": "nums = [1,5,11,5]", "output": "true" }
+      ],
+      "constraints": ["1 <= nums.length <= 200"],
+      "hints": [
+        "Equal-sum partition is only possible if the total sum is even; if so, the problem reduces to: can SOME subset sum to exactly total/2?",
+        "That reduced question is a pure 0/1 Knapsack subset-sum variant — each number is either included or excluded (skip-or-take), with 'weight' and 'value' both equal to the number itself, and capacity = target.",
+        "dp[w] = true if some subset of the numbers seen so far sums to exactly w — this lesson's dp[i][w] table, but boolean instead of a maximized value."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp table: dp[i][w] = whether target sum w is achievable using the first i numbers.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nbool canPartition(vector<int>& nums)\n{\n    int total = accumulate(nums.begin(), nums.end(), 0);\n    if (total % 2 != 0) return false;\n    int target = total / 2;\n\n    int n = nums.size();\n    vector<vector<bool>> dp(n + 1, vector<bool>(target + 1, false));\n    for (int i = 0; i <= n; i++) dp[i][0] = true;\n\n    for (int i = 1; i <= n; i++)\n        for (int w = 0; w <= target; w++)\n        {\n            dp[i][w] = dp[i - 1][w];\n            if (nums[i - 1] <= w) dp[i][w] = dp[i][w] || dp[i - 1][w - nums[i - 1]];\n        }\n\n    return dp[n][target];\n}\n\nint main()\n{\n    vector<int> nums = {1, 5, 11, 5};\n    cout << boolalpha << canPartition(nums);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n * target)",
+          "spaceComplexity": "O(n * target) for the full 2D table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Only the previous item's row is ever needed — collapse to a single rolling row, iterated RIGHT TO LEFT to avoid reusing the same item twice within one pass.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nbool canPartition(vector<int>& nums)\n{\n    int total = accumulate(nums.begin(), nums.end(), 0);\n    if (total % 2 != 0) return false;\n    int target = total / 2;\n\n    vector<bool> dp(target + 1, false);\n    dp[0] = true;\n\n    for (int num : nums)\n        for (int w = target; w >= num; w--)\n            dp[w] = dp[w] || dp[w - num];\n\n    return dp[target];\n}\n\nint main()\n{\n    vector<int> nums = {1, 5, 11, 5};\n    cout << boolalpha << canPartition(nums);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n * target)",
+          "spaceComplexity": "O(target) for a single row"
+        }
+      ]
     }
   ],
   "codeExamples": [
