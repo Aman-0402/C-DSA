@@ -143,6 +143,200 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Difference Array",
       "text": "Difference array = mark 'starts here' and 'stops here' on a calendar, don't fill in every day. Prefix-sum the difference array at the end to reveal the real schedule."
+    },
+    {
+      "type": "heading",
+      "text": "9. LeetCode: Difference Array in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1109",
+      "number": 1109,
+      "title": "Corporate Flight Bookings",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/corporate-flight-bookings/",
+      "problemStatement": "There are n flights numbered 1 to n. bookings[i] = [first_i, last_i, seats_i] means seats_i seats were booked on every flight from first_i to last_i inclusive. Return an array answer of length n where answer[i] is the total seats booked on flight i+1.",
+      "examples": [
+        { "input": "bookings = [[1,2,10],[2,3,20],[2,5,25]], n = 5", "output": "[10,55,45,25,25]" }
+      ],
+      "constraints": ["1 <= n <= 2*10^4", "1 <= bookings.length <= 2*10^4", "1 <= first_i <= last_i <= n", "1 <= seats_i <= 10^4"],
+      "hints": [
+        "Each booking is a RANGE UPDATE (add seats_i to every flight from first_i to last_i) — exactly this lesson's core problem.",
+        "Don't loop over every flight in each booking's range — mark the range's two boundaries in a difference array instead.",
+        "After marking every booking's boundaries, one prefix-sum pass reconstructs the total seats per flight."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every booking, loop across its entire flight range and add seats directly to the answer array.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> corpFlightBookings(vector<vector<int>> &bookings, int n)\n{\n    vector<int> answer(n, 0);\n\n    for (auto &b : bookings)\n    {\n        for (int flight = b[0]; flight <= b[1]; flight++)\n        {\n            answer[flight - 1] += b[2];\n        }\n    }\n\n    return answer;\n}\n\nint main()\n{\n    vector<vector<int>> bookings = {{1, 2, 10}, {2, 3, 20}, {2, 5, 25}};\n\n    vector<int> answer = corpFlightBookings(bookings, 5);\n    for (int a : answer) cout << a << \" \";\n\n    return 0;\n}",
+          "output": "10 55 45 25 25 ",
+          "timeComplexity": "O(bookings × range length), up to O(n²)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Mark each booking's two boundaries in a 1-indexed difference array, then reconstruct with a single prefix-sum pass.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> corpFlightBookings(vector<vector<int>> &bookings, int n)\n{\n    vector<int> diff(n + 2, 0);\n\n    for (auto &b : bookings)\n    {\n        diff[b[0]] += b[2];\n        diff[b[1] + 1] -= b[2];\n    }\n\n    vector<int> answer(n);\n    answer[0] = diff[1];\n    for (int i = 1; i < n; i++)\n    {\n        answer[i] = answer[i - 1] + diff[i + 1];\n    }\n\n    return answer;\n}\n\nint main()\n{\n    vector<vector<int>> bookings = {{1, 2, 10}, {2, 3, 20}, {2, 5, 25}};\n\n    vector<int> answer = corpFlightBookings(bookings, 5);\n    for (int a : answer) cout << a << \" \";\n\n    return 0;\n}",
+          "output": "10 55 45 25 25 ",
+          "timeComplexity": "O(bookings + n)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1094",
+      "number": 1094,
+      "title": "Car Pooling",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/car-pooling/",
+      "problemStatement": "A car has a given capacity. trips[i] = [numPassengers, from, to] means numPassengers get picked up at location from and dropped off at location to. Return true if the car can complete all trips without exceeding capacity at any point.",
+      "examples": [
+        { "input": "trips = [[2,1,5],[3,3,7]], capacity = 4", "output": "false", "explanation": "At location 3, both trips overlap: 2+3=5 passengers > capacity 4." }
+      ],
+      "constraints": ["1 <= trips.length <= 1000", "trips[i].length == 3", "1 <= numPassengers <= 100", "0 <= from < to <= 1000", "capacity <= 10^5"],
+      "hints": [
+        "Each trip is a RANGE UPDATE on 'number of passengers currently in the car' across locations from to to-1 (the passenger is gone by location 'to').",
+        "Mark +numPassengers at 'from' and -numPassengers at 'to' in a difference array — the passenger's drop-off point should NOT get the +.",
+        "A single prefix-sum pass over locations gives the passenger count at every point — check whether it ever exceeds capacity."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every trip, loop across every location it covers and add its passengers directly to a location-count array.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool carPooling(vector<vector<int>> &trips, int capacity)\n{\n    vector<int> counts(1001, 0);\n\n    for (auto &t : trips)\n    {\n        for (int loc = t[1]; loc < t[2]; loc++)\n        {\n            counts[loc] += t[0];\n            if (counts[loc] > capacity) return false;\n        }\n    }\n\n    return true;\n}\n\nint main()\n{\n    vector<vector<int>> trips = {{2, 1, 5}, {3, 3, 7}};\n\n    cout << (carPooling(trips, 4) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "false",
+          "timeComplexity": "O(trips × range length)",
+          "spaceComplexity": "O(max location)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Mark +passengers at 'from' and -passengers at 'to' in a difference array, then check the running total never exceeds capacity in one pass.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool carPooling(vector<vector<int>> &trips, int capacity)\n{\n    vector<int> diff(1001, 0);\n\n    for (auto &t : trips)\n    {\n        diff[t[1]] += t[0];\n        diff[t[2]] -= t[0];\n    }\n\n    int current = 0;\n    for (int d : diff)\n    {\n        current += d;\n        if (current > capacity) return false;\n    }\n\n    return true;\n}\n\nint main()\n{\n    vector<vector<int>> trips = {{2, 1, 5}, {3, 3, 7}};\n\n    cout << (carPooling(trips, 4) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "false",
+          "timeComplexity": "O(trips + max location)",
+          "spaceComplexity": "O(max location)"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-370",
+      "number": 370,
+      "title": "Range Addition",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/range-addition/",
+      "problemStatement": "Given an array of length n initialized to 0, and a list of updates [start, end, inc] where each adds inc to every element from start to end inclusive, return the final array after all updates.",
+      "examples": [
+        { "input": "length = 5, updates = [[1,3,2],[2,4,3],[0,2,-2]]", "output": "[-2,0,3,5,3]" }
+      ],
+      "constraints": ["1 <= length <= 10^5", "0 <= start_i <= end_i < length", "-1000 <= inc_i <= 1000"],
+      "hints": [
+        "This IS the exact problem this lesson's Section 6 example demonstrates — apply each update as two boundary marks in a difference array.",
+        "diff[start] += inc marks where the addition begins; diff[end + 1] -= inc marks where it stops.",
+        "After every update is marked, one prefix-sum pass gives the final array directly."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every update, loop across its entire range and add inc directly to the result array.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> getModifiedArray(int length, vector<vector<int>> &updates)\n{\n    vector<int> result(length, 0);\n\n    for (auto &u : updates)\n    {\n        for (int i = u[0]; i <= u[1]; i++)\n        {\n            result[i] += u[2];\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> updates = {{1, 3, 2}, {2, 4, 3}, {0, 2, -2}};\n\n    vector<int> result = getModifiedArray(5, updates);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "-2 0 3 5 3 ",
+          "timeComplexity": "O(updates × range length)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Mark each update's two boundaries in a difference array, then reconstruct the final array with a single prefix-sum pass.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> getModifiedArray(int length, vector<vector<int>> &updates)\n{\n    vector<int> diff(length + 1, 0);\n\n    for (auto &u : updates)\n    {\n        diff[u[0]] += u[2];\n        diff[u[1] + 1] -= u[2];\n    }\n\n    vector<int> result(length);\n    result[0] = diff[0];\n    for (int i = 1; i < length; i++)\n    {\n        result[i] = result[i - 1] + diff[i];\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> updates = {{1, 3, 2}, {2, 4, 3}, {0, 2, -2}};\n\n    vector<int> result = getModifiedArray(5, updates);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "-2 0 3 5 3 ",
+          "timeComplexity": "O(updates + n)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-3355",
+      "number": 3355,
+      "title": "Zero Array Transformation I",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/zero-array-transformation-i/",
+      "problemStatement": "Given nums and queries where each query [l, r] decrements every element in nums[l..r] by at most 1 (values clamp at 0, never go negative), return true if it's possible for nums to become all zeros after processing every query in order.",
+      "examples": [
+        { "input": "nums = [1,0,1], queries = [[0,2]]", "output": "true" },
+        { "input": "nums = [4,3,2,1], queries = [[1,3],[0,2]]", "output": "false" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5", "0 <= l <= r < nums.length"],
+      "hints": [
+        "Since each query decrements by exactly 1 and clamps at 0, index i can be reduced to 0 in total by however many queries COVER index i — order doesn't matter for the final feasibility check.",
+        "Counting how many queries cover each index i is a range-update problem — this lesson's difference array technique applies directly.",
+        "Build a difference array over the queries (mark +1 at l, -1 at r+1 for each query), prefix-sum it to get each index's total coverage count, then check coverage[i] >= nums[i] for every i."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every query, loop its range and increment a coverage counter per index directly.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool isZeroArray(vector<int> &nums, vector<vector<int>> &queries)\n{\n    int n = nums.size();\n    vector<int> coverage(n, 0);\n\n    for (auto &q : queries)\n    {\n        for (int i = q[0]; i <= q[1]; i++) coverage[i]++;\n    }\n\n    for (int i = 0; i < n; i++)\n    {\n        if (coverage[i] < nums[i]) return false;\n    }\n\n    return true;\n}\n\nint main()\n{\n    vector<int> nums = {1, 0, 1};\n    vector<vector<int>> queries = {{0, 2}};\n\n    cout << (isZeroArray(nums, queries) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(queries × range length)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Mark each query's boundaries in a difference array (O(1) per query), then reconstruct coverage counts with one prefix-sum pass and compare against nums.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool isZeroArray(vector<int> &nums, vector<vector<int>> &queries)\n{\n    int n = nums.size();\n    vector<int> diff(n + 1, 0);\n\n    for (auto &q : queries)\n    {\n        diff[q[0]]++;\n        diff[q[1] + 1]--;\n    }\n\n    int coverage = 0;\n    for (int i = 0; i < n; i++)\n    {\n        coverage += diff[i];\n        if (coverage < nums[i]) return false;\n    }\n\n    return true;\n}\n\nint main()\n{\n    vector<int> nums = {1, 0, 1};\n    vector<vector<int>> queries = {{0, 2}};\n\n    cout << (isZeroArray(nums, queries) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(queries + n)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-3356",
+      "number": 3356,
+      "title": "Zero Array Transformation II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/zero-array-transformation-ii/",
+      "problemStatement": "Given nums and queries where queries[i] = [l, r, val] decrements every element in nums[l..r] by AT MOST val (clamped at 0), return the minimum number of queries (taken as a prefix of the list, in order) needed so nums can become all zeros — or -1 if even all queries together aren't enough.",
+      "examples": [
+        { "input": "nums = [2,0,2], queries = [[0,2,1],[0,2,1],[1,1,3]]", "output": "2", "explanation": "Using only the first query isn't enough (index 0 only gets 1 of the 2 it needs); the first two queries together give index 0 a total of 2, which is enough for every index." },
+        { "input": "nums = [4,3,2,1], queries = [[1,3,2],[0,2,1]]", "output": "-1", "explanation": "Even using both queries, index 0 only ever receives 1 total decrement, but nums[0] = 4." }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5", "1 <= queries.length <= 10^5", "1 <= val <= 10^5"],
+      "hints": [
+        "For a FIXED number of queries k (using the first k in order), the question 'can nums become zero?' is answered exactly like Zero Array Transformation I — build a difference array from those k queries' [l, r, val] and check total coverage at each index is >= nums[i].",
+        "Using more queries never makes feasibility WORSE (coverage can only grow) — feasibility is monotonic in k, which is the classic signal for binary search on the answer (recall Binary Search).",
+        "Binary search over k from 0 to queries.size(): for each candidate k, run the O(k + n) feasibility check from hint 1, and narrow toward the smallest feasible k."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every possible k from 0 upward, rebuilding the difference array from scratch each time and checking feasibility, stopping at the first k that works.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool feasible(vector<int> &nums, vector<vector<int>> &queries, int k)\n{\n    int n = nums.size();\n    vector<long long> diff(n + 1, 0);\n\n    for (int i = 0; i < k; i++)\n    {\n        diff[queries[i][0]] += queries[i][2];\n        diff[queries[i][1] + 1] -= queries[i][2];\n    }\n\n    long long running = 0;\n    for (int i = 0; i < n; i++)\n    {\n        running += diff[i];\n        if (running < nums[i]) return false;\n    }\n\n    return true;\n}\n\nint minZeroArray(vector<int> &nums, vector<vector<int>> &queries)\n{\n    for (int k = 0; k <= (int)queries.size(); k++)\n    {\n        if (feasible(nums, queries, k)) return k;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {2, 0, 2};\n    vector<vector<int>> queries = {{0, 2, 1}, {0, 2, 1}, {1, 1, 3}};\n\n    cout << minZeroArray(nums, queries) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(q × (q + n)) — rebuilds the diff array from scratch at every k",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Better",
+          "explanation": "Maintain the difference array incrementally, adding only the NEW query at each step k instead of rebuilding from scratch — still checks every k linearly, but avoids redundant rebuilding.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool isZeroFeasible(vector<long long> &diff, vector<int> &nums)\n{\n    long long running = 0;\n    for (int i = 0; i < (int)nums.size(); i++)\n    {\n        running += diff[i];\n        if (running < nums[i]) return false;\n    }\n    return true;\n}\n\nint minZeroArray(vector<int> &nums, vector<vector<int>> &queries)\n{\n    int n = nums.size();\n    vector<long long> diff(n + 1, 0);\n\n    if (isZeroFeasible(diff, nums)) return 0;\n\n    for (int k = 0; k < (int)queries.size(); k++)\n    {\n        diff[queries[k][0]] += queries[k][2];\n        diff[queries[k][1] + 1] -= queries[k][2];\n\n        if (isZeroFeasible(diff, nums)) return k + 1;\n    }\n\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {2, 0, 2};\n    vector<vector<int>> queries = {{0, 2, 1}, {0, 2, 1}, {1, 1, 3}};\n\n    cout << minZeroArray(nums, queries) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(q × n) — one O(n) feasibility check per candidate k",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Feasibility only improves as k grows (more queries add non-negative coverage), so binary search directly for the smallest feasible k instead of checking every k linearly.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool feasible(vector<int> &nums, vector<vector<int>> &queries, int k)\n{\n    int n = nums.size();\n    vector<long long> diff(n + 1, 0);\n\n    for (int i = 0; i < k; i++)\n    {\n        diff[queries[i][0]] += queries[i][2];\n        diff[queries[i][1] + 1] -= queries[i][2];\n    }\n\n    long long running = 0;\n    for (int i = 0; i < n; i++)\n    {\n        running += diff[i];\n        if (running < nums[i]) return false;\n    }\n\n    return true;\n}\n\nint minZeroArray(vector<int> &nums, vector<vector<int>> &queries)\n{\n    int lo = 0, hi = queries.size();\n\n    if (!feasible(nums, queries, hi)) return -1;\n\n    while (lo < hi)\n    {\n        int mid = lo + (hi - lo) / 2;\n        if (feasible(nums, queries, mid)) hi = mid;\n        else lo = mid + 1;\n    }\n\n    return lo;\n}\n\nint main()\n{\n    vector<int> nums = {2, 0, 2};\n    vector<vector<int>> queries = {{0, 2, 1}, {0, 2, 1}, {1, 1, 3}};\n\n    cout << minZeroArray(nums, queries) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O((q + n) log q)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
