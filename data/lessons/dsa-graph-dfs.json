@@ -162,6 +162,42 @@
           "spaceComplexity": "O(rows * cols) worst case recursion stack, O(1) extra grid space"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-733",
+      "number": 733,
+      "title": "Flood Fill",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/flood-fill/",
+      "problemStatement": "Given an image grid, a starting pixel (sr, sc), and a new color, perform a flood fill: replace the connected component of the starting pixel's original color with the new color.",
+      "examples": [
+        { "input": "image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2", "output": "[[2,2,2],[2,2,0],[2,0,1]]" }
+      ],
+      "constraints": ["1 <= rows, cols <= 50", "0 <= color, image[i][j] < 16"],
+      "hints": [
+        "Same DFS-on-a-grid template as LC 200/695, but instead of checking for a specific land value, check for the STARTING pixel's original color.",
+        "Save startColor = image[sr][sc] BEFORE overwriting anything — once you paint the first cell, you'd otherwise lose track of what to match against.",
+        "Guard against startColor == color: if they're equal, painting would still be 'correct' but the visited check would never trigger, causing infinite recursion on a cycle-containing grid."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use a separate visited grid to track painted cells, avoiding relying on the paint itself to signal 'already handled'.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(vector<vector<int>>& image, int r, int c, int startColor, int color, vector<vector<bool>>& visited)\n{\n    int rows = image.size(), cols = image[0].size();\n    if (r < 0 || r >= rows || c < 0 || c >= cols) return;\n    if (visited[r][c] || image[r][c] != startColor) return;\n\n    visited[r][c] = true;\n    image[r][c] = color;\n    dfs(image, r + 1, c, startColor, color, visited);\n    dfs(image, r - 1, c, startColor, color, visited);\n    dfs(image, r, c + 1, startColor, color, visited);\n    dfs(image, r, c - 1, startColor, color, visited);\n}\n\nvector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color)\n{\n    int rows = image.size(), cols = image[0].size();\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n    int startColor = image[sr][sc];\n    dfs(image, sr, sc, startColor, color, visited);\n    return image;\n}\n\nint main()\n{\n    vector<vector<int>> image = {\n        {1, 1, 1},\n        {1, 1, 0},\n        {1, 0, 1}\n    };\n\n    vector<vector<int>> result = floodFill(image, 1, 1, 2);\n    for (auto &row : result)\n    {\n        for (int v : row) cout << v << \" \";\n        cout << \"| \";\n    }\n\n    return 0;\n}",
+          "output": "2 2 2 | 2 2 0 | 2 0 1 | ",
+          "timeComplexity": "O(rows * cols)",
+          "spaceComplexity": "O(rows * cols) for the separate visited grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Paint in-place and use the painted color itself as the visited marker — with an explicit guard for startColor == color.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(vector<vector<int>>& image, int r, int c, int startColor, int color)\n{\n    int rows = image.size(), cols = image[0].size();\n    if (r < 0 || r >= rows || c < 0 || c >= cols) return;\n    if (image[r][c] != startColor) return;\n\n    image[r][c] = color;\n    dfs(image, r + 1, c, startColor, color);\n    dfs(image, r - 1, c, startColor, color);\n    dfs(image, r, c + 1, startColor, color);\n    dfs(image, r, c - 1, startColor, color);\n}\n\nvector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color)\n{\n    int startColor = image[sr][sc];\n    if (startColor == color) return image; // guard against infinite recursion on a no-op fill\n\n    dfs(image, sr, sc, startColor, color);\n    return image;\n}\n\nint main()\n{\n    vector<vector<int>> image = {\n        {1, 1, 1},\n        {1, 1, 0},\n        {1, 0, 1}\n    };\n\n    vector<vector<int>> result = floodFill(image, 1, 1, 2);\n    for (auto &row : result)\n    {\n        for (int v : row) cout << v << \" \";\n        cout << \"| \";\n    }\n\n    return 0;\n}",
+          "output": "2 2 2 | 2 2 0 | 2 0 1 | ",
+          "timeComplexity": "O(rows * cols)",
+          "spaceComplexity": "O(rows * cols) worst case recursion stack, O(1) extra grid space"
+        }
+      ]
     }
   ],
   "codeExamples": [
