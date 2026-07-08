@@ -150,6 +150,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Bit Manipulation",
       "text": "1 << i = a single 1 at spot i. OR to set, AND-with-NOT to clear, XOR to toggle. XOR cancels pairs to 0 — pair up and vanish, the odd one stays."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Bit Manipulation in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-136",
+      "number": 136,
+      "title": "Single Number",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/single-number/",
+      "problemStatement": "Given a non-empty array where every element appears exactly twice except for one, find that single element. Must run in O(n) time with O(1) extra space.",
+      "examples": [
+        { "input": "nums = [4,1,2,1,2]", "output": "4" }
+      ],
+      "constraints": ["1 <= nums.length <= 3 * 10^4"],
+      "hints": [
+        "This is the lesson's own worked example — try implementing it yourself before checking back against the XOR explanation above.",
+        "XOR every element together in a single pass: x ^ x = 0 cancels every paired value, and x ^ 0 = x leaves the unpaired one untouched.",
+        "The O(1) space requirement rules out a hash set (which would be O(n) space) — XOR is exactly the trick that satisfies both constraints simultaneously."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Hash map counting occurrences, then scan for the one with count 1 — works but violates the O(1) space constraint.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nint singleNumber(vector<int>& nums)\n{\n    unordered_map<int, int> count;\n    for (int num : nums) count[num]++;\n\n    for (auto &entry : count)\n        if (entry.second == 1) return entry.first;\n\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {4, 1, 2, 1, 2};\n    cout << singleNumber(nums);\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the hash map"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "XOR every element together — pairs cancel to 0, leaving only the unpaired value.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint singleNumber(vector<int>& nums)\n{\n    int result = 0;\n    for (int num : nums) result ^= num;\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {4, 1, 2, 1, 2};\n    cout << singleNumber(nums);\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
