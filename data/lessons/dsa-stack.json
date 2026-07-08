@@ -102,6 +102,47 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Stack (DSA)",
       "text": "Balanced parentheses = nested boxes, close the most recently opened one first. Push openers, pop-and-check on closers, balanced only if the stack ends empty."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Stack in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-20",
+      "number": 20,
+      "title": "Valid Parentheses",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/valid-parentheses/",
+      "problemStatement": "Given a string s containing just '(', ')', '{', '}', '[', ']', determine if the input string is valid (every bracket properly closed in the correct order).",
+      "examples": [
+        { "input": "s = \"()[]{}\"", "output": "true" },
+        { "input": "s = \"(]\"", "output": "false" }
+      ],
+      "constraints": ["1 <= s.length <= 10^4"],
+      "hints": [
+        "This is exactly this lesson's own balanced-parentheses example — no punctuation-and-letters mix, just brackets.",
+        "Push every opening bracket. For every closing bracket, the stack must be non-empty and its top must be the matching opener.",
+        "Balanced only if every closer matched correctly AND the stack is empty at the end (no leftover unmatched openers)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Repeatedly find and remove any adjacent matching pair (like \"()\", \"[]\", \"{}\") from the string until no more removals are possible.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nbool isValid(string s)\n{\n    bool changed = true;\n    while (changed)\n    {\n        changed = false;\n        for (int i = 0; i + 1 < s.size(); i++)\n        {\n            if ((s[i]=='(' && s[i+1]==')') || (s[i]=='[' && s[i+1]==']') || (s[i]=='{' && s[i+1]=='}'))\n            {\n                s.erase(i, 2);\n                changed = true;\n                break;\n            }\n        }\n    }\n    return s.empty();\n}\n\nint main()\n{\n    cout << (isValid(\"()[]{}\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the mutable string"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "This lesson's own stack-based approach: push openers, pop-and-check on closers.",
+          "code": "#include <iostream>\n#include <stack>\n#include <string>\n\nusing namespace std;\n\nbool isValid(string s)\n{\n    stack<char> openers;\n\n    for (char c : s)\n    {\n        if (c == '(' || c == '[' || c == '{')\n        {\n            openers.push(c);\n        }\n        else\n        {\n            if (openers.empty()) return false;\n\n            char top = openers.top();\n            if ((c == ')' && top != '(') ||\n                (c == ']' && top != '[') ||\n                (c == '}' && top != '{'))\n            {\n                return false;\n            }\n            openers.pop();\n        }\n    }\n\n    return openers.empty();\n}\n\nint main()\n{\n    cout << (isValid(\"()[]{}\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
