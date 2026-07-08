@@ -287,6 +287,42 @@
           "spaceComplexity": "O(n) for the second stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-394",
+      "number": 394,
+      "title": "Decode String",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/decode-string/",
+      "problemStatement": "Given an encoded string like \"3[a2[c]]\", decode it: k[encoded_string] means the encoded_string inside the brackets repeats k times. Return the fully decoded string.",
+      "examples": [
+        { "input": "s = \"3[a2[c]]\"", "output": "\"accaccacc\"" }
+      ],
+      "constraints": ["1 <= s.length <= 30"],
+      "hints": [
+        "Nested brackets mean the innermost one must be fully resolved before the outer one can use it — a classic 'process the most recently opened first' shape, same as Valid Parentheses.",
+        "When '[' is seen, the current partial string and the current repeat count both need to be SAVED before starting fresh — two parallel stacks (or a stack of pairs) hold this state per nesting level.",
+        "When ']' is seen, pop the saved string and count, then rebuild: savedString + (currentString repeated count times) becomes the new 'current' string, one level back up."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recursively find each innermost bracket pair, expand it, and repeat the string-replace process until no brackets remain.",
+          "code": "#include <iostream>\n#include <string>\n#include <cctype>\n\nusing namespace std;\n\nstring decodeString(string s)\n{\n    while (s.find('[') != string::npos)\n    {\n        int close = s.find(']');\n        int open = s.rfind('[', close);\n\n        int numStart = open - 1;\n        while (numStart >= 0 && isdigit(s[numStart])) numStart--;\n        numStart++;\n\n        int k = stoi(s.substr(numStart, open - numStart));\n        string inner = s.substr(open + 1, close - open - 1);\n\n        string expanded;\n        for (int i = 0; i < k; i++) expanded += inner;\n\n        s = s.substr(0, numStart) + expanded + s.substr(close + 1);\n    }\n\n    return s;\n}\n\nint main()\n{\n    cout << decodeString(\"3[a2[c]]\") << endl;\n\n    return 0;\n}",
+          "output": "accaccacc",
+          "timeComplexity": "O(n²) — repeated substring rebuilding",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two stacks track saved counts and saved partial strings as brackets nest, resolving each level exactly once as its closing bracket is reached.",
+          "code": "#include <iostream>\n#include <stack>\n#include <string>\n\nusing namespace std;\n\nstring decodeString(string s)\n{\n    stack<int> counts;\n    stack<string> strings;\n    string current = \"\";\n    int num = 0;\n\n    for (char c : s)\n    {\n        if (isdigit(c))\n        {\n            num = num * 10 + (c - '0');\n        }\n        else if (c == '[')\n        {\n            counts.push(num);\n            strings.push(current);\n            num = 0;\n            current = \"\";\n        }\n        else if (c == ']')\n        {\n            int repeat = counts.top(); counts.pop();\n            string prev = strings.top(); strings.pop();\n\n            string expanded = \"\";\n            for (int i = 0; i < repeat; i++) expanded += current;\n\n            current = prev + expanded;\n        }\n        else\n        {\n            current += c;\n        }\n    }\n\n    return current;\n}\n\nint main()\n{\n    cout << decodeString(\"3[a2[c]]\") << endl;\n\n    return 0;\n}",
+          "output": "accaccacc",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stacks and result"
+        }
+      ]
     }
   ],
   "codeExamples": [
