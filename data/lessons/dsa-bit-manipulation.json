@@ -334,6 +334,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-268",
+      "number": 268,
+      "title": "Missing Number",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/missing-number/",
+      "problemStatement": "Given an array containing n distinct numbers from the range [0, n], return the one number missing from the range.",
+      "examples": [
+        { "input": "nums = [3,0,1]", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4"],
+      "hints": [
+        "This is Single Number's XOR-cancellation trick, adapted: instead of pairing up equal VALUES, pair up each INDEX 0..n with its corresponding array value.",
+        "XOR together every value from 0 to n, AND every value actually in nums — every number that appears in BOTH sets cancels to 0, leaving only the missing number.",
+        "No hash set or sorting needed — the same O(n) time, O(1) space trick from Single Number applies directly here."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sum 0..n using the arithmetic series formula, subtract the actual sum of nums — the difference is the missing number.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nint missingNumber(vector<int>& nums)\n{\n    int n = nums.size();\n    int expectedSum = n * (n + 1) / 2;\n    int actualSum = accumulate(nums.begin(), nums.end(), 0);\n    return expectedSum - actualSum;\n}\n\nint main()\n{\n    vector<int> nums = {3, 0, 1};\n    cout << missingNumber(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "XOR every index 0..n together with every value in nums — pairs cancel, leaving only the missing number. Avoids any risk of integer overflow from summing large values.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint missingNumber(vector<int>& nums)\n{\n    int result = nums.size();\n    for (int i = 0; i < (int)nums.size(); i++)\n        result ^= i ^ nums[i];\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {3, 0, 1};\n    cout << missingNumber(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
