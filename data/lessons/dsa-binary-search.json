@@ -382,6 +382,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-33",
+      "number": 33,
+      "title": "Search in Rotated Sorted Array",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+      "problemStatement": "Given a sorted array that has been rotated at an unknown pivot, and a target, return its index, or -1 if not found, in O(log n) time.",
+      "examples": [
+        { "input": "nums = [4,5,6,7,0,1,2], target = 0", "output": "4" }
+      ],
+      "constraints": ["1 <= nums.length <= 5000"],
+      "hints": [
+        "The array isn't fully sorted anymore, but here's the key insight: at ANY mid point, at least ONE of the two halves (left of mid, or right of mid) IS still fully sorted.",
+        "First figure out which half is sorted by comparing nums[left] to nums[mid].",
+        "Once you know which half is sorted, checking whether target falls within THAT half's value range tells you which half to search next — same halving logic as normal binary search, just with an extra decision first."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Scan the array linearly, ignoring the rotation entirely.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint search(vector<int> &nums, int target)\n{\n    for (int i = 0; i < nums.size(); i++)\n    {\n        if (nums[i] == target) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {4, 5, 6, 7, 0, 1, 2};\n\n    cout << search(nums, 0) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Modified binary search: identify the sorted half at each step, then decide which half to search based on whether target falls in that half's range.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint search(vector<int> &nums, int target)\n{\n    int left = 0, right = nums.size() - 1;\n\n    while (left <= right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (nums[mid] == target) return mid;\n\n        if (nums[left] <= nums[mid]) // left half is sorted\n        {\n            if (nums[left] <= target && target < nums[mid])\n            {\n                right = mid - 1;\n            }\n            else\n            {\n                left = mid + 1;\n            }\n        }\n        else // right half is sorted\n        {\n            if (nums[mid] < target && target <= nums[right])\n            {\n                left = mid + 1;\n            }\n            else\n            {\n                right = mid - 1;\n            }\n        }\n    }\n\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {4, 5, 6, 7, 0, 1, 2};\n\n    cout << search(nums, 0) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(log n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
