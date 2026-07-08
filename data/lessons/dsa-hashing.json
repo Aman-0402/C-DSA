@@ -285,6 +285,43 @@
           "spaceComplexity": "O(n + m) for the two sets"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-350-hashing",
+      "number": 350,
+      "title": "Intersection of Two Arrays II",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/intersection-of-two-arrays-ii/",
+      "problemStatement": "Given nums1 and nums2, return their intersection, where each element appears as many times as it shows in BOTH arrays (duplicates preserved, up to the minimum count).",
+      "examples": [
+        { "input": "nums1 = [1,2,2,1], nums2 = [2,2]", "output": "[2,2]" },
+        { "input": "nums1 = [4,9,5], nums2 = [9,4,9,8,4]", "output": "[4,9]" }
+      ],
+      "constraints": ["1 <= nums1.length, nums2.length <= 1000", "0 <= nums[i] <= 1000"],
+      "hints": [
+        "Unlike Intersection of Two Arrays, duplicates matter here — a plain hash SET isn't enough since it can't represent 'this value twice.'",
+        "A hash MAP tallying counts from nums1 tracks not just whether a value exists, but how many are still available to match.",
+        "Scanning nums2, a value can be added to the result as long as its count in the map is still greater than 0 — decrement the count each time it's used."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every element in nums2, scan nums1 for an unused match, marking matched elements so they aren't reused.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> intersect(vector<int> &nums1, vector<int> &nums2)\n{\n    vector<bool> used(nums1.size(), false);\n    vector<int> result;\n\n    for (int b : nums2)\n    {\n        for (int i = 0; i < nums1.size(); i++)\n        {\n            if (!used[i] && nums1[i] == b)\n            {\n                result.push_back(b);\n                used[i] = true;\n                break;\n            }\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 2, 2, 1};\n    vector<int> nums2 = {2, 2};\n\n    vector<int> result = intersect(nums1, nums2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "2 2 ",
+          "timeComplexity": "O(n × m)",
+          "spaceComplexity": "O(n) for the used array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A hash map tallying nums1's counts; scanning nums2, use up a count each time a match is found.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<int> intersect(vector<int> &nums1, vector<int> &nums2)\n{\n    unordered_map<int, int> counts;\n    for (int a : nums1) counts[a]++;\n\n    vector<int> result;\n    for (int b : nums2)\n    {\n        if (counts[b] > 0)\n        {\n            result.push_back(b);\n            counts[b]--;\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 2, 2, 1};\n    vector<int> nums2 = {2, 2};\n\n    vector<int> result = intersect(nums1, nums2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "2 2 ",
+          "timeComplexity": "O(n + m)",
+          "spaceComplexity": "O(n) for the hash map"
+        }
+      ]
     }
   ],
   "codeExamples": [
