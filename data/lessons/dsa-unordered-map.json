@@ -336,6 +336,42 @@
           "spaceComplexity": "O(k)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-49-unordered-map",
+      "number": 49,
+      "title": "Group Anagrams",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/group-anagrams/",
+      "problemStatement": "Given an array of strings strs, group the anagrams together.",
+      "examples": [
+        { "input": "strs = [\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]", "output": "[[\"eat\",\"tea\",\"ate\"],[\"tan\",\"nat\"],[\"bat\"]]" }
+      ],
+      "constraints": ["1 <= strs.length <= 10^4"],
+      "hints": [
+        "This is exactly this lesson's Section 3 grouping-by-computed-key example.",
+        "unordered_map<string, vector<string>> — the sorted word is the key, the list of matching original words is the value.",
+        "groups[key].push_back(word) relies on []'s auto-creation to start a fresh vector the first time a new key appears."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Compare each string against the first member of every existing group.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nvector<vector<string>> groupAnagrams(vector<string> &strs)\n{\n    vector<vector<string>> groups;\n\n    for (string &s : strs)\n    {\n        string sorted = s;\n        sort(sorted.begin(), sorted.end());\n\n        bool placed = false;\n        for (auto &group : groups)\n        {\n            string groupSorted = group[0];\n            sort(groupSorted.begin(), groupSorted.end());\n            if (groupSorted == sorted)\n            {\n                group.push_back(s);\n                placed = true;\n                break;\n            }\n        }\n        if (!placed) groups.push_back({s});\n    }\n\n    return groups;\n}\n\nint main()\n{\n    vector<string> strs = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n\n    auto groups = groupAnagrams(strs);\n    cout << groups.size() << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n² × k log k)",
+          "spaceComplexity": "O(n × k)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "unordered_map<string, vector<string>> keyed by sorted letters, filled in one pass.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<vector<string>> groupAnagrams(vector<string> &strs)\n{\n    unordered_map<string, vector<string>> groups;\n\n    for (string &s : strs)\n    {\n        string key = s;\n        sort(key.begin(), key.end());\n        groups[key].push_back(s);\n    }\n\n    vector<vector<string>> result;\n    for (auto &[key, group] : groups) result.push_back(group);\n\n    return result;\n}\n\nint main()\n{\n    vector<string> strs = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n\n    auto groups = groupAnagrams(strs);\n    cout << groups.size() << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n × k log k)",
+          "spaceComplexity": "O(n × k)"
+        }
+      ]
     }
   ],
   "codeExamples": [
