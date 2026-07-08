@@ -219,6 +219,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-45",
+      "number": 45,
+      "title": "Jump Game II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/jump-game-ii/",
+      "problemStatement": "Given an array where nums[i] is the maximum jump length from index i, return the MINIMUM number of jumps to reach the last index. It's guaranteed the last index is always reachable.",
+      "examples": [
+        { "input": "nums = [2,3,1,1,4]", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4"],
+      "hints": [
+        "Think of it like BFS levels: 'currentEnd' marks the farthest index reachable using the jumps taken SO FAR — everything up to it is reachable in the current jump count.",
+        "While scanning within the current level, track the farthest index reachable with ONE MORE jump — this becomes the next level's boundary.",
+        "The moment the scan index reaches currentEnd, a jump is forced (greedily committing to the farthest option found in that level) — increment jumps and advance currentEnd to that farthest value."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recursively try every possible jump length from each index, tracking the minimum jump count across all paths.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint minJumpsFrom(int pos, vector<int>& nums)\n{\n    if (pos >= (int)nums.size() - 1) return 0;\n\n    int best = INT_MAX;\n    int maxJump = min((int)nums.size() - 1, pos + nums[pos]);\n    for (int next = pos + 1; next <= maxJump; next++)\n    {\n        int sub = minJumpsFrom(next, nums);\n        if (sub != INT_MAX) best = min(best, sub + 1);\n    }\n    return best;\n}\n\nint jump(vector<int>& nums)\n{\n    return minJumpsFrom(0, nums);\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 1, 1, 4};\n    cout << jump(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(2^n) worst case — exponential branching",
+          "spaceComplexity": "O(n) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Greedy BFS-style level tracking: currentEnd bounds the current jump count's reach; farthest tracks the best next-level boundary.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint jump(vector<int>& nums)\n{\n    int jumps = 0, currentEnd = 0, farthest = 0;\n\n    for (int i = 0; i < (int)nums.size() - 1; i++)\n    {\n        farthest = max(farthest, i + nums[i]);\n        if (i == currentEnd)\n        {\n            jumps++;\n            currentEnd = farthest;\n        }\n    }\n\n    return jumps;\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 1, 1, 4};\n    cout << jump(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
