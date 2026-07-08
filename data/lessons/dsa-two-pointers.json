@@ -309,6 +309,43 @@
           "spaceComplexity": "O(1) — in place"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-27",
+      "number": 27,
+      "title": "Remove Element",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/remove-element/",
+      "problemStatement": "Given an array nums and a value val, remove all occurrences of val in place, keeping the relative order of the remaining elements. Return k, the number of elements not equal to val.",
+      "examples": [
+        { "input": "nums = [3,2,2,3], val = 3", "output": "k = 2, nums = [2,2,...]" },
+        { "input": "nums = [0,1,2,2,3,0,4,2], val = 2", "output": "k = 5, nums = [0,1,4,0,3,...]" }
+      ],
+      "constraints": ["0 <= nums.length <= 100", "0 <= nums[i] <= 50", "0 <= val <= 100"],
+      "hints": [
+        "This is the same slow/fast shape as Move Zeroes and Remove Duplicates — a slow pointer marks where the next KEPT value goes.",
+        "Unlike Remove Duplicates, this array isn't necessarily sorted, and the condition to check is simply nums[fast] != val.",
+        "Every time the fast pointer finds a value that ISN'T val, it belongs at the slow pointer's position — copy it there and advance slow."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build a new vector of only the kept values, then copy it back into nums.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint removeElement(vector<int> &nums, int val)\n{\n    vector<int> kept;\n\n    for (int n : nums)\n    {\n        if (n != val) kept.push_back(n);\n    }\n\n    for (int i = 0; i < kept.size(); i++) nums[i] = kept[i];\n\n    return kept.size();\n}\n\nint main()\n{\n    vector<int> nums = {3, 2, 2, 3};\n\n    int k = removeElement(nums, 3);\n    cout << k << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the kept vector"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same-direction two pointers: slow marks the next kept slot, fast scans forward, copying any value that isn't val.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint removeElement(vector<int> &nums, int val)\n{\n    int slow = 0;\n\n    for (int fast = 0; fast < nums.size(); fast++)\n    {\n        if (nums[fast] != val)\n        {\n            nums[slow] = nums[fast];\n            slow++;\n        }\n    }\n\n    return slow;\n}\n\nint main()\n{\n    vector<int> nums = {3, 2, 2, 3};\n\n    int k = removeElement(nums, 3);\n    cout << k << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — in place"
+        }
+      ]
     }
   ],
   "codeExamples": [
