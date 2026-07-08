@@ -405,6 +405,42 @@
           "spaceComplexity": "O(n) for the tracking sets"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-37",
+      "number": 37,
+      "title": "Sudoku Solver",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/sudoku-solver/",
+      "problemStatement": "Solve a 9×9 Sudoku puzzle in place, filling empty cells ('.') so every row, column, and 3×3 box contains digits 1-9 exactly once.",
+      "examples": [
+        { "input": "a valid partially-filled 9x9 board", "output": "Solved" }
+      ],
+      "constraints": ["board.length == 9", "board[i].length == 9"],
+      "hints": [
+        "Find the next empty cell, try digits 1-9 in it, and for each valid digit, recurse to solve the REST of the board — this is N-Queens' row-by-row placement, generalized to a 2D grid with three kinds of constraints (row, column, box).",
+        "A digit is valid in a cell only if it doesn't already appear in that row, that column, AND that 3×3 box.",
+        "If no digit works in a cell, backtrack: undo the last placement and try the next candidate at the previous cell — exactly the choose/explore/unchoose pattern."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each candidate digit, validate it by scanning the entire row, column, and box fresh every single time.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool isValid(vector<vector<char>> &board, int row, int col, char c)\n{\n    for (int i = 0; i < 9; i++)\n    {\n        if (board[row][i] == c) return false;\n        if (board[i][col] == c) return false;\n        if (board[3*(row/3)+i/3][3*(col/3)+i%3] == c) return false;\n    }\n    return true;\n}\n\nbool solve(vector<vector<char>> &board)\n{\n    for (int r = 0; r < 9; r++)\n    {\n        for (int c = 0; c < 9; c++)\n        {\n            if (board[r][c] != '.') continue;\n\n            for (char digit = '1'; digit <= '9'; digit++)\n            {\n                if (isValid(board, r, c, digit))\n                {\n                    board[r][c] = digit;\n                    if (solve(board)) return true;\n                    board[r][c] = '.';\n                }\n            }\n            return false; // no digit worked here — backtrack\n        }\n    }\n    return true; // no empty cells left\n}\n\nint main()\n{\n    vector<vector<char>> board = {\n        {'5','3','.','.','7','.','.','.','.'},\n        {'6','.','.','1','9','5','.','.','.'},\n        {'.','9','8','.','.','.','.','6','.'},\n        {'8','.','.','.','6','.','.','.','3'},\n        {'4','.','.','8','.','3','.','.','1'},\n        {'7','.','.','.','2','.','.','.','6'},\n        {'.','6','.','.','.','.','2','8','.'},\n        {'.','.','.','4','1','9','.','.','5'},\n        {'.','.','.','.','8','.','.','7','9'}\n    };\n\n    cout << (solve(board) ? \"Solved\" : \"Unsolvable\") << endl;\n\n    return 0;\n}",
+          "output": "Solved",
+          "timeComplexity": "O(9^(empty cells)) with O(9) validity checks",
+          "spaceComplexity": "O(1) extra beyond the board"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Track used digits per row/column/box as bitmasks for O(1) validity checks instead of rescanning 27 cells every time.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint rows[9] = {0}, cols[9] = {0}, boxes[9] = {0};\n\nbool solve(vector<vector<char>> &board)\n{\n    for (int r = 0; r < 9; r++)\n    {\n        for (int c = 0; c < 9; c++)\n        {\n            if (board[r][c] != '.') continue;\n\n            int b = 3*(r/3) + c/3;\n            for (int d = 1; d <= 9; d++)\n            {\n                int bit = 1 << d;\n                if (rows[r] & bit || cols[c] & bit || boxes[b] & bit) continue;\n\n                rows[r] |= bit; cols[c] |= bit; boxes[b] |= bit;\n                board[r][c] = '0' + d;\n\n                if (solve(board)) return true;\n\n                rows[r] &= ~bit; cols[c] &= ~bit; boxes[b] &= ~bit;\n                board[r][c] = '.';\n            }\n            return false;\n        }\n    }\n    return true;\n}\n\nint main()\n{\n    vector<vector<char>> board = {\n        {'5','3','.','.','7','.','.','.','.'},\n        {'6','.','.','1','9','5','.','.','.'},\n        {'.','9','8','.','.','.','.','6','.'},\n        {'8','.','.','.','6','.','.','.','3'},\n        {'4','.','.','8','.','3','.','.','1'},\n        {'7','.','.','.','2','.','.','.','6'},\n        {'.','6','.','.','.','.','2','8','.'},\n        {'.','.','.','4','1','9','.','.','5'},\n        {'.','.','.','.','8','.','.','7','9'}\n    };\n\n    cout << (solve(board) ? \"Solved\" : \"Unsolvable\") << endl;\n\n    return 0;\n}",
+          "output": "Solved",
+          "timeComplexity": "O(9^(empty cells)) with O(1) validity checks",
+          "spaceComplexity": "O(1) extra — fixed-size bitmask arrays"
+        }
+      ]
     }
   ],
   "codeExamples": [
