@@ -133,6 +133,42 @@
           "spaceComplexity": "O(vertices + edges) for the adjacency list"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1791",
+      "number": 1791,
+      "title": "Find Center of Star Graph",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/find-center-of-star-graph/",
+      "problemStatement": "Given the edges of a star graph (one center vertex connected to all others), return the center.",
+      "examples": [
+        { "input": "edges = [[1,2],[2,3],[4,2]]", "output": "2" }
+      ],
+      "constraints": ["3 <= n <= 10^5", "edges.length == n - 1"],
+      "hints": [
+        "Building a full adjacency list here would work, but is overkill — a star graph's structure gives a shortcut.",
+        "The center vertex appears in EVERY edge; a non-center vertex appears in exactly one.",
+        "Just compare the two vertices of the first edge against either vertex of the second edge — whichever value repeats is the center."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build an adjacency list, then find the vertex whose neighbor count equals n - 1 (connected to everyone else).",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nint findCenter(vector<vector<int>>& edges)\n{\n    unordered_map<int, vector<int>> adj;\n    for (auto &e : edges)\n    {\n        adj[e[0]].push_back(e[1]);\n        adj[e[1]].push_back(e[0]);\n    }\n\n    int n = edges.size() + 1;\n    for (auto &entry : adj)\n        if ((int)entry.second.size() == n - 1) return entry.first;\n    return -1;\n}\n\nint main()\n{\n    vector<vector<int>> edges = {{1, 2}, {2, 3}, {4, 2}};\n    cout << findCenter(edges);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n) to build the adjacency list and scan it",
+          "spaceComplexity": "O(n) for the adjacency list"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "The center appears in both of the first two edges — compare directly with no adjacency list needed.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findCenter(vector<vector<int>>& edges)\n{\n    int a = edges[0][0], b = edges[0][1];\n    int c = edges[1][0], d = edges[1][1];\n\n    if (a == c || a == d) return a;\n    return b;\n}\n\nint main()\n{\n    vector<vector<int>> edges = {{1, 2}, {2, 3}, {4, 2}};\n    cout << findCenter(edges);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(1)",
+          "spaceComplexity": "O(1) — no adjacency structure built at all"
+        }
+      ]
     }
   ],
   "codeExamples": [],
