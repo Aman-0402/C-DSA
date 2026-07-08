@@ -378,6 +378,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-234",
+      "number": 234,
+      "title": "Palindrome Linked List",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/palindrome-linked-list/",
+      "problemStatement": "Given the head of a singly linked list, return true if it reads the same forward and backward.",
+      "examples": [
+        { "input": "head = [1,2,2,1]", "output": "true" }
+      ],
+      "constraints": ["1 <= list length <= 10^5"],
+      "hints": [
+        "A linked list can't be indexed from both ends like an array's two-pointer palindrome check — but the same idea can still work with some setup.",
+        "Find the middle using Middle of the Linked List's slow/fast technique, then reverse the second half using Reverse Linked List's pointer-flip technique.",
+        "Compare the first half and the (now-reversed) second half node by node — they should match all the way through for a true palindrome."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Copy every value into a vector, then use the standard array two-pointer palindrome check.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nbool isPalindrome(ListNode* head)\n{\n    vector<int> values;\n    for (ListNode* n = head; n; n = n->next) values.push_back(n->val);\n\n    int left = 0, right = values.size() - 1;\n    while (left < right)\n    {\n        if (values[left] != values[right]) return false;\n        left++;\n        right--;\n    }\n\n    return true;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(2);\n    head->next->next->next = new ListNode(1);\n\n    cout << (isPalindrome(head) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the values vector"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Find the middle, reverse the second half in place, then compare the two halves — no extra array needed.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* reverse(ListNode* head)\n{\n    ListNode* prev = nullptr;\n    while (head != nullptr)\n    {\n        ListNode* next = head->next;\n        head->next = prev;\n        prev = head;\n        head = next;\n    }\n    return prev;\n}\n\nbool isPalindrome(ListNode* head)\n{\n    ListNode* slow = head;\n    ListNode* fast = head;\n\n    while (fast != nullptr && fast->next != nullptr)\n    {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n\n    ListNode* secondHalf = reverse(slow);\n    ListNode* firstHalf = head;\n\n    while (secondHalf != nullptr)\n    {\n        if (firstHalf->val != secondHalf->val) return false;\n        firstHalf = firstHalf->next;\n        secondHalf = secondHalf->next;\n    }\n\n    return true;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(2);\n    head->next->next->next = new ListNode(1);\n\n    cout << (isPalindrome(head) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
