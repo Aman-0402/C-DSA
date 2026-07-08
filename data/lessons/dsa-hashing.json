@@ -174,6 +174,43 @@
           "spaceComplexity": "O(n) for the hash map"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-217",
+      "number": 217,
+      "title": "Contains Duplicate",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/contains-duplicate/",
+      "problemStatement": "Given an integer array nums, return true if any value appears at least twice.",
+      "examples": [
+        { "input": "nums = [1,2,3,1]", "output": "true" },
+        { "input": "nums = [1,2,3,4]", "output": "false" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5", "-10^9 <= nums[i] <= 10^9"],
+      "hints": [
+        "The question is 'have I seen this value before?' asked for every element — this lesson's exact hashing pattern, just with a hash SET instead of a map (no need to remember an index, only whether it's been seen).",
+        "Insert each value into a hash set as you scan; if a value is already in the set before you insert it, that's a duplicate.",
+        "A set's O(1) average membership check replaces the need to compare every pair."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every pair with nested loops for a match.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool containsDuplicate(vector<int> &nums)\n{\n    for (int i = 0; i < nums.size(); i++)\n    {\n        for (int j = i + 1; j < nums.size(); j++)\n        {\n            if (nums[i] == nums[j]) return true;\n        }\n    }\n    return false;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 1};\n\n    cout << (containsDuplicate(nums) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A hash set tracking values seen so far — an O(1) average membership check catches a duplicate the moment it's found.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nbool containsDuplicate(vector<int> &nums)\n{\n    unordered_set<int> seen;\n\n    for (int n : nums)\n    {\n        if (seen.count(n)) return true;\n        seen.insert(n);\n    }\n    return false;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 1};\n\n    cout << (containsDuplicate(nums) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the hash set"
+        }
+      ]
     }
   ],
   "codeExamples": [
