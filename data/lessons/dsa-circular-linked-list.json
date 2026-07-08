@@ -147,6 +147,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-142",
+      "number": 142,
+      "title": "Linked List Cycle II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/linked-list-cycle-ii/",
+      "problemStatement": "Given the head of a linked list, return the node where the cycle begins, or null if there is no cycle.",
+      "examples": [
+        { "input": "head = [3,2,0,-4], tail connects to node index 1", "output": "node with value 2" }
+      ],
+      "constraints": ["0 <= list length <= 10^4"],
+      "hints": [
+        "Linked List Cycle answers YES/NO — this needs the exact node WHERE the loop starts, one step further.",
+        "After slow and fast meet (Floyd's algorithm), a mathematical property holds: resetting one pointer to head and advancing BOTH pointers one step at a time, they'll meet again exactly at the cycle's start.",
+        "This works because of the specific distances involved in how slow and fast traveled before meeting — a classic, memorizable two-phase technique rather than something to re-derive from scratch each time."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Track visited node addresses in a hash set — the first node visited TWICE is the cycle's start.",
+          "code": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* detectCycle(ListNode *head)\n{\n    unordered_set<ListNode*> visited;\n\n    for (ListNode* n = head; n; n = n->next)\n    {\n        if (visited.count(n)) return n;\n        visited.insert(n);\n    }\n\n    return nullptr;\n}\n\nint main()\n{\n    ListNode* a = new ListNode(3);\n    ListNode* b = new ListNode(2);\n    ListNode* c = new ListNode(0);\n    ListNode* d = new ListNode(-4);\n    a->next = b; b->next = c; c->next = d; d->next = b;\n\n    ListNode* result = detectCycle(a);\n    cout << (result ? result->val : -1) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Floyd's two-phase algorithm: find the meeting point, then reset one pointer to head and advance both one step at a time until they meet again — that meeting point is the cycle's start.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* detectCycle(ListNode *head)\n{\n    ListNode* slow = head;\n    ListNode* fast = head;\n\n    while (fast != nullptr && fast->next != nullptr)\n    {\n        slow = slow->next;\n        fast = fast->next->next;\n\n        if (slow == fast)\n        {\n            ListNode* pointer = head;\n            while (pointer != slow)\n            {\n                pointer = pointer->next;\n                slow = slow->next;\n            }\n            return pointer;\n        }\n    }\n\n    return nullptr;\n}\n\nint main()\n{\n    ListNode* a = new ListNode(3);\n    ListNode* b = new ListNode(2);\n    ListNode* c = new ListNode(0);\n    ListNode* d = new ListNode(-4);\n    a->next = b; b->next = c; c->next = d; d->next = b;\n\n    ListNode* result = detectCycle(a);\n    cout << (result ? result->val : -1) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
