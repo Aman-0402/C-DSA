@@ -51,3 +51,20 @@ export async function createRetypeEditor(container, theme) {
 
   return editor;
 }
+
+export async function createScratchEditor(container, theme, initialValue) {
+  const monaco = await loadMonaco();
+  const editor = monaco.editor.create(container, {
+    value: initialValue || "",
+    language: "cpp",
+    theme: theme === "dark" ? "vs-dark" : "vs-dark",
+    fontFamily: "'JetBrains Mono', monospace",
+    fontSize: 13,
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    tabSize: 4,
+  });
+
+  return editor;
+}

@@ -129,6 +129,59 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Arrays (DSA)",
       "text": "Index access = O(1), grab any book instantly. Middle insert/delete = O(n), everyone else slides over. In-place = solve it without building a second shelf."
+    },
+    {
+      "type": "heading",
+      "text": "7. LeetCode: Putting Arrays to Work"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1480",
+      "number": 1480,
+      "title": "Running Sum of 1d Array",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/running-sum-of-1d-array/",
+      "problemStatement": "Given an array nums, return the running sum of nums, where runningSum[i] = sum(nums[0] ... nums[i]).",
+      "examples": [
+        { "input": "nums = [1,2,3,4]", "output": "[1,3,6,10]", "explanation": "Running sum: [1, 1+2, 1+2+3, 1+2+3+4]." },
+        { "input": "nums = [1,1,1,1,1]", "output": "[1,2,3,4,5]", "explanation": "Running sum: [1, 1+1, 1+1+1, 1+1+1+1, 1+1+1+1+1]." },
+        { "input": "nums = [3,1,2,10,1]", "output": "[3,4,6,16,17]" }
+      ],
+      "constraints": [
+        "1 <= nums.length <= 1000",
+        "-10^6 <= nums[i] <= 10^6"
+      ],
+      "hints": [
+        "What if you kept a single running total as you walked through the array, updating it at every index?",
+        "The value at index i only depends on the running total already built up through index i-1, plus nums[i] — this is exactly Prefix Sum's core idea.",
+        "You don't need a second array at all: you can build the result IN PLACE, overwriting nums[i] with nums[i-1] + nums[i], since by the time you reach index i, nums[i-1] has already been updated to the correct running sum."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every index i, re-sum every element from 0 to i from scratch. Correct, but re-does work it already did for the previous index.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> runningSum(vector<int> &nums)\n{\n    vector<int> result(nums.size());\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int sum = 0;\n        for (int j = 0; j <= i; j++)\n        {\n            sum += nums[j];\n        }\n        result[i] = sum;\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> result = runningSum(nums);\n\n    for (int n : result) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 3 6 10 ",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the result array"
+        },
+        {
+          "label": "Better",
+          "explanation": "Track a running total in a single pass instead of re-summing, but still write into a separate new array rather than reusing nums.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> runningSum(vector<int> &nums)\n{\n    vector<int> result(nums.size());\n    int runningTotal = 0;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        runningTotal += nums[i];\n        result[i] = runningTotal;\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> result = runningSum(nums);\n\n    for (int n : result) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 3 6 10 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Recall In-Place Modification from earlier in this lesson: since nums[i-1] is already the correct running sum by the time index i is reached, nums can be updated directly with no extra array at all.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> runningSum(vector<int> &nums)\n{\n    for (int i = 1; i < nums.size(); i++)\n    {\n        nums[i] += nums[i - 1]; // nums[i-1] is already the running sum up to i-1\n    }\n\n    return nums;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 4};\n    vector<int> result = runningSum(nums);\n\n    for (int n : result) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 3 6 10 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) extra — modifies nums in place"
+        }
+      ]
     }
   ],
   "codeExamples": [

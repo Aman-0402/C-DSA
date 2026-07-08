@@ -3,7 +3,7 @@ import { loadRoadmap, loadLesson } from "./content-loader.js";
 import { renderSidebar, setupSidebarSearch, updateOverallProgress } from "./sidebar.js";
 import { getCurrentLessonId, navigateToLesson, onRouteChange } from "./router.js";
 import { markLessonViewed, markRetyped, isRetyped, checkLessonCompletion } from "./progress.js";
-import { createRetypeEditor } from "./code-editor.js";
+import { createRetypeEditor, createScratchEditor } from "./code-editor.js";
 import { checkRetype } from "./retype-checker.js";
 import { getRaw, setRaw } from "./storage.js";
 
@@ -100,7 +100,9 @@ function renderLesson(lesson) {
   attachCodeProtection(root);
   attachInterviewToggles(root);
   attachPredictReveals(root);
+  attachAccordions(root);
   attachRetypeEditors(root, lesson);
+  attachLeetcodeScratchpads(root);
 }
 
 function renderSection(section, lesson) {
@@ -196,6 +198,9 @@ function renderSection(section, lesson) {
 
     case "interviewQuestions":
       return renderInterviewQuestions(section);
+
+    case "leetcode":
+      return renderLeetcodeProblem(section);
 
     case "quickCheck":
       return el(
@@ -314,6 +319,96 @@ function renderInterviewQuestions(section) {
   return wrap;
 }
 
+function renderLeetcodeProblem(section) {
+  const wrap = el("div", "lesson-section leetcode-card");
+  wrap.dataset.lcId = section.id;
+
+  const examplesHtml = (section.examples || [])
+    .map(
+      (ex, i) => `
+      <div class="lc-example">
+        <div class="lc-example-title">Example ${i + 1}</div>
+        <div><strong>Input:</strong> ${escapeHtml(ex.input)}</div>
+        <div><strong>Output:</strong> ${escapeHtml(ex.output)}</div>
+        ${ex.explanation ? `<div><strong>Explanation:</strong> ${ex.explanation}</div>` : ""}
+      </div>`
+    )
+    .join("");
+
+  const hintsHtml = (section.hints || [])
+    .map(
+      (hint, i) => `
+      <div class="lc-hint-card">
+        <button type="button" class="acc-toggle-header lc-hint-header">
+          <span><i data-lucide="lightbulb" class="icon"></i> Hint ${i + 1}</span>
+          <i data-lucide="chevron-down" class="icon"></i>
+        </button>
+        <div class="acc-toggle-body lc-hint-body">${hint}</div>
+      </div>`
+    )
+    .join("");
+
+  const approachesHtml = (section.approaches || [])
+    .map((a) => {
+      const codeId = `lc-approach-${Math.random().toString(36).slice(2, 9)}`;
+      const lineCount = a.code.split("\n").length;
+      const lineNumbers = Array.from({ length: lineCount }, (_, i) => i + 1).join("\n");
+      return `
+      <div class="lc-approach-card">
+        <button type="button" class="acc-toggle-header lc-approach-header">
+          <span>${a.label}</span>
+          <i data-lucide="chevron-down" class="icon"></i>
+        </button>
+        <div class="acc-toggle-body lc-approach-body">
+          <p class="lc-approach-explanation">${a.explanation}</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="cb-lang">cpp</span>
+              <span class="cb-filename">main.cpp</span>
+              <span class="cb-protected-note">read-only</span>
+            </div>
+            <div class="code-body protected" id="${codeId}">
+              <div class="code-lines">${lineNumbers}</div>
+              <pre><code class="language-cpp">${escapeHtml(a.code)}</code></pre>
+            </div>
+            ${a.output ? `<div class="code-output"><span class="co-label">Output</span>${escapeHtml(a.output)}</div>` : ""}
+          </div>
+          <div class="lc-complexity">
+            <span class="lc-complexity-badge">Time: ${a.timeComplexity}</span>
+            <span class="lc-complexity-badge">Space: ${a.spaceComplexity}</span>
+          </div>
+        </div>
+      </div>`;
+    })
+    .join("");
+
+  wrap.innerHTML = `
+    <div class="lc-header">
+      <span class="lc-number">#${section.number}</span>
+      <span class="lc-title">${section.title}</span>
+      <span class="lc-difficulty lc-difficulty-${(section.difficulty || "").toLowerCase()}">${section.difficulty || ""}</span>
+      ${section.link ? `<a class="lc-link" href="${section.link}" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link" class="icon"></i> LeetCode</a>` : ""}
+    </div>
+    <p class="lc-statement">${section.problemStatement}</p>
+    ${examplesHtml ? `<div class="lc-examples">${examplesHtml}</div>` : ""}
+    ${
+      section.constraints?.length
+        ? `<div class="lc-constraints"><div class="lc-constraints-title">Constraints</div><ul>${section.constraints
+            .map((c) => `<li>${c}</li>`)
+            .join("")}</ul></div>`
+        : ""
+    }
+    <div class="lc-scratchpad">
+      <div class="lc-scratchpad-header"><i data-lucide="code-2" class="icon"></i> Try It Yourself</div>
+      <div class="lc-scratchpad-editor"></div>
+    </div>
+    ${hintsHtml ? `<div class="lc-hints"><div class="lc-section-title">Hints</div>${hintsHtml}</div>` : ""}
+    ${approachesHtml ? `<div class="lc-approaches"><div class="lc-section-title">Solutions</div>${approachesHtml}</div>` : ""}
+  `;
+
+  return wrap;
+}
+
 function escapeHtml(str) {
   return str.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
@@ -356,6 +451,31 @@ function attachPredictReveals(root) {
       btn.disabled = true;
     });
   });
+}
+
+function attachAccordions(root) {
+  root.querySelectorAll(".acc-toggle-header").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btn.nextElementSibling.classList.toggle("open");
+    });
+  });
+}
+
+async function attachLeetcodeScratchpads(root) {
+  for (const card of root.querySelectorAll(".leetcode-card")) {
+    const lcId = card.dataset.lcId;
+    const editorContainer = card.querySelector(".lc-scratchpad-editor");
+    if (!editorContainer) continue;
+
+    const storageKey = `lc-scratch-${lcId}`;
+    const saved = getRaw(storageKey, "");
+    const theme = document.documentElement.getAttribute("data-theme") || "light";
+    const editor = await createScratchEditor(editorContainer, theme, saved);
+
+    editor.onDidChangeModelContent(() => {
+      setRaw(storageKey, editor.getValue());
+    });
+  }
 }
 
 async function attachRetypeEditors(root, lesson) {
