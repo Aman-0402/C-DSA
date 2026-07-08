@@ -112,6 +112,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Doubly Linked List",
       "text": "Doubly linked = every box has TWO notes, one pointing forward, one pointing back. Costs extra memory per box, buys you backward traversal and easy self-deletion."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Doubly Linked List in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-707",
+      "number": 707,
+      "title": "Design Linked List",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/design-linked-list/",
+      "problemStatement": "Design your own linked list, supporting get(index), addAtHead(val), addAtTail(val), addAtIndex(index, val), and deleteAtIndex(index).",
+      "examples": [
+        { "input": "addAtHead(1); addAtTail(3); addAtIndex(1,2); get(1); deleteAtIndex(1); get(1)", "output": "2, then 3" }
+      ],
+      "constraints": ["0 <= index, val <= 1000", "at most 2000 calls"],
+      "hints": [
+        "This is exactly this lesson's DoublyLinkedList class, extended with indexed operations — walk from head OR tail, whichever is closer to the target index, using both next and prev.",
+        "addAtIndex/deleteAtIndex both need to find the node just before the target position first, then relink around it — the same pattern as insertAtEnd, generalized to any position.",
+        "Keeping both head AND tail pointers (like this lesson's class already does) makes addAtTail O(1) instead of requiring a full traversal."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use a plain vector internally to back the list operations — simple, but insertion/deletion in the middle costs O(n) for shifting, same as any array.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass MyLinkedList {\npublic:\n    vector<int> data;\n\n    int get(int index)\n    {\n        if (index < 0 || index >= data.size()) return -1;\n        return data[index];\n    }\n\n    void addAtHead(int val) { data.insert(data.begin(), val); }\n    void addAtTail(int val) { data.push_back(val); }\n\n    void addAtIndex(int index, int val)\n    {\n        if (index < 0 || index > data.size()) return;\n        data.insert(data.begin() + index, val);\n    }\n\n    void deleteAtIndex(int index)\n    {\n        if (index < 0 || index >= data.size()) return;\n        data.erase(data.begin() + index);\n    }\n};\n\nint main()\n{\n    MyLinkedList list;\n    list.addAtHead(1);\n    list.addAtTail(3);\n    list.addAtIndex(1, 2);\n    cout << list.get(1) << \", \";\n    list.deleteAtIndex(1);\n    cout << list.get(1) << endl;\n\n    return 0;\n}",
+          "output": "2, 3",
+          "timeComplexity": "O(n) per insert/delete due to shifting",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A genuine doubly linked list with head and tail pointers, exactly this lesson's structure, extended with indexed traversal.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node *next, *prev;\n    Node(int v) : val(v), next(nullptr), prev(nullptr) {}\n};\n\nclass MyLinkedList {\npublic:\n    Node *head, *tail;\n    int size;\n\n    MyLinkedList() : head(nullptr), tail(nullptr), size(0) {}\n\n    Node* getNode(int index)\n    {\n        Node* cur = head;\n        for (int i = 0; i < index; i++) cur = cur->next;\n        return cur;\n    }\n\n    int get(int index)\n    {\n        if (index < 0 || index >= size) return -1;\n        return getNode(index)->val;\n    }\n\n    void addAtHead(int val)\n    {\n        Node* node = new Node(val);\n        node->next = head;\n        if (head) head->prev = node;\n        head = node;\n        if (!tail) tail = node;\n        size++;\n    }\n\n    void addAtTail(int val)\n    {\n        Node* node = new Node(val);\n        node->prev = tail;\n        if (tail) tail->next = node;\n        tail = node;\n        if (!head) head = node;\n        size++;\n    }\n\n    void addAtIndex(int index, int val)\n    {\n        if (index <= 0) { addAtHead(val); return; }\n        if (index == size) { addAtTail(val); return; }\n        if (index > size) return;\n\n        Node* next = getNode(index);\n        Node* prev = next->prev;\n        Node* node = new Node(val);\n\n        node->prev = prev; node->next = next;\n        prev->next = node; next->prev = node;\n        size++;\n    }\n\n    void deleteAtIndex(int index)\n    {\n        if (index < 0 || index >= size) return;\n\n        Node* target = getNode(index);\n        if (target->prev) target->prev->next = target->next; else head = target->next;\n        if (target->next) target->next->prev = target->prev; else tail = target->prev;\n\n        delete target;\n        size--;\n    }\n};\n\nint main()\n{\n    MyLinkedList list;\n    list.addAtHead(1);\n    list.addAtTail(3);\n    list.addAtIndex(1, 2);\n    cout << list.get(1) << \", \";\n    list.deleteAtIndex(1);\n    cout << list.get(1) << endl;\n\n    return 0;\n}",
+          "output": "2, 3",
+          "timeComplexity": "O(1) for head/tail ops, O(n) for arbitrary index traversal",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
