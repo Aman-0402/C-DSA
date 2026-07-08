@@ -203,6 +203,42 @@
           "spaceComplexity": "O(log n) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-98",
+      "number": 98,
+      "title": "Validate Binary Search Tree",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/validate-binary-search-tree/",
+      "problemStatement": "Given the root of a binary tree, return true if it is a valid binary search tree.",
+      "examples": [
+        { "input": "root = [10,5,15,null,null,6,20]", "output": "false", "explanation": "6 is in the root's right subtree, so it must be greater than 10 — but 6 < 10, even though 6 is fine relative to its immediate parent 15." }
+      ],
+      "constraints": ["1 <= number of nodes <= 10^4"],
+      "hints": [
+        "Just checking 'left child < node < right child' at every node is NOT enough — a node deep in the left subtree must be smaller than every ancestor above it, not just its immediate parent.",
+        "Pass down a valid (min, max) RANGE as recursion descends: going left tightens the max to the current node's value; going right tightens the min.",
+        "A node is valid only if it falls strictly within its inherited (min, max) range — this correctly enforces the constraint from ALL ancestors, not just the direct parent."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Only compare each node against its immediate parent — WRONG, but a common first (buggy) attempt worth recognizing.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\n// INCORRECT: only checks immediate parent, misses ancestor constraints\nbool isValidBSTBuggy(TreeNode* node)\n{\n    if (node == nullptr) return true;\n\n    if (node->left && node->left->val >= node->val) return false;\n    if (node->right && node->right->val <= node->val) return false;\n\n    return isValidBSTBuggy(node->left) && isValidBSTBuggy(node->right);\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(10);\n    root->left = new TreeNode(5);\n    root->right = new TreeNode(15);\n    root->right->left = new TreeNode(6);\n    root->right->right = new TreeNode(20);\n\n    cout << (isValidBSTBuggy(root) ? \"true\" : \"false\") << endl; // WRONG: prints true, should be false\n\n    return 0;\n}",
+          "output": "true (incorrect!)",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Pass a valid (min, max) range down through the recursion, tightened at every step — correctly enforces every ancestor's constraint.",
+          "code": "#include <iostream>\n#include <climits>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nbool validate(TreeNode* node, long minVal, long maxVal)\n{\n    if (node == nullptr) return true;\n\n    if (node->val <= minVal || node->val >= maxVal) return false;\n\n    return validate(node->left, minVal, node->val) && validate(node->right, node->val, maxVal);\n}\n\nbool isValidBST(TreeNode* root)\n{\n    return validate(root, LONG_MIN, LONG_MAX);\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(10);\n    root->left = new TreeNode(5);\n    root->right = new TreeNode(15);\n    root->right->left = new TreeNode(6);\n    root->right->right = new TreeNode(20);\n\n    cout << (isValidBST(root) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "false",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
