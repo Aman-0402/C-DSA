@@ -246,7 +246,8 @@
         { "id": "dsa-adjacency-matrix", "title": "Adjacency Matrix", "lesson": "dsa-adjacency-matrix" },
         { "id": "dsa-adjacency-list", "title": "Adjacency List", "lesson": "dsa-adjacency-list" },
         { "id": "dsa-graph-bfs", "title": "Graph BFS", "lesson": "dsa-graph-bfs" },
-        { "id": "dsa-graph-dfs", "title": "Graph DFS", "lesson": "dsa-graph-dfs" }
+        { "id": "dsa-graph-dfs", "title": "Graph DFS", "lesson": "dsa-graph-dfs" },
+        { "id": "dsa-topological-sort", "title": "Topological Sort", "lesson": "dsa-topological-sort" }
       ]
     }
   ]

@@ -1,0 +1,140 @@
+{
+  "id": "dsa-topological-sort",
+  "moduleId": "graphs",
+  "title": "Topological Sort",
+  "description": "Ordering tasks so every dependency comes before what depends on it: DFS plus a stack, and why it only works on a DAG.",
+  "objectives": [
+    "Understand the problem topological sort solves: ordering with dependencies",
+    "Implement topological sort using DFS and a stack",
+    "Understand why postorder push produces the correct order when reversed",
+    "Know why topological sort requires a directed ACYCLIC graph"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: DFS, for a Specific New Purpose"
+    },
+    {
+      "type": "paragraph",
+      "text": "Graph DFS explored a graph fully. Topological sort uses that exact same DFS mechanism for a specific goal: producing an order where every dependency comes before whatever depends on it."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Ordering Tasks with Dependencies"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Course 0 must be taken before courses 1 and 2\n// Courses 1 and 2 must be taken before course 3\n// What's a valid order to take all four courses?"
+    },
+    {
+      "type": "definition",
+      "term": "Topological sort",
+      "text": "A topological sort of a directed graph is an ordering of its vertices such that for every directed edge from A to B, A appears before B in the ordering."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Approach: DFS Plus a Stack"
+    },
+    {
+      "type": "flow",
+      "title": "The core idea",
+      "steps": ["Run DFS from every unvisited vertex", "The moment a vertex finishes exploring ALL its neighbors (recall Postorder Traversal's timing), push it onto a stack", "After all DFS calls finish, pop the stack — that popped order IS the topological order"]
+    },
+    {
+      "type": "note",
+      "text": "A vertex only gets pushed after everything it depends on (recall Graph DFS diving into dependencies first) has already finished and been pushed — so popping the stack (LIFO, recall Stack) naturally reverses that, putting dependencies first."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nvoid dfs(int current, vector<vector<int>> &adj, vector<bool> &visited, stack<int> &result)\n{\n    visited[current] = true;\n\n    for (int neighbor : adj[current])\n    {\n        if (!visited[neighbor])\n        {\n            dfs(neighbor, adj, visited, result);\n        }\n    }\n\n    result.push(current); // push AFTER all neighbors are fully done — postorder timing\n}\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2}; // 0 must come before 1 and 2\n    adj[1] = {3};    // 1 must come before 3\n    adj[2] = {3};    // 2 must come before 3\n\n    vector<bool> visited(vertices, false);\n    stack<int> result;\n\n    for (int v = 0; v < vertices; v++)\n    {\n        if (!visited[v])\n        {\n            dfs(v, adj, visited, result);\n        }\n    }\n\n    while (!result.empty())\n    {\n        cout << result.top() << \" \";\n        result.pop();\n    }\n\n    return 0;\n}",
+      "output": "0 2 1 3 ",
+      "retypePractice": true,
+      "retypeId": "dsa-topological-sort-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "dfs(0): visits 0, then dives into 1. dfs(1) dives into 3. dfs(3) has no unvisited neighbors → pushes 3 first",
+        "Back in dfs(1): no more neighbors → pushes 1",
+        "Back in dfs(0): next neighbor is 2. dfs(2)'s neighbor 3 is already visited → pushes 2",
+        "Back in dfs(0): no more neighbors → pushes 0",
+        "Stack, bottom to top: 3, 1, 2, 0. Popping gives: 0, 2, 1, 3 — a valid order (0 before 1 and 2; 1 and 2 before 3)"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Requirement: Must Be a DAG"
+    },
+    {
+      "type": "warning",
+      "text": "Topological sort only makes sense on a directed acyclic graph (DAG) — recall Graphs' cycle definition. If course A depends on course B, and course B depends on course A, there's no valid order at all; this contradiction is exactly what a cycle represents. Detecting whether a graph even has a valid topological order requires checking for cycles, a refinement beyond this introduction."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Getting dressed in a valid order",
+      "text": "You must put on socks before shoes, and a shirt before a jacket — but socks and a shirt have no dependency on each other, so either could come first. Any valid \"getting dressed\" sequence that respects every such rule is a topological sort of the dependencies; a rule saying \"shoes before socks\" AND \"socks before shoes\" simultaneously would make getting dressed genuinely impossible — exactly a cycle."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Pushing a vertex to the stack too early, before all its neighbors are done — must happen at the very end of the DFS call, postorder-style.",
+        "Forgetting to run DFS from every unvisited vertex — a graph might not be fully reachable from a single starting point.",
+        "Assuming topological sort works on any directed graph — it requires no cycles; a cyclic graph has no valid topological order at all.",
+        "Forgetting the result must be read by popping the stack, not by the order things were pushed — pushing happens in reverse-dependency order."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does a topological sort produce?",
+          "answer": "An ordering of a directed graph's vertices such that for every edge from A to B, A appears before B in the ordering."
+        },
+        {
+          "question": "How does the DFS-based topological sort algorithm work?",
+          "answer": "Run DFS from every unvisited vertex, pushing each vertex onto a stack only after all of its neighbors have finished being explored; popping the stack at the end gives the topological order."
+        },
+        {
+          "question": "Why must the graph be acyclic for a topological sort to exist?",
+          "answer": "A cycle means two vertices depend on each other, directly or indirectly, making it impossible to place either one consistently before the other — no valid ordering can exist."
+        }
+      ],
+      "thirtySecondAnswer": "Topological sort orders a directed graph's vertices so every dependency appears before what depends on it, solving problems like course prerequisites or task scheduling. The DFS-based approach runs DFS from every unvisited vertex, pushing each vertex onto a stack only after all of its neighbors are fully explored — postorder timing — then reading the result by popping the stack, which naturally places dependencies first. This only works on a directed acyclic graph (DAG): a cycle would mean two vertices mutually depend on each other, making a consistent ordering impossible."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Topological Sort",
+      "text": "Topological sort = getting dressed in valid order, socks before shoes. DFS pushes a vertex AFTER its dependencies finish (postorder). Pop the stack to read the correct order. Needs a DAG — no contradictory cycles."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-topological-sort-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nvoid dfs(int current, vector<vector<int>> &adj, vector<bool> &visited, stack<int> &result)\n{\n    visited[current] = true;\n\n    for (int neighbor : adj[current])\n    {\n        if (!visited[neighbor])\n        {\n            dfs(neighbor, adj, visited, result);\n        }\n    }\n\n    result.push(current);\n}\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {3};\n    adj[2] = {3};\n\n    vector<bool> visited(vertices, false);\n    stack<int> result;\n\n    for (int v = 0; v < vertices; v++)\n    {\n        if (!visited[v])\n        {\n            dfs(v, adj, visited, result);\n        }\n    }\n\n    while (!result.empty())\n    {\n        cout << result.top() << \" \";\n        result.pop();\n    }\n\n    return 0;\n}", "output": "0 2 1 3 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-topological-sort-basic",
+      "reference": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nvoid dfs(int current, vector<vector<int>> &adj, vector<bool> &visited, stack<int> &result)\n{\n    visited[current] = true;\n\n    for (int neighbor : adj[current])\n    {\n        if (!visited[neighbor])\n        {\n            dfs(neighbor, adj, visited, result);\n        }\n    }\n\n    result.push(current);\n}\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {3};\n    adj[2] = {3};\n\n    vector<bool> visited(vertices, false);\n    stack<int> result;\n\n    for (int v = 0; v < vertices; v++)\n    {\n        if (!visited[v])\n        {\n            dfs(v, adj, visited, result);\n        }\n    }\n\n    while (!result.empty())\n    {\n        cout << result.top() << \" \";\n        result.pop();\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-topological-sort-basic"]
+  }
+}
