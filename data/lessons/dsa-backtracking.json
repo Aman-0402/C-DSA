@@ -261,6 +261,42 @@
           "spaceComplexity": "O(target) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-17",
+      "number": 17,
+      "title": "Letter Combinations of a Phone Number",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
+      "problemStatement": "Given a string of digits 2-9, return all possible letter combinations the number could represent, using a standard phone keypad mapping.",
+      "examples": [
+        { "input": "digits = \"23\"", "output": "[\"ad\",\"ae\",\"af\",\"bd\",\"be\",\"bf\",\"cd\",\"ce\",\"cf\"]" }
+      ],
+      "constraints": ["0 <= digits.length <= 4", "digits[i] is 2-9"],
+      "hints": [
+        "Each digit contributes one letter to the final string, chosen from that digit's set of possible letters — the choice at each position is 'which letter from THIS digit's set.'",
+        "This is Permutations' one-letter-per-position idea, but each position's options come from a DIFFERENT small set (the current digit's letters) instead of the same shared pool.",
+        "Base case: the current combination's length equals digits.length — record it and stop going deeper."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build up all combinations iteratively: start with an empty list, and for each digit, expand every existing partial combination by each of that digit's letters.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<string> letterCombinations(string digits)\n{\n    if (digits.empty()) return {};\n\n    unordered_map<char, string> keypad = {\n        {'2',\"abc\"}, {'3',\"def\"}, {'4',\"ghi\"}, {'5',\"jkl\"},\n        {'6',\"mno\"}, {'7',\"pqrs\"}, {'8',\"tuv\"}, {'9',\"wxyz\"}\n    };\n\n    vector<string> result = {\"\"};\n\n    for (char d : digits)\n    {\n        vector<string> next;\n        for (string &prefix : result)\n        {\n            for (char c : keypad[d])\n            {\n                next.push_back(prefix + c);\n            }\n        }\n        result = next;\n    }\n\n    return result;\n}\n\nint main()\n{\n    auto result = letterCombinations(\"23\");\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "9",
+          "timeComplexity": "O(4^n × n)",
+          "spaceComplexity": "O(4^n × n) for the output"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Backtracking: choose a letter for the current digit, recurse to the next digit, then unchoose before trying the next letter.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nunordered_map<char, string> keypad = {\n    {'2',\"abc\"}, {'3',\"def\"}, {'4',\"ghi\"}, {'5',\"jkl\"},\n    {'6',\"mno\"}, {'7',\"pqrs\"}, {'8',\"tuv\"}, {'9',\"wxyz\"}\n};\n\nvoid backtrack(string &digits, int index, string &current, vector<string> &result)\n{\n    if (index == digits.size())\n    {\n        result.push_back(current);\n        return;\n    }\n\n    for (char c : keypad[digits[index]])\n    {\n        current.push_back(c);\n        backtrack(digits, index + 1, current, result);\n        current.pop_back();\n    }\n}\n\nvector<string> letterCombinations(string digits)\n{\n    if (digits.empty()) return {};\n\n    vector<string> result;\n    string current;\n    backtrack(digits, 0, current, result);\n    return result;\n}\n\nint main()\n{\n    auto result = letterCombinations(\"23\");\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "9",
+          "timeComplexity": "O(4^n × n)",
+          "spaceComplexity": "O(4^n × n) for the output, O(n) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
