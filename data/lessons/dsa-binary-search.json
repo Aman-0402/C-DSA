@@ -310,6 +310,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-278",
+      "number": 278,
+      "title": "First Bad Version",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/first-bad-version/",
+      "problemStatement": "Versions 1 to n exist; once a version is bad, all following versions are also bad. Given an API isBadVersion(version), find the first bad version using as few calls as possible.",
+      "examples": [
+        { "input": "n = 5, bad = 4", "output": "4" }
+      ],
+      "constraints": ["1 <= bad <= n <= 2^31 - 1"],
+      "hints": [
+        "The versions form an implicit sorted sequence: good, good, ..., good, bad, bad, ..., bad — this is binary search for the BOUNDARY between two states, not for an exact value.",
+        "isBadVersion(mid) == true means the first bad version is at mid or earlier — search left, but keep mid as a candidate answer.",
+        "isBadVersion(mid) == false means the first bad version must be later — search right, discarding mid entirely."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Call isBadVersion() on every version starting from 1 until the first bad one is found.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint firstBad = 4; // simulates the hidden first bad version for this demo\n\nbool isBadVersion(int version)\n{\n    return version >= firstBad;\n}\n\nint firstBadVersion(int n)\n{\n    for (int i = 1; i <= n; i++)\n    {\n        if (isBadVersion(i)) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    cout << firstBadVersion(5) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Binary search for the boundary: when mid is bad, it's a candidate but a smaller bad version might still exist, so search left without discarding mid.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint firstBad = 4; // simulates the hidden first bad version for this demo\n\nbool isBadVersion(int version)\n{\n    return version >= firstBad;\n}\n\nint firstBadVersion(int n)\n{\n    int left = 1, right = n;\n\n    while (left < right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (isBadVersion(mid))\n        {\n            right = mid; // mid could be the answer, keep it in range\n        }\n        else\n        {\n            left = mid + 1;\n        }\n    }\n\n    return left;\n}\n\nint main()\n{\n    cout << firstBadVersion(5) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(log n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
