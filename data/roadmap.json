@@ -242,7 +242,8 @@
       "title": "Graphs",
       "topics": [
         { "id": "dsa-graphs", "title": "Graphs", "lesson": "dsa-graphs" },
-        { "id": "dsa-graph-representation", "title": "Graph Representation", "lesson": "dsa-graph-representation" }
+        { "id": "dsa-graph-representation", "title": "Graph Representation", "lesson": "dsa-graph-representation" },
+        { "id": "dsa-adjacency-matrix", "title": "Adjacency Matrix", "lesson": "dsa-adjacency-matrix" }
       ]
     }
   ]

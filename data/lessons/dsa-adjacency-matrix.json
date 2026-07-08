@@ -1,0 +1,131 @@
+{
+  "id": "dsa-adjacency-matrix",
+  "moduleId": "graphs",
+  "title": "Adjacency Matrix",
+  "description": "A 2D grid of yes/no edges: O(1) edge lookups, but O(V²) space regardless of how many edges actually exist.",
+  "objectives": [
+    "Build an adjacency matrix for a graph",
+    "Check and add edges in O(1)",
+    "Understand the O(V²) space cost",
+    "Know when a matrix is the right representation choice"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: One of Two Representations"
+    },
+    {
+      "type": "paragraph",
+      "text": "Graph Representation previewed the matrix as \"a 2D grid — matrix[i][j] tells you whether an edge exists.\" Let's build one."
+    },
+    {
+      "type": "heading",
+      "text": "2. Building an Adjacency Matrix"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int vertices = 5;\nvector<vector<int>> matrix(vertices, vector<int>(vertices, 0)); // recall 2D vector from vector\n\n// Add an undirected edge between vertex 0 and vertex 1:\nmatrix[0][1] = 1;\nmatrix[1][0] = 1; // undirected — set BOTH directions"
+    },
+    {
+      "type": "note",
+      "text": "For a directed graph (recall Graphs), only matrix[from][to] would be set — not the reverse. matrix[i][j] == 1 means \"an edge exists from i to j\"; 0 means it doesn't."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> matrix(vertices, vector<int>(vertices, 0));\n\n    // Undirected edges: 0-1, 0-2, 1-3\n    matrix[0][1] = matrix[1][0] = 1;\n    matrix[0][2] = matrix[2][0] = 1;\n    matrix[1][3] = matrix[3][1] = 1;\n\n    cout << matrix[0][1] << endl; // edge exists?\n    cout << matrix[0][3] << endl; // edge exists?\n\n    return 0;\n}",
+      "output": "1\n0",
+      "retypePractice": true,
+      "retypeId": "dsa-adjacency-matrix-basic"
+    },
+    {
+      "type": "heading",
+      "text": "4. Checking and Adding Edges: O(1)"
+    },
+    {
+      "type": "note",
+      "text": "Recall Arrays' O(1) indexed access. matrix[i][j] is a direct index into a 2D array — checking whether an edge exists, or adding one, is a single O(1) operation, no matter how large the graph is."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Space Cost: O(V²)"
+    },
+    {
+      "type": "warning",
+      "text": "The matrix always allocates vertices × vertices cells, regardless of how many edges actually exist — recall Space Complexity. A graph with 1,000 vertices but only 5 actual edges still pays for a 1,000,000-cell matrix, with the overwhelming majority sitting at 0. This is the direct cost previewed in Graph Representation."
+    },
+    {
+      "type": "heading",
+      "text": "6. When to Use It"
+    },
+    {
+      "type": "tip",
+      "text": "An adjacency matrix shines for dense graphs (many edges relative to vertices) and whenever \"does an edge exist between these two specific vertices?\" needs to be checked frequently and quickly — the O(1) lookup is genuinely valuable there. For sparse graphs (relatively few edges), the wasted space usually isn't worth it."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A round-robin tournament's full results grid",
+      "text": "A round-robin tournament, where every team plays every other team, naturally fits a grid: row i, column j tells you the result between team i and team j — every cell is meaningful, nothing wasted, because the tournament genuinely is densely connected. That's exactly when a matrix earns its space cost."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to set both matrix[i][j] AND matrix[j][i] for an undirected edge — only setting one direction silently creates a directed edge instead.",
+        "Using a matrix for a large, sparse graph — the O(V²) space cost can become enormous compared to the actual number of edges.",
+        "Assuming matrix[i][j] == 0 always means 'no edge exists in either direction' — for a directed graph, it only means no edge from i to j specifically.",
+        "Forgetting the matrix's diagonal (matrix[i][i]) represents a self-loop, not something to leave undefined by accident."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does an adjacency matrix represent a graph?",
+          "answer": "As a 2D grid where matrix[i][j] indicates whether an edge exists from vertex i to vertex j."
+        },
+        {
+          "question": "What is the time complexity of checking whether an edge exists in an adjacency matrix?",
+          "answer": "O(1) — a direct index lookup, regardless of the graph's size."
+        },
+        {
+          "question": "What is the space complexity of an adjacency matrix, and why can this be wasteful?",
+          "answer": "O(V²), where V is the number of vertices, regardless of how many edges actually exist — for a sparse graph with few edges relative to vertices, most of the matrix is wasted zeros."
+        }
+      ],
+      "thirtySecondAnswer": "An adjacency matrix represents a graph as a 2D grid, where matrix[i][j] indicates whether an edge exists from vertex i to vertex j — for an undirected graph, both matrix[i][j] and matrix[j][i] are set. Checking or adding an edge is O(1), a direct index lookup, but the matrix always costs O(V²) space regardless of how many edges actually exist, making it a poor fit for sparse graphs with relatively few edges. It's the right choice for dense graphs, or whenever frequent, fast edge-existence checks between specific vertex pairs matter most."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Adjacency Matrix",
+      "text": "Adjacency matrix = a round-robin tournament grid, everyone vs everyone. O(1) edge check, O(V²) space no matter how sparse the real connections are."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-adjacency-matrix-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> matrix(vertices, vector<int>(vertices, 0));\n\n    matrix[0][1] = matrix[1][0] = 1;\n    matrix[0][2] = matrix[2][0] = 1;\n    matrix[1][3] = matrix[3][1] = 1;\n\n    cout << matrix[0][1] << endl;\n    cout << matrix[0][3] << endl;\n\n    return 0;\n}", "output": "1\n0" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-adjacency-matrix-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> matrix(vertices, vector<int>(vertices, 0));\n\n    matrix[0][1] = matrix[1][0] = 1;\n    matrix[0][2] = matrix[2][0] = 1;\n    matrix[1][3] = matrix[3][1] = 1;\n\n    cout << matrix[0][1] << endl;\n    cout << matrix[0][3] << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-adjacency-matrix-basic"]
+  }
+}
