@@ -123,6 +123,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Priority Queue (Kth Largest)",
       "text": "Kth largest = a talent show keeping only k finalists. Min-heap tracks the CURRENT WEAKEST finalist, so a stronger newcomer knows who to bump. Top of the min-heap = the answer."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Priority Queue in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-215",
+      "number": 215,
+      "title": "Kth Largest Element in an Array",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+      "problemStatement": "Given an unsorted array nums and an integer k, return the kth largest element (the kth largest in sorted order, not the kth distinct one).",
+      "examples": [
+        { "input": "nums = [3,2,1,5,6,4], k = 2", "output": "5" }
+      ],
+      "constraints": ["1 <= k <= nums.length <= 10^4"],
+      "hints": [
+        "This is this lesson's exact worked example — the min-heap-of-size-k technique.",
+        "Keep a min-heap capped at size k; whenever it exceeds k, pop the smallest.",
+        "After processing every number, the heap's top is the kth largest."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort the whole array and index directly.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint findKthLargest(vector<int> &nums, int k)\n{\n    sort(nums.begin(), nums.end(), greater<int>());\n    return nums[k - 1];\n}\n\nint main()\n{\n    vector<int> nums = {3, 2, 1, 5, 6, 4};\n\n    cout << findKthLargest(nums, 2) << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(1) extra beyond the sort"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "This lesson's min-heap of size k.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint findKthLargest(vector<int> &nums, int k)\n{\n    priority_queue<int, vector<int>, greater<int>> minHeap;\n\n    for (int n : nums)\n    {\n        minHeap.push(n);\n        if (minHeap.size() > k) minHeap.pop();\n    }\n\n    return minHeap.top();\n}\n\nint main()\n{\n    vector<int> nums = {3, 2, 1, 5, 6, 4};\n\n    cout << findKthLargest(nums, 2) << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n log k)",
+          "spaceComplexity": "O(k) for the heap"
+        }
+      ]
     }
   ],
   "codeExamples": [
