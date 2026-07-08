@@ -227,7 +227,8 @@
         { "id": "dsa-trees", "title": "Trees", "lesson": "dsa-trees" },
         { "id": "dsa-binary-trees", "title": "Binary Trees", "lesson": "dsa-binary-trees" },
         { "id": "dsa-binary-search-trees", "title": "Binary Search Trees", "lesson": "dsa-binary-search-trees" },
-        { "id": "dsa-tree-traversals", "title": "Tree Traversals", "lesson": "dsa-tree-traversals" }
+        { "id": "dsa-tree-traversals", "title": "Tree Traversals", "lesson": "dsa-tree-traversals" },
+        { "id": "dsa-preorder-traversal", "title": "Preorder Traversal", "lesson": "dsa-preorder-traversal" }
       ]
     }
   ]

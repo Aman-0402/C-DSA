@@ -1,0 +1,117 @@
+{
+  "id": "dsa-preorder-traversal",
+  "moduleId": "trees",
+  "title": "Preorder Traversal",
+  "description": "Node, then left, then right: visiting each node before its children, useful for copying or serializing a tree.",
+  "objectives": [
+    "Implement preorder traversal (Node-Left-Right)",
+    "Trace preorder traversal on a real tree",
+    "Understand why preorder suits copying/serializing a tree",
+    "Recognize the order: root, then everything on the left, then everything on the right"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: One of the Three Depth-First Orders"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tree Traversals previewed preorder as visiting the current node BEFORE either child. Let's implement it."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Preorder?"
+    },
+    {
+      "type": "definition",
+      "term": "Preorder traversal",
+      "text": "Preorder traversal visits the current node first, then recursively traverses the left subtree, then the right subtree: Node → Left → Right."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid preorder(TreeNode *node)\n{\n    if (node == nullptr) return; // BASE CASE\n\n    cout << node->data << \" \"; // NODE\n    preorder(node->left);        // LEFT\n    preorder(node->right);       // RIGHT\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    preorder(root);\n\n    return 0;\n}",
+      "output": "1 2 4 5 3 ",
+      "retypePractice": true,
+      "retypeId": "dsa-preorder-traversal-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "Visit 1 first (the root, before anything else)",
+        "Then fully traverse 1's LEFT subtree (rooted at 2): visit 2, then 2's left (4), then 2's right (5)",
+        "Only after the ENTIRE left subtree is done, traverse 1's RIGHT subtree (3)",
+        "Result: 1 2 4 5 3"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Why Preorder Suits Copying/Serializing a Tree"
+    },
+    {
+      "type": "note",
+      "text": "To rebuild a tree from a saved sequence, you need to know a node's own value BEFORE you can create it and start attaching children to it — preorder guarantees exactly that: the parent always appears before its children in the output. This makes preorder the natural choice for serializing a tree to a file or a string, and later reconstructing it."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Reading an org chart top-down, announcing each manager before their team",
+      "text": "Recall the org chart from Trees. Preorder is announcing the CEO first, then diving into their first direct report's entire branch (announcing THAT manager before their team, and so on, recursively) before ever mentioning the second direct report. Every manager is always announced before anyone below them."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Mixing up the order of the three lines — Node, then left, then right must stay in that exact order for it to be preorder specifically.",
+        "Forgetting the base case (node == nullptr) — without it, the recursion never terminates.",
+        "Assuming preorder visits all of one level before the next — that's level order (breadth-first), a completely different traversal.",
+        "Using preorder when sorted output is needed from a BST — that's inorder's specific property, not preorder's."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the visiting order for preorder traversal?",
+          "answer": "Node first, then the left subtree, then the right subtree — Node, Left, Right."
+        },
+        {
+          "question": "Why is preorder traversal well-suited to serializing and reconstructing a tree?",
+          "answer": "Because it guarantees a parent node's value always appears before its children's values, which is exactly the order needed to recreate each node before attaching its children."
+        }
+      ],
+      "thirtySecondAnswer": "Preorder traversal visits the current node first, then recursively traverses its left subtree, then its right subtree — Node, Left, Right. Because a node is always output before either of its children, preorder is the natural choice for serializing a tree (like saving it to a file) and later reconstructing it, since each parent's value is known before its children need to be created and attached."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Preorder Traversal",
+      "text": "Preorder = Node, Left, Right — announce the manager, THEN their whole branch. Parent always comes before children in the output — perfect for rebuilding a tree."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-preorder-traversal-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid preorder(TreeNode *node)\n{\n    if (node == nullptr) return;\n\n    cout << node->data << \" \";\n    preorder(node->left);\n    preorder(node->right);\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    preorder(root);\n\n    return 0;\n}", "output": "1 2 4 5 3 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-preorder-traversal-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid preorder(TreeNode *node)\n{\n    if (node == nullptr) return;\n\n    cout << node->data << \" \";\n    preorder(node->left);\n    preorder(node->right);\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    preorder(root);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-preorder-traversal-basic"]
+  }
+}
