@@ -321,6 +321,42 @@
           "spaceComplexity": "O(n) for the result"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-179",
+      "number": 179,
+      "title": "Largest Number",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/largest-number/",
+      "problemStatement": "Given a list of non-negative integers nums, arrange them so as to form the largest possible number, and return it as a string.",
+      "examples": [
+        { "input": "nums = [3,30,34,5,9]", "output": "\"9534330\"" }
+      ],
+      "constraints": ["1 <= nums.length <= 100"],
+      "hints": [
+        "This needs a SORT, but not by numeric value — 30 needs to come after 3 (\"330\" < \"3\"+\"30\"... check both orders concatenated).",
+        "For any two numbers a and b, compare the STRINGS a+b versus b+a — whichever concatenation is larger tells you which number should come first.",
+        "sort() accepts a custom comparator — pass a lambda implementing exactly that 'compare the two possible concatenations' rule."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every permutation of the numbers, concatenate each, and keep the largest result — only feasible for tiny inputs.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nstring largestNumber(vector<int> &nums)\n{\n    vector<string> strs;\n    for (int n : nums) strs.push_back(to_string(n));\n\n    sort(strs.begin(), strs.end());\n\n    string best = \"\";\n    do\n    {\n        string candidate = \"\";\n        for (string &s : strs) candidate += s;\n        if (candidate > best) best = candidate;\n    } while (next_permutation(strs.begin(), strs.end()));\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {3, 30, 34, 5, 9};\n\n    cout << largestNumber(nums) << endl;\n\n    return 0;\n}",
+          "output": "9534330",
+          "timeComplexity": "O(n! × n) — checking every permutation",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "sort() with a custom comparator: for numbers a and b, a should come before b if the concatenation a+b is larger than b+a.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nstring largestNumber(vector<int> &nums)\n{\n    vector<string> strs;\n    for (int n : nums) strs.push_back(to_string(n));\n\n    sort(strs.begin(), strs.end(), [](string &a, string &b) {\n        return a + b > b + a;\n    });\n\n    if (strs[0] == \"0\") return \"0\"; // all zeros case\n\n    string result = \"\";\n    for (string &s : strs) result += s;\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {3, 30, 34, 5, 9};\n\n    cout << largestNumber(nums) << endl;\n\n    return 0;\n}",
+          "output": "9534330",
+          "timeComplexity": "O(n log n × k), k = average string length",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
