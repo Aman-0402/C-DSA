@@ -1,0 +1,171 @@
+{
+  "id": "dsa-bit-manipulation",
+  "moduleId": "greedy-dp",
+  "title": "Bit Manipulation",
+  "description": "Working directly on a number's binary representation using bitwise operators — fast, constant-space tricks for a whole class of problems.",
+  "objectives": [
+    "Review the core bitwise operators: AND, OR, XOR, NOT, left shift, right shift",
+    "Check, set, clear, and toggle a specific bit",
+    "Use XOR's self-cancelling property to solve the Single Number problem",
+    "Count set bits and check if a number is a power of two"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Operators, Revisited at the Bit Level"
+    },
+    {
+      "type": "paragraph",
+      "text": "Operators covered comparison and arithmetic on whole values. Bitwise operators work one level deeper — directly on the individual binary digits (bits) that make up an int (recall Type Modifiers and how int is stored)."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Core Bitwise Operators"
+    },
+    {
+      "type": "table",
+      "headers": ["Operator", "Name", "Effect"],
+      "rows": [
+        ["&", "AND", "1 only where BOTH bits are 1"],
+        ["|", "OR", "1 where EITHER bit is 1"],
+        ["^", "XOR", "1 where the bits DIFFER"],
+        ["~", "NOT", "flips every bit (0 becomes 1, 1 becomes 0)"],
+        ["<<", "Left shift", "shifts bits left, filling with 0s (multiplies by 2 per shift)"],
+        [">>", "Right shift", "shifts bits right (divides by 2 per shift, for non-negative values)"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Bit Tricks: Check, Set, Clear, Toggle"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int n = 10; // binary: 1010\nint i = 1;  // the bit position we care about (0-indexed from the right)\n\nbool isSet   = (n >> i) & 1;   // CHECK bit i: shift it to position 0, then isolate it\nint  setBit  = n | (1 << i);   // SET bit i to 1\nint  clearBit = n & ~(1 << i); // CLEAR bit i to 0\nint  toggleBit = n ^ (1 << i); // TOGGLE bit i (1 -> 0, or 0 -> 1)"
+    },
+    {
+      "type": "note",
+      "text": "1 << i produces a number that is all 0s except a single 1 at position i — this is the standard building block for every bit trick above. Recognizing this pattern (1 << i) is the key to reading and writing bit manipulation code."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Problem: Single Number"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Array: {4, 1, 2, 1, 2}\n// Every number appears EXACTLY TWICE, except one number which appears ONCE\n// Find that single number — in O(n) time and O(1) EXTRA space"
+    },
+    {
+      "type": "heading",
+      "text": "5. XOR's Self-Cancelling Property"
+    },
+    {
+      "type": "definition",
+      "term": "XOR self-cancellation",
+      "text": "For any value x: x ^ x = 0 (a number XORed with itself is always 0), and x ^ 0 = x (XOR with 0 changes nothing). XOR is also commutative and associative, so the order of operations doesn't matter."
+    },
+    {
+      "type": "note",
+      "text": "XOR-ing every number in the array together makes every PAIRED number cancel itself out to 0 (x ^ x = 0), leaving only the unpaired number standing — because anything XORed with 0 is unchanged."
+    },
+    {
+      "type": "heading",
+      "text": "6. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint singleNumber(vector<int> &nums)\n{\n    int result = 0;\n\n    for (int num : nums)\n    {\n        result ^= num; // XOR everything together\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {4, 1, 2, 1, 2};\n\n    cout << singleNumber(nums) << endl;\n\n    return 0;\n}",
+      "output": "4",
+      "retypePractice": true,
+      "retypeId": "dsa-bit-manipulation-single-number"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing the XOR chain",
+      "points": [
+        "result = 0",
+        "0 ^ 4 = 4",
+        "4 ^ 1 = 5",
+        "5 ^ 2 = 7",
+        "7 ^ 1 = 6   (the second 1 cancels the first 1's contribution)",
+        "6 ^ 2 = 4   (the second 2 cancels the first 2's contribution)",
+        "Final result: 4 — the single unpaired number"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Counting Set Bits"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int countSetBits(int n)\n{\n    int count = 0;\n    while (n > 0)\n    {\n        count += (n & 1); // check the last bit\n        n >>= 1;          // shift right, move to the next bit\n    }\n    return count;\n}\n\n// A power of two has EXACTLY one set bit, giving a neat check:\nbool isPowerOfTwo(int n)\n{\n    return n > 0 && (n & (n - 1)) == 0;\n}"
+    },
+    {
+      "type": "note",
+      "text": "n & (n - 1) clears the lowest set bit of n. For a power of two (binary form 1000...0), clearing that single bit leaves exactly 0 — for any other number, it doesn't, which is why this check works."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A row of light switches, toggled and paired off",
+      "text": "Imagine a row of light switches where every switch gets flipped exactly twice except one, which gets flipped once — after all the flipping, every twice-flipped switch is back to its original OFF state, and only the once-flipped switch is left ON. That's precisely what XOR-ing every array value together does: paired values cancel back to 0, leaving only the unpaired one visible."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing & (bitwise AND) with && (logical AND) — & operates on individual bits, && operates on whole boolean conditions.",
+        "Forgetting parentheses around shift expressions — (1 << i) needs its own parentheses when combined with |, &, or ^ due to operator precedence rules.",
+        "Assuming >> always behaves like dividing by 2 for negative numbers — right shift on signed negative values is implementation-defined/arithmetic-shift behavior, not simple division.",
+        "Reaching for a hash set to solve Single Number before recognizing the O(1)-space XOR trick — the paired-cancellation pattern is what makes this solvable without extra memory."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What two properties of XOR make the Single Number trick work?",
+          "answer": "x ^ x = 0 (a number cancels with itself) and x ^ 0 = x (XOR with 0 leaves a value unchanged) — so XOR-ing every element together cancels all paired values, leaving only the unpaired one."
+        },
+        {
+          "question": "How do you check whether bit i of a number n is set?",
+          "answer": "(n >> i) & 1 — shift bit i down to position 0, then mask with 1 to isolate it."
+        },
+        {
+          "question": "How can n & (n - 1) be used to check if n is a power of two?",
+          "answer": "n & (n - 1) clears the lowest set bit; a power of two has exactly one set bit, so clearing it leaves 0 — checking n > 0 && (n & (n-1)) == 0 confirms this."
+        }
+      ],
+      "thirtySecondAnswer": "Bit manipulation works directly on a number's binary representation using &, |, ^, ~, <<, and >>. The 1 << i pattern isolates a single bit at position i, enabling check/set/clear/toggle operations on any specific bit. XOR has a uniquely useful property for problems like Single Number: x ^ x = 0 and x ^ 0 = x, so XOR-ing an entire array together cancels every value that appears in pairs, leaving only the value that appears once — solved in O(n) time and O(1) extra space, no hash set required. The same bit-level thinking powers other tricks too, like n & (n-1) clearing the lowest set bit to test for powers of two."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Bit Manipulation",
+      "text": "1 << i = a single 1 at spot i. OR to set, AND-with-NOT to clear, XOR to toggle. XOR cancels pairs to 0 — pair up and vanish, the odd one stays."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-bit-manipulation-single-number", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint singleNumber(vector<int> &nums)\n{\n    int result = 0;\n\n    for (int num : nums)\n    {\n        result ^= num;\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {4, 1, 2, 1, 2};\n\n    cout << singleNumber(nums) << endl;\n\n    return 0;\n}", "output": "4" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-bit-manipulation-single-number",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint singleNumber(vector<int> &nums)\n{\n    int result = 0;\n\n    for (int num : nums)\n    {\n        result ^= num;\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {4, 1, 2, 1, 2};\n\n    cout << singleNumber(nums) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-bit-manipulation-single-number"]
+  }
+}

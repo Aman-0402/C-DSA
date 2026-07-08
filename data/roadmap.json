@@ -263,7 +263,8 @@
         { "id": "dsa-2d-dp", "title": "2D DP", "lesson": "dsa-2d-dp" },
         { "id": "dsa-knapsack", "title": "Knapsack", "lesson": "dsa-knapsack" },
         { "id": "dsa-lcs", "title": "Longest Common Subsequence", "lesson": "dsa-lcs" },
-        { "id": "dsa-lis", "title": "Longest Increasing Subsequence", "lesson": "dsa-lis" }
+        { "id": "dsa-lis", "title": "Longest Increasing Subsequence", "lesson": "dsa-lis" },
+        { "id": "dsa-bit-manipulation", "title": "Bit Manipulation", "lesson": "dsa-bit-manipulation" }
       ]
     }
   ]
