@@ -175,6 +175,43 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-209",
+      "number": 209,
+      "title": "Minimum Size Subarray Sum",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/minimum-size-subarray-sum/",
+      "problemStatement": "Given an array of positive integers nums and a positive integer target, return the minimal length of a contiguous subarray whose sum is >= target. Return 0 if no such subarray exists.",
+      "examples": [
+        { "input": "target = 7, nums = [2,3,1,2,4,3]", "output": "2", "explanation": "The subarray [4,3] has sum 7 and is the shortest." },
+        { "input": "target = 11, nums = [1,1,1,1,1,1,1,1]", "output": "0" }
+      ],
+      "constraints": ["1 <= target <= 10^9", "1 <= nums.length <= 10^5", "1 <= nums[i] <= 10^4"],
+      "hints": [
+        "This is this lesson's previewed VARIABLE-size window — the window's size isn't fixed, it needs to grow and shrink as needed.",
+        "Expand the window's right edge, adding to the running sum, until the sum reaches at least target.",
+        "Once the sum is big enough, shrink from the LEFT as much as possible while the sum stays >= target, recording the smallest window length found along the way, then keep expanding right."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every possible subarray's sum with nested loops, tracking the shortest one meeting the target.",
+          "code": "#include <iostream>\n#include <vector>\n#include <climits>\n\nusing namespace std;\n\nint minSubArrayLen(int target, vector<int> &nums)\n{\n    int n = nums.size();\n    int best = INT_MAX;\n\n    for (int i = 0; i < n; i++)\n    {\n        int sum = 0;\n        for (int j = i; j < n; j++)\n        {\n            sum += nums[j];\n            if (sum >= target)\n            {\n                best = min(best, j - i + 1);\n                break;\n            }\n        }\n    }\n\n    return (best == INT_MAX) ? 0 : best;\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 1, 2, 4, 3};\n\n    cout << minSubArrayLen(7, nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Variable-size sliding window: expand right to grow the sum, shrink left whenever the sum is already enough, tracking the minimum window length.",
+          "code": "#include <iostream>\n#include <vector>\n#include <climits>\n\nusing namespace std;\n\nint minSubArrayLen(int target, vector<int> &nums)\n{\n    int left = 0;\n    int sum = 0;\n    int best = INT_MAX;\n\n    for (int right = 0; right < nums.size(); right++)\n    {\n        sum += nums[right];\n\n        while (sum >= target)\n        {\n            best = min(best, right - left + 1);\n            sum -= nums[left];\n            left++;\n        }\n    }\n\n    return (best == INT_MAX) ? 0 : best;\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 1, 2, 4, 3};\n\n    cout << minSubArrayLen(7, nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n) — each index enters and leaves the window at most once",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
