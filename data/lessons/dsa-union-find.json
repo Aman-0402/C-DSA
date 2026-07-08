@@ -119,6 +119,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Union Find",
       "text": "Union find = merging friend groups. find() = which group's root am I part of? union() = merge two groups. Same root already? That new edge is a cycle."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Union Find in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-547-uf",
+      "number": 547,
+      "title": "Number of Provinces",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/number-of-provinces/",
+      "problemStatement": "Given an n x n adjacency matrix isConnected, return the number of provinces (connected groups of cities).",
+      "examples": [
+        { "input": "isConnected = [[1,1,0],[1,1,0],[0,0,1]]", "output": "2" }
+      ],
+      "constraints": ["1 <= n <= 200"],
+      "hints": [
+        "This lesson's own technique, applied directly: union() every pair of directly-connected cities, then count how many distinct roots remain.",
+        "No traversal needed at all — just iterate the matrix once, calling union(i, j) wherever isConnected[i][j] == 1.",
+        "The final province count is the number of cities i where find(i) == i (i.e., i is its own root)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Union find WITHOUT path compression or union by rank — find() walks the raw parent chain every time.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    while (parent[x] != x) x = parent[x];\n    return x;\n}\n\nvoid unite(int a, int b, vector<int>& parent)\n{\n    int rootA = find(a, parent);\n    int rootB = find(b, parent);\n    if (rootA != rootB) parent[rootA] = rootB;\n}\n\nint findCircleNum(vector<vector<int>>& isConnected)\n{\n    int n = isConnected.size();\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    for (int i = 0; i < n; i++)\n        for (int j = i + 1; j < n; j++)\n            if (isConnected[i][j] == 1) unite(i, j, parent);\n\n    int provinces = 0;\n    for (int i = 0; i < n; i++)\n        if (find(i, parent) == i) provinces++;\n\n    return provinces;\n}\n\nint main()\n{\n    vector<vector<int>> isConnected = {\n        {1, 1, 0},\n        {1, 1, 0},\n        {0, 0, 1}\n    };\n\n    cout << findCircleNum(isConnected);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n^2 * n) worst case without path compression — a degenerate chain makes find() O(n)",
+          "spaceComplexity": "O(n) for the parent array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Union find with path compression — find() flattens the chain directly to the root, making future calls near-instant.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    if (parent[x] != x) parent[x] = find(parent[x], parent); // path compression\n    return parent[x];\n}\n\nvoid unite(int a, int b, vector<int>& parent)\n{\n    int rootA = find(a, parent);\n    int rootB = find(b, parent);\n    if (rootA != rootB) parent[rootA] = rootB;\n}\n\nint findCircleNum(vector<vector<int>>& isConnected)\n{\n    int n = isConnected.size();\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    for (int i = 0; i < n; i++)\n        for (int j = i + 1; j < n; j++)\n            if (isConnected[i][j] == 1) unite(i, j, parent);\n\n    int provinces = 0;\n    for (int i = 0; i < n; i++)\n        if (find(i, parent) == i) provinces++;\n\n    return provinces;\n}\n\nint main()\n{\n    vector<vector<int>> isConnected = {\n        {1, 1, 0},\n        {1, 1, 0},\n        {0, 0, 1}\n    };\n\n    cout << findCircleNum(isConnected);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n^2 * α(n)) — near-constant find() amortized with path compression",
+          "spaceComplexity": "O(n) for the parent array"
+        }
+      ]
     }
   ],
   "codeExamples": [
