@@ -113,6 +113,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Backtracking",
       "text": "Backtracking = try on an outfit, explore the look, take it back OFF before trying the next combo. Choose → Explore → Unchoose. Forgetting to unchoose corrupts everything after."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Backtracking in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-78",
+      "number": 78,
+      "title": "Subsets",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/subsets/",
+      "problemStatement": "Given an array nums of unique integers, return all possible subsets (the power set).",
+      "examples": [
+        { "input": "nums = [1,2,3]", "output": "[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]" }
+      ],
+      "constraints": ["1 <= nums.length <= 10", "all elements unique"],
+      "hints": [
+        "This is exactly this lesson's own example — collect every 'current' combination at every leaf of the exclude/include recursion tree.",
+        "At each element, recursively explore both NOT including it and including it.",
+        "Remember to push_back() the current subset's copy into the results whenever a leaf is reached, and pop_back() when unwinding to try the next branch."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use bitmasking: every number from 0 to 2ⁿ-1 represents one subset, where bit i decides whether nums[i] is included.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<vector<int>> subsets(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<vector<int>> result;\n\n    for (int mask = 0; mask < (1 << n); mask++)\n    {\n        vector<int> subset;\n        for (int i = 0; i < n; i++)\n        {\n            if (mask & (1 << i)) subset.push_back(nums[i]);\n        }\n        result.push_back(subset);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3};\n\n    auto result = subsets(nums);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n × 2ⁿ)",
+          "spaceComplexity": "O(n × 2ⁿ) for the output"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "This lesson's own exclude/include backtracking, collecting the current combination at every leaf.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(vector<int> &nums, int index, vector<int> &current, vector<vector<int>> &result)\n{\n    if (index == nums.size())\n    {\n        result.push_back(current);\n        return;\n    }\n\n    backtrack(nums, index + 1, current, result); // exclude\n\n    current.push_back(nums[index]);\n    backtrack(nums, index + 1, current, result); // include\n    current.pop_back();\n}\n\nvector<vector<int>> subsets(vector<int> &nums)\n{\n    vector<vector<int>> result;\n    vector<int> current;\n    backtrack(nums, 0, current, result);\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3};\n\n    auto result = subsets(nums);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n × 2ⁿ)",
+          "spaceComplexity": "O(n × 2ⁿ) for the output, O(n) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
