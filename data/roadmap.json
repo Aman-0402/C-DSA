@@ -216,7 +216,8 @@
       "id": "heap",
       "title": "Heap",
       "topics": [
-        { "id": "dsa-heap", "title": "Heap", "lesson": "dsa-heap" }
+        { "id": "dsa-heap", "title": "Heap", "lesson": "dsa-heap" },
+        { "id": "dsa-priority-queue", "title": "Priority Queue", "lesson": "dsa-priority-queue" }
       ]
     }
   ]

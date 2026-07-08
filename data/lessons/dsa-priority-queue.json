@@ -1,0 +1,144 @@
+{
+  "id": "dsa-priority-queue",
+  "moduleId": "heap",
+  "title": "Priority Queue",
+  "description": "Putting the heap structure to work: finding the Kth largest element in O(n log k) using a min-heap of size k.",
+  "objectives": [
+    "Solve the Kth Largest Element problem using a min-heap",
+    "Understand why a min-heap (not max-heap) of size k is the right tool",
+    "Trace the algorithm on a real example",
+    "Understand the O(n log k) complexity"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Structure We Built, Now Put to Work"
+    },
+    {
+      "type": "paragraph",
+      "text": "Heap built the actual sift-up mechanics by hand. priority_queue, covered much earlier, gives us that exact structure ready-made. Let's use it to solve a genuinely useful problem."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Kth Largest Element"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Find the 3rd largest element\nvector<int> numbers = {3, 2, 1, 5, 6, 4};\nint k = 2;\n// sorted descending: 6, 5, 4, 3, 2, 1 — the 2nd largest is 5"
+    },
+    {
+      "type": "warning",
+      "text": "Sorting the entire array first works, but costs O(n log n) — recall Sorting using sort(). For large n and small k, there's a better way."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Trick: A Min-Heap of Size k"
+    },
+    {
+      "type": "note",
+      "text": "Keep a min-heap holding only the k largest values seen so far. Once it has k elements, compare each new number against the heap's smallest (its top) — if the new number is bigger, the current smallest can't possibly be among the k largest anymore, so it's popped and replaced. After processing everything, the heap's top is exactly the Kth largest value."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint findKthLargest(vector<int> &numbers, int k)\n{\n    priority_queue<int, vector<int>, greater<int>> minHeap; // recall greater<int> from Custom Comparators\n\n    for (int n : numbers)\n    {\n        minHeap.push(n);\n        if (minHeap.size() > k)\n        {\n            minHeap.pop(); // discard the current smallest — it can't be in the top k\n        }\n    }\n    return minHeap.top();\n}\n\nint main()\n{\n    vector<int> numbers = {3, 2, 1, 5, 6, 4};\n\n    cout << findKthLargest(numbers, 2) << endl;\n\n    return 0;\n}",
+      "output": "5",
+      "retypePractice": true,
+      "retypeId": "dsa-priority-queue-kth-largest"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it (k=2)",
+      "points": [
+        "push 3 → heap: {3}",
+        "push 2 → heap: {2,3} (size 2, at the limit)",
+        "push 1 → heap: {1,2,3}, size 3 > k → pop smallest (1) → heap: {2,3}",
+        "push 5 → heap: {2,3,5}, size 3 > k → pop smallest (2) → heap: {3,5}",
+        "push 6 → heap: {3,5,6}, size 3 > k → pop smallest (3) → heap: {5,6}",
+        "push 4 → heap: {4,5,6}, size 3 > k → pop smallest (4) → heap: {5,6}",
+        "Final heap top (smallest of the remaining two) = 5 — the 2nd largest overall"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Why a Min-Heap, Not a Max-Heap"
+    },
+    {
+      "type": "warning",
+      "text": "This is a common point of confusion: we want the LARGEST k values overall, but we track them using a MIN-heap — because the value we need to check and possibly discard is always the smallest of the k values we're currently keeping. A max-heap would put the wrong element (the current largest) at the top, which isn't what needs comparing against new arrivals."
+    },
+    {
+      "type": "heading",
+      "text": "6. Complexity: O(n log k)"
+    },
+    {
+      "type": "note",
+      "text": "The heap never holds more than k elements, so every push/pop costs O(log k) (recall Heap's O(log n) reasoning, applied here with a heap capped at size k), and this happens for each of the n input elements — O(n log k) overall. When k is much smaller than n, this beats sorting the whole array in O(n log n)."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A talent show keeping only its top k finalists",
+      "text": "A talent show with a strict cutoff of k finalists doesn't need to rank every contestant who ever auditioned — it only needs to track the current weakest finalist, so a stronger new contestant knows exactly who to bump. That's the min-heap of size k: only the boundary case (the weakest of the current best) ever needs comparing."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using a max-heap instead of a min-heap for this problem — the comparison needed is against the CURRENT SMALLEST of the top-k group, which only a min-heap exposes at the top.",
+        "Forgetting to cap the heap at size k — without popping when size exceeds k, this just becomes an expensive way to sort everything.",
+        "Sorting the whole array when k is small and n is large — O(n log k) is meaningfully better than O(n log n) in that case.",
+        "Forgetting the priority_queue<int, vector<int>, greater<int>> syntax from Custom Comparators — plain priority_queue<int> defaults to a max-heap, the wrong tool here."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How would you find the Kth largest element in an array efficiently?",
+          "answer": "Maintain a min-heap of size k; push each element, and if the heap exceeds size k, pop the smallest. After processing all elements, the heap's top is the Kth largest."
+        },
+        {
+          "question": "Why is a min-heap used to find the largest elements, rather than a max-heap?",
+          "answer": "Because the value that needs comparing and possibly discarding is always the current smallest among the k largest values kept so far — only a min-heap exposes that value at the top."
+        },
+        {
+          "question": "What is the time complexity of the min-heap approach to Kth Largest Element, and when does it beat sorting?",
+          "answer": "O(n log k), since the heap never exceeds size k; this beats sorting the whole array (O(n log n)) whenever k is significantly smaller than n."
+        }
+      ],
+      "thirtySecondAnswer": "Finding the Kth largest element efficiently uses a min-heap capped at size k: push each number, and whenever the heap exceeds k elements, pop the smallest — after processing the whole array, the heap's top is exactly the Kth largest. A min-heap, not a max-heap, is used because the value that needs checking against each new number is always the current smallest of the top-k group, which only a min-heap keeps at the top. Since the heap never holds more than k elements, this runs in O(n log k), beating a full O(n log n) sort whenever k is much smaller than n."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Priority Queue (Kth Largest)",
+      "text": "Kth largest = a talent show keeping only k finalists. Min-heap tracks the CURRENT WEAKEST finalist, so a stronger newcomer knows who to bump. Top of the min-heap = the answer."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-priority-queue-kth-largest", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint findKthLargest(vector<int> &numbers, int k)\n{\n    priority_queue<int, vector<int>, greater<int>> minHeap;\n\n    for (int n : numbers)\n    {\n        minHeap.push(n);\n        if (minHeap.size() > k)\n        {\n            minHeap.pop();\n        }\n    }\n    return minHeap.top();\n}\n\nint main()\n{\n    vector<int> numbers = {3, 2, 1, 5, 6, 4};\n\n    cout << findKthLargest(numbers, 2) << endl;\n\n    return 0;\n}", "output": "5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-priority-queue-kth-largest",
+      "reference": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint findKthLargest(vector<int> &numbers, int k)\n{\n    priority_queue<int, vector<int>, greater<int>> minHeap;\n\n    for (int n : numbers)\n    {\n        minHeap.push(n);\n        if (minHeap.size() > k)\n        {\n            minHeap.pop();\n        }\n    }\n    return minHeap.top();\n}\n\nint main()\n{\n    vector<int> numbers = {3, 2, 1, 5, 6, 4};\n\n    cout << findKthLargest(numbers, 2) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-priority-queue-kth-largest"]
+  }
+}
