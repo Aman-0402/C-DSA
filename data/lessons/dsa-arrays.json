@@ -317,6 +317,51 @@
           "spaceComplexity": "O(n) for result — the minimum possible"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1295",
+      "number": 1295,
+      "title": "Find Numbers with Even Number of Digits",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/find-numbers-with-even-number-of-digits/",
+      "problemStatement": "Given an array nums of integers, return how many of them contain an even number of digits.",
+      "examples": [
+        { "input": "nums = [12,345,2,6,7896]", "output": "2", "explanation": "12 has 2 digits, 7896 has 4 digits — both even." },
+        { "input": "nums = [555,901,482,1771]", "output": "1", "explanation": "Only 1771 has an even (4) digit count." }
+      ],
+      "constraints": ["1 <= nums.length <= 500", "1 <= nums[i] <= 10^5"],
+      "hints": [
+        "You need the digit COUNT of each number, not the number itself — how do you find how many digits a number has?",
+        "Converting a number to a string and checking its length is one way, but there's a purely arithmetic way too: repeatedly divide by 10.",
+        "Each division by 10 removes one digit — count how many divisions it takes to reach 0, then just check if that count is even."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Convert each number to a string (recall to_string from earlier Strings work) and check the string's length.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint findNumbers(vector<int> &nums)\n{\n    int count = 0;\n\n    for (int num : nums)\n    {\n        if (to_string(num).size() % 2 == 0) count++;\n    }\n\n    return count;\n}\n\nint main()\n{\n    vector<int> nums = {12, 345, 2, 6, 7896};\n\n    cout << findNumbers(nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n·d), d = digits per number",
+          "spaceComplexity": "O(d) per to_string() allocation"
+        },
+        {
+          "label": "Better",
+          "explanation": "Count digits arithmetically instead of allocating a string — divide by 10 until the number reaches 0, counting each division.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint countDigits(int num)\n{\n    int count = 0;\n    while (num > 0)\n    {\n        num /= 10;\n        count++;\n    }\n    return count;\n}\n\nint findNumbers(vector<int> &nums)\n{\n    int result = 0;\n\n    for (int num : nums)\n    {\n        if (countDigits(num) % 2 == 0) result++;\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {12, 345, 2, 6, 7896};\n\n    cout << findNumbers(nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n·d)",
+          "spaceComplexity": "O(1) — no string allocation"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same digit-counting loop, inlined directly into the main pass with no helper-function call overhead per element — the digit count itself is already O(1) since nums[i] is capped at 10^5 (at most 6 digits).",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findNumbers(vector<int> &nums)\n{\n    int result = 0;\n\n    for (int num : nums)\n    {\n        int digits = 0;\n        int n = num;\n        while (n > 0)\n        {\n            n /= 10;\n            digits++;\n        }\n\n        if (digits % 2 == 0) result++;\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {12, 345, 2, 6, 7896};\n\n    cout << findNumbers(nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n) — digit count is bounded by a constant here",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
