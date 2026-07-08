@@ -139,6 +139,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Heap",
       "text": "Heap = a tournament bracket in an array. Parent beats its own children only, not everyone. (i-1)/2 = parent, 2i+1/2i+2 = children. Sift up = bubble the new value toward the top while it keeps winning."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Heap in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1046",
+      "number": 1046,
+      "title": "Last Stone Weight",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/last-stone-weight/",
+      "problemStatement": "Given stone weights, repeatedly smash the two heaviest together: if equal, both vanish; otherwise the lighter is destroyed and the heavier becomes their difference. Return the weight of the last stone left, or 0 if none remain.",
+      "examples": [
+        { "input": "stones = [2,7,4,1,8,1]", "output": "1" }
+      ],
+      "constraints": ["1 <= stones.length <= 30"],
+      "hints": [
+        "'Repeatedly grab the two LARGEST' is exactly what a max-heap gives O(log n) access to — the root is always the current maximum.",
+        "priority_queue<int> defaults to a max-heap in C++ — pop the top twice, compute the result, and push it back if nonzero.",
+        "Repeat until at most one stone remains."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort the array on every round to find the two heaviest stones.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint lastStoneWeight(vector<int> stones)\n{\n    while (stones.size() > 1)\n    {\n        sort(stones.begin(), stones.end());\n        int n = stones.size();\n        int diff = stones[n - 1] - stones[n - 2];\n        stones.pop_back();\n        stones.pop_back();\n        if (diff > 0) stones.push_back(diff);\n    }\n\n    return stones.empty() ? 0 : stones[0];\n}\n\nint main()\n{\n    vector<int> stones = {2, 7, 4, 1, 8, 1};\n\n    cout << lastStoneWeight(stones) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n² log n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A max-heap (priority_queue<int>) gives O(log n) access to the two heaviest stones each round instead of re-sorting.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint lastStoneWeight(vector<int> &stones)\n{\n    priority_queue<int> maxHeap(stones.begin(), stones.end());\n\n    while (maxHeap.size() > 1)\n    {\n        int first = maxHeap.top(); maxHeap.pop();\n        int second = maxHeap.top(); maxHeap.pop();\n\n        if (first != second) maxHeap.push(first - second);\n    }\n\n    return maxHeap.empty() ? 0 : maxHeap.top();\n}\n\nint main()\n{\n    vector<int> stones = {2, 7, 4, 1, 8, 1};\n\n    cout << lastStoneWeight(stones) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(n) for the heap"
+        }
+      ]
     }
   ],
   "codeExamples": [
