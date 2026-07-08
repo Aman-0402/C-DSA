@@ -1,0 +1,143 @@
+{
+  "id": "dsa-singly-linked-list",
+  "moduleId": "linked-list",
+  "title": "Singly Linked List",
+  "description": "Wrapping the raw Node chain in a proper class: insertAtEnd(), traversal, and deletion's classic 'skip over it' trick.",
+  "objectives": [
+    "Wrap a linked list's raw node manipulation in a class",
+    "Implement insertAtEnd() and a print traversal",
+    "Implement deletion using the 'skip over it' pointer trick",
+    "Know the complexity of each operation"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We Already Built One"
+    },
+    {
+      "type": "paragraph",
+      "text": "The Linked List topic built exactly this: nodes linked in a single direction, each pointing only to next. That is a singly linked list. Now let's wrap the raw pointer manipulation in a proper class."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Class Structure"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "struct Node\n{\n    int data;\n    Node *next;\n};\n\nclass SinglyLinkedList\n{\nprivate:\n    Node *head; // only the head needs to be remembered — everything else is reachable through it\n\npublic:\n    SinglyLinkedList()\n    {\n        head = nullptr;\n    }\n};"
+    },
+    {
+      "type": "note",
+      "text": "Recall Classes and Objects and Constructors: head is a private member, initialized to nullptr — an empty list. Keeping the raw Node manipulation inside the class is Encapsulation in action: outside code never touches next pointers directly."
+    },
+    {
+      "type": "heading",
+      "text": "3. insertAtEnd()"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void insertAtEnd(int value)\n{\n    Node *newNode = new Node{value, nullptr};\n\n    if (head == nullptr) // empty list — the new node BECOMES head\n    {\n        head = newNode;\n        return;\n    }\n\n    Node *current = head;\n    while (current->next != nullptr) // walk to the LAST node\n    {\n        current = current->next;\n    }\n    current->next = newNode; // link it in\n}"
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nclass SinglyLinkedList\n{\nprivate:\n    Node *head;\n\npublic:\n    SinglyLinkedList()\n    {\n        head = nullptr;\n    }\n\n    void insertAtEnd(int value)\n    {\n        Node *newNode = new Node{value, nullptr};\n\n        if (head == nullptr)\n        {\n            head = newNode;\n            return;\n        }\n\n        Node *current = head;\n        while (current->next != nullptr)\n        {\n            current = current->next;\n        }\n        current->next = newNode;\n    }\n\n    void print()\n    {\n        Node *current = head;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->next;\n        }\n        cout << endl;\n    }\n};\n\nint main()\n{\n    SinglyLinkedList list;\n    list.insertAtEnd(10);\n    list.insertAtEnd(20);\n    list.insertAtEnd(30);\n\n    list.print();\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "dsa-singly-linked-list-insert"
+    },
+    {
+      "type": "heading",
+      "text": "5. Deletion: The \"Skip Over It\" Trick"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void deleteValue(int value)\n{\n    if (head == nullptr) return;\n\n    if (head->data == value) // deleting the HEAD itself\n    {\n        Node *temp = head;\n        head = head->next;\n        delete temp;\n        return;\n    }\n\n    Node *current = head;\n    while (current->next != nullptr && current->next->data != value)\n    {\n        current = current->next;\n    }\n\n    if (current->next != nullptr) // found it\n    {\n        Node *temp = current->next;\n        current->next = current->next->next; // SKIP over the node being deleted\n        delete temp; // free its memory (recall delete)\n    }\n}"
+    },
+    {
+      "type": "note",
+      "text": "Deleting a middle node never requires shifting anything (unlike an array from Arrays) — current->next = current->next->next; simply re-points around the node being removed, and delete temp; frees its heap memory. This is exactly why list-based structures are cheap to modify in the middle."
+    },
+    {
+      "type": "heading",
+      "text": "6. Complexity of Operations"
+    },
+    {
+      "type": "table",
+      "headers": ["Operation", "Complexity", "Why"],
+      "rows": [
+        ["Insert at head", "O(1)", "No traversal needed"],
+        ["Insert at end", "O(n)", "Must walk to the last node first (without a tail pointer)"],
+        ["Delete by value", "O(n)", "Must search for the node first"],
+        ["Search by value", "O(n)", "No indexing — must walk from head"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Removing a scavenger hunt box without disturbing the others",
+      "text": "Recall the scavenger hunt boxes. Removing one box from the middle of the hunt just means rewriting the note in the box BEFORE it to point straight to the box AFTER it — the removed box's own note becomes irrelevant, and no other box needs to move or be touched at all."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to handle deleting the head node as a special case — it has no 'previous' node to rewire.",
+        "Forgetting delete temp; after unlinking a node — the memory would leak, exactly the danger covered in delete.",
+        "Losing the reference to the node being deleted before unlinking it — save it in a temp variable first, then rewire, then delete.",
+        "Assuming insertAtEnd() is O(1) — without a separately tracked tail pointer, it requires walking the entire list first."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Why does a singly linked list only need to store a pointer to its head?",
+          "answer": "Because every other node is reachable by following next pointers starting from the head — no other reference is needed to access the whole list."
+        },
+        {
+          "question": "What is the time complexity of inserting at the end of a singly linked list without a tail pointer?",
+          "answer": "O(n) — the list must be traversed from the head to find the last node before linking the new one."
+        },
+        {
+          "question": "How do you delete a node from the middle of a singly linked list?",
+          "answer": "Find the node just before the one to delete, then re-point its next to skip over the target node (current->next = current->next->next;), and free the removed node's memory with delete."
+        }
+      ],
+      "thirtySecondAnswer": "A singly linked list wraps raw Node/next manipulation in a class holding just a head pointer, from which the entire list is reachable. insertAtEnd() walks to the last node (O(n) without a tracked tail) and links a new one; deletion finds the node just before the target and re-points around it with current->next = current->next->next;, then frees the removed node with delete — no shifting required, unlike an array. Insert at head is O(1), but insert at end, delete by value, and search are all O(n), since there's no indexed access — only sequential traversal from head."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Singly Linked List",
+      "text": "head = the only thing you need to remember; everything else follows next. Delete = rewrite the note before it to skip straight past, then free the removed box."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-singly-linked-list-insert", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nclass SinglyLinkedList\n{\nprivate:\n    Node *head;\n\npublic:\n    SinglyLinkedList()\n    {\n        head = nullptr;\n    }\n\n    void insertAtEnd(int value)\n    {\n        Node *newNode = new Node{value, nullptr};\n\n        if (head == nullptr)\n        {\n            head = newNode;\n            return;\n        }\n\n        Node *current = head;\n        while (current->next != nullptr)\n        {\n            current = current->next;\n        }\n        current->next = newNode;\n    }\n\n    void print()\n    {\n        Node *current = head;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->next;\n        }\n        cout << endl;\n    }\n};\n\nint main()\n{\n    SinglyLinkedList list;\n    list.insertAtEnd(10);\n    list.insertAtEnd(20);\n    list.insertAtEnd(30);\n\n    list.print();\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-singly-linked-list-insert",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nclass SinglyLinkedList\n{\nprivate:\n    Node *head;\n\npublic:\n    SinglyLinkedList()\n    {\n        head = nullptr;\n    }\n\n    void insertAtEnd(int value)\n    {\n        Node *newNode = new Node{value, nullptr};\n\n        if (head == nullptr)\n        {\n            head = newNode;\n            return;\n        }\n\n        Node *current = head;\n        while (current->next != nullptr)\n        {\n            current = current->next;\n        }\n        current->next = newNode;\n    }\n\n    void print()\n    {\n        Node *current = head;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->next;\n        }\n        cout << endl;\n    }\n};\n\nint main()\n{\n    SinglyLinkedList list;\n    list.insertAtEnd(10);\n    list.insertAtEnd(20);\n    list.insertAtEnd(30);\n\n    list.print();\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-singly-linked-list-insert"]
+  }
+}

@@ -196,7 +196,8 @@
       "id": "linked-list",
       "title": "Linked List",
       "topics": [
-        { "id": "dsa-linked-list", "title": "Linked List", "lesson": "dsa-linked-list" }
+        { "id": "dsa-linked-list", "title": "Linked List", "lesson": "dsa-linked-list" },
+        { "id": "dsa-singly-linked-list", "title": "Singly Linked List", "lesson": "dsa-singly-linked-list" }
       ]
     }
   ]
