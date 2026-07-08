@@ -107,6 +107,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Greedy Algorithms",
       "text": "Greedy = grab the biggest thing that fits, right now, never look back. Works for standard coins. Can fail on other systems — always verify greedy is actually correct for the problem."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Greedy Algorithms in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-455",
+      "number": 455,
+      "title": "Assign Cookies",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/assign-cookies/",
+      "problemStatement": "Each child i has a greed factor g[i] (minimum cookie size to be content). Each cookie j has a size s[j]. Assign at most one cookie per child to maximize the number of content children.",
+      "examples": [
+        { "input": "g = [1,2,3], s = [1,1]", "output": "1" }
+      ],
+      "constraints": ["1 <= g.length, s.length <= 3 * 10^4"],
+      "hints": [
+        "Sort both g and s first — greedy needs to compare 'smallest unsatisfied need' against 'smallest available cookie' in order.",
+        "Give the LEAST greedy unsatisfied child the SMALLEST cookie that still satisfies them — using a big cookie on a low-need child wastes it on someone who could've been satisfied more cheaply.",
+        "Two pointers, one over sorted g and one over sorted s: advance the cookie pointer always; advance the child pointer (and count a match) only when the current cookie satisfies the current child."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each child (sorted by greed, least first), scan all remaining cookies for the smallest one that satisfies them.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint findContentChildren(vector<int>& g, vector<int>& s)\n{\n    sort(g.begin(), g.end());\n    sort(s.begin(), s.end());\n\n    vector<bool> used(s.size(), false);\n    int content = 0;\n\n    for (int need : g)\n    {\n        int bestIndex = -1;\n        for (int j = 0; j < (int)s.size(); j++)\n            if (!used[j] && s[j] >= need)\n            {\n                if (bestIndex == -1 || s[j] < s[bestIndex]) bestIndex = j;\n            }\n        if (bestIndex != -1)\n        {\n            used[bestIndex] = true;\n            content++;\n        }\n    }\n    return content;\n}\n\nint main()\n{\n    vector<int> g = {1, 2, 3};\n    vector<int> s = {1, 1};\n\n    cout << findContentChildren(g, s);\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n * m) for the nested scan",
+          "spaceComplexity": "O(m) for the used-cookie tracking"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sort both arrays, then a single two-pointer greedy pass: the smallest available cookie either satisfies the least-greedy remaining child, or is too small for anyone and gets skipped.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint findContentChildren(vector<int>& g, vector<int>& s)\n{\n    sort(g.begin(), g.end());\n    sort(s.begin(), s.end());\n\n    int child = 0, cookie = 0;\n    while (child < (int)g.size() && cookie < (int)s.size())\n    {\n        if (s[cookie] >= g[child]) child++;\n        cookie++;\n    }\n    return child;\n}\n\nint main()\n{\n    vector<int> g = {1, 2, 3};\n    vector<int> s = {1, 1};\n\n    cout << findContentChildren(g, s);\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n log n + m log m) for sorting, O(n + m) for the two-pointer pass",
+          "spaceComplexity": "O(1) extra space beyond the sort"
+        }
+      ]
     }
   ],
   "codeExamples": [
