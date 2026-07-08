@@ -227,6 +227,51 @@
           "spaceComplexity": "O(1) extra"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-283",
+      "number": 283,
+      "title": "Move Zeroes",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/move-zeroes/",
+      "problemStatement": "Given an array nums, move all 0's to the end while maintaining the relative order of the non-zero elements, in place, without making a copy of the array.",
+      "examples": [
+        { "input": "nums = [0,1,0,3,12]", "output": "[1,3,12,0,0]" },
+        { "input": "nums = [0]", "output": "[0]" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4", "-2^31 <= nums[i] <= 2^31 - 1"],
+      "hints": [
+        "This lesson previewed a SAME-DIRECTION two-pointer variant — this problem is a classic use of it, not the opposite-ends pattern.",
+        "One pointer scans forward looking for non-zero values; a second, slower pointer marks WHERE the next non-zero value should be placed.",
+        "Every time the scanning pointer finds a non-zero value, swap it into the slower pointer's position, then advance the slower pointer."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build a brand new array of non-zero values followed by zeros, then copy it back over nums — technically not in-place.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid moveZeroes(vector<int> &nums)\n{\n    vector<int> result;\n\n    for (int n : nums)\n    {\n        if (n != 0) result.push_back(n);\n    }\n    while (result.size() < nums.size()) result.push_back(0);\n\n    nums = result;\n}\n\nint main()\n{\n    vector<int> nums = {0, 1, 0, 3, 12};\n\n    moveZeroes(nums);\n    for (int n : nums) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 3 12 0 0 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result array"
+        },
+        {
+          "label": "Better",
+          "explanation": "Same-direction two pointers: a slow pointer marks the next non-zero slot, a fast pointer scans ahead, swapping whenever a non-zero is found.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid moveZeroes(vector<int> &nums)\n{\n    int slow = 0;\n\n    for (int fast = 0; fast < nums.size(); fast++)\n    {\n        if (nums[fast] != 0)\n        {\n            swap(nums[slow], nums[fast]);\n            slow++;\n        }\n    }\n}\n\nint main()\n{\n    vector<int> nums = {0, 1, 0, 3, 12};\n\n    moveZeroes(nums);\n    for (int n : nums) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 3 12 0 0 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — in place"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same two-pointer shape, but skip the swap entirely when slow and fast already point at the same index — avoids a redundant self-swap while nums[slow] is still non-zero.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid moveZeroes(vector<int> &nums)\n{\n    int slow = 0;\n\n    for (int fast = 0; fast < nums.size(); fast++)\n    {\n        if (nums[fast] != 0)\n        {\n            if (slow != fast) swap(nums[slow], nums[fast]);\n            slow++;\n        }\n    }\n}\n\nint main()\n{\n    vector<int> nums = {0, 1, 0, 3, 12};\n\n    moveZeroes(nums);\n    for (int n : nums) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 3 12 0 0 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — in place, fewer redundant writes"
+        }
+      ]
     }
   ],
   "codeExamples": [
