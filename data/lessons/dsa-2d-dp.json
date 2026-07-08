@@ -162,6 +162,42 @@
           "spaceComplexity": "O(n) for a single row"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-63",
+      "number": 63,
+      "title": "Unique Paths II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/unique-paths-ii/",
+      "problemStatement": "Same as Unique Paths, but some cells contain obstacles (marked 1) that cannot be entered. Return the number of distinct paths from top-left to bottom-right.",
+      "examples": [
+        { "input": "obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]", "output": "2" }
+      ],
+      "constraints": ["1 <= rows, cols <= 100"],
+      "hints": [
+        "Same state and recurrence as LC 62 — dp[i][j] = dp[i-1][j] + dp[i][j-1] — but ONLY when cell (i,j) isn't itself an obstacle.",
+        "An obstacle cell has dp[i][j] = 0 (zero paths can end there), which then correctly propagates: any cell relying on an obstacle neighbor simply doesn't get a contribution from that direction.",
+        "The first row/column base case of '1' no longer holds unconditionally — an obstacle anywhere along the edge blocks every cell after it in that row or column."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp grid, explicitly zeroing obstacle cells and rebuilding the first row/column carefully.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePathsWithObstacles(vector<vector<int>>& grid)\n{\n    int rows = grid.size(), cols = grid[0].size();\n    vector<vector<int>> dp(rows, vector<int>(cols, 0));\n\n    for (int i = 0; i < rows; i++)\n        for (int j = 0; j < cols; j++)\n        {\n            if (grid[i][j] == 1) { dp[i][j] = 0; continue; }\n            if (i == 0 && j == 0) { dp[i][j] = 1; continue; }\n\n            int fromAbove = (i > 0) ? dp[i - 1][j] : 0;\n            int fromLeft = (j > 0) ? dp[i][j - 1] : 0;\n            dp[i][j] = fromAbove + fromLeft;\n        }\n\n    return dp[rows - 1][cols - 1];\n}\n\nint main()\n{\n    vector<vector<int>> grid = {\n        {0, 0, 0},\n        {0, 1, 0},\n        {0, 0, 0}\n    };\n\n    cout << uniquePathsWithObstacles(grid);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(rows * cols)",
+          "spaceComplexity": "O(rows * cols) for the full grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same obstacle handling, collapsed to a single rolling row.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePathsWithObstacles(vector<vector<int>>& grid)\n{\n    int rows = grid.size(), cols = grid[0].size();\n    vector<int> row(cols, 0);\n    row[0] = (grid[0][0] == 1) ? 0 : 1;\n\n    for (int i = 0; i < rows; i++)\n        for (int j = 0; j < cols; j++)\n        {\n            if (grid[i][j] == 1) row[j] = 0;\n            else if (j > 0) row[j] += row[j - 1];\n        }\n\n    return row[cols - 1];\n}\n\nint main()\n{\n    vector<vector<int>> grid = {\n        {0, 0, 0},\n        {0, 1, 0},\n        {0, 0, 0}\n    };\n\n    cout << uniquePathsWithObstacles(grid);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(rows * cols)",
+          "spaceComplexity": "O(cols) for a single row"
+        }
+      ]
     }
   ],
   "codeExamples": [
