@@ -1,0 +1,135 @@
+{
+  "id": "dsa-knapsack",
+  "moduleId": "greedy-dp",
+  "title": "Knapsack",
+  "description": "The classic 0/1 Knapsack problem: 2D DP's item-index + capacity pattern, choosing whether to take or skip each item to maximize value under a weight limit.",
+  "objectives": [
+    "Solve the 0/1 Knapsack problem using 2D dynamic programming",
+    "Define a DP state combining an item index and a remaining capacity",
+    "Derive the take-or-skip recurrence",
+    "Recognize 0/1 Knapsack as a template for many constrained-choice DP problems"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Two Dimensions, Different Meaning This Time"
+    },
+    {
+      "type": "paragraph",
+      "text": "2D DP's Unique Paths used dp[i][j] for a row and a column of a grid. Knapsack also uses two indices, but they mean something completely different: an item index, and a remaining weight capacity."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: 0/1 Knapsack"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Items with weights {1, 3, 4, 5} and values {1, 4, 5, 7}\n// A knapsack (bag) can carry AT MOST a total weight of 7\n// Each item can be taken ONCE (0/1 — take it or don't, no fractions, no duplicates)\n// Maximize the total VALUE that fits in the bag"
+    },
+    {
+      "type": "heading",
+      "text": "3. Defining the State"
+    },
+    {
+      "type": "definition",
+      "term": "dp[i][w] for 0/1 Knapsack",
+      "text": "dp[i][w] represents the maximum value achievable using only the first i items, with a knapsack capacity of w."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Recurrence"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// At item i, there are exactly two choices, just like House Robber's skip-or-take:\n// SKIP item i -> dp[i-1][w] (capacity untouched, value unchanged)\n// TAKE item i (only if it FITS: weight[i] <= w) -> value[i] + dp[i-1][w - weight[i]]\n\n// dp[i][w] = max(dp[i-1][w], value[i] + dp[i-1][w - weight[i]])   if weight[i] <= w\n// dp[i][w] = dp[i-1][w]                                           otherwise (doesn't fit)"
+    },
+    {
+      "type": "note",
+      "text": "This is House Robber's skip-or-take recurrence, generalized: instead of an adjacency restriction, the constraint is a shared weight budget across all items, so the 'take' branch must also shrink the remaining capacity."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint knapsack(vector<int> &weights, vector<int> &values, int capacity)\n{\n    int n = weights.size();\n    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));\n\n    for (int i = 1; i <= n; i++)\n    {\n        for (int w = 0; w <= capacity; w++)\n        {\n            dp[i][w] = dp[i - 1][w]; // skip item i-1 (0-indexed)\n\n            if (weights[i - 1] <= w) // item fits, consider taking it\n            {\n                dp[i][w] = max(dp[i][w], values[i - 1] + dp[i - 1][w - weights[i - 1]]);\n            }\n        }\n    }\n\n    return dp[n][capacity];\n}\n\nint main()\n{\n    vector<int> weights = {1, 3, 4, 5};\n    vector<int> values = {1, 4, 5, 7};\n    int capacity = 7;\n\n    cout << knapsack(weights, values, capacity) << endl;\n\n    return 0;\n}",
+      "output": "9",
+      "retypePractice": true,
+      "retypeId": "dsa-knapsack-01"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why the answer is 9",
+      "points": [
+        "Row 0 (no items considered yet) is all 0 — nothing to take, nothing to gain",
+        "Taking item weight=3,value=4 and item weight=4,value=5 uses exactly 3+4=7 capacity for 4+5=9 value",
+        "No other combination fitting within capacity 7 beats 9 — e.g. weight=1,value=1 + weight=5,value=7 gives only 8",
+        "dp[n][capacity] = dp[4][7] = 9 — the bottom-right corner of the table holds the final answer"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Packing a suitcase with a strict weight limit before a flight",
+      "text": "Deciding which items to pack into a suitcase with a strict airline weight limit, where each item is either fully packed or left behind (no cutting an item in half), is exactly 0/1 Knapsack — at every item, the choice is skip it (keep the weight budget for later) or pack it (spend some of the weight budget for its value)."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to check weight[i] <= w before considering the 'take' branch — taking an item that doesn't fit produces a negative or invalid remaining capacity.",
+        "Mixing up dp[i-1] and dp[i] — the 'skip' and 'take' branches both read from ROW i-1 (items before item i), never from row i itself.",
+        "Allocating a (n+1) x (capacity+1) table but forgetting the extra row/column exists specifically to represent 'zero items considered' and 'zero capacity' as clean base cases.",
+        "Confusing 0/1 Knapsack (each item once) with the unbounded/fractional variants — those change the recurrence and aren't interchangeable with this template."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "In 0/1 Knapsack, what does dp[i][w] represent?",
+          "answer": "The maximum value achievable using only the first i items, with a knapsack capacity of w."
+        },
+        {
+          "question": "What is the recurrence for 0/1 Knapsack?",
+          "answer": "dp[i][w] = max(dp[i-1][w], value[i] + dp[i-1][w - weight[i]]) if the item fits (weight[i] <= w), otherwise dp[i][w] = dp[i-1][w]."
+        },
+        {
+          "question": "How does 0/1 Knapsack's recurrence relate to House Robber's?",
+          "answer": "Both are a skip-or-take choice at each step, taking the better of the two options — Knapsack adds a second dimension (remaining capacity) because its constraint is a shared weight budget rather than a simple adjacency rule."
+        }
+      ],
+      "thirtySecondAnswer": "0/1 Knapsack extends the skip-or-take pattern from House Robber into two dimensions: dp[i][w] is the maximum value achievable using only the first i items with capacity w. At each item, either skip it (dp[i-1][w]) or, if it fits, take it (value[i] + dp[i-1][w - weight[i]]) — and dp[i][w] keeps whichever is larger. Filling the table row by row (one row per item) over all capacities from 0 to the max eventually gives the answer at dp[n][capacity]. This item-index-plus-capacity pattern is a template for many constrained-choice DP problems, not just packing a literal bag."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Knapsack",
+      "text": "Knapsack = House Robber with a weight budget instead of an adjacency rule. Skip it (dp[i-1][w]), or take it if it fits (value + dp[i-1][w-weight]) — keep the best."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-knapsack-01", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint knapsack(vector<int> &weights, vector<int> &values, int capacity)\n{\n    int n = weights.size();\n    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));\n\n    for (int i = 1; i <= n; i++)\n    {\n        for (int w = 0; w <= capacity; w++)\n        {\n            dp[i][w] = dp[i - 1][w];\n\n            if (weights[i - 1] <= w)\n            {\n                dp[i][w] = max(dp[i][w], values[i - 1] + dp[i - 1][w - weights[i - 1]]);\n            }\n        }\n    }\n\n    return dp[n][capacity];\n}\n\nint main()\n{\n    vector<int> weights = {1, 3, 4, 5};\n    vector<int> values = {1, 4, 5, 7};\n    int capacity = 7;\n\n    cout << knapsack(weights, values, capacity) << endl;\n\n    return 0;\n}", "output": "9" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-knapsack-01",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint knapsack(vector<int> &weights, vector<int> &values, int capacity)\n{\n    int n = weights.size();\n    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));\n\n    for (int i = 1; i <= n; i++)\n    {\n        for (int w = 0; w <= capacity; w++)\n        {\n            dp[i][w] = dp[i - 1][w];\n\n            if (weights[i - 1] <= w)\n            {\n                dp[i][w] = max(dp[i][w], values[i - 1] + dp[i - 1][w - weights[i - 1]]);\n            }\n        }\n    }\n\n    return dp[n][capacity];\n}\n\nint main()\n{\n    vector<int> weights = {1, 3, 4, 5};\n    vector<int> values = {1, 4, 5, 7};\n    int capacity = 7;\n\n    cout << knapsack(weights, values, capacity) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-knapsack-01"]
+  }
+}
