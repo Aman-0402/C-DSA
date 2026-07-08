@@ -208,6 +208,42 @@
           "spaceComplexity": "O(h) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-226",
+      "number": 226,
+      "title": "Invert Binary Tree",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/invert-binary-tree/",
+      "problemStatement": "Given the root of a binary tree, invert it (swap every node's left and right children) and return the root.",
+      "examples": [
+        { "input": "root = [4,2,7,1,3,6,9]", "output": "[4,7,2,9,6,3,1]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 100"],
+      "hints": [
+        "Every single node's left and right children need to be swapped — including at every level, not just the root.",
+        "Recursively invert the left subtree, invert the right subtree, then swap the (now-inverted) results at the current node.",
+        "Order doesn't matter much here: swap first then recurse into the (already-swapped) children, or recurse first then swap — both work as long as every node's children end up swapped."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Level-order BFS, swapping each node's children as it's visited.",
+          "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* invertTree(TreeNode* root)\n{\n    if (root == nullptr) return nullptr;\n\n    queue<TreeNode*> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        TreeNode* node = q.front(); q.pop();\n        swap(node->left, node->right);\n\n        if (node->left) q.push(node->left);\n        if (node->right) q.push(node->right);\n    }\n\n    return root;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(4);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(7);\n\n    TreeNode* result = invertTree(root);\n    cout << result->left->val << \" \" << result->right->val << endl;\n\n    return 0;\n}",
+          "output": "7 2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the queue"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A short recursive swap at every node.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* invertTree(TreeNode* root)\n{\n    if (root == nullptr) return nullptr;\n\n    swap(root->left, root->right);\n    invertTree(root->left);\n    invertTree(root->right);\n\n    return root;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(4);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(7);\n\n    TreeNode* result = invertTree(root);\n    cout << result->left->val << \" \" << result->right->val << endl;\n\n    return 0;\n}",
+          "output": "7 2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
