@@ -184,6 +184,43 @@
           "spaceComplexity": "O(1) extra"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-14",
+      "number": 14,
+      "title": "Longest Common Prefix",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/longest-common-prefix/",
+      "problemStatement": "Given an array of strings strs, return the longest common prefix shared by all of them. Return \"\" if there is none.",
+      "examples": [
+        { "input": "strs = [\"flower\",\"flow\",\"flight\"]", "output": "\"fl\"" },
+        { "input": "strs = [\"dog\",\"racecar\",\"car\"]", "output": "\"\"" }
+      ],
+      "constraints": ["1 <= strs.length <= 200", "0 <= strs[i].length <= 200"],
+      "hints": [
+        "The common prefix can never be longer than the SHORTEST string in the array — that's an immediate upper bound.",
+        "Compare all strings one CHARACTER POSITION at a time, rather than one whole string at a time — the moment any string disagrees at a position, the prefix stops there.",
+        "You can shrink a running candidate prefix by repeatedly trimming it against each string in turn, or scan column-by-column — either way, stop the instant a mismatch appears."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Start with the first string as the candidate prefix, and repeatedly shrink it by comparing against each subsequent string in turn.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nstring longestCommonPrefix(vector<string> &strs)\n{\n    string prefix = strs[0];\n\n    for (int i = 1; i < strs.size(); i++)\n    {\n        while (strs[i].find(prefix) != 0)\n        {\n            prefix = prefix.substr(0, prefix.size() - 1);\n            if (prefix.empty()) return \"\";\n        }\n    }\n\n    return prefix;\n}\n\nint main()\n{\n    vector<string> strs = {\"flower\", \"flow\", \"flight\"};\n\n    cout << longestCommonPrefix(strs) << endl;\n\n    return 0;\n}",
+          "output": "fl",
+          "timeComplexity": "O(S) average, where S is total characters, but repeated substr() allocations add overhead",
+          "spaceComplexity": "O(m) for the shrinking prefix copy"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Scan column by column (character position by character position) across all strings simultaneously, stopping at the first mismatch or the shortest string's end.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nstring longestCommonPrefix(vector<string> &strs)\n{\n    for (int i = 0; i < strs[0].size(); i++)\n    {\n        char c = strs[0][i];\n\n        for (int j = 1; j < strs.size(); j++)\n        {\n            if (i == strs[j].size() || strs[j][i] != c)\n            {\n                return strs[0].substr(0, i);\n            }\n        }\n    }\n\n    return strs[0];\n}\n\nint main()\n{\n    vector<string> strs = {\"flower\", \"flow\", \"flight\"};\n\n    cout << longestCommonPrefix(strs) << endl;\n\n    return 0;\n}",
+          "output": "fl",
+          "timeComplexity": "O(S), S = total characters, no repeated allocations",
+          "spaceComplexity": "O(1) extra, excluding the returned prefix"
+        }
+      ]
     }
   ],
   "codeExamples": [
