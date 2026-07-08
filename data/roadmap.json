@@ -198,7 +198,8 @@
       "topics": [
         { "id": "dsa-linked-list", "title": "Linked List", "lesson": "dsa-linked-list" },
         { "id": "dsa-singly-linked-list", "title": "Singly Linked List", "lesson": "dsa-singly-linked-list" },
-        { "id": "dsa-doubly-linked-list", "title": "Doubly Linked List", "lesson": "dsa-doubly-linked-list" }
+        { "id": "dsa-doubly-linked-list", "title": "Doubly Linked List", "lesson": "dsa-doubly-linked-list" },
+        { "id": "dsa-circular-linked-list", "title": "Circular Linked List", "lesson": "dsa-circular-linked-list" }
       ]
     }
   ]

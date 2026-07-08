@@ -1,0 +1,128 @@
+{
+  "id": "dsa-circular-linked-list",
+  "moduleId": "linked-list",
+  "title": "Circular Linked List",
+  "description": "The last node points back to head instead of nullptr — no natural end, a different traversal stopping condition, and the round-robin use case.",
+  "objectives": [
+    "Understand how a circular linked list differs structurally",
+    "Traverse a circular linked list without an nullptr to stop at",
+    "Build a simple circular linked list",
+    "Recognize round-robin scheduling as the classic use case"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Linear Lists End at nullptr"
+    },
+    {
+      "type": "paragraph",
+      "text": "Every list built so far — Singly Linked List, Doubly Linked List — had a clear end: the last node's next was nullptr. A circular linked list removes that ending entirely."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Circular Linked List?"
+    },
+    {
+      "type": "definition",
+      "term": "Circular linked list",
+      "text": "A circular linked list is a linked list where the last node's next pointer points back to the first node (head) instead of nullptr, forming a continuous loop with no natural end."
+    },
+    {
+      "type": "heading",
+      "text": "3. Traversal Must Change"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// This would be an INFINITE LOOP on a circular list — there's no nullptr to reach!\nNode *current = head;\nwhile (current != nullptr)\n{\n    cout << current->data << \" \";\n    current = current->next;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Recall Loops' infinite-loop warning, and Stack Memory's stack overflow from runaway recursion — this is the same fundamental danger, applied here: current never becomes nullptr on a circular list, since the last node loops back to head instead. The stopping condition must check something else entirely: whether we've returned to where we started."
+    },
+    {
+      "type": "heading",
+      "text": "4. Correct Traversal: Stop When You Return to head"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nint main()\n{\n    Node *head = new Node{10, nullptr};\n    Node *second = new Node{20, nullptr};\n    Node *third = new Node{30, nullptr};\n\n    head->next = second;\n    second->next = third;\n    third->next = head; // LOOPS BACK to head instead of nullptr\n\n    Node *current = head;\n    do\n    {\n        cout << current->data << \" \";\n        current = current->next;\n    } while (current != head); // stop once we're back where we started\n\n    return 0;\n}",
+      "output": "10 20 30 ",
+      "retypePractice": true,
+      "retypeId": "dsa-circular-linked-list-basic"
+    },
+    {
+      "type": "note",
+      "text": "Recall do-while from its own topic: it's the natural fit here, since the body must run at least once before the check (\"have we returned to head?\") makes sense — a while loop checking current != head before ever printing head itself would incorrectly print nothing for a single-node-just-visited list."
+    },
+    {
+      "type": "heading",
+      "text": "5. Classic Use Case: Round-Robin"
+    },
+    {
+      "type": "note",
+      "text": "Circular linked lists naturally model anything that cycles endlessly with no true 'last turn' — like round-robin CPU scheduling, where each process gets a turn, and after the last process, the cycle simply continues back to the first one again, indefinitely."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Musical chairs, or a scavenger hunt that loops back to the start",
+      "text": "Recall the scavenger hunt boxes. A circular linked list is that hunt with the last box's note pointing back to the very first box, instead of saying \"the end\" — the hunt simply keeps going in a loop forever, exactly like players taking turns around a table, cycling back to the first player after the last one goes."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Traversing a circular linked list with while (current != nullptr) — this becomes an infinite loop, since nullptr is never reached.",
+        "Using a plain while (current != head) without first entering the loop body — this skips printing head itself; do-while is usually the right structure here.",
+        "Forgetting to explicitly set the last node's next back to head when building the list — without that line, it's just an ordinary (non-circular) linked list.",
+        "Assuming circular linked lists always need special-case handling everywhere — many operations still work normally, as long as the traversal stopping condition accounts for the loop."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What makes a linked list circular?",
+          "answer": "The last node's next pointer points back to the head node instead of nullptr, forming a continuous loop with no natural end."
+        },
+        {
+          "question": "Why can't you traverse a circular linked list with while (current != nullptr)?",
+          "answer": "Because nullptr is never reached — the last node loops back to head, so that condition never becomes false, causing an infinite loop."
+        },
+        {
+          "question": "What is a classic real-world use case for a circular linked list?",
+          "answer": "Round-robin scheduling, where each item takes a turn in sequence and the cycle continues back to the first item after the last, with no true final turn."
+        }
+      ],
+      "thirtySecondAnswer": "A circular linked list differs from a regular one by making its last node's next point back to head instead of nullptr, forming a continuous loop with no natural end. This changes how traversal must be written: checking for nullptr causes an infinite loop, so the stopping condition instead checks whether the current pointer has returned to head — commonly implemented with a do-while loop, since the body needs to run once before that check makes sense. Circular linked lists naturally model anything that cycles indefinitely with no true final turn, like round-robin scheduling."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Circular Linked List",
+      "text": "Circular = the last box's note points back to the FIRST box, not 'the end.' Traverse with do-while, stop when you're back at head — nullptr never comes."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-circular-linked-list-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nint main()\n{\n    Node *head = new Node{10, nullptr};\n    Node *second = new Node{20, nullptr};\n    Node *third = new Node{30, nullptr};\n\n    head->next = second;\n    second->next = third;\n    third->next = head;\n\n    Node *current = head;\n    do\n    {\n        cout << current->data << \" \";\n        current = current->next;\n    } while (current != head);\n\n    return 0;\n}", "output": "10 20 30 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-circular-linked-list-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nint main()\n{\n    Node *head = new Node{10, nullptr};\n    Node *second = new Node{20, nullptr};\n    Node *third = new Node{30, nullptr};\n\n    head->next = second;\n    second->next = third;\n    third->next = head;\n\n    Node *current = head;\n    do\n    {\n        cout << current->data << \" \";\n        current = current->next;\n    } while (current != head);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-circular-linked-list-basic"]
+  }
+}
