@@ -227,6 +227,51 @@
           "spaceComplexity": "O(n) for the output — the minimum possible, since the output itself has 2n elements"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1672",
+      "number": 1672,
+      "title": "Richest Customer Wealth",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/richest-customer-wealth/",
+      "problemStatement": "Given a 2D array accounts where accounts[i][j] is the money customer i has in bank j, return the wealth (row sum) of the richest customer.",
+      "examples": [
+        { "input": "accounts = [[1,2,3],[3,2,1]]", "output": "6", "explanation": "Both customers have wealth 6." },
+        { "input": "accounts = [[1,5],[7,3],[3,5]]", "output": "10", "explanation": "Customer 1 has wealth 7+3=10." }
+      ],
+      "constraints": ["m == accounts.length", "n == accounts[i].length", "1 <= m, n <= 50", "1 <= accounts[i][j] <= 100"],
+      "hints": [
+        "Each customer's wealth is just the sum of their row — a nested loop can compute every row's sum.",
+        "You don't need to keep every customer's total around once you've compared it — only the biggest one seen so far matters.",
+        "Track a running maximum WHILE summing each row, instead of storing all the row sums and scanning them afterward."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Compute every customer's total wealth into a separate array first, then scan that array for the maximum.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint maximumWealth(vector<vector<int>> &accounts)\n{\n    vector<int> wealths;\n\n    for (auto &row : accounts)\n    {\n        int sum = 0;\n        for (int coins : row) sum += coins;\n        wealths.push_back(sum);\n    }\n\n    int best = wealths[0];\n    for (int w : wealths)\n    {\n        if (w > best) best = w;\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<vector<int>> accounts = {{1, 2, 3}, {3, 2, 1}};\n\n    cout << maximumWealth(accounts) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(m·n)",
+          "spaceComplexity": "O(m) for the extra wealths array"
+        },
+        {
+          "label": "Better",
+          "explanation": "Use the STL's accumulate() (recall the header file it comes from, <numeric>) to sum each row more concisely, still storing every total before finding the max.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nint maximumWealth(vector<vector<int>> &accounts)\n{\n    vector<int> wealths;\n\n    for (auto &row : accounts)\n    {\n        wealths.push_back(accumulate(row.begin(), row.end(), 0));\n    }\n\n    return *max_element(wealths.begin(), wealths.end());\n}\n\nint main()\n{\n    vector<vector<int>> accounts = {{1, 2, 3}, {3, 2, 1}};\n\n    cout << maximumWealth(accounts) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(m·n)",
+          "spaceComplexity": "O(m) for the extra wealths array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Track the best wealth seen so far in a single variable, updating it right after summing each row — no extra array needed at all.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint maximumWealth(vector<vector<int>> &accounts)\n{\n    int best = 0;\n\n    for (auto &row : accounts)\n    {\n        int sum = 0;\n        for (int coins : row) sum += coins;\n        best = max(best, sum);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<vector<int>> accounts = {{1, 2, 3}, {3, 2, 1}};\n\n    cout << maximumWealth(accounts) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(m·n)",
+          "spaceComplexity": "O(1) extra"
+        }
+      ]
     }
   ],
   "codeExamples": [
