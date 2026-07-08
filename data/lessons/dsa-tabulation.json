@@ -107,6 +107,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Tabulation",
       "text": "Tabulation = build the staircase from the ground up, one step at a time, no recursion. Memoization = ask the step below you, recursively, then cache the answer on the way back up."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Tabulation in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-70-tab",
+      "number": 70,
+      "title": "Climbing Stairs",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/climbing-stairs/",
+      "problemStatement": "You can climb 1 or 2 steps at a time. Given n steps, return the number of distinct ways to reach the top.",
+      "examples": [
+        { "input": "n = 5", "output": "8" }
+      ],
+      "constraints": ["1 <= n <= 45"],
+      "hints": [
+        "Build a table bottom-up: table[i] = table[i-1] + table[i-2], filled from i=2 up to n — this lesson's exact Fibonacci-table technique.",
+        "Base cases fill the table's first two entries directly: table[1] = 1, table[2] = 2.",
+        "No recursion at all — just an ordinary forward loop reading already-filled earlier entries."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Tabulation using a full table array — clear and direct, but stores every intermediate value even though only the last two are ever read.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint climbStairs(int n)\n{\n    if (n <= 2) return n;\n\n    vector<int> table(n + 1);\n    table[1] = 1;\n    table[2] = 2;\n\n    for (int i = 3; i <= n; i++)\n        table[i] = table[i - 1] + table[i - 2];\n\n    return table[n];\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the full table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same bottom-up loop, but only the last two table entries are ever needed — collapse the table to two variables.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint climbStairs(int n)\n{\n    if (n <= 2) return n;\n\n    int prev2 = 1, prev1 = 2;\n    for (int i = 3; i <= n; i++)\n    {\n        int current = prev1 + prev2;\n        prev2 = prev1;\n        prev1 = current;\n    }\n    return prev1;\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — the space-optimized version of tabulation"
+        }
+      ]
     }
   ],
   "codeExamples": [
