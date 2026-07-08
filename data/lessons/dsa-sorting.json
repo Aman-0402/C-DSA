@@ -285,6 +285,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-56",
+      "number": 56,
+      "title": "Merge Intervals",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/merge-intervals/",
+      "problemStatement": "Given an array of intervals, merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the input intervals.",
+      "examples": [
+        { "input": "intervals = [[1,3],[2,6],[8,10],[15,18]]", "output": "[[1,6],[8,10],[15,18]]" }
+      ],
+      "constraints": ["1 <= intervals.length <= 10^4"],
+      "hints": [
+        "Two intervals can only be checked for overlap easily if they're next to each other in some order — sorting by START value puts every potential overlap adjacent.",
+        "After sorting, walk through once: if the current interval's start is <= the last merged interval's end, they overlap — extend the last merged interval's end if needed.",
+        "If the current interval's start is beyond the last merged interval's end, it can never merge with anything before it — start a new interval in the result."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Repeatedly scan for any overlapping pair and merge it, restarting the scan, until no overlaps remain.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool overlaps(vector<int> &a, vector<int> &b)\n{\n    return a[0] <= b[1] && b[0] <= a[1];\n}\n\nvector<vector<int>> merge(vector<vector<int>> &intervals)\n{\n    vector<vector<int>> result = intervals;\n\n    bool merged = true;\n    while (merged)\n    {\n        merged = false;\n        for (int i = 0; i < result.size() && !merged; i++)\n        {\n            for (int j = i + 1; j < result.size() && !merged; j++)\n            {\n                if (overlaps(result[i], result[j]))\n                {\n                    result[i][0] = min(result[i][0], result[j][0]);\n                    result[i][1] = max(result[i][1], result[j][1]);\n                    result.erase(result.begin() + j);\n                    merged = true;\n                }\n            }\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> intervals = {{1, 3}, {2, 6}, {8, 10}, {15, 18}};\n\n    auto result = merge(intervals);\n    for (auto &iv : result) cout << \"[\" << iv[0] << \",\" << iv[1] << \"] \";\n\n    return 0;\n}",
+          "output": "[1,6] [8,10] [15,18] ",
+          "timeComplexity": "O(n³) worst case",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sort by start value first, then merge overlapping intervals in a single forward pass.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nvector<vector<int>> merge(vector<vector<int>> &intervals)\n{\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> result;\n    result.push_back(intervals[0]);\n\n    for (int i = 1; i < intervals.size(); i++)\n    {\n        if (intervals[i][0] <= result.back()[1])\n        {\n            result.back()[1] = max(result.back()[1], intervals[i][1]);\n        }\n        else\n        {\n            result.push_back(intervals[i]);\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> intervals = {{1, 3}, {2, 6}, {8, 10}, {15, 18}};\n\n    auto result = merge(intervals);\n    for (auto &iv : result) cout << \"[\" << iv[0] << \",\" << iv[1] << \"] \";\n\n    return 0;\n}",
+          "output": "[1,6] [8,10] [15,18] ",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(n) for the result"
+        }
+      ]
     }
   ],
   "codeExamples": [
