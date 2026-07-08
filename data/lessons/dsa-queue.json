@@ -189,6 +189,42 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-225",
+      "number": 225,
+      "title": "Implement Stack using Queues",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/implement-stack-using-queues/",
+      "problemStatement": "Implement a LIFO stack using only one or two queues, supporting push, pop, top, and empty.",
+      "examples": [
+        { "input": "push(1); push(2); top(); pop(); empty()", "output": "2, 2, false" }
+      ],
+      "constraints": ["1 <= x <= 9", "at most 100 calls"],
+      "hints": [
+        "This is the mirror image of Implement Queue using Stacks — here a FIFO structure needs to fake LIFO behavior instead.",
+        "A single queue can do it: after pushing a new element to the back, rotate the queue by dequeuing and re-enqueuing every OTHER element in front of it — this moves the new element to the front, acting like the top of a stack.",
+        "With the newest element always kept at the front, pop() and top() are just the queue's own front() and dequeue — no transfer logic needed on those operations."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Two queues: push to an empty second queue, then drain the first queue's older elements behind it, and swap — similarly rotates the newest element to the front.",
+          "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nclass MyStack {\npublic:\n    queue<int> q1, q2;\n\n    void push(int x)\n    {\n        q2.push(x);\n        while (!q1.empty()) { q2.push(q1.front()); q1.pop(); }\n        swap(q1, q2);\n    }\n\n    int pop() { int top = q1.front(); q1.pop(); return top; }\n    int top() { return q1.front(); }\n    bool empty() { return q1.empty(); }\n};\n\nint main()\n{\n    MyStack s;\n    s.push(1);\n    s.push(2);\n    cout << s.top() << \", \";\n    cout << s.pop() << \", \";\n    cout << (s.empty() ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "2, 2, false",
+          "timeComplexity": "O(n) per push",
+          "spaceComplexity": "O(n) for the second queue"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A single queue: after each push, rotate the queue so the new element ends up at the front — no second queue needed at all.",
+          "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nclass MyStack {\npublic:\n    queue<int> q;\n\n    void push(int x)\n    {\n        q.push(x);\n        for (int i = 0; i < (int)q.size() - 1; i++)\n        {\n            q.push(q.front());\n            q.pop();\n        }\n    }\n\n    int pop() { int top = q.front(); q.pop(); return top; }\n    int top() { return q.front(); }\n    bool empty() { return q.empty(); }\n};\n\nint main()\n{\n    MyStack s;\n    s.push(1);\n    s.push(2);\n    cout << s.top() << \", \";\n    cout << s.pop() << \", \";\n    cout << (s.empty() ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "2, 2, false",
+          "timeComplexity": "O(n) per push",
+          "spaceComplexity": "O(n), single queue"
+        }
+      ]
     }
   ],
   "codeExamples": [
