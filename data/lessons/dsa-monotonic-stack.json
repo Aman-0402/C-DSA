@@ -236,6 +236,42 @@
           "spaceComplexity": "O(n) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-901",
+      "number": 901,
+      "title": "Online Stock Span",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/online-stock-span/",
+      "problemStatement": "Design a StockSpanner class with next(price), returning the span — the number of consecutive days (including today) ending today where the price was <= today's price.",
+      "examples": [
+        { "input": "prices = [100,80,60,70,60,75,85]", "output": "spans = [1,1,1,2,1,4,6]" }
+      ],
+      "constraints": ["1 <= price <= 10^5", "at most 10^4 calls to next"],
+      "hints": [
+        "This is Daily Temperatures LOOKING BACKWARD instead of forward — 'how far back does the price stay <= today's price' instead of 'how far forward until a warmer day.'",
+        "A monotonic stack storing (price, span) pairs works: when a new price arrives, pop every stacked price that's <= it, ACCUMULATING their spans into the new price's span before pushing.",
+        "The accumulated span already accounts for everything those popped entries had absorbed earlier — no need to look further back manually."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Store every price seen so far in a vector; for each new price, scan backward counting consecutive days with price <= today's.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass StockSpanner {\npublic:\n    vector<int> prices;\n\n    int next(int price)\n    {\n        prices.push_back(price);\n        int span = 0;\n\n        for (int i = prices.size() - 1; i >= 0; i--)\n        {\n            if (prices[i] > price) break;\n            span++;\n        }\n\n        return span;\n    }\n};\n\nint main()\n{\n    StockSpanner spanner;\n    vector<int> prices = {100, 80, 60, 70, 60, 75, 85};\n\n    for (int p : prices) cout << spanner.next(p) << \" \";\n\n    return 0;\n}",
+          "output": "1 1 1 2 1 4 6 ",
+          "timeComplexity": "O(n) per call worst case",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A monotonic stack of (price, span) pairs, accumulating spans from popped entries into the new entry's span.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nclass StockSpanner {\npublic:\n    stack<pair<int,int>> st; // (price, span)\n\n    int next(int price)\n    {\n        int span = 1;\n\n        while (!st.empty() && st.top().first <= price)\n        {\n            span += st.top().second;\n            st.pop();\n        }\n\n        st.push({price, span});\n        return span;\n    }\n};\n\nint main()\n{\n    StockSpanner spanner;\n    vector<int> prices = {100, 80, 60, 70, 60, 75, 85};\n\n    for (int p : prices) cout << spanner.next(p) << \" \";\n\n    return 0;\n}",
+          "output": "1 1 1 2 1 4 6 ",
+          "timeComplexity": "O(1) amortized per call",
+          "spaceComplexity": "O(n) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
