@@ -151,6 +151,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-50",
+      "number": 50,
+      "title": "Pow(x, n)",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/powx-n/",
+      "problemStatement": "Implement pow(x, n), computing x raised to the power n.",
+      "examples": [
+        { "input": "x = 2.00000, n = 10", "output": "1024.00000" }
+      ],
+      "constraints": ["-100 < x < 100", "-2^31 <= n <= 2^31 - 1"],
+      "hints": [
+        "Multiplying x by itself n times is a valid recursive definition, but it's not the only one — x^n can be built from x^(n/2) instead.",
+        "x^n = (x^(n/2))^2 when n is even, and x^n = x * (x^(n-1)) when n is odd — this HALVES the exponent at every recursive step instead of decrementing by 1.",
+        "Negative n means computing x^(-n) and taking the reciprocal — handle that as a base transformation before recursing."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recurse by decrementing n by 1 each call, directly mirroring repeated multiplication.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\ndouble myPow(double x, long n)\n{\n    if (n == 0) return 1.0;\n    if (n < 0) return 1.0 / myPow(x, -n);\n\n    return x * myPow(x, n - 1);\n}\n\nint main()\n{\n    cout << myPow(2.0, 10) << endl;\n\n    return 0;\n}",
+          "output": "1024",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) call stack depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Fast exponentiation by squaring: halve the exponent each recursive call instead of decrementing by 1.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\ndouble fastPow(double x, long n)\n{\n    if (n == 0) return 1.0;\n\n    double half = fastPow(x, n / 2);\n\n    if (n % 2 == 0) return half * half;\n    return half * half * x;\n}\n\ndouble myPow(double x, int n)\n{\n    long N = n;\n    if (N < 0) return 1.0 / fastPow(x, -N);\n    return fastPow(x, N);\n}\n\nint main()\n{\n    cout << myPow(2.0, 10) << endl;\n\n    return 0;\n}",
+          "output": "1024",
+          "timeComplexity": "O(log n)",
+          "spaceComplexity": "O(log n) call stack depth"
+        }
+      ]
     }
   ],
   "codeExamples": [
