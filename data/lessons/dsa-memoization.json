@@ -1,0 +1,134 @@
+{
+  "id": "dsa-memoization",
+  "moduleId": "greedy-dp",
+  "title": "Memoization",
+  "description": "Finally fixing naive Fibonacci: caching each subproblem's answer the first time it's computed, turning O(2ⁿ) into O(n).",
+  "objectives": [
+    "Implement memoized Fibonacci using a cache",
+    "Understand exactly how caching eliminates redundant recursive calls",
+    "See the complexity improvement from O(2ⁿ) to O(n) concretely",
+    "Recognize the general memoization pattern: check cache, compute if missing, store, return"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Time to Actually Fix Fibonacci"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recursion in DSA showed naive Fibonacci recomputing fibonacci(2) multiple times, independently, giving O(2ⁿ) time. Dynamic Programming named this: overlapping subproblems. Memoization is the fix."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Memoization?"
+    },
+    {
+      "type": "definition",
+      "term": "Memoization",
+      "text": "Memoization caches the result of each subproblem the first time it's computed, so later calls with the same input return the cached answer instantly instead of recomputing it — a top-down DP approach, keeping the natural recursive structure."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <unordered_map>\n\nusing namespace std;\n\nunordered_map<int, long long> cache;\n\nlong long fibonacci(int n)\n{\n    if (n <= 1) return n; // base case\n\n    if (cache.count(n)) // ALREADY computed — return the cached answer\n    {\n        return cache[n];\n    }\n\n    long long result = fibonacci(n - 1) + fibonacci(n - 2);\n    cache[n] = result; // remember it for next time\n    return result;\n}\n\nint main()\n{\n    cout << fibonacci(40) << endl;\n\n    return 0;\n}",
+      "output": "102334155",
+      "retypePractice": true,
+      "retypeId": "dsa-memoization-fibonacci"
+    },
+    {
+      "type": "keyPoints",
+      "title": "What changed from naive Fibonacci",
+      "points": [
+        "Exactly two new lines: check cache.count(n) before computing, and cache[n] = result after computing",
+        "The first time fibonacci(2) is needed, it's genuinely computed and cached",
+        "Every SUBSEQUENT time fibonacci(2) is needed (from any other branch of the recursion), it's returned instantly from cache — never recomputed",
+        "fibonacci(40) — which would take an astronomical number of calls naively — returns almost instantly with memoization"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Complexity: O(n) Now, Not O(2ⁿ)"
+    },
+    {
+      "type": "note",
+      "text": "There are only n distinct subproblems (fibonacci(0) through fibonacci(n)) — and with caching, each one is genuinely computed exactly once. Every other call is an O(1) cache lookup. Total work: O(n), a dramatic improvement matching the O(n) space traded for it (recall the time-space tradeoff from Space Complexity) — one cache entry per distinct subproblem."
+    },
+    {
+      "type": "heading",
+      "text": "5. The General Memoization Pattern"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "ReturnType solve(Input x)\n{\n    if (/* base case */) return /* base value */;\n\n    if (cache.count(x)) return cache[x]; // check first\n\n    ReturnType result = /* combine solve() calls on smaller inputs */;\n\n    cache[x] = result; // store before returning\n    return result;\n}"
+    },
+    {
+      "type": "note",
+      "text": "This exact shape — check cache, compute if missing, store, return — applies to essentially any DP problem with overlapping subproblems, not just Fibonacci. Recognizing this template is often the key step in solving a new DP problem."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Writing the answer down the first time, checking your notes every time after",
+      "text": "Recall Dynamic Programming's note-taking analogy, now made concrete: cache.count(n) is \"do I already have a note for this?\" and cache[n] = result is \"write the note down.\" Every repeat question after the first gets answered by glancing at an existing note instead of solving it all over again."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to check the cache BEFORE doing the recursive work — the whole point is avoiding redundant computation, which only happens if the check comes first.",
+        "Forgetting to actually store the result in the cache after computing it — without that line, nothing is ever remembered, and it's back to naive recursion.",
+        "Using int instead of a wider type like long long for Fibonacci at larger n — the values grow quickly and can overflow (recall Type Modifiers).",
+        "Assuming memoization changes WHAT gets computed — it only avoids recomputing the SAME subproblem; the underlying recursive logic and base cases stay identical to the naive version."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is memoization?",
+          "answer": "Caching the result of each subproblem the first time it's computed, so later calls with the same input return the cached answer instantly instead of recomputing it."
+        },
+        {
+          "question": "What two additions turn naive recursive Fibonacci into memoized Fibonacci?",
+          "answer": "Checking whether the answer is already in a cache before computing, and storing the computed result in that cache before returning it."
+        },
+        {
+          "question": "What is the time complexity of memoized Fibonacci, and why is it so much better than the naive version?",
+          "answer": "O(n) — there are only n distinct subproblems, and memoization guarantees each is computed exactly once, with every repeat request answered by an O(1) cache lookup instead of full recomputation."
+        }
+      ],
+      "thirtySecondAnswer": "Memoization fixes naive Fibonacci's overlapping-subproblems inefficiency by caching each subproblem's answer the first time it's computed: check the cache before doing any work, and store the result in the cache before returning. Since fibonacci(n) only has n distinct subproblems, and memoization guarantees each is computed exactly once, the complexity drops from O(2ⁿ) to O(n) — every repeated request becomes an O(1) cache lookup instead of full recomputation. This check-cache/compute-if-missing/store/return pattern is the general template for memoizing essentially any problem with overlapping subproblems."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Memoization",
+      "text": "Memoization = write the answer down the first time, check your notes after that. Two new lines: check cache first, store result before returning. O(2ⁿ) → O(n)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-memoization-fibonacci", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <unordered_map>\n\nusing namespace std;\n\nunordered_map<int, long long> cache;\n\nlong long fibonacci(int n)\n{\n    if (n <= 1) return n;\n\n    if (cache.count(n))\n    {\n        return cache[n];\n    }\n\n    long long result = fibonacci(n - 1) + fibonacci(n - 2);\n    cache[n] = result;\n    return result;\n}\n\nint main()\n{\n    cout << fibonacci(40) << endl;\n\n    return 0;\n}", "output": "102334155" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-memoization-fibonacci",
+      "reference": "#include <iostream>\n#include <unordered_map>\n\nusing namespace std;\n\nunordered_map<int, long long> cache;\n\nlong long fibonacci(int n)\n{\n    if (n <= 1) return n;\n\n    if (cache.count(n))\n    {\n        return cache[n];\n    }\n\n    long long result = fibonacci(n - 1) + fibonacci(n - 2);\n    cache[n] = result;\n    return result;\n}\n\nint main()\n{\n    cout << fibonacci(40) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-memoization-fibonacci"]
+  }
+}
