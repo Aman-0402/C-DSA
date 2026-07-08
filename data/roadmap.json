@@ -244,7 +244,8 @@
         { "id": "dsa-graphs", "title": "Graphs", "lesson": "dsa-graphs" },
         { "id": "dsa-graph-representation", "title": "Graph Representation", "lesson": "dsa-graph-representation" },
         { "id": "dsa-adjacency-matrix", "title": "Adjacency Matrix", "lesson": "dsa-adjacency-matrix" },
-        { "id": "dsa-adjacency-list", "title": "Adjacency List", "lesson": "dsa-adjacency-list" }
+        { "id": "dsa-adjacency-list", "title": "Adjacency List", "lesson": "dsa-adjacency-list" },
+        { "id": "dsa-graph-bfs", "title": "Graph BFS", "lesson": "dsa-graph-bfs" }
       ]
     }
   ]

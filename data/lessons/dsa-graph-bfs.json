@@ -1,0 +1,114 @@
+{
+  "id": "dsa-graph-bfs",
+  "moduleId": "graphs",
+  "title": "Graph BFS",
+  "description": "BFS's natural home: traversing an adjacency list level by level, the representation it was always meant to work with.",
+  "objectives": [
+    "Implement BFS on a graph stored as an adjacency list",
+    "Trace the algorithm on a real graph",
+    "Understand why adjacency list and BFS pair so naturally",
+    "Recognize this as the same BFS template applied to a new representation"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Same BFS, New Representation"
+    },
+    {
+      "type": "paragraph",
+      "text": "BFS was demonstrated on a grid, using row/col coordinates and boundary checks. Graphs are more commonly stored as an Adjacency List, and BFS applies to it with barely any change — the core queue-driven template stays identical."
+    },
+    {
+      "type": "heading",
+      "text": "2. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 5;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {0, 3};\n    adj[2] = {0, 3};\n    adj[3] = {1, 2, 4};\n    adj[4] = {3};\n\n    vector<bool> visited(vertices, false);\n    queue<int> q;\n\n    q.push(0);\n    visited[0] = true;\n\n    while (!q.empty())\n    {\n        int current = q.front();\n        q.pop();\n\n        cout << current << \" \";\n\n        for (int neighbor : adj[current])\n        {\n            if (!visited[neighbor])\n            {\n                visited[neighbor] = true; // mark BEFORE pushing, recall BFS\n                q.push(neighbor);\n            }\n        }\n    }\n\n    return 0;\n}",
+      "output": "0 1 2 3 4 ",
+      "retypePractice": true,
+      "retypeId": "dsa-graph-bfs-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "q=[0]. Pop 0, print. Neighbors 1,2 unvisited → push both, mark visited → q=[1,2]",
+        "Pop 1, print. Neighbors 0 (visited, skip), 3 (unvisited → push, mark) → q=[2,3]",
+        "Pop 2, print. Neighbors 0 (visited), 3 (already visited from the previous step, skip) → q=[3]",
+        "Pop 3, print. Neighbors 1,2 (visited), 4 (unvisited → push, mark) → q=[4]",
+        "Pop 4, print. Neighbor 3 (visited) → q=[]",
+        "Result: 0 1 2 3 4"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Why Adjacency List and BFS Pair So Naturally"
+    },
+    {
+      "type": "note",
+      "text": "for (int neighbor : adj[current]) is exactly the operation Adjacency List is optimized for: retrieving a vertex's direct neighbors, directly, with no wasted scanning through non-edges the way an adjacency matrix's full row would require. This is precisely why adjacency list is the standard choice for traversal-heavy algorithms."
+    },
+    {
+      "type": "heading",
+      "text": "4. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A rumor spreading through actual contact lists, not a village grid",
+      "text": "Recall BFS's rumor-spreading analogy, and adjacency list's personal-contact-list analogy. Spreading a rumor by checking each person's OWN contact list for who to tell next is exactly Graph BFS on an adjacency list — far more natural than consulting a village-wide grid to figure out who knows whom."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the visited check when iterating adj[current] — without it, already-visited neighbors get re-pushed and re-processed.",
+        "Marking visited after popping instead of before pushing — allows the same vertex to be queued multiple times while waiting.",
+        "Assuming BFS on a graph is fundamentally different from BFS on a grid — the algorithm's shape is identical; only how neighbors are found changes.",
+        "Forgetting a graph might not be fully connected — BFS starting from one vertex only reaches vertices in that same connected component, not necessarily every vertex in the graph."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does BFS on a graph (adjacency list) differ from BFS on a grid?",
+          "answer": "Only in how neighbors are found — adj[current] directly gives a vertex's neighbors on a graph, versus checking four directional offsets on a grid; the queue-driven algorithm itself is identical."
+        },
+        {
+          "question": "Why is adjacency list a natural fit for BFS specifically?",
+          "answer": "Because BFS constantly needs to retrieve a vertex's direct neighbors, which an adjacency list provides directly, without scanning through non-edges the way an adjacency matrix's full row would require."
+        },
+        {
+          "question": "What happens if you run BFS from one vertex on a graph that isn't fully connected?",
+          "answer": "Only the vertices reachable from that starting vertex (its connected component) get visited — vertices in a separate, disconnected part of the graph are never reached."
+        }
+      ],
+      "thirtySecondAnswer": "Graph BFS applies the exact same queue-driven template from BFS to a graph stored as an Adjacency List: push the start vertex, then repeatedly pop the front, visit it, and push its unvisited neighbors — marking visited before pushing to avoid duplicate queueing. The only real change from grid BFS is how neighbors are found: for (int neighbor : adj[current]) directly retrieves them, exactly the operation adjacency list is optimized for, which is why it's the standard representation for traversal-heavy algorithms like BFS and DFS."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Graph BFS",
+      "text": "Graph BFS = the same rumor-spreading queue, now reading each person's real contact list (adjacency list) instead of a grid. Same algorithm, better-fitting representation."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-graph-bfs-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 5;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {0, 3};\n    adj[2] = {0, 3};\n    adj[3] = {1, 2, 4};\n    adj[4] = {3};\n\n    vector<bool> visited(vertices, false);\n    queue<int> q;\n\n    q.push(0);\n    visited[0] = true;\n\n    while (!q.empty())\n    {\n        int current = q.front();\n        q.pop();\n\n        cout << current << \" \";\n\n        for (int neighbor : adj[current])\n        {\n            if (!visited[neighbor])\n            {\n                visited[neighbor] = true;\n                q.push(neighbor);\n            }\n        }\n    }\n\n    return 0;\n}", "output": "0 1 2 3 4 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-graph-bfs-basic",
+      "reference": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 5;\n    vector<vector<int>> adj(vertices);\n\n    adj[0] = {1, 2};\n    adj[1] = {0, 3};\n    adj[2] = {0, 3};\n    adj[3] = {1, 2, 4};\n    adj[4] = {3};\n\n    vector<bool> visited(vertices, false);\n    queue<int> q;\n\n    q.push(0);\n    visited[0] = true;\n\n    while (!q.empty())\n    {\n        int current = q.front();\n        q.pop();\n\n        cout << current << \" \";\n\n        for (int neighbor : adj[current])\n        {\n            if (!visited[neighbor])\n            {\n                visited[neighbor] = true;\n                q.push(neighbor);\n            }\n        }\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-graph-bfs-basic"]
+  }
+}
