@@ -183,6 +183,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-198-tab",
+      "number": 198,
+      "title": "House Robber",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/house-robber/",
+      "problemStatement": "Given nums representing money in houses arranged in a line, return the maximum money robbable without robbing two directly adjacent houses.",
+      "examples": [
+        { "input": "nums = [2,7,9,3,1]", "output": "12" }
+      ],
+      "constraints": ["1 <= nums.length <= 100"],
+      "hints": [
+        "Table version: table[i] = max(table[i-1], table[i-2] + nums[i]), filled forward from i=1.",
+        "Base cases: table[0] = nums[0], and table[1] = max(nums[0], nums[1]) (best of the first two houses alone).",
+        "Same recurrence as the memoized version — only the direction of computation (forward loop vs top-down recursion) changes."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full table array, filled bottom-up.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint rob(vector<int>& nums)\n{\n    int n = nums.size();\n    if (n == 1) return nums[0];\n\n    vector<int> table(n);\n    table[0] = nums[0];\n    table[1] = max(nums[0], nums[1]);\n\n    for (int i = 2; i < n; i++)\n        table[i] = max(table[i - 1], table[i - 2] + nums[i]);\n\n    return table[n - 1];\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 9, 3, 1};\n    cout << rob(nums);\n\n    return 0;\n}",
+          "output": "12",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the full table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Only the last two table entries are ever read — collapse to two variables.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint rob(vector<int>& nums)\n{\n    int n = nums.size();\n    if (n == 1) return nums[0];\n\n    int prev2 = nums[0], prev1 = max(nums[0], nums[1]);\n\n    for (int i = 2; i < n; i++)\n    {\n        int current = max(prev1, prev2 + nums[i]);\n        prev2 = prev1;\n        prev1 = current;\n    }\n\n    return prev1;\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 9, 3, 1};\n    cout << rob(nums);\n\n    return 0;\n}",
+          "output": "12",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
