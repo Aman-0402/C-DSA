@@ -122,6 +122,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember 2D DP",
       "text": "2D DP = a grid of routes. dp[i][j] = ways in from above + ways in from the left. First row/column = always exactly 1 way. Two independent dimensions → two indices."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: 2D DP in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-62-2d",
+      "number": 62,
+      "title": "Unique Paths",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/unique-paths/",
+      "problemStatement": "A robot starts at the top-left of an m x n grid and can only move right or down. Return the number of distinct paths to the bottom-right corner.",
+      "examples": [
+        { "input": "m = 3, n = 7", "output": "28" }
+      ],
+      "constraints": ["1 <= m, n <= 100"],
+      "hints": [
+        "This is the lesson's own worked example — try implementing it yourself before checking back against the full grid trace above.",
+        "State: dp[i][j] = the number of distinct paths to reach cell (i, j).",
+        "Recurrence: dp[i][j] = dp[i-1][j] + dp[i][j-1], with the entire first row and first column base-cased to 1."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp grid, filled row by row.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePaths(int m, int n)\n{\n    vector<vector<int>> dp(m, vector<int>(n, 1));\n\n    for (int i = 1; i < m; i++)\n        for (int j = 1; j < n; j++)\n            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];\n\n    return dp[m - 1][n - 1];\n}\n\nint main()\n{\n    cout << uniquePaths(3, 7);\n\n    return 0;\n}",
+          "output": "28",
+          "timeComplexity": "O(m * n)",
+          "spaceComplexity": "O(m * n) for the full grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Each row only depends on the row directly above it — collapse the grid to a single rolling row.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePaths(int m, int n)\n{\n    vector<int> row(n, 1);\n\n    for (int i = 1; i < m; i++)\n        for (int j = 1; j < n; j++)\n            row[j] += row[j - 1];\n\n    return row[n - 1];\n}\n\nint main()\n{\n    cout << uniquePaths(3, 7);\n\n    return 0;\n}",
+          "output": "28",
+          "timeComplexity": "O(m * n)",
+          "spaceComplexity": "O(n) for a single row"
+        }
+      ]
     }
   ],
   "codeExamples": [
