@@ -303,6 +303,42 @@
           "spaceComplexity": "O(n) for the parent array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1584",
+      "number": 1584,
+      "title": "Min Cost to Connect All Points",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+      "problemStatement": "Given points on a 2D plane, connect all points with edges costing the Manhattan distance between them, minimizing total cost so every point is reachable from every other.",
+      "examples": [
+        { "input": "points = [[0,0],[2,2],[3,10],[5,2],[7,0]]", "output": "20" }
+      ],
+      "constraints": ["1 <= points.length <= 1000"],
+      "hints": [
+        "This is Minimum Spanning Tree (MST) territory — Kruskal's algorithm: sort ALL possible edges by weight, then greedily add the cheapest edge that doesn't create a cycle.",
+        "Union find is exactly the cycle-check Kruskal's needs — union(a, b) succeeding means the edge connects two different components (keep it); failing means a cycle (skip it).",
+        "Stop once exactly n-1 edges have been added — that's a spanning tree connecting all n points, and Kruskal's greedy edge order guarantees it's the minimum-cost one."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Kruskal's MST with union find WITHOUT path compression.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <cmath>\n#include <array>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    while (parent[x] != x) x = parent[x];\n    return x;\n}\n\nint minCostConnectPoints(vector<vector<int>>& points)\n{\n    int n = points.size();\n    vector<array<int, 3>> edges;\n\n    for (int i = 0; i < n; i++)\n        for (int j = i + 1; j < n; j++)\n        {\n            int cost = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);\n            edges.push_back({cost, i, j});\n        }\n\n    sort(edges.begin(), edges.end());\n\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    int totalCost = 0, edgesUsed = 0;\n    for (auto &edge : edges)\n    {\n        if (edgesUsed == n - 1) break;\n        int rootA = find(edge[1], parent);\n        int rootB = find(edge[2], parent);\n        if (rootA != rootB)\n        {\n            parent[rootA] = rootB;\n            totalCost += edge[0];\n            edgesUsed++;\n        }\n    }\n\n    return totalCost;\n}\n\nint main()\n{\n    vector<vector<int>> points = {{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}};\n    cout << minCostConnectPoints(points);\n\n    return 0;\n}",
+          "output": "20",
+          "timeComplexity": "O(n^2 log n) — dominated by sorting all O(n^2) possible edges",
+          "spaceComplexity": "O(n^2) for storing every possible edge"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same Kruskal's approach, with path compression in union find for faster find() calls.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <cmath>\n#include <array>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    if (parent[x] != x) parent[x] = find(parent[x], parent);\n    return parent[x];\n}\n\nint minCostConnectPoints(vector<vector<int>>& points)\n{\n    int n = points.size();\n    vector<array<int, 3>> edges;\n\n    for (int i = 0; i < n; i++)\n        for (int j = i + 1; j < n; j++)\n        {\n            int cost = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);\n            edges.push_back({cost, i, j});\n        }\n\n    sort(edges.begin(), edges.end());\n\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    int totalCost = 0, edgesUsed = 0;\n    for (auto &edge : edges)\n    {\n        if (edgesUsed == n - 1) break;\n        int rootA = find(edge[1], parent);\n        int rootB = find(edge[2], parent);\n        if (rootA != rootB)\n        {\n            parent[rootA] = rootB;\n            totalCost += edge[0];\n            edgesUsed++;\n        }\n    }\n\n    return totalCost;\n}\n\nint main()\n{\n    vector<vector<int>> points = {{0, 0}, {2, 2}, {3, 10}, {5, 2}, {7, 0}};\n    cout << minCostConnectPoints(points);\n\n    return 0;\n}",
+          "output": "20",
+          "timeComplexity": "O(n^2 log n) — still dominated by sorting, but find() is near-constant amortized",
+          "spaceComplexity": "O(n^2) for storing every possible edge"
+        }
+      ]
     }
   ],
   "codeExamples": [
