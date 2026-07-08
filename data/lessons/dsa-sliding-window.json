@@ -212,6 +212,43 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-3",
+      "number": 3,
+      "title": "Longest Substring Without Repeating Characters",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+      "problemStatement": "Given a string s, find the length of the longest substring without repeating characters.",
+      "examples": [
+        { "input": "s = \"abcabcbb\"", "output": "3", "explanation": "The longest substring without repeats is \"abc\"." },
+        { "input": "s = \"bbbbb\"", "output": "1" }
+      ],
+      "constraints": ["0 <= s.length <= 5*10^4"],
+      "hints": [
+        "This is another variable-size window problem — 'longest substring' with a condition ('no repeats') that can be broken by growing too far.",
+        "You need fast membership checks for 'is this character already in my current window' — a hash set (recall Hashing) pairs naturally with the window.",
+        "Expand right, adding characters to the set. If the new character is already in the set, shrink from the left (removing characters from the set) until the duplicate is gone."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every substring for repeated characters, tracking the longest valid one found.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_set>\n\nusing namespace std;\n\nbool hasRepeat(string &s, int i, int j)\n{\n    unordered_set<char> seen;\n    for (int k = i; k <= j; k++)\n    {\n        if (seen.count(s[k])) return true;\n        seen.insert(s[k]);\n    }\n    return false;\n}\n\nint lengthOfLongestSubstring(string s)\n{\n    int best = 0;\n\n    for (int i = 0; i < s.size(); i++)\n    {\n        for (int j = i; j < s.size(); j++)\n        {\n            if (!hasRepeat(s, i, j)) best = max(best, j - i + 1);\n        }\n    }\n\n    return best;\n}\n\nint main()\n{\n    cout << lengthOfLongestSubstring(\"abcabcbb\") << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n³)",
+          "spaceComplexity": "O(n) for the seen set per check"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Variable-size sliding window with a hash set: expand right, shrink left on duplicates, tracking the max window size.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_set>\n\nusing namespace std;\n\nint lengthOfLongestSubstring(string s)\n{\n    unordered_set<char> window;\n    int left = 0;\n    int best = 0;\n\n    for (int right = 0; right < s.size(); right++)\n    {\n        while (window.count(s[right]))\n        {\n            window.erase(s[left]);\n            left++;\n        }\n\n        window.insert(s[right]);\n        best = max(best, right - left + 1);\n    }\n\n    return best;\n}\n\nint main()\n{\n    cout << lengthOfLongestSubstring(\"abcabcbb\") << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(min(n, charset size)) for the window set"
+        }
+      ]
     }
   ],
   "codeExamples": [
