@@ -107,6 +107,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Circular Linked List",
       "text": "Circular = the last box's note points back to the FIRST box, not 'the end.' Traverse with do-while, stop when you're back at head — nullptr never comes."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Circular Linked List in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-141-cll",
+      "number": 141,
+      "title": "Linked List Cycle",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/linked-list-cycle/",
+      "problemStatement": "Given the head of a linked list, return true if some node's next eventually points back to an earlier node, forming a cycle — exactly this lesson's circular structure, but possibly unintentional.",
+      "examples": [
+        { "input": "head = [3,2,0,-4], tail connects to node index 1", "output": "true" }
+      ],
+      "constraints": ["0 <= list length <= 10^4"],
+      "hints": [
+        "This lesson's do-while traversal deliberately stops when current returns to head — but what if a list becomes circular BY ACCIDENT (a bug), and you don't already know where 'head' of the loop is?",
+        "Floyd's slow/fast pointer technique detects any cycle without needing to know the loop's starting point in advance.",
+        "If fast ever equals slow again after they start moving, a cycle exists — if fast reaches nullptr first, the list has a genuine end and is not circular."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Track every visited node's address in a hash set — a repeat visit means a cycle.",
+          "code": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nbool hasCycle(ListNode *head)\n{\n    unordered_set<ListNode*> visited;\n\n    for (ListNode* n = head; n; n = n->next)\n    {\n        if (visited.count(n)) return true;\n        visited.insert(n);\n    }\n\n    return false;\n}\n\nint main()\n{\n    ListNode* a = new ListNode(3);\n    ListNode* b = new ListNode(2);\n    ListNode* c = new ListNode(0);\n    ListNode* d = new ListNode(-4);\n    a->next = b; b->next = c; c->next = d; d->next = b;\n\n    cout << (hasCycle(a) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Floyd's slow/fast pointers detect a cycle with O(1) extra space — no set of visited addresses needed.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nbool hasCycle(ListNode *head)\n{\n    ListNode* slow = head;\n    ListNode* fast = head;\n\n    while (fast != nullptr && fast->next != nullptr)\n    {\n        slow = slow->next;\n        fast = fast->next->next;\n        if (slow == fast) return true;\n    }\n\n    return false;\n}\n\nint main()\n{\n    ListNode* a = new ListNode(3);\n    ListNode* b = new ListNode(2);\n    ListNode* c = new ListNode(0);\n    ListNode* d = new ListNode(-4);\n    a->next = b; b->next = c; c->next = d; d->next = b;\n\n    cout << (hasCycle(a) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
