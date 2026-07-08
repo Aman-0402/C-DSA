@@ -396,6 +396,42 @@
           "spaceComplexity": "O(k) for the two hash maps"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-49-hashing",
+      "number": 49,
+      "title": "Group Anagrams",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/group-anagrams/",
+      "problemStatement": "Given an array of strings strs, group the anagrams together, in any order.",
+      "examples": [
+        { "input": "strs = [\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]", "output": "[[\"eat\",\"tea\",\"ate\"],[\"tan\",\"nat\"],[\"bat\"]]" }
+      ],
+      "constraints": ["1 <= strs.length <= 10^4", "0 <= strs[i].length <= 100"],
+      "hints": [
+        "All anagrams of each other share one thing in common: sorting their letters produces the EXACT same string — that sorted string is a natural grouping key.",
+        "A hash map from 'sorted string' to 'list of original strings' groups every anagram together in one pass.",
+        "This is exactly Valid Anagram's sorting trick, extended from checking a PAIR to grouping a whole ARRAY using a hash map."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each string, compare it (via sorting) against the first member of every existing group to find where it belongs.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nvector<vector<string>> groupAnagrams(vector<string> &strs)\n{\n    vector<vector<string>> groups;\n\n    for (string &s : strs)\n    {\n        string sorted = s;\n        sort(sorted.begin(), sorted.end());\n\n        bool placed = false;\n        for (auto &group : groups)\n        {\n            string groupSorted = group[0];\n            sort(groupSorted.begin(), groupSorted.end());\n            if (groupSorted == sorted)\n            {\n                group.push_back(s);\n                placed = true;\n                break;\n            }\n        }\n\n        if (!placed) groups.push_back({s});\n    }\n\n    return groups;\n}\n\nint main()\n{\n    vector<string> strs = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n\n    auto groups = groupAnagrams(strs);\n    cout << groups.size() << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n² × k log k), k = string length",
+          "spaceComplexity": "O(n × k)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A hash map keyed by each string's sorted form groups every anagram together in a single pass.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<vector<string>> groupAnagrams(vector<string> &strs)\n{\n    unordered_map<string, vector<string>> groups;\n\n    for (string &s : strs)\n    {\n        string key = s;\n        sort(key.begin(), key.end());\n        groups[key].push_back(s);\n    }\n\n    vector<vector<string>> result;\n    for (auto &[key, group] : groups) result.push_back(group);\n\n    return result;\n}\n\nint main()\n{\n    vector<string> strs = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n\n    auto groups = groupAnagrams(strs);\n    cout << groups.size() << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n × k log k)",
+          "spaceComplexity": "O(n × k)"
+        }
+      ]
     }
   ],
   "codeExamples": [
