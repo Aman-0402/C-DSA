@@ -160,6 +160,42 @@
           "spaceComplexity": "O(n) for the tails array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-139-1d",
+      "number": 139,
+      "title": "Word Break",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/word-break/",
+      "problemStatement": "Given a string s and a dictionary of words, return true if s can be segmented into a sequence of one or more dictionary words.",
+      "examples": [
+        { "input": "s = \"leetcode\", wordDict = [\"leet\",\"code\"]", "output": "true" }
+      ],
+      "constraints": ["1 <= s.length <= 300"],
+      "hints": [
+        "Define dp[i] = true if the PREFIX s[0..i) (the first i characters) can be fully segmented using dictionary words.",
+        "Recurrence: dp[i] is true if there exists some j < i where dp[j] is true AND s[j..i) is itself a dictionary word — a valid split point.",
+        "Base case: dp[0] = true (the empty prefix trivially 'segments' with zero words). The final answer is dp[n]."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "The dp[i] recurrence directly, checking every possible split point j for each i, with substring comparisons against every dictionary word.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_set>\n\nusing namespace std;\n\nbool wordBreak(string s, vector<string>& wordDict)\n{\n    unordered_set<string> dict(wordDict.begin(), wordDict.end());\n    int n = s.size();\n    vector<bool> dp(n + 1, false);\n    dp[0] = true;\n\n    for (int i = 1; i <= n; i++)\n        for (int j = 0; j < i; j++)\n            if (dp[j] && dict.count(s.substr(j, i - j)))\n            {\n                dp[i] = true;\n                break;\n            }\n\n    return dp[n];\n}\n\nint main()\n{\n    string s = \"leetcode\";\n    vector<string> wordDict = {\"leet\", \"code\"};\n\n    cout << boolalpha << wordBreak(s, wordDict);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n^2) for split points, times O(n) for substring creation and lookup",
+          "spaceComplexity": "O(n + dictionary size) for the dp array and the set"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same recurrence, but bound the inner loop by the LONGEST word length instead of scanning every j from 0 to i — most split points can't possibly be a dictionary word anyway.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_set>\n#include <algorithm>\n\nusing namespace std;\n\nbool wordBreak(string s, vector<string>& wordDict)\n{\n    unordered_set<string> dict(wordDict.begin(), wordDict.end());\n    int maxLen = 0;\n    for (auto &w : wordDict) maxLen = max(maxLen, (int)w.size());\n\n    int n = s.size();\n    vector<bool> dp(n + 1, false);\n    dp[0] = true;\n\n    for (int i = 1; i <= n; i++)\n        for (int j = max(0, i - maxLen); j < i; j++)\n            if (dp[j] && dict.count(s.substr(j, i - j)))\n            {\n                dp[i] = true;\n                break;\n            }\n\n    return dp[n];\n}\n\nint main()\n{\n    string s = \"leetcode\";\n    vector<string> wordDict = {\"leet\", \"code\"};\n\n    cout << boolalpha << wordBreak(s, wordDict);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n * maxWordLength)",
+          "spaceComplexity": "O(n + dictionary size)"
+        }
+      ]
     }
   ],
   "codeExamples": [
