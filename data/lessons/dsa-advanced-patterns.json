@@ -1,0 +1,146 @@
+{
+  "id": "dsa-advanced-patterns",
+  "moduleId": "greedy-dp",
+  "title": "Advanced Problem-Solving Patterns",
+  "description": "The capstone: a pattern-recognition map tying every technique in this course to the problem clues that signal it, plus one worked example combining two patterns together.",
+  "objectives": [
+    "Recognize which pattern a new problem's clues point toward",
+    "See two previously separate patterns (sliding window + hashing) combined in a single solution",
+    "Build a mental checklist for approaching an unfamiliar problem",
+    "Review every major pattern covered across this entire course in one place"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: A Whole Toolbox, Now the Index"
+    },
+    {
+      "type": "paragraph",
+      "text": "Every topic so far — Two Pointers, Sliding Window, Prefix Sum, Monotonic Stack, BFS, DFS, Greedy Algorithms, Dynamic Programming, Backtracking, Union Find, Bit Manipulation — was a tool solving a specific shape of problem. The real interview skill is recognizing WHICH tool a new, unfamiliar problem calls for. This lesson is that recognition map."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Pattern Recognition Table"
+    },
+    {
+      "type": "table",
+      "headers": ["Clue in the problem", "Likely pattern"],
+      "rows": [
+        ["Sorted array, find a pair/triplet with a target sum", "Two Pointers"],
+        ["Contiguous subarray/substring, min/max length or sum, with a condition", "Sliding Window"],
+        ["Repeated range-sum queries on a fixed array", "Prefix Sum"],
+        ["'Next greater/smaller element' for every position", "Monotonic Stack"],
+        ["Shortest path / fewest steps in an unweighted graph or grid", "BFS"],
+        ["Explore all paths, detect cycles, connected components", "DFS"],
+        ["'Maximum/minimum choices' with a shared budget or capacity", "Dynamic Programming (Knapsack-style)"],
+        ["Best answer built from a smaller version of the same problem, one index at a time", "Dynamic Programming (1D/2D)"],
+        ["'All possible combinations/permutations/subsets'", "Backtracking"],
+        ["Locally best choice provably leads to a globally best answer", "Greedy Algorithms"],
+        ["Group items into connected sets, detect cycles in an undirected graph", "Union Find"],
+        ["'Kth largest/smallest' or 'top K' repeatedly", "Heap / Priority Queue"],
+        ["Toggling flags, tracking seen-once values, powers of two", "Bit Manipulation"],
+        ["Two sequences compared position by position for a shared structure", "2D DP over two indices (LCS-style)"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. The Problem: Combining Two Patterns"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// String: \"abcabcbb\"\n// Find the length of the LONGEST SUBSTRING with NO repeating characters\n\n// Clue 1: \"substring\" + \"longest\" -> Sliding Window\n// Clue 2: \"no repeating characters\" -> need FAST lookup of what's currently in the window -> Hashing"
+    },
+    {
+      "type": "heading",
+      "text": "4. Combining Sliding Window and Hashing"
+    },
+    {
+      "type": "note",
+      "text": "Sliding Window gives the shrink/grow mechanics: expand the window's right edge, and shrink its left edge whenever the condition breaks. Hashing (an unordered_set here) gives O(1) membership checks so 'does this character already exist in the current window?' doesn't require re-scanning the window every time — the same lookup speed unordered_set brought to Two Sum applies here."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n#include <unordered_set>\n\nusing namespace std;\n\nint lengthOfLongestSubstring(string s)\n{\n    unordered_set<char> window; // characters currently inside the sliding window\n    int left = 0;\n    int best = 0;\n\n    for (int right = 0; right < (int)s.size(); right++)\n    {\n        while (window.count(s[right])) // duplicate found -> shrink from the left\n        {\n            window.erase(s[left]);\n            left++;\n        }\n\n        window.insert(s[right]);\n        best = max(best, right - left + 1);\n    }\n\n    return best;\n}\n\nint main()\n{\n    cout << lengthOfLongestSubstring(\"abcabcbb\") << endl;\n\n    return 0;\n}",
+      "output": "3",
+      "retypePractice": true,
+      "retypeId": "dsa-advanced-patterns-longest-substring"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing the window",
+      "points": [
+        "right=0..2 ('a','b','c'): window grows to {a,b,c}, best=3",
+        "right=3 ('a'): duplicate of window's 'a' -> shrink until 'a' is erased, then insert 'a' again; window still size 3, best stays 3",
+        "right=4,5 ('b','c'): same shrink-then-insert pattern repeats; best stays 3",
+        "right=6,7 ('b','b'): window shrinks down to size 1 each time; best never exceeds 3",
+        "Final answer: 3 — the substring \"abc\""
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A guest list at a party, admitting new guests until someone's already inside",
+      "text": "Picture a rope line admitting guests one at a time into a party, keeping a mental note (a fast lookup, not a slow scan of everyone) of who's already inside — the moment someone tries to enter who's already there, the earliest guests get shown out one by one until the duplicate is gone, then the new guest is let in. The longest the party stayed full without a repeat is exactly this sliding window plus hashing pattern."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Jumping straight to code without first asking 'what CLUES does this problem give me' — pattern recognition is a deliberate first step, not something to skip under time pressure.",
+        "Using a nested loop to check for duplicates inside the window instead of a hash set — that turns an O(n) sliding window into O(n²) by re-scanning the window every time.",
+        "Forgetting the window shrinks with a while loop, not an if — after erasing one character, the SAME duplicate might still be blocking progress if it appeared more than once conceptually, so the check must repeat.",
+        "Assuming every problem maps to exactly one pattern — many real interview problems, like this one, are a combination of two or more patterns working together."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What two problem clues in 'longest substring without repeating characters' point to sliding window plus hashing?",
+          "answer": "'Longest substring' (a contiguous range with a length to optimize) points to Sliding Window; 'no repeating characters' (needing fast membership checks) points to Hashing."
+        },
+        {
+          "question": "Why is an unordered_set used instead of scanning the window for duplicates?",
+          "answer": "unordered_set gives O(1) average membership checks, keeping the whole algorithm O(n) — scanning the window manually for each new character would make it O(n²)."
+        },
+        {
+          "question": "What is the general first step recommended for approaching an unfamiliar problem?",
+          "answer": "Identify the clues in the problem statement (data shape, what's being optimized, constraints) and match them against known patterns before writing any code."
+        }
+      ],
+      "thirtySecondAnswer": "The real skill after learning individual techniques is pattern recognition: matching a new problem's clues — sorted input, contiguous range, shortest path, shared budget, all combinations — to the right tool from the whole toolbox built across this course. Many real problems combine patterns, as in Longest Substring Without Repeating Characters: 'longest substring' signals Sliding Window's grow/shrink mechanics, while 'no repeating characters' signals Hashing for O(1) membership checks inside the window, together giving an O(n) solution instead of a naive O(n²) one. Approaching any new problem starts the same way: read the clues, name the candidate pattern(s), then implement."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Pattern Recognition",
+      "text": "Before coding, name the clues: sorted? contiguous range? shortest path? shared budget? all combinations? Clues point to patterns. Patterns can combine — sliding window handles the 'range', hashing handles the 'fast lookup'."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-advanced-patterns-longest-substring", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n#include <unordered_set>\n\nusing namespace std;\n\nint lengthOfLongestSubstring(string s)\n{\n    unordered_set<char> window;\n    int left = 0;\n    int best = 0;\n\n    for (int right = 0; right < (int)s.size(); right++)\n    {\n        while (window.count(s[right]))\n        {\n            window.erase(s[left]);\n            left++;\n        }\n\n        window.insert(s[right]);\n        best = max(best, right - left + 1);\n    }\n\n    return best;\n}\n\nint main()\n{\n    cout << lengthOfLongestSubstring(\"abcabcbb\") << endl;\n\n    return 0;\n}", "output": "3" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-advanced-patterns-longest-substring",
+      "reference": "#include <iostream>\n#include <string>\n#include <unordered_set>\n\nusing namespace std;\n\nint lengthOfLongestSubstring(string s)\n{\n    unordered_set<char> window;\n    int left = 0;\n    int best = 0;\n\n    for (int right = 0; right < (int)s.size(); right++)\n    {\n        while (window.count(s[right]))\n        {\n            window.erase(s[left]);\n            left++;\n        }\n\n        window.insert(s[right]);\n        best = max(best, right - left + 1);\n    }\n\n    return best;\n}\n\nint main()\n{\n    cout << lengthOfLongestSubstring(\"abcabcbb\") << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-advanced-patterns-longest-substring"]
+  }
+}

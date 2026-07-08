@@ -264,7 +264,8 @@
         { "id": "dsa-knapsack", "title": "Knapsack", "lesson": "dsa-knapsack" },
         { "id": "dsa-lcs", "title": "Longest Common Subsequence", "lesson": "dsa-lcs" },
         { "id": "dsa-lis", "title": "Longest Increasing Subsequence", "lesson": "dsa-lis" },
-        { "id": "dsa-bit-manipulation", "title": "Bit Manipulation", "lesson": "dsa-bit-manipulation" }
+        { "id": "dsa-bit-manipulation", "title": "Bit Manipulation", "lesson": "dsa-bit-manipulation" },
+        { "id": "dsa-advanced-patterns", "title": "Advanced Problem-Solving Patterns", "lesson": "dsa-advanced-patterns" }
       ]
     }
   ]
