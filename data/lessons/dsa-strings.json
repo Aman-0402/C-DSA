@@ -147,6 +147,43 @@
           "spaceComplexity": "O(1) — in place"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-125",
+      "number": 125,
+      "title": "Valid Palindrome",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/valid-palindrome/",
+      "problemStatement": "Given a string s, considering only alphanumeric characters and ignoring case, return true if it reads the same forward and backward.",
+      "examples": [
+        { "input": "s = \"A man, a plan, a canal: Panama\"", "output": "true" },
+        { "input": "s = \"race a car\"", "output": "false" }
+      ],
+      "constraints": ["1 <= s.length <= 2*10^5"],
+      "hints": [
+        "This is this lesson's exact palindrome-check pattern, with one twist: punctuation, spaces, and case need to be ignored first.",
+        "Rather than building a cleaned copy, the two pointers can just SKIP over non-alphanumeric characters as they move inward.",
+        "Compare characters case-insensitively (tolower on both sides) instead of comparing them directly."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build a cleaned (alphanumeric-only, lowercased) copy, then use this lesson's palindrome check on it.",
+          "code": "#include <iostream>\n#include <string>\n#include <cctype>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    string cleaned;\n    for (char c : s)\n    {\n        if (isalnum(c)) cleaned += tolower(c);\n    }\n\n    int left = 0, right = cleaned.size() - 1;\n    while (left < right)\n    {\n        if (cleaned[left] != cleaned[right]) return false;\n        left++;\n        right--;\n    }\n\n    return true;\n}\n\nint main()\n{\n    string s = \"A man, a plan, a canal: Panama\";\n\n    cout << (isPalindrome(s) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the cleaned copy"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two pointers directly on the original string, skipping non-alphanumeric characters on the fly — no cleaned copy needed.",
+          "code": "#include <iostream>\n#include <string>\n#include <cctype>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    int left = 0, right = s.size() - 1;\n\n    while (left < right)\n    {\n        while (left < right && !isalnum(s[left])) left++;\n        while (left < right && !isalnum(s[right])) right--;\n\n        if (tolower(s[left]) != tolower(s[right])) return false;\n\n        left++;\n        right--;\n    }\n\n    return true;\n}\n\nint main()\n{\n    string s = \"A man, a plan, a canal: Panama\";\n\n    cout << (isPalindrome(s) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) extra"
+        }
+      ]
     }
   ],
   "codeExamples": [
