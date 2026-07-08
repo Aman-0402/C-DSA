@@ -226,6 +226,42 @@
           "spaceComplexity": "O(k)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-290-unordered-map",
+      "number": 290,
+      "title": "Word Pattern",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/word-pattern/",
+      "problemStatement": "Given a pattern and a string s, return true if s follows the same pattern — a bijection between pattern characters and words.",
+      "examples": [
+        { "input": "pattern = \"abba\", s = \"dog cat cat dog\"", "output": "true" }
+      ],
+      "constraints": ["1 <= pattern.length <= 300"],
+      "hints": [
+        "unordered_map<char, string> and unordered_map<string, char> handle the two directions of this bijection — same idea as Isomorphic Strings, but keys/values can be whole words.",
+        "Tokenize s into words first (stringstream), matching pattern.length() to words.size().",
+        "Check and update both maps together at each position."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Tokenize, then check every pair of positions for consistency.",
+          "code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <vector>\n\nusing namespace std;\n\nbool wordPattern(string pattern, string s)\n{\n    stringstream ss(s);\n    string word;\n    vector<string> words;\n    while (ss >> word) words.push_back(word);\n\n    if (pattern.size() != words.size()) return false;\n\n    for (int i = 0; i < pattern.size(); i++)\n        for (int j = 0; j < pattern.size(); j++)\n            if ((pattern[i] == pattern[j]) != (words[i] == words[j])) return false;\n\n    return true;\n}\n\nint main()\n{\n    cout << (wordPattern(\"abba\", \"dog cat cat dog\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two unordered_map instances (char->string and string->char) enforcing the bijection in one pass.",
+          "code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nbool wordPattern(string pattern, string s)\n{\n    stringstream ss(s);\n    string word;\n    vector<string> words;\n    while (ss >> word) words.push_back(word);\n\n    if (pattern.size() != words.size()) return false;\n\n    unordered_map<char, string> charToWord;\n    unordered_map<string, char> wordToChar;\n\n    for (int i = 0; i < pattern.size(); i++)\n    {\n        char c = pattern[i];\n        string w = words[i];\n        if (charToWord.count(c) && charToWord[c] != w) return false;\n        if (wordToChar.count(w) && wordToChar[w] != c) return false;\n        charToWord[c] = w;\n        wordToChar[w] = c;\n    }\n    return true;\n}\n\nint main()\n{\n    cout << (wordPattern(\"abba\", \"dog cat cat dog\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k)"
+        }
+      ]
     }
   ],
   "codeExamples": [
