@@ -267,6 +267,42 @@
           "spaceComplexity": "O(n) for the parent map and grouping structures"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1319",
+      "number": 1319,
+      "title": "Number of Operations to Make Network Connected",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/number-of-operations-to-make-network-connected/",
+      "problemStatement": "Given n computers and connections (each a cable between two computers), return the minimum number of cable moves needed to connect all computers, or -1 if there aren't enough cables.",
+      "examples": [
+        { "input": "n = 4, connections = [[0,1],[0,2],[1,2]]", "output": "1" }
+      ],
+      "constraints": ["1 <= n <= 10^5"],
+      "hints": [
+        "A tree connecting n nodes needs exactly n-1 edges; fewer than that, and there simply aren't enough cables to connect everyone, regardless of arrangement — return -1 immediately.",
+        "Otherwise, union() every connection, then count the number of distinct roots (components) — using this lesson's exact 'count roots' pattern from LC 547.",
+        "Each redundant cable (one that unite() reports as already-connected) can be moved to bridge exactly one pair of separate components — so the answer is simply (components - 1)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Union find without path compression, then count roots.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    while (parent[x] != x) x = parent[x];\n    return x;\n}\n\nint makeConnected(int n, vector<vector<int>>& connections)\n{\n    if ((int)connections.size() < n - 1) return -1;\n\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    for (auto &c : connections)\n    {\n        int rootA = find(c[0], parent);\n        int rootB = find(c[1], parent);\n        if (rootA != rootB) parent[rootA] = rootB;\n    }\n\n    int components = 0;\n    for (int i = 0; i < n; i++)\n        if (find(i, parent) == i) components++;\n\n    return components - 1;\n}\n\nint main()\n{\n    vector<vector<int>> connections = {{0, 1}, {0, 2}, {1, 2}};\n    cout << makeConnected(4, connections);\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O((n + connections) * n) worst case without path compression",
+          "spaceComplexity": "O(n) for the parent array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Union find with path compression, then count roots.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    if (parent[x] != x) parent[x] = find(parent[x], parent);\n    return parent[x];\n}\n\nint makeConnected(int n, vector<vector<int>>& connections)\n{\n    if ((int)connections.size() < n - 1) return -1;\n\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    for (auto &c : connections)\n    {\n        int rootA = find(c[0], parent);\n        int rootB = find(c[1], parent);\n        if (rootA != rootB) parent[rootA] = rootB;\n    }\n\n    int components = 0;\n    for (int i = 0; i < n; i++)\n        if (find(i, parent) == i) components++;\n\n    return components - 1;\n}\n\nint main()\n{\n    vector<vector<int>> connections = {{0, 1}, {0, 2}, {1, 2}};\n    cout << makeConnected(4, connections);\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O((n + connections) * α(n)) — near-constant find() amortized with path compression",
+          "spaceComplexity": "O(n) for the parent array"
+        }
+      ]
     }
   ],
   "codeExamples": [
