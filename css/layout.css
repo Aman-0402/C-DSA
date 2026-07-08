@@ -40,7 +40,7 @@
 .social-float {
   position: fixed;
   top: 14px;
-  right: 14px;
+  right: 28px;
   z-index: 50;
   display: flex;
   align-items: center;
@@ -65,6 +65,7 @@
 .social-float-link:hover { background: var(--bg-sunken); border-color: var(--accent); color: var(--accent); }
 .social-float-link.icon-only { width: 34px; padding: 0; justify-content: center; }
 .social-icon-img { width: 18px; height: 18px; object-fit: contain; display: block; }
+.social-icon-img.social-icon-github { filter: brightness(0) invert(1); }
 .social-float-link.star-link { color: #eab308; }
 .social-float-link.star-link:hover { border-color: #eab308; color: #eab308; }
 
