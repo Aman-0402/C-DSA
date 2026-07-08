@@ -113,6 +113,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Memoization",
       "text": "Memoization = write the answer down the first time, check your notes after that. Two new lines: check cache first, store result before returning. O(2ⁿ) → O(n)."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Memoization in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-70-memo",
+      "number": 70,
+      "title": "Climbing Stairs",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/climbing-stairs/",
+      "problemStatement": "You can climb 1 or 2 steps at a time. Given n steps, return the number of distinct ways to reach the top.",
+      "examples": [
+        { "input": "n = 5", "output": "8" }
+      ],
+      "constraints": ["1 <= n <= 45"],
+      "hints": [
+        "Apply this lesson's exact check-cache/compute-if-missing/store/return template to ways(n) = ways(n-1) + ways(n-2).",
+        "A memo array (or unordered_map) sized n+1, initialized to a sentinel like -1, lets you distinguish 'not yet computed' from a legitimate answer.",
+        "The recursive structure is identical to naive Fibonacci — only the recurrence's exact numbers differ, proving memoization's template generalizes directly."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Naive recursion with no cache — this lesson's exact starting inefficiency, recomputing the same subproblems repeatedly.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint climbStairs(int n)\n{\n    if (n <= 2) return n;\n    return climbStairs(n - 1) + climbStairs(n - 2);\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(2^n)",
+          "spaceComplexity": "O(n) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Memoized recursion — check the cache first, compute and store only on a miss.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint climbStairsHelper(int n, vector<int>& memo)\n{\n    if (n <= 2) return n;\n    if (memo[n] != -1) return memo[n]; // check cache first\n\n    memo[n] = climbStairsHelper(n - 1, memo) + climbStairsHelper(n - 2, memo); // store before returning\n    return memo[n];\n}\n\nint climbStairs(int n)\n{\n    vector<int> memo(n + 1, -1);\n    return climbStairsHelper(n, memo);\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n) — each of the n distinct subproblems computed exactly once",
+          "spaceComplexity": "O(n) for the memo array plus recursion stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
