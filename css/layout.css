@@ -64,6 +64,7 @@
 }
 .social-float-link:hover { background: var(--bg-sunken); border-color: var(--accent); color: var(--accent); }
 .social-float-link.icon-only { width: 34px; padding: 0; justify-content: center; }
+.social-icon-img { width: 18px; height: 18px; object-fit: contain; }
 .social-float-link.star-link { color: #eab308; }
 .social-float-link.star-link:hover { border-color: #eab308; color: #eab308; }
 
