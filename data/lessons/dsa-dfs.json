@@ -109,6 +109,226 @@
       "type": "memoryTrick",
       "title": "Trick to Remember DFS",
       "text": "DFS = walk one maze corridor to its end before backtracking. BFS = send scouts outward evenly, first to arrive = shortest path. DFS: recursion/stack. BFS: queue."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Tree DFS in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-104-dfs",
+      "number": 104,
+      "title": "Maximum Depth of Binary Tree",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
+      "problemStatement": "Given the root of a binary tree, return its maximum depth.",
+      "examples": [
+        { "input": "root = [3,9,20,null,null,15,7]", "output": "3" }
+      ],
+      "constraints": ["0 <= number of nodes <= 10^4"],
+      "hints": [
+        "A tree is just a graph with no cycles — DFS applies directly, diving down each branch fully before backtracking.",
+        "The recursive call stack IS the DFS 'commit to one path' behavior — no explicit visited set is needed on a tree, since there's exactly one path to every node.",
+        "Depth = 1 + the deeper of the two recursive DFS calls."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "BFS layer by layer, counting completed layers — the opposite exploration strategy from DFS.",
+          "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nint maxDepth(TreeNode* root)\n{\n    if (root == nullptr) return 0;\n    int depth = 0;\n    queue<TreeNode*> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        int size = q.size();\n        for (int i = 0; i < size; i++)\n        {\n            TreeNode* node = q.front(); q.pop();\n            if (node->left) q.push(node->left);\n            if (node->right) q.push(node->right);\n        }\n        depth++;\n    }\n    return depth;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(3);\n    root->left = new TreeNode(9);\n    root->right = new TreeNode(20);\n    root->right->left = new TreeNode(15);\n    root->right->right = new TreeNode(7);\n\n    cout << maxDepth(root) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the queue"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "DFS: dive to the bottom of each branch, combine on the way back up.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nint maxDepth(TreeNode* root)\n{\n    if (root == nullptr) return 0;\n    return 1 + max(maxDepth(root->left), maxDepth(root->right));\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(3);\n    root->left = new TreeNode(9);\n    root->right = new TreeNode(20);\n    root->right->left = new TreeNode(15);\n    root->right->right = new TreeNode(7);\n\n    cout << maxDepth(root) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-112-dfs",
+      "number": 112,
+      "title": "Path Sum",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/path-sum/",
+      "problemStatement": "Given the root of a binary tree and targetSum, return true if a root-to-leaf path sums to targetSum.",
+      "examples": [
+        { "input": "root = [5,4,8,11,null,13,4,7,2], targetSum = 22", "output": "true" }
+      ],
+      "constraints": ["0 <= number of nodes <= 5000"],
+      "hints": [
+        "DFS commits to one root-to-leaf path at a time — exactly what's needed here, checking each complete path's sum as it's fully explored.",
+        "Carry a shrinking 'remaining' target down through the recursion instead of an accumulating sum.",
+        "A leaf succeeds only if the remaining target hits exactly 0 there."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect every root-to-leaf path's total sum, then check if targetSum is among them.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid collectSums(TreeNode* node, int sum, vector<int> &sums)\n{\n    if (node == nullptr) return;\n    sum += node->val;\n    if (!node->left && !node->right) { sums.push_back(sum); return; }\n    collectSums(node->left, sum, sums);\n    collectSums(node->right, sum, sums);\n}\n\nbool hasPathSum(TreeNode* root, int targetSum)\n{\n    vector<int> sums;\n    collectSums(root, 0, sums);\n    for (int s : sums) if (s == targetSum) return true;\n    return false;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(4);\n    root->left->left = new TreeNode(11);\n    root->left->left->right = new TreeNode(2);\n\n    cout << (hasPathSum(root, 22) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "DFS with a shrinking target, checking exactly at each leaf, no list of sums stored.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nbool hasPathSum(TreeNode* root, int targetSum)\n{\n    if (root == nullptr) return false;\n    int remaining = targetSum - root->val;\n    if (!root->left && !root->right) return remaining == 0;\n    return hasPathSum(root->left, remaining) || hasPathSum(root->right, remaining);\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(4);\n    root->left->left = new TreeNode(11);\n    root->left->left->right = new TreeNode(2);\n\n    cout << (hasPathSum(root, 22) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-113",
+      "number": 113,
+      "title": "Path Sum II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/path-sum-ii/",
+      "problemStatement": "Given the root of a binary tree and targetSum, return ALL root-to-leaf paths that sum to targetSum.",
+      "examples": [
+        { "input": "root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22", "output": "[[5,4,11,2],[5,8,4,5]]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 5000"],
+      "hints": [
+        "This is Path Sum's DFS-with-shrinking-target idea, but now the actual PATH needs to be tracked, not just whether a valid one exists — exactly Backtracking's choose/explore/unchoose pattern.",
+        "Push the current node's value onto a running path before recursing into children (CHOOSE), and pop it back off after both children have been explored (UNCHOOSE).",
+        "A leaf with remaining target 0 means the current running path is a valid answer — copy it into the results."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect every root-to-leaf path with its sum, then filter afterward for matches.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid collect(TreeNode* node, vector<int> &path, vector<pair<int, vector<int>>> &all)\n{\n    if (node == nullptr) return;\n    path.push_back(node->val);\n    if (!node->left && !node->right)\n    {\n        int sum = 0;\n        for (int v : path) sum += v;\n        all.push_back({sum, path});\n    }\n    collect(node->left, path, all);\n    collect(node->right, path, all);\n    path.pop_back();\n}\n\nvector<vector<int>> pathSum(TreeNode* root, int targetSum)\n{\n    vector<pair<int, vector<int>>> all;\n    vector<int> path;\n    collect(root, path, all);\n\n    vector<vector<int>> result;\n    for (auto &[sum, p] : all) if (sum == targetSum) result.push_back(p);\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(4);\n    root->left->left = new TreeNode(11);\n    root->left->left->right = new TreeNode(2);\n\n    auto result = pathSum(root, 22);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n²) — summing each path separately",
+          "spaceComplexity": "O(n²) for all stored paths"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Backtracking with a shrinking target: choose (push), explore, unchoose (pop) — a valid path is recorded the instant it's found, no separate sum pass.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid backtrack(TreeNode* node, int remaining, vector<int> &path, vector<vector<int>> &result)\n{\n    if (node == nullptr) return;\n\n    path.push_back(node->val);\n    remaining -= node->val;\n\n    if (!node->left && !node->right && remaining == 0)\n    {\n        result.push_back(path);\n    }\n    else\n    {\n        backtrack(node->left, remaining, path, result);\n        backtrack(node->right, remaining, path, result);\n    }\n\n    path.pop_back();\n}\n\nvector<vector<int>> pathSum(TreeNode* root, int targetSum)\n{\n    vector<vector<int>> result;\n    vector<int> path;\n    backtrack(root, targetSum, path, result);\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(4);\n    root->left->left = new TreeNode(11);\n    root->left->left->right = new TreeNode(2);\n\n    auto result = pathSum(root, 22);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n²) worst case (copying paths), O(n) traversal",
+          "spaceComplexity": "O(h) call stack, O(n) for results"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-257",
+      "number": 257,
+      "title": "Binary Tree Paths",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/binary-tree-paths/",
+      "problemStatement": "Given the root of a binary tree, return all root-to-leaf paths as strings, in any order.",
+      "examples": [
+        { "input": "root = [1,2,3,null,5]", "output": "[\"1->2->5\",\"1->3\"]" }
+      ],
+      "constraints": ["1 <= number of nodes <= 100"],
+      "hints": [
+        "The same choose/explore/unchoose DFS pattern as Path Sum II — but building a STRING path instead of checking a sum.",
+        "Build the path string as recursion descends; at a leaf, the current path string is a complete answer.",
+        "No explicit 'unchoose' string-trimming is required if each recursive call constructs its OWN new string (path + \"->\" + value) rather than mutating a shared one — a simpler variant of backtracking without manual undo."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect all (node, ancestor list) pairs first, then build path strings for every leaf found.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid collectLeaves(TreeNode* node, vector<TreeNode*> &ancestors, vector<vector<TreeNode*>> &leafPaths)\n{\n    if (node == nullptr) return;\n    ancestors.push_back(node);\n    if (!node->left && !node->right) leafPaths.push_back(ancestors);\n    collectLeaves(node->left, ancestors, leafPaths);\n    collectLeaves(node->right, ancestors, leafPaths);\n    ancestors.pop_back();\n}\n\nvector<string> binaryTreePaths(TreeNode* root)\n{\n    vector<vector<TreeNode*>> leafPaths;\n    vector<TreeNode*> ancestors;\n    collectLeaves(root, ancestors, leafPaths);\n\n    vector<string> result;\n    for (auto &path : leafPaths)\n    {\n        string s = to_string(path[0]->val);\n        for (int i = 1; i < path.size(); i++) s += \"->\" + to_string(path[i]->val);\n        result.push_back(s);\n    }\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(3);\n    root->left->right = new TreeNode(5);\n\n    auto result = binaryTreePaths(root);\n    for (string &s : result) cout << s << \" \";\n\n    return 0;\n}",
+          "output": "1->2->5 1->3 ",
+          "timeComplexity": "O(n²) — rebuilding strings from stored node lists",
+          "spaceComplexity": "O(n²)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Build the path string directly during a single DFS pass, appending a complete result at each leaf.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid dfs(TreeNode* node, string path, vector<string> &result)\n{\n    if (node == nullptr) return;\n\n    path += to_string(node->val);\n\n    if (!node->left && !node->right)\n    {\n        result.push_back(path);\n        return;\n    }\n\n    dfs(node->left, path + \"->\", result);\n    dfs(node->right, path + \"->\", result);\n}\n\nvector<string> binaryTreePaths(TreeNode* root)\n{\n    vector<string> result;\n    dfs(root, \"\", result);\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(3);\n    root->left->right = new TreeNode(5);\n\n    auto result = binaryTreePaths(root);\n    for (string &s : result) cout << s << \" \";\n\n    return 0;\n}",
+          "output": "1->2->5 1->3 ",
+          "timeComplexity": "O(n²) worst case for string building, O(n) traversal",
+          "spaceComplexity": "O(h) call stack, O(n) for results"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-236",
+      "number": 236,
+      "title": "Lowest Common Ancestor of a Binary Tree",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/",
+      "problemStatement": "Given a general (not necessarily BST) binary tree and two nodes p and q, return their lowest common ancestor.",
+      "examples": [
+        { "input": "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1", "output": "3" }
+      ],
+      "constraints": ["2 <= number of nodes <= 10^5"],
+      "hints": [
+        "Without BST ordering, there's no shortcut telling you which side to search — DFS must explore BOTH subtrees.",
+        "Recursively search left and right for p and q. If a subtree's search returns a non-null result, that subtree contains at least one of them.",
+        "If BOTH the left and right searches return non-null, the CURRENT node is exactly where p and q's paths split — the answer. If only one side is non-null, pass that result upward."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Find the full root-to-node path for both p and q separately, then compare the paths to find where they last agree.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nbool findPath(TreeNode* node, TreeNode* target, vector<TreeNode*> &path)\n{\n    if (node == nullptr) return false;\n    path.push_back(node);\n    if (node == target) return true;\n    if (findPath(node->left, target, path) || findPath(node->right, target, path)) return true;\n    path.pop_back();\n    return false;\n}\n\nTreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q)\n{\n    vector<TreeNode*> pathP, pathQ;\n    findPath(root, p, pathP);\n    findPath(root, q, pathQ);\n\n    TreeNode* result = nullptr;\n    for (int i = 0; i < min(pathP.size(), pathQ.size()); i++)\n    {\n        if (pathP[i] == pathQ[i]) result = pathP[i];\n        else break;\n    }\n    return result;\n}\n\nint main()\n{\n    TreeNode* n5 = new TreeNode(5);\n    TreeNode* n1 = new TreeNode(1);\n    TreeNode* root = new TreeNode(3);\n    root->left = n5;\n    root->right = n1;\n\n    TreeNode* result = lowestCommonAncestor(root, n5, n1);\n    cout << result->val << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) for the two paths"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A single DFS pass: a node is the LCA the moment both its subtrees report finding one of p/q each.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q)\n{\n    if (root == nullptr || root == p || root == q) return root;\n\n    TreeNode* left = lowestCommonAncestor(root->left, p, q);\n    TreeNode* right = lowestCommonAncestor(root->right, p, q);\n\n    if (left && right) return root;\n    return left ? left : right;\n}\n\nint main()\n{\n    TreeNode* n5 = new TreeNode(5);\n    TreeNode* n1 = new TreeNode(1);\n    TreeNode* root = new TreeNode(3);\n    root->left = n5;\n    root->right = n1;\n\n    TreeNode* result = lowestCommonAncestor(root, n5, n1);\n    cout << result->val << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-124",
+      "number": 124,
+      "title": "Binary Tree Maximum Path Sum",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
+      "problemStatement": "Given the root of a binary tree, return the maximum path sum of any path (a sequence of connected nodes, not necessarily through the root, each node used at most once).",
+      "examples": [
+        { "input": "root = [1,2,3]", "output": "6", "explanation": "Path 2->1->3 sums to 6." }
+      ],
+      "constraints": ["1 <= number of nodes <= 3*10^4"],
+      "hints": [
+        "This combines Diameter of Binary Tree's 'best value through this node' idea with a running global answer, but for SUMS instead of path lengths.",
+        "Recall Diameter's insight: at each node, the best path THROUGH it is left's contribution + right's contribution + the node itself — update a global best with this at every node.",
+        "A subtree's contribution to its PARENT (what gets returned upward) is different: only the node plus the BETTER single side, since a path continuing upward can't branch both ways — and negative contributions should be discarded (treated as 0) rather than dragging the sum down."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every node, compute the max downward path sum starting there in each direction separately, combining fresh at every node.",
+          "code": "#include <iostream>\n#include <climits>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nint maxDownward(TreeNode* node)\n{\n    if (node == nullptr) return 0;\n    return node->val + max(0, max(maxDownward(node->left), maxDownward(node->right)));\n}\n\nint best = INT_MIN;\n\nvoid visit(TreeNode* node)\n{\n    if (node == nullptr) return;\n    int leftSum = max(0, maxDownward(node->left));\n    int rightSum = max(0, maxDownward(node->right));\n    best = max(best, node->val + leftSum + rightSum);\n    visit(node->left);\n    visit(node->right);\n}\n\nint maxPathSum(TreeNode* root)\n{\n    best = INT_MIN;\n    visit(root);\n    return best;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(3);\n\n    cout << maxPathSum(root) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n²) — maxDownward() re-walks subtrees repeatedly",
+          "spaceComplexity": "O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A single post-order pass computes each node's downward contribution AND updates the global best simultaneously.",
+          "code": "#include <iostream>\n#include <climits>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nint best = INT_MIN;\n\nint maxDownward(TreeNode* node)\n{\n    if (node == nullptr) return 0;\n\n    int leftGain = max(0, maxDownward(node->left));\n    int rightGain = max(0, maxDownward(node->right));\n\n    best = max(best, node->val + leftGain + rightGain);\n\n    return node->val + max(leftGain, rightGain);\n}\n\nint maxPathSum(TreeNode* root)\n{\n    best = INT_MIN;\n    maxDownward(root);\n    return best;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(3);\n\n    cout << maxPathSum(root) << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
