@@ -187,6 +187,42 @@
           "spaceComplexity": "O(log n) call stack depth"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-206",
+      "number": 206,
+      "title": "Reverse Linked List",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/reverse-linked-list/",
+      "problemStatement": "Given the head of a singly linked list, reverse the list and return the new head.",
+      "examples": [
+        { "input": "head = [1,2,3,4,5]", "output": "[5,4,3,2,1]" }
+      ],
+      "constraints": ["0 <= list length <= 5000"],
+      "hints": [
+        "A linked list is naturally recursive: 'reverse the rest of the list, then attach myself to the end of it' is a valid recursive definition.",
+        "The base case is an empty list or a single node — already 'reversed' as-is.",
+        "After recursively reversing everything past the current node, the current node's next node's `.next` pointer needs to point BACK at the current node — that's the actual reversal step."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Iteratively collect all values into a vector, then overwrite each node's value in reverse order — reverses the data without touching the pointers.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* reverseList(ListNode* head)\n{\n    vector<int> values;\n    for (ListNode* cur = head; cur; cur = cur->next) values.push_back(cur->val);\n\n    ListNode* cur = head;\n    for (int i = values.size() - 1; i >= 0; i--)\n    {\n        cur->val = values[i];\n        cur = cur->next;\n    }\n\n    return head;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n\n    reverseList(head);\n    for (ListNode* n = head; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "3 2 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the values vector"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Recursive reversal: recurse to the end of the list, then flip each `.next` pointer on the way back up the call stack.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* reverseList(ListNode* head)\n{\n    if (head == nullptr || head->next == nullptr) return head; // base case\n\n    ListNode* newHead = reverseList(head->next);\n\n    head->next->next = head; // point the next node back at this one\n    head->next = nullptr;\n\n    return newHead;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n\n    ListNode* newHead = reverseList(head);\n    for (ListNode* n = newHead; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "3 2 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) call stack depth — an iterative pointer-swap approach can achieve O(1) instead"
+        }
+      ]
     }
   ],
   "codeExamples": [
