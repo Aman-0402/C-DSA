@@ -1,0 +1,141 @@
+{
+  "id": "dsa-1d-dp",
+  "moduleId": "greedy-dp",
+  "title": "1D DP",
+  "description": "A new problem beyond Fibonacci: House Robber, teaching the real skill of DP — defining what dp[i] actually means, then finding its recurrence.",
+  "objectives": [
+    "Solve the House Robber problem using 1D dynamic programming",
+    "Practice defining a DP state (what dp[i] represents)",
+    "Derive a recurrence relation from the state definition",
+    "Recognize the 1D DP pattern: dp[i] depends only on a few earlier dp values"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Fibonacci Was Already 1D DP"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tabulation's table[i] = table[i-1] + table[i-2] was already 1D DP — a single array indexed by one variable. The real skill isn't the loop structure; it's figuring out what dp[i] should MEAN for a brand new problem. Let's practice that."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: House Robber"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Houses along a street hold money: {2, 7, 9, 3, 1}\n// You can't rob two ADJACENT houses (triggers an alarm)\n// What's the MAXIMUM total money you can rob?"
+    },
+    {
+      "type": "heading",
+      "text": "3. Defining the State"
+    },
+    {
+      "type": "definition",
+      "term": "dp[i] for House Robber",
+      "text": "dp[i] represents the maximum money that can be robbed considering only houses 0 through i."
+    },
+    {
+      "type": "note",
+      "text": "This is the single most important step in any DP problem: clearly stating what dp[i] means BEFORE trying to write its formula. Get this definition wrong, and no formula built on top of it will work correctly."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Recurrence"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// At house i, there are exactly two choices:\n// SKIP house i entirely -> dp[i-1] (whatever we already had)\n// ROB house i -> houses[i] + dp[i-2] (can't have also robbed i-1)\n\n// dp[i] = max(dp[i-1], houses[i] + dp[i-2])"
+    },
+    {
+      "type": "note",
+      "text": "This recurrence directly reflects the state definition: dp[i] is the BEST of the two choices available at house i, each one built from an already-known smaller answer — exactly Dynamic Programming's optimal substructure requirement."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint rob(vector<int> &houses)\n{\n    int n = houses.size();\n    if (n == 0) return 0;\n    if (n == 1) return houses[0];\n\n    vector<int> dp(n);\n    dp[0] = houses[0];\n    dp[1] = max(houses[0], houses[1]);\n\n    for (int i = 2; i < n; i++)\n    {\n        dp[i] = max(dp[i - 1], houses[i] + dp[i - 2]);\n    }\n\n    return dp[n - 1];\n}\n\nint main()\n{\n    vector<int> houses = {2, 7, 9, 3, 1};\n\n    cout << rob(houses) << endl;\n\n    return 0;\n}",
+      "output": "12",
+      "retypePractice": true,
+      "retypeId": "dsa-1d-dp-house-robber"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "dp[0] = 2 (only one house, must rob it)",
+        "dp[1] = max(2, 7) = 7 (rob whichever of the first two is bigger)",
+        "dp[2] = max(dp[1]=7, houses[2]+dp[0]=9+2=11) = 11 → skip house 1, rob houses 0 and 2",
+        "dp[3] = max(dp[2]=11, houses[3]+dp[1]=3+7=10) = 11 → house 3 isn't worth robbing",
+        "dp[4] = max(dp[3]=11, houses[4]+dp[2]=1+11=12) = 12 → rob houses 0, 2, and 4: 2+9+1=12",
+        "Final answer: dp[4] = 12"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Choosing which parking spots to use, never two in a row",
+      "text": "Picking which spots in a row of paid parking spaces to use, where you can never use two adjacent spots (some safety rule), naturally means asking at each new spot: is it better to skip this one (keep whatever I already had), or take it (plus whatever I'd built up two spots back)? That's exactly House Robber's recurrence, one decision at a time down the row."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Jumping straight to writing a formula before clearly stating what dp[i] means — this is the step that actually makes the recurrence obvious.",
+        "Forgetting the two base cases (dp[0] and dp[1]) — the recurrence for i >= 2 depends on both already being correctly filled in.",
+        "Writing dp[i] = houses[i] + dp[i-2] unconditionally — forgetting the 'skip' option (dp[i-1]) means missing cases where robbing house i isn't actually optimal.",
+        "Confusing this with a problem allowing ANY subset of houses — the whole difficulty here comes specifically from the adjacency restriction."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "In House Robber, what does dp[i] represent?",
+          "answer": "The maximum money that can be robbed considering only houses 0 through i."
+        },
+        {
+          "question": "What is the recurrence relation for House Robber, and why?",
+          "answer": "dp[i] = max(dp[i-1], houses[i] + dp[i-2]) — at each house, either skip it (keep dp[i-1]) or rob it (add its value to dp[i-2], since the adjacent house i-1 can't also be robbed)."
+        },
+        {
+          "question": "Why is clearly defining the DP state before writing the recurrence considered the most important step?",
+          "answer": "Because the recurrence formula is derived directly from what the state represents — an unclear or incorrect state definition makes it very difficult to write a correct formula on top of it."
+        }
+      ],
+      "thirtySecondAnswer": "House Robber demonstrates the real skill of 1D DP: defining a clear state, dp[i] = the maximum money robbable considering only houses 0 through i, before writing any formula. The recurrence follows directly from that definition — at each house, either skip it (dp[i-1]) or rob it (houses[i] + dp[i-2], since the adjacent house can't also be robbed) — and dp[i] takes whichever choice is better. This is the same 1D array pattern as Fibonacci's tabulation, just with a problem-specific state and recurrence instead of a fixed mathematical sequence."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember 1D DP",
+      "text": "1D DP recipe: 1) Define what dp[i] MEANS. 2) Find the recurrence from that meaning. 3) Fill base cases. 4) Loop upward. House Robber: skip it, or rob it + dp[i-2] — take the best."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-1d-dp-house-robber", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint rob(vector<int> &houses)\n{\n    int n = houses.size();\n    if (n == 0) return 0;\n    if (n == 1) return houses[0];\n\n    vector<int> dp(n);\n    dp[0] = houses[0];\n    dp[1] = max(houses[0], houses[1]);\n\n    for (int i = 2; i < n; i++)\n    {\n        dp[i] = max(dp[i - 1], houses[i] + dp[i - 2]);\n    }\n\n    return dp[n - 1];\n}\n\nint main()\n{\n    vector<int> houses = {2, 7, 9, 3, 1};\n\n    cout << rob(houses) << endl;\n\n    return 0;\n}", "output": "12" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-1d-dp-house-robber",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint rob(vector<int> &houses)\n{\n    int n = houses.size();\n    if (n == 0) return 0;\n    if (n == 1) return houses[0];\n\n    vector<int> dp(n);\n    dp[0] = houses[0];\n    dp[1] = max(houses[0], houses[1]);\n\n    for (int i = 2; i < n; i++)\n    {\n        dp[i] = max(dp[i - 1], houses[i] + dp[i - 2]);\n    }\n\n    return dp[n - 1];\n}\n\nint main()\n{\n    vector<int> houses = {2, 7, 9, 3, 1};\n\n    cout << rob(houses) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-1d-dp-house-robber"]
+  }
+}
