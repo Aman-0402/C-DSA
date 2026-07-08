@@ -225,6 +225,42 @@
           "spaceComplexity": "O(amount) for the memo array plus recursion stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-62-memo",
+      "number": 62,
+      "title": "Unique Paths",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/unique-paths/",
+      "problemStatement": "A robot starts at the top-left of an m x n grid and can only move right or down. Return the number of distinct paths to the bottom-right corner.",
+      "examples": [
+        { "input": "m = 3, n = 7", "output": "28" }
+      ],
+      "constraints": ["1 <= m, n <= 100"],
+      "hints": [
+        "This is this lesson's first 2D subproblem — paths(row, col) = paths(row-1, col) + paths(row, col-1), the count of ways to arrive from above plus from the left.",
+        "Base case: reaching row 0 or column 0 has exactly 1 path (a straight line along the edge).",
+        "The cache now needs two dimensions — a 2D memo grid, or an unordered_map keyed by an encoded (row, col) pair — since the subproblem identity is a PAIR of coordinates, not a single integer."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Naive recursion with no cache — the same (row, col) subproblem gets reached via many different paths and recomputed each time.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint uniquePathsHelper(int row, int col)\n{\n    if (row == 0 || col == 0) return 1;\n    return uniquePathsHelper(row - 1, col) + uniquePathsHelper(row, col - 1);\n}\n\nint uniquePaths(int m, int n)\n{\n    return uniquePathsHelper(m - 1, n - 1);\n}\n\nint main()\n{\n    cout << uniquePaths(3, 7);\n\n    return 0;\n}",
+          "output": "28",
+          "timeComplexity": "O(2^(m+n)) — exponential, from the two-dimensional overlapping subproblems",
+          "spaceComplexity": "O(m + n) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Memoized recursion with a 2D cache — each (row, col) pair solved exactly once.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePathsHelper(int row, int col, vector<vector<int>>& memo)\n{\n    if (row == 0 || col == 0) return 1;\n    if (memo[row][col] != -1) return memo[row][col];\n\n    memo[row][col] = uniquePathsHelper(row - 1, col, memo) + uniquePathsHelper(row, col - 1, memo);\n    return memo[row][col];\n}\n\nint uniquePaths(int m, int n)\n{\n    vector<vector<int>> memo(m, vector<int>(n, -1));\n    return uniquePathsHelper(m - 1, n - 1, memo);\n}\n\nint main()\n{\n    cout << uniquePaths(3, 7);\n\n    return 0;\n}",
+          "output": "28",
+          "timeComplexity": "O(m * n)",
+          "spaceComplexity": "O(m * n) for the 2D memo grid plus recursion stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
