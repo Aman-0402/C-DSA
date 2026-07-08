@@ -37,6 +37,36 @@
   padding: 40px clamp(20px, 5vw, 96px) 120px;
 }
 
+.social-float {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.social-float-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.social-float-link:hover { background: var(--bg-sunken); border-color: var(--accent); color: var(--accent); }
+.social-float-link.icon-only { width: 34px; padding: 0; justify-content: center; }
+.social-float-link.star-link { color: #eab308; }
+.social-float-link.star-link:hover { border-color: #eab308; color: #eab308; }
+
 .mobile-menu-btn {
   display: none;
 }
