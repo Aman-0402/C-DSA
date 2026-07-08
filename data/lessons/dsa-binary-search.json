@@ -201,6 +201,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-69",
+      "number": 69,
+      "title": "Sqrt(x)",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/sqrtx/",
+      "problemStatement": "Given a non-negative integer x, return the integer square root of x (the decimal part is truncated).",
+      "examples": [
+        { "input": "x = 8", "output": "2", "explanation": "sqrt(8) = 2.828..., truncated to 2." }
+      ],
+      "constraints": ["0 <= x <= 2^31 - 1"],
+      "hints": [
+        "This isn't binary search over an array — it's binary search over the ANSWER itself, a candidate value from 0 to x.",
+        "For a candidate mid, checking mid*mid <= x tells you whether mid could still be the answer or a smaller one is needed — the same 'discard half' logic applies to a range of possible answers, not just an array.",
+        "Track the largest mid found so far where mid*mid <= x — that's the floor square root once the search narrows to nothing left to check."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every integer from 0 upward until one squared exceeds x.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint mySqrt(int x)\n{\n    long i = 0;\n    while (i * i <= x) i++;\n    return i - 1;\n}\n\nint main()\n{\n    cout << mySqrt(8) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(√x)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Binary search on the answer range [0, x], keeping the largest candidate whose square doesn't exceed x.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint mySqrt(int x)\n{\n    long left = 0, right = x;\n    long answer = 0;\n\n    while (left <= right)\n    {\n        long mid = left + (right - left) / 2;\n\n        if (mid * mid <= x)\n        {\n            answer = mid;\n            left = mid + 1;\n        }\n        else\n        {\n            right = mid - 1;\n        }\n    }\n\n    return answer;\n}\n\nint main()\n{\n    cout << mySqrt(8) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(log x)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
