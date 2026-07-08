@@ -154,6 +154,42 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-242-unordered-map",
+      "number": 242,
+      "title": "Valid Anagram",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/valid-anagram/",
+      "problemStatement": "Given strings s and t, return true if t is an anagram of s.",
+      "examples": [
+        { "input": "s = \"anagram\", t = \"nagaram\"", "output": "true" }
+      ],
+      "constraints": ["1 <= s.length, t.length <= 5*10^4"],
+      "hints": [
+        "unordered_map<char, int>[] auto-creates a 0 entry the first time a new character is seen — exactly what's needed for a running tally.",
+        "Increment for s, decrement for t, in two separate loops over the map's keys.",
+        "Iterate the map at the end checking every value is exactly 0."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort both strings and compare.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nbool isAnagram(string s, string t)\n{\n    if (s.size() != t.size()) return false;\n    sort(s.begin(), s.end());\n    sort(t.begin(), t.end());\n    return s == t;\n}\n\nint main()\n{\n    cout << (isAnagram(\"anagram\", \"nagaram\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(1) extra"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "unordered_map tally, incremented for s and decremented for t.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool isAnagram(string s, string t)\n{\n    if (s.size() != t.size()) return false;\n\n    unordered_map<char, int> counts;\n    for (char c : s) counts[c]++;\n    for (char c : t) counts[c]--;\n\n    for (auto &[c, cnt] : counts)\n    {\n        if (cnt != 0) return false;\n    }\n    return true;\n}\n\nint main()\n{\n    cout << (isAnagram(\"anagram\", \"nagaram\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k)"
+        }
+      ]
     }
   ],
   "codeExamples": [
