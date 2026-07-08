@@ -211,6 +211,43 @@
           "spaceComplexity": "O(n) for the hash set"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-242-hashing",
+      "number": 242,
+      "title": "Valid Anagram",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/valid-anagram/",
+      "problemStatement": "Given strings s and t, return true if t is an anagram of s.",
+      "examples": [
+        { "input": "s = \"anagram\", t = \"nagaram\"", "output": "true" },
+        { "input": "s = \"rat\", t = \"car\"", "output": "false" }
+      ],
+      "constraints": ["1 <= s.length, t.length <= 5*10^4"],
+      "hints": [
+        "A hash map is the natural tool for tallying 'how many of each key have I seen' — here, the key is a character instead of a whole array value.",
+        "Increment a count for every character in s, decrement for every character in t — an anagram means every count returns to exactly zero.",
+        "This is the same hash-map-as-a-tally pattern as this lesson's Two Sum, just counting occurrences instead of tracking indices."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort both strings and compare — true anagrams become identical once sorted.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nbool isAnagram(string s, string t)\n{\n    if (s.size() != t.size()) return false;\n\n    sort(s.begin(), s.end());\n    sort(t.begin(), t.end());\n\n    return s == t;\n}\n\nint main()\n{\n    cout << (isAnagram(\"anagram\", \"nagaram\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(1) extra beyond the sort"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A hash map tallying character counts — increment for s, decrement for t, and check everything cancels to zero.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool isAnagram(string s, string t)\n{\n    if (s.size() != t.size()) return false;\n\n    unordered_map<char, int> counts;\n\n    for (char c : s) counts[c]++;\n    for (char c : t) counts[c]--;\n\n    for (auto &[c, cnt] : counts)\n    {\n        if (cnt != 0) return false;\n    }\n\n    return true;\n}\n\nint main()\n{\n    cout << (isAnagram(\"anagram\", \"nagaram\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k) for the hash map, k = distinct characters"
+        }
+      ]
     }
   ],
   "codeExamples": [
