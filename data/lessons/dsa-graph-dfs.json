@@ -126,6 +126,42 @@
           "spaceComplexity": "O(rows * cols) worst case recursion stack, O(1) extra grid space"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-695",
+      "number": 695,
+      "title": "Max Area of Island",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/max-area-of-island/",
+      "problemStatement": "Given an m x n binary grid, return the area (cell count) of the largest island (group of horizontally/vertically connected 1s). Return 0 if there is none.",
+      "examples": [
+        { "input": "grid = [[1,1,0],[0,1,0],[0,0,1]]", "output": "3" }
+      ],
+      "constraints": ["1 <= rows, cols <= 50"],
+      "hints": [
+        "Same island-sinking DFS as LC 200, but instead of just counting islands, have dfs() RETURN the size of the island it just sank.",
+        "1 (for the current cell) plus the sum of what DFS returns from each of the 4 neighbor directions gives the island's total area.",
+        "Track a running max across all island-starting cells, exactly like counting islands but comparing areas instead of incrementing a counter."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use a separate visited grid; DFS returns the area of the component, but revisits cells via extra bounds/visited checks on every call.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint dfs(vector<vector<int>>& grid, int r, int c, vector<vector<bool>>& visited)\n{\n    int rows = grid.size(), cols = grid[0].size();\n    if (r < 0 || r >= rows || c < 0 || c >= cols) return 0;\n    if (visited[r][c] || grid[r][c] == 0) return 0;\n\n    visited[r][c] = true;\n    int area = 1;\n    area += dfs(grid, r + 1, c, visited);\n    area += dfs(grid, r - 1, c, visited);\n    area += dfs(grid, r, c + 1, visited);\n    area += dfs(grid, r, c - 1, visited);\n    return area;\n}\n\nint maxAreaOfIsland(vector<vector<int>>& grid)\n{\n    int rows = grid.size(), cols = grid[0].size();\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n    int best = 0;\n\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n            if (grid[r][c] == 1 && !visited[r][c])\n                best = max(best, dfs(grid, r, c, visited));\n\n    return best;\n}\n\nint main()\n{\n    vector<vector<int>> grid = {\n        {1, 1, 0},\n        {0, 1, 0},\n        {0, 0, 1}\n    };\n\n    cout << maxAreaOfIsland(grid);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(rows * cols)",
+          "spaceComplexity": "O(rows * cols) for the separate visited grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sink islands in-place (flip visited land to 0) while DFS returns the area — no separate visited grid needed.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint dfs(vector<vector<int>>& grid, int r, int c)\n{\n    int rows = grid.size(), cols = grid[0].size();\n    if (r < 0 || r >= rows || c < 0 || c >= cols) return 0;\n    if (grid[r][c] == 0) return 0;\n\n    grid[r][c] = 0;\n    int area = 1;\n    area += dfs(grid, r + 1, c);\n    area += dfs(grid, r - 1, c);\n    area += dfs(grid, r, c + 1);\n    area += dfs(grid, r, c - 1);\n    return area;\n}\n\nint maxAreaOfIsland(vector<vector<int>>& grid)\n{\n    int rows = grid.size(), cols = grid[0].size();\n    int best = 0;\n\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n            if (grid[r][c] == 1)\n                best = max(best, dfs(grid, r, c));\n\n    return best;\n}\n\nint main()\n{\n    vector<vector<int>> grid = {\n        {1, 1, 0},\n        {0, 1, 0},\n        {0, 0, 1}\n    };\n\n    cout << maxAreaOfIsland(grid);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(rows * cols)",
+          "spaceComplexity": "O(rows * cols) worst case recursion stack, O(1) extra grid space"
+        }
+      ]
     }
   ],
   "codeExamples": [
