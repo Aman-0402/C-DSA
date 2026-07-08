@@ -208,7 +208,8 @@
       "topics": [
         { "id": "dsa-stack", "title": "Stack", "lesson": "dsa-stack" },
         { "id": "dsa-monotonic-stack", "title": "Monotonic Stack", "lesson": "dsa-monotonic-stack" },
-        { "id": "dsa-queue", "title": "Queue", "lesson": "dsa-queue" }
+        { "id": "dsa-queue", "title": "Queue", "lesson": "dsa-queue" },
+        { "id": "dsa-deque", "title": "Deque", "lesson": "dsa-deque" }
       ]
     }
   ]
