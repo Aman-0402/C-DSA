@@ -225,6 +225,42 @@
           "spaceComplexity": "O(n), single queue"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-622",
+      "number": 622,
+      "title": "Design Circular Queue",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/design-circular-queue/",
+      "problemStatement": "Design a fixed-capacity circular queue supporting enQueue, deQueue, Front, Rear, isEmpty, and isFull, all in O(1).",
+      "examples": [
+        { "input": "cap=3; enQueue(1); enQueue(2); enQueue(3); enQueue(4); Rear(); isFull()", "output": "true, true, true, false, 3, true" }
+      ],
+      "constraints": ["1 <= capacity <= 1000", "at most 3000 calls"],
+      "hints": [
+        "A fixed-size array can act as a queue's storage — but a plain array queue wastes space at the front once elements are dequeued, unless positions are REUSED.",
+        "Track a head index and a count of current elements. The tail position is computed as (head + count) % capacity — wrapping around using modulo, exactly like Circular Linked List's loop-back-to-start idea, but with array indices instead of pointers.",
+        "isFull() is count == capacity; isEmpty() is count == 0 — both O(1), no scanning needed."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use std::deque internally, letting the STL handle the underlying storage and wraparound.",
+          "code": "#include <iostream>\n#include <deque>\n\nusing namespace std;\n\nclass MyCircularQueue {\npublic:\n    deque<int> data;\n    int capacity;\n\n    MyCircularQueue(int k) : capacity(k) {}\n\n    bool enQueue(int value)\n    {\n        if (data.size() == capacity) return false;\n        data.push_back(value);\n        return true;\n    }\n\n    bool deQueue()\n    {\n        if (data.empty()) return false;\n        data.pop_front();\n        return true;\n    }\n\n    int Rear() { return data.empty() ? -1 : data.back(); }\n    bool isEmpty() { return data.empty(); }\n    bool isFull() { return (int)data.size() == capacity; }\n};\n\nint main()\n{\n    MyCircularQueue q(3);\n    cout << q.enQueue(1) << \" \" << q.enQueue(2) << \" \" << q.enQueue(3) << \" \" << q.enQueue(4) << \" \";\n    cout << q.Rear() << \" \" << q.isFull() << endl;\n\n    return 0;\n}",
+          "output": "1 1 1 0 3 1",
+          "timeComplexity": "O(1) per operation",
+          "spaceComplexity": "O(capacity)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A fixed-size array with a head index and running count, computing positions with modulo — reuses space without any dynamic resizing.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass MyCircularQueue {\npublic:\n    vector<int> data;\n    int capacity, head, count;\n\n    MyCircularQueue(int k) : data(k), capacity(k), head(0), count(0) {}\n\n    bool enQueue(int value)\n    {\n        if (count == capacity) return false;\n        int tail = (head + count) % capacity;\n        data[tail] = value;\n        count++;\n        return true;\n    }\n\n    bool deQueue()\n    {\n        if (count == 0) return false;\n        head = (head + 1) % capacity;\n        count--;\n        return true;\n    }\n\n    int Rear()\n    {\n        if (count == 0) return -1;\n        return data[(head + count - 1) % capacity];\n    }\n\n    bool isEmpty() { return count == 0; }\n    bool isFull() { return count == capacity; }\n};\n\nint main()\n{\n    MyCircularQueue q(3);\n    cout << q.enQueue(1) << \" \" << q.enQueue(2) << \" \" << q.enQueue(3) << \" \" << q.enQueue(4) << \" \";\n    cout << q.Rear() << \" \" << q.isFull() << endl;\n\n    return 0;\n}",
+          "output": "1 1 1 0 3 1",
+          "timeComplexity": "O(1) per operation",
+          "spaceComplexity": "O(capacity), fixed, no reallocation"
+        }
+      ]
     }
   ],
   "codeExamples": [
