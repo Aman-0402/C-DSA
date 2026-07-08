@@ -127,6 +127,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember LCS",
       "text": "LCS: characters match → go diagonal, +1. Characters don't match → take the best of up or left. Subsequence = order kept, gaps allowed."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: LCS in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1143",
+      "number": 1143,
+      "title": "Longest Common Subsequence",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/longest-common-subsequence/",
+      "problemStatement": "Given two strings text1 and text2, return the length of their longest common subsequence, or 0 if none exists.",
+      "examples": [
+        { "input": "text1 = \"abcde\", text2 = \"ace\"", "output": "3" }
+      ],
+      "constraints": ["1 <= text1.length, text2.length <= 1000"],
+      "hints": [
+        "This is the lesson's own worked example — try implementing it yourself before checking back against the full trace above.",
+        "State: dp[i][j] = LCS length between text1's first i characters and text2's first j characters.",
+        "Match: dp[i][j] = dp[i-1][j-1] + 1. No match: dp[i][j] = max(dp[i-1][j], dp[i][j-1])."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp table, filled row by row.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint longestCommonSubsequence(string text1, string text2)\n{\n    int m = text1.size(), n = text2.size();\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));\n\n    for (int i = 1; i <= m; i++)\n        for (int j = 1; j <= n; j++)\n        {\n            if (text1[i - 1] == text2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;\n            else dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n        }\n\n    return dp[m][n];\n}\n\nint main()\n{\n    cout << longestCommonSubsequence(\"abcde\", \"ace\");\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(m * n)",
+          "spaceComplexity": "O(m * n) for the full 2D table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Each row only depends on the row directly above — collapse to two rolling rows.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint longestCommonSubsequence(string text1, string text2)\n{\n    int m = text1.size(), n = text2.size();\n    vector<int> prev(n + 1, 0), curr(n + 1, 0);\n\n    for (int i = 1; i <= m; i++)\n    {\n        for (int j = 1; j <= n; j++)\n        {\n            if (text1[i - 1] == text2[j - 1]) curr[j] = prev[j - 1] + 1;\n            else curr[j] = max(prev[j], curr[j - 1]);\n        }\n        prev = curr;\n    }\n\n    return prev[n];\n}\n\nint main()\n{\n    cout << longestCommonSubsequence(\"abcde\", \"ace\");\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(m * n)",
+          "spaceComplexity": "O(n) for two rolling rows"
+        }
+      ]
     }
   ],
   "codeExamples": [
