@@ -259,7 +259,8 @@
         { "id": "dsa-dynamic-programming", "title": "Dynamic Programming", "lesson": "dsa-dynamic-programming" },
         { "id": "dsa-memoization", "title": "Memoization", "lesson": "dsa-memoization" },
         { "id": "dsa-tabulation", "title": "Tabulation", "lesson": "dsa-tabulation" },
-        { "id": "dsa-1d-dp", "title": "1D DP", "lesson": "dsa-1d-dp" }
+        { "id": "dsa-1d-dp", "title": "1D DP", "lesson": "dsa-1d-dp" },
+        { "id": "dsa-2d-dp", "title": "2D DP", "lesson": "dsa-2d-dp" }
       ]
     }
   ]

@@ -1,0 +1,143 @@
+{
+  "id": "dsa-2d-dp",
+  "moduleId": "greedy-dp",
+  "title": "2D DP",
+  "description": "1D DP's natural extension: Unique Paths in a grid, where dp[i][j] depends on two indices instead of one.",
+  "objectives": [
+    "Solve the Unique Paths problem using 2D dynamic programming",
+    "Define a two-index DP state, dp[i][j]",
+    "Derive and apply a 2D recurrence",
+    "Recognize when a problem's structure calls for two DP indices instead of one"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: One Index Wasn't Always Enough"
+    },
+    {
+      "type": "paragraph",
+      "text": "1D DP's House Robber only needed one index — position along a row of houses. Some problems are naturally described by two independent dimensions, like a position on a grid (recall 2D Arrays), and need dp[i][j] instead of dp[i]."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Unique Paths"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// A robot starts at the top-left of a grid, can only move RIGHT or DOWN\n// How many distinct paths exist to reach the bottom-right corner?"
+    },
+    {
+      "type": "heading",
+      "text": "3. Defining the State"
+    },
+    {
+      "type": "definition",
+      "term": "dp[i][j] for Unique Paths",
+      "text": "dp[i][j] represents the number of distinct paths to reach cell (i, j) from the top-left corner, moving only right or down."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Recurrence"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// The robot can only ARRIVE at (i,j) from directly ABOVE (i-1,j) or directly to the LEFT (i,j-1)\n// So the number of ways to reach (i,j) is the SUM of the ways to reach each of those\n\n// dp[i][j] = dp[i-1][j] + dp[i][j-1]"
+    },
+    {
+      "type": "note",
+      "text": "The first row and first column are special: there's only ONE way to reach any cell along the top edge (keep moving right) or the left edge (keep moving down) — dp[0][j] = 1 and dp[i][0] = 1 for all valid i, j."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePaths(int m, int n)\n{\n    vector<vector<int>> dp(m, vector<int>(n));\n\n    for (int i = 0; i < m; i++)\n    {\n        for (int j = 0; j < n; j++)\n        {\n            if (i == 0 || j == 0)\n            {\n                dp[i][j] = 1; // top row or left column — exactly one way\n            }\n            else\n            {\n                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];\n            }\n        }\n    }\n\n    return dp[m - 1][n - 1];\n}\n\nint main()\n{\n    cout << uniquePaths(3, 3) << endl;\n\n    return 0;\n}",
+      "output": "6",
+      "retypePractice": true,
+      "retypeId": "dsa-2d-dp-unique-paths"
+    },
+    {
+      "type": "keyPoints",
+      "title": "The filled table for a 3×3 grid",
+      "points": [
+        "Row 0: 1 1 1 — top row, only one way each (keep moving right)",
+        "Row 1: 1 2 3 — dp[1][1]=dp[0][1]+dp[1][0]=1+1=2, dp[1][2]=dp[0][2]+dp[1][1]=1+2=3",
+        "Row 2: 1 3 6 — dp[2][1]=dp[1][1]+dp[2][0]=2+1=3, dp[2][2]=dp[1][2]+dp[2][1]=3+3=6",
+        "dp[2][2] = 6 — six distinct right/down paths from corner to corner"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Recognizing When 2D DP Applies"
+    },
+    {
+      "type": "tip",
+      "text": "If a problem's state naturally needs two independent pieces of information to describe — a row AND a column, two string positions (a preview of Longest Common Subsequence, coming up), or an item index AND a remaining capacity (a preview of Knapsack) — that's the signal for a 2D DP table instead of a 1D one."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Counting routes through a city grid, only heading toward your destination",
+      "text": "Counting how many different routes exist to walk from one corner of a grid-planned city to the opposite corner, only ever walking toward your destination (never backtracking), is exactly Unique Paths — and the number of routes to any intersection is naturally the sum of the routes to the intersection just north of it and the one just west of it."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the first row and first column's special base case — without dp[i][0] = dp[0][j] = 1, the sums built on top of them would be wrong.",
+        "Mixing up row and column order in dp[i][j] — stay consistent about which index is the row and which is the column throughout.",
+        "Applying a 1D recurrence to what's actually a 2D problem — trying to force a grid problem into a single-index dp[i] loses information about one of the two dimensions.",
+        "Forgetting the nested loop must fill dp in an order where dp[i-1][j] and dp[i][j-1] are already computed before dp[i][j] needs them — top-to-bottom, left-to-right naturally satisfies this here."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "In Unique Paths, what does dp[i][j] represent?",
+          "answer": "The number of distinct paths to reach cell (i, j) from the top-left corner, moving only right or down."
+        },
+        {
+          "question": "What is the recurrence for Unique Paths, and why?",
+          "answer": "dp[i][j] = dp[i-1][j] + dp[i][j-1] — a cell can only be reached from directly above or directly to the left, so the total ways to reach it is the sum of the ways to reach each of those."
+        },
+        {
+          "question": "What signals that a DP problem needs a 2D state instead of 1D?",
+          "answer": "When the state naturally requires two independent pieces of information to describe, such as a row and column position, or two separate indices into different sequences."
+        }
+      ],
+      "thirtySecondAnswer": "2D DP extends 1D DP to problems whose state needs two independent indices — Unique Paths defines dp[i][j] as the number of distinct paths to reach cell (i,j) moving only right or down, with the recurrence dp[i][j] = dp[i-1][j] + dp[i][j-1], since a cell can only be reached from directly above or directly to the left. The first row and column are special base cases, each having exactly one path (straight along the edge). This two-index pattern generalizes to many other classic problems — comparing two strings position by position, or tracking an item index alongside remaining capacity — wherever the problem's state genuinely needs two dimensions to describe."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember 2D DP",
+      "text": "2D DP = a grid of routes. dp[i][j] = ways in from above + ways in from the left. First row/column = always exactly 1 way. Two independent dimensions → two indices."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-2d-dp-unique-paths", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePaths(int m, int n)\n{\n    vector<vector<int>> dp(m, vector<int>(n));\n\n    for (int i = 0; i < m; i++)\n    {\n        for (int j = 0; j < n; j++)\n        {\n            if (i == 0 || j == 0)\n            {\n                dp[i][j] = 1;\n            }\n            else\n            {\n                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];\n            }\n        }\n    }\n\n    return dp[m - 1][n - 1];\n}\n\nint main()\n{\n    cout << uniquePaths(3, 3) << endl;\n\n    return 0;\n}", "output": "6" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-2d-dp-unique-paths",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint uniquePaths(int m, int n)\n{\n    vector<vector<int>> dp(m, vector<int>(n));\n\n    for (int i = 0; i < m; i++)\n    {\n        for (int j = 0; j < n; j++)\n        {\n            if (i == 0 || j == 0)\n            {\n                dp[i][j] = 1;\n            }\n            else\n            {\n                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];\n            }\n        }\n    }\n\n    return dp[m - 1][n - 1];\n}\n\nint main()\n{\n    cout << uniquePaths(3, 3) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-2d-dp-unique-paths"]
+  }
+}
