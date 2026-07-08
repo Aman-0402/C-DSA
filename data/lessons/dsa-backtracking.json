@@ -1,0 +1,134 @@
+{
+  "id": "dsa-backtracking",
+  "moduleId": "recursion-backtracking",
+  "title": "Backtracking",
+  "description": "Recursion with a choose/explore/unchoose pattern: generating every subset by trying a decision, exploring deeper, then undoing it to try the next.",
+  "objectives": [
+    "Understand backtracking as recursion plus explicit undoing",
+    "Implement the choose/explore/unchoose pattern",
+    "Generate all subsets of a set using backtracking",
+    "Understand why the 'unchoose' step is essential"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Recursion, With a Twist"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recursion in DSA built functions that call themselves toward a base case. Backtracking adds one more idea on top: trying a choice, exploring where it leads, and then explicitly undoing that choice to try the next alternative."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Backtracking?"
+    },
+    {
+      "type": "definition",
+      "term": "Backtracking",
+      "text": "Backtracking explores all possible choices by recursively trying one option at a time, undoing (\"backtracking\") each choice after exploring it, so the next alternative can be tried cleanly."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Pattern: Choose, Explore, Unchoose"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void backtrack(/* state */)\n{\n    // base case: record a complete result\n\n    for (/* each possible choice */)\n    {\n        // CHOOSE — make the choice\n        backtrack(/* updated state */); // EXPLORE — recurse deeper\n        // UNCHOOSE — undo the choice before trying the next one\n    }\n}"
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example: Generate All Subsets"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(vector<int> &numbers, int index, vector<int> &current)\n{\n    if (index == numbers.size()) // BASE CASE — decision made for every element\n    {\n        for (int n : current)\n        {\n            cout << n << \" \";\n        }\n        cout << \"| \";\n        return;\n    }\n\n    // CHOICE 1: exclude numbers[index]\n    backtrack(numbers, index + 1, current);\n\n    // CHOICE 2: include numbers[index]\n    current.push_back(numbers[index]); // CHOOSE\n    backtrack(numbers, index + 1, current); // EXPLORE\n    current.pop_back(); // UNCHOOSE — undo before returning\n}\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n    vector<int> current;\n\n    backtrack(numbers, 0, current);\n\n    return 0;\n}",
+      "output": "| 3 | 2 | 2 3 | 1 | 1 3 | 1 2 | 1 2 3 | ",
+      "retypePractice": true,
+      "retypeId": "dsa-backtracking-subsets"
+    },
+    {
+      "type": "keyPoints",
+      "title": "How it explores every combination",
+      "points": [
+        "For each element, there are exactly two choices: include it, or don't",
+        "The function tries BOTH choices recursively for every element — that's 2 × 2 × 2 = 8 total combinations for 3 elements",
+        "current.push_back(...) is the CHOOSE step; current.pop_back() is the UNCHOOSE step, restoring current to how it was before trying that branch",
+        "Without pop_back(), current would keep accumulating leftover elements from earlier branches, corrupting every later result"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Why \"Backtracking\"?"
+    },
+    {
+      "type": "warning",
+      "text": "The name comes directly from that undo step: after fully exploring a choice, the algorithm literally \"backtracks\" — undoes the decision — to return to the state it was in before, so the next possibility can be explored from a clean slate. Forgetting to undo is the single most common backtracking bug, since it silently corrupts every subsequent branch's results."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Trying on outfits and putting each item back before trying the next combination",
+      "text": "Trying every possible outfit combination means putting on an item, seeing the full look, and then taking that specific item back off before trying the next option — not leaving it on and piling more clothes on top. Piling on top of previous choices without undoing them would corrupt every future combination you tried to explore."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the 'unchoose' step (like pop_back()) — leftover state from a previous branch corrupts all following results.",
+        "Modifying shared state without a plan to undo it — every CHOOSE needs a matching UNCHOOSE, symmetric to how it was applied.",
+        "Confusing backtracking with plain recursion — backtracking specifically implies exploring multiple choices at each step and reverting between them, not just a single recursive descent.",
+        "Not recognizing the exponential nature of trying every choice at every step — generating all subsets of n elements is inherently O(2ⁿ), matching the branching we saw in naive Fibonacci."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is backtracking?",
+          "answer": "A technique that explores all possible choices by recursively trying one option, exploring where it leads, and then undoing that choice before trying the next alternative."
+        },
+        {
+          "question": "What are the three steps of the backtracking pattern?",
+          "answer": "Choose (make a decision), explore (recurse with that decision in effect), and unchoose (undo the decision before trying the next option)."
+        },
+        {
+          "question": "Why is the 'unchoose' step essential in backtracking?",
+          "answer": "Without undoing a choice after exploring it, leftover state carries into later branches, corrupting the results of every subsequent combination explored."
+        },
+        {
+          "question": "What is the time complexity of generating all subsets of an n-element set?",
+          "answer": "O(2ⁿ), since each element independently has two choices (include or exclude), giving 2ⁿ total combinations to explore."
+        }
+      ],
+      "thirtySecondAnswer": "Backtracking builds on recursion by exploring every possible choice at each step: choose an option, recursively explore what follows from it, then unchoose — undo that option — before trying the next alternative. Generating all subsets demonstrates this cleanly: for each element, recursively try both excluding and including it, using push_back() to choose and pop_back() to unchoose after exploring. The undo step is what gives backtracking its name and is essential — skipping it lets leftover state from one branch silently corrupt the results of every branch explored afterward. This exhaustive choice-at-every-step approach is inherently O(2ⁿ) for problems like generating subsets."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Backtracking",
+      "text": "Backtracking = try on an outfit, explore the look, take it back OFF before trying the next combo. Choose → Explore → Unchoose. Forgetting to unchoose corrupts everything after."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-backtracking-subsets", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(vector<int> &numbers, int index, vector<int> &current)\n{\n    if (index == numbers.size())\n    {\n        for (int n : current)\n        {\n            cout << n << \" \";\n        }\n        cout << \"| \";\n        return;\n    }\n\n    backtrack(numbers, index + 1, current);\n\n    current.push_back(numbers[index]);\n    backtrack(numbers, index + 1, current);\n    current.pop_back();\n}\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n    vector<int> current;\n\n    backtrack(numbers, 0, current);\n\n    return 0;\n}", "output": "| 3 | 2 | 2 3 | 1 | 1 3 | 1 2 | 1 2 3 | " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-backtracking-subsets",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(vector<int> &numbers, int index, vector<int> &current)\n{\n    if (index == numbers.size())\n    {\n        for (int n : current)\n        {\n            cout << n << \" \";\n        }\n        cout << \"| \";\n        return;\n    }\n\n    backtrack(numbers, index + 1, current);\n\n    current.push_back(numbers[index]);\n    backtrack(numbers, index + 1, current);\n    current.pop_back();\n}\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n    vector<int> current;\n\n    backtrack(numbers, 0, current);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-backtracking-subsets"]
+  }
+}
