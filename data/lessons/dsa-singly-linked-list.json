@@ -270,6 +270,42 @@
           "spaceComplexity": "O(1) extra — reuses existing nodes"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-83",
+      "number": 83,
+      "title": "Remove Duplicates from Sorted List",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/remove-duplicates-from-sorted-list/",
+      "problemStatement": "Given the head of a sorted linked list, delete all duplicates so each element appears once, and return the list.",
+      "examples": [
+        { "input": "head = [1,1,2,3,3]", "output": "[1,2,3]" }
+      ],
+      "constraints": ["0 <= list length <= 300"],
+      "hints": [
+        "Since the list is SORTED, duplicates of a value are always immediately adjacent — no need to look far to spot one.",
+        "This is the deletion 'skip over it' trick from this lesson's Section 5, applied repeatedly: while the current node's next has the same value, skip it.",
+        "Only advance the current pointer once its next node has a genuinely different value."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect unique values using a hash set, then rebuild the list from scratch with only those values.",
+          "code": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* deleteDuplicates(ListNode* head)\n{\n    unordered_set<int> seen;\n    ListNode dummy(0);\n    ListNode* tail = &dummy;\n\n    for (ListNode* n = head; n; n = n->next)\n    {\n        if (!seen.count(n->val))\n        {\n            seen.insert(n->val);\n            tail->next = new ListNode(n->val);\n            tail = tail->next;\n        }\n    }\n\n    return dummy.next;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(1);\n    head->next->next = new ListNode(2);\n    head->next->next->next = new ListNode(3);\n    head->next->next->next->next = new ListNode(3);\n\n    ListNode* result = deleteDuplicates(head);\n    for (ListNode* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the seen set and new nodes"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Single pass, skip-over-it deletion — exploits sortedness so adjacent duplicates can be removed directly, in place.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* deleteDuplicates(ListNode* head)\n{\n    ListNode* current = head;\n\n    while (current != nullptr && current->next != nullptr)\n    {\n        if (current->val == current->next->val)\n        {\n            current->next = current->next->next; // skip the duplicate\n        }\n        else\n        {\n            current = current->next;\n        }\n    }\n\n    return head;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(1);\n    head->next->next = new ListNode(2);\n    head->next->next->next = new ListNode(3);\n    head->next->next->next->next = new ListNode(3);\n\n    ListNode* result = deleteDuplicates(head);\n    for (ListNode* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — in place"
+        }
+      ]
     }
   ],
   "codeExamples": [
