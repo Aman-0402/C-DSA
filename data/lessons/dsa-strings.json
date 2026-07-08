@@ -258,6 +258,43 @@
           "spaceComplexity": "O(1) — fixed 26-size array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-28",
+      "number": 28,
+      "title": "Find the Index of the First Occurrence in a String",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/",
+      "problemStatement": "Given haystack and needle, return the index of needle's first occurrence in haystack, or -1 if it doesn't occur.",
+      "examples": [
+        { "input": "haystack = \"sadbutsad\", needle = \"sad\"", "output": "0" },
+        { "input": "haystack = \"leetcode\", needle = \"leeto\"", "output": "-1" }
+      ],
+      "constraints": ["1 <= haystack.length, needle.length <= 10^4"],
+      "hints": [
+        "Try matching needle starting at every position in haystack, checking character by character.",
+        "The moment a character mismatches, that starting position has failed — move on to try the next starting position.",
+        "This is literally what recall find() from Header Files/std::string does internally — string has a built-in method for this exact search."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every starting position in haystack, comparing needle character by character.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint strStr(string haystack, string needle)\n{\n    int n = haystack.size(), m = needle.size();\n\n    for (int i = 0; i + m <= n; i++)\n    {\n        int j = 0;\n        while (j < m && haystack[i + j] == needle[j]) j++;\n        if (j == m) return i;\n    }\n\n    return -1;\n}\n\nint main()\n{\n    cout << strStr(\"sadbutsad\", \"sad\") << endl;\n\n    return 0;\n}",
+          "output": "0",
+          "timeComplexity": "O(n × m) worst case",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "std::string's built-in find() implements this search internally, typically with far better constant factors than a hand-written loop (production string libraries often use algorithms like KMP or Boyer-Moore under the hood for O(n+m) worst-case behavior).",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint strStr(string haystack, string needle)\n{\n    size_t pos = haystack.find(needle);\n    return (pos == string::npos) ? -1 : (int)pos;\n}\n\nint main()\n{\n    cout << strStr(\"sadbutsad\", \"sad\") << endl;\n\n    return 0;\n}",
+          "output": "0",
+          "timeComplexity": "O(n + m) typical, library-dependent",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
