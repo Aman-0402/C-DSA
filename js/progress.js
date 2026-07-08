@@ -1,7 +1,7 @@
 import { getJSON, setJSON } from "./storage.js";
 
 function getState() {
-  return getJSON("progress", { completedLessons: {}, retyped: {}, viewedSections: {} });
+  return getJSON("progress", { completedLessons: {}, retyped: {}, viewedSections: {}, solvedLeetcode: {} });
 }
 
 function saveState(state) {
@@ -46,4 +46,26 @@ export function getOverallProgress(allLessonIds) {
   const total = allLessonIds.length || 1;
   const done = allLessonIds.filter((id) => state.completedLessons[id]).length;
   return Math.round((done / total) * 100);
+}
+
+export function isLcSolved(lcId) {
+  const state = getState();
+  return !!(state.solvedLeetcode && state.solvedLeetcode[lcId]);
+}
+
+export function toggleLcSolved(lcId) {
+  const state = getState();
+  if (!state.solvedLeetcode) state.solvedLeetcode = {};
+  if (state.solvedLeetcode[lcId]) delete state.solvedLeetcode[lcId];
+  else state.solvedLeetcode[lcId] = true;
+  saveState(state);
+  return !!state.solvedLeetcode[lcId];
+}
+
+export function getLeetcodeProgress(allLcIds) {
+  const state = getState();
+  const solved = state.solvedLeetcode || {};
+  const total = allLcIds.length;
+  const done = allLcIds.filter((id) => solved[id]).length;
+  return { done, total };
 }

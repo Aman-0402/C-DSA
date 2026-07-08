@@ -22,3 +22,20 @@ export function allTopicIds(roadmap) {
   }
   return ids;
 }
+
+let leetcodeIdsCache = null;
+
+export async function allLeetcodeIds(roadmap) {
+  if (leetcodeIdsCache) return leetcodeIdsCache;
+  const lessonIds = allTopicIds(roadmap);
+  const lessons = await Promise.all(lessonIds.map((id) => loadLesson(id).catch(() => null)));
+  const ids = [];
+  for (const lesson of lessons) {
+    if (!lesson?.sections) continue;
+    for (const section of lesson.sections) {
+      if (section.type === "leetcode") ids.push(section.id);
+    }
+  }
+  leetcodeIdsCache = ids;
+  return ids;
+}

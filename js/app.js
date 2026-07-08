@@ -1,8 +1,8 @@
 import { initTheme, toggleTheme } from "./theme.js";
 import { loadRoadmap, loadLesson } from "./content-loader.js";
-import { renderSidebar, setupSidebarSearch, updateOverallProgress } from "./sidebar.js";
+import { renderSidebar, setupSidebarSearch, updateOverallProgress, updateLeetcodeProgress } from "./sidebar.js";
 import { getCurrentLessonId, navigateToLesson, onRouteChange } from "./router.js";
-import { markLessonViewed, markRetyped, isRetyped, checkLessonCompletion } from "./progress.js";
+import { markLessonViewed, markRetyped, isRetyped, checkLessonCompletion, isLcSolved, toggleLcSolved } from "./progress.js";
 import { createRetypeEditor, createScratchEditor } from "./code-editor.js";
 import { checkRetype } from "./retype-checker.js";
 import { getRaw, setRaw } from "./storage.js";
@@ -103,6 +103,7 @@ function renderLesson(lesson) {
   attachAccordions(root);
   attachRetypeEditors(root, lesson);
   attachLeetcodeScratchpads(root);
+  attachLeetcodeSolvedToggles(root);
 }
 
 function renderSection(section, lesson) {
@@ -382,11 +383,15 @@ function renderLeetcodeProblem(section) {
     })
     .join("");
 
+  const solved = isLcSolved(section.id);
   wrap.innerHTML = `
     <div class="lc-header">
       <span class="lc-number">#${section.number}</span>
       <span class="lc-title">${section.title}</span>
       <span class="lc-difficulty lc-difficulty-${(section.difficulty || "").toLowerCase()}">${section.difficulty || ""}</span>
+      <button type="button" class="lc-solved-toggle${solved ? " solved" : ""}" aria-pressed="${solved}">
+        <i data-lucide="${solved ? "check-circle-2" : "circle"}" class="icon"></i> ${solved ? "Solved" : "Mark as Solved"}
+      </button>
       ${section.link ? `<a class="lc-link" href="${section.link}" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link" class="icon"></i> LeetCode</a>` : ""}
     </div>
     <p class="lc-statement">${section.problemStatement}</p>
@@ -457,6 +462,21 @@ function attachAccordions(root) {
   root.querySelectorAll(".acc-toggle-header").forEach((btn) => {
     btn.addEventListener("click", () => {
       btn.nextElementSibling.classList.toggle("open");
+    });
+  });
+}
+
+function attachLeetcodeSolvedToggles(root) {
+  root.querySelectorAll(".lc-solved-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const card = btn.closest(".leetcode-card");
+      const lcId = card.dataset.lcId;
+      const solved = toggleLcSolved(lcId);
+      btn.classList.toggle("solved", solved);
+      btn.setAttribute("aria-pressed", String(solved));
+      btn.innerHTML = `<i data-lucide="${solved ? "check-circle-2" : "circle"}" class="icon"></i> ${solved ? "Solved" : "Mark as Solved"}`;
+      if (window.lucide) window.lucide.createIcons();
+      updateLeetcodeProgress(roadmap);
     });
   });
 }

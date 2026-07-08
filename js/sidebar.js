@@ -1,5 +1,5 @@
-import { isLessonCompleted, getOverallProgress } from "./progress.js";
-import { allTopicIds } from "./content-loader.js";
+import { isLessonCompleted, getOverallProgress, getLeetcodeProgress } from "./progress.js";
+import { allTopicIds, allLeetcodeIds } from "./content-loader.js";
 
 export function renderSidebar(roadmap, activeLessonId, onSelect) {
   const nav = document.getElementById("sidebarNav");
@@ -37,6 +37,7 @@ export function renderSidebar(roadmap, activeLessonId, onSelect) {
 
   if (window.lucide) window.lucide.createIcons();
   updateOverallProgress(roadmap);
+  updateLeetcodeProgress(roadmap);
 }
 
 export function updateOverallProgress(roadmap) {
@@ -46,6 +47,14 @@ export function updateOverallProgress(roadmap) {
   const label = document.getElementById("progressLabelValue");
   if (fill) fill.style.width = `${pct}%`;
   if (label) label.textContent = `${pct}%`;
+}
+
+export async function updateLeetcodeProgress(roadmap) {
+  const label = document.getElementById("lcProgressLabelValue");
+  if (!label) return;
+  const ids = await allLeetcodeIds(roadmap);
+  const { done, total } = getLeetcodeProgress(ids);
+  label.textContent = `${done}/${total}`;
 }
 
 export function setupSidebarSearch(roadmap, onSelect) {
