@@ -359,6 +359,43 @@
           "spaceComplexity": "O(k) for the two hash maps, k = distinct characters"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-290-hashing",
+      "number": 290,
+      "title": "Word Pattern",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/word-pattern/",
+      "problemStatement": "Given a pattern and a string s, both space-separated into tokens, return true if s follows the same pattern — a bijection between each pattern character and each word.",
+      "examples": [
+        { "input": "pattern = \"abba\", s = \"dog cat cat dog\"", "output": "true" },
+        { "input": "pattern = \"abba\", s = \"dog cat cat fish\"", "output": "false" }
+      ],
+      "constraints": ["1 <= pattern.length <= 300", "pattern and s lowercase letters/words separated by single spaces"],
+      "hints": [
+        "This is Isomorphic Strings' exact bijection idea, but mapping a CHARACTER to a WORD (a whole string) instead of character to character.",
+        "Split s into words first — a stringstream or similar tokenizer handles this, exactly like Length of Last Word or Reverse Words in a String.",
+        "Then apply the same two-hash-map bijection check: pattern[i] maps to words[i], and words[i] maps back to pattern[i], consistently."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Tokenize s, then check consistency for every pair of positions, similar to Isomorphic Strings' brute force.",
+          "code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <vector>\n\nusing namespace std;\n\nbool wordPattern(string pattern, string s)\n{\n    stringstream ss(s);\n    string word;\n    vector<string> words;\n    while (ss >> word) words.push_back(word);\n\n    if (pattern.size() != words.size()) return false;\n\n    for (int i = 0; i < pattern.size(); i++)\n    {\n        for (int j = 0; j < pattern.size(); j++)\n        {\n            if ((pattern[i] == pattern[j]) != (words[i] == words[j])) return false;\n        }\n    }\n\n    return true;\n}\n\nint main()\n{\n    cout << (wordPattern(\"abba\", \"dog cat cat dog\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the tokenized words"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two hash maps enforcing the character-to-word bijection in both directions, checked in a single pass over the tokenized words.",
+          "code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nbool wordPattern(string pattern, string s)\n{\n    stringstream ss(s);\n    string word;\n    vector<string> words;\n    while (ss >> word) words.push_back(word);\n\n    if (pattern.size() != words.size()) return false;\n\n    unordered_map<char, string> charToWord;\n    unordered_map<string, char> wordToChar;\n\n    for (int i = 0; i < pattern.size(); i++)\n    {\n        char c = pattern[i];\n        string w = words[i];\n\n        if (charToWord.count(c) && charToWord[c] != w) return false;\n        if (wordToChar.count(w) && wordToChar[w] != c) return false;\n\n        charToWord[c] = w;\n        wordToChar[w] = c;\n    }\n\n    return true;\n}\n\nint main()\n{\n    cout << (wordPattern(\"abba\", \"dog cat cat dog\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k) for the two hash maps"
+        }
+      ]
     }
   ],
   "codeExamples": [
