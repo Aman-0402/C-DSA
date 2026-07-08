@@ -200,6 +200,42 @@
           "spaceComplexity": "O(n) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-739",
+      "number": 739,
+      "title": "Daily Temperatures",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/daily-temperatures/",
+      "problemStatement": "Given an array of daily temperatures, return an array where answer[i] is the number of days you'd have to wait after day i to get a warmer temperature, or 0 if none exists.",
+      "examples": [
+        { "input": "temperatures = [73,74,75,71,69,72,76,73]", "output": "[1,1,4,2,1,1,0,0]" }
+      ],
+      "constraints": ["1 <= temperatures.length <= 10^5"],
+      "hints": [
+        "This is Next Greater Element again, just asking for the DISTANCE to the next greater element instead of its value.",
+        "The exact same monotonic stack works — store indices, and pop-and-resolve when a warmer day is found.",
+        "The distance is simply currentIndex - resolvedIndex, since both indices are already known at resolution time."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each day, scan forward until a warmer day is found, counting the distance.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> dailyTemperatures(vector<int> &temps)\n{\n    vector<int> result(temps.size(), 0);\n\n    for (int i = 0; i < temps.size(); i++)\n    {\n        for (int j = i + 1; j < temps.size(); j++)\n        {\n            if (temps[j] > temps[i]) { result[i] = j - i; break; }\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> temps = {73, 74, 75, 71, 69, 72, 76, 73};\n\n    vector<int> result = dailyTemperatures(temps);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 1 4 2 1 1 0 0 ",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the result"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Monotonic stack of indices — pop-and-resolve with the DISTANCE between indices instead of the value.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nvector<int> dailyTemperatures(vector<int> &temps)\n{\n    vector<int> result(temps.size(), 0);\n    stack<int> indices;\n\n    for (int i = 0; i < temps.size(); i++)\n    {\n        while (!indices.empty() && temps[indices.top()] < temps[i])\n        {\n            int j = indices.top();\n            indices.pop();\n            result[j] = i - j;\n        }\n        indices.push(i);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> temps = {73, 74, 75, 71, 69, 72, 76, 73};\n\n    vector<int> result = dailyTemperatures(temps);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 1 4 2 1 1 0 0 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
