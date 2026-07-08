@@ -298,6 +298,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-231",
+      "number": 231,
+      "title": "Power of Two",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/power-of-two/",
+      "problemStatement": "Given an integer n, return true if it is a power of two.",
+      "examples": [
+        { "input": "n = 16", "output": "true" }
+      ],
+      "constraints": ["-2^31 <= n <= 2^31 - 1"],
+      "hints": [
+        "This is the lesson's own isPowerOfTwo() function, directly applicable — try implementing it yourself before checking back against the explanation above.",
+        "A power of two has EXACTLY one set bit in binary (e.g. 16 = 10000). Count set bits (LC 191's technique) and check if the count equals 1.",
+        "n & (n-1) clears the lowest set bit — for a power of two, that's the ONLY set bit, so the result is 0. This is a strictly faster, branch-free check than counting bits."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Count set bits (LC 191's technique) and check if exactly one bit is set.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nbool isPowerOfTwo(int n)\n{\n    if (n <= 0) return false;\n\n    int count = 0;\n    unsigned int un = (unsigned int)n;\n    while (un > 0)\n    {\n        count += (un & 1);\n        un >>= 1;\n    }\n    return count == 1;\n}\n\nint main()\n{\n    cout << boolalpha << isPowerOfTwo(16);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(32)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "n & (n-1) clears the lowest set bit — a power of two has only one bit, so the result is 0 in a single check.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nbool isPowerOfTwo(int n)\n{\n    return n > 0 && (n & (n - 1)) == 0;\n}\n\nint main()\n{\n    cout << boolalpha << isPowerOfTwo(16);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(1)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
