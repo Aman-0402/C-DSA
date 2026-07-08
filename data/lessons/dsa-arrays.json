@@ -362,6 +362,51 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-485",
+      "number": 485,
+      "title": "Max Consecutive Ones",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/max-consecutive-ones/",
+      "problemStatement": "Given a binary array nums, return the maximum number of consecutive 1's in the array.",
+      "examples": [
+        { "input": "nums = [1,1,0,1,1,1]", "output": "3", "explanation": "The last three elements are the longest run of 1's." },
+        { "input": "nums = [1,0,1,1,0,1]", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5", "nums[i] is either 0 or 1"],
+      "hints": [
+        "You need the length of the LONGEST unbroken run of 1's — think about tracking a running streak as you scan left to right.",
+        "A 0 breaks any streak instantly — what should happen to your running count the moment you see a 0?",
+        "You only ever need to remember the BEST streak seen so far, not every individual streak's length."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every starting index, expand as far right as possible while every element is 1, tracking the longest run found.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findMaxConsecutiveOnes(vector<int> &nums)\n{\n    int best = 0;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        if (nums[i] == 0) continue;\n        int j = i;\n        while (j < nums.size() && nums[j] == 1) j++;\n        best = max(best, j - i);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 0, 1, 1, 1};\n\n    cout << findMaxConsecutiveOnes(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n²) worst case — overlapping inner scans",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Better",
+          "explanation": "Single pass, recording the length of EVERY streak into a vector as it ends, then taking the max of the whole vector afterward.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findMaxConsecutiveOnes(vector<int> &nums)\n{\n    vector<int> streaks;\n    int current = 0;\n\n    for (int num : nums)\n    {\n        if (num == 1)\n        {\n            current++;\n        }\n        else\n        {\n            streaks.push_back(current);\n            current = 0;\n        }\n    }\n    streaks.push_back(current);\n\n    int best = 0;\n    for (int s : streaks) best = max(best, s);\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 0, 1, 1, 1};\n\n    cout << findMaxConsecutiveOnes(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the streaks vector"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Single pass, tracking only the current streak and the best streak seen so far — no need to remember every streak's length.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findMaxConsecutiveOnes(vector<int> &nums)\n{\n    int best = 0;\n    int current = 0;\n\n    for (int num : nums)\n    {\n        if (num == 1)\n        {\n            current++;\n            best = max(best, current);\n        }\n        else\n        {\n            current = 0;\n        }\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 0, 1, 1, 1};\n\n    cout << findMaxConsecutiveOnes(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
