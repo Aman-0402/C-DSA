@@ -153,6 +153,42 @@
           "spaceComplexity": "O(n) for the memo array plus recursion stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-198-memo",
+      "number": 198,
+      "title": "House Robber",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/house-robber/",
+      "problemStatement": "Given nums representing money in houses arranged in a line, return the maximum money robbable without robbing two directly adjacent houses.",
+      "examples": [
+        { "input": "nums = [2,7,9,3,1]", "output": "12" }
+      ],
+      "constraints": ["1 <= nums.length <= 100"],
+      "hints": [
+        "At house i, the choice is binary: rob it (and skip house i-1 entirely) or don't (carrying forward whatever the best was through i-1).",
+        "rob(i) = max(rob(i-1), rob(i-2) + nums[i]) — 'don't rob i' vs 'rob i, plus the best up through i-2'.",
+        "Apply the exact check-cache/compute-if-missing/store/return template from this lesson to this new recurrence."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Naive recursion with no cache — recomputes the same rob(i) subproblem repeatedly via different call paths.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint robHelper(int i, vector<int>& nums)\n{\n    if (i < 0) return 0;\n    if (i == 0) return nums[0];\n    return max(robHelper(i - 1, nums), robHelper(i - 2, nums) + nums[i]);\n}\n\nint rob(vector<int>& nums)\n{\n    return robHelper((int)nums.size() - 1, nums);\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 9, 3, 1};\n    cout << rob(nums);\n\n    return 0;\n}",
+          "output": "12",
+          "timeComplexity": "O(2^n)",
+          "spaceComplexity": "O(n) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Memoized recursion — check the cache first, compute and store only on a miss.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint robHelper(int i, vector<int>& nums, vector<int>& memo)\n{\n    if (i < 0) return 0;\n    if (i == 0) return nums[0];\n    if (memo[i] != -1) return memo[i];\n\n    memo[i] = max(robHelper(i - 1, nums, memo), robHelper(i - 2, nums, memo) + nums[i]);\n    return memo[i];\n}\n\nint rob(vector<int>& nums)\n{\n    vector<int> memo(nums.size(), -1);\n    return robHelper((int)nums.size() - 1, nums, memo);\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 9, 3, 1};\n    cout << rob(nums);\n\n    return 0;\n}",
+          "output": "12",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the memo array plus recursion stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
