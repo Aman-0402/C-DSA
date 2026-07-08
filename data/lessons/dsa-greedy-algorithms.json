@@ -183,6 +183,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-55",
+      "number": 55,
+      "title": "Jump Game",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/jump-game/",
+      "problemStatement": "Given an array where nums[i] is the maximum jump length from index i, return true if you can reach the last index starting from index 0.",
+      "examples": [
+        { "input": "nums = [2,3,1,1,4]", "output": "true" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4"],
+      "hints": [
+        "Track the farthest index reachable so far as a single greedy running value — never reconsider it once it only grows.",
+        "At each index i, if i is beyond the farthest reachable point, it's genuinely unreachable — stop immediately.",
+        "Otherwise, greedily update farthest = max(farthest, i + nums[i]) at every step; if farthest ever reaches or passes the last index, success."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recursively try every possible jump length from each index (backtracking-style), exploring all paths.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool canJumpFrom(int pos, vector<int>& nums)\n{\n    if (pos >= (int)nums.size() - 1) return true;\n\n    int maxJump = min((int)nums.size() - 1, pos + nums[pos]);\n    for (int next = pos + 1; next <= maxJump; next++)\n        if (canJumpFrom(next, nums)) return true;\n\n    return false;\n}\n\nbool canJump(vector<int>& nums)\n{\n    return canJumpFrom(0, nums);\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 1, 1, 4};\n    cout << boolalpha << canJump(nums);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(2^n) worst case — exponential branching over all jump choices",
+          "spaceComplexity": "O(n) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Single greedy pass tracking the farthest reachable index — no branching, no recursion.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nbool canJump(vector<int>& nums)\n{\n    int farthest = 0;\n\n    for (int i = 0; i < (int)nums.size(); i++)\n    {\n        if (i > farthest) return false;\n        farthest = max(farthest, i + nums[i]);\n    }\n\n    return true;\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 1, 1, 4};\n    cout << boolalpha << canJump(nums);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
