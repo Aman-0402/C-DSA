@@ -420,6 +420,43 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-15",
+      "number": 15,
+      "title": "3Sum",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/3sum/",
+      "problemStatement": "Given an array nums, return all unique triplets [nums[i], nums[j], nums[k]] (i, j, k distinct) that sum to 0.",
+      "examples": [
+        { "input": "nums = [-1,0,1,2,-1,-4]", "output": "[[-1,-1,2],[-1,0,1]]" },
+        { "input": "nums = [0,1,1]", "output": "[]" }
+      ],
+      "constraints": ["3 <= nums.length <= 3000", "-10^5 <= nums[i] <= 10^5"],
+      "hints": [
+        "Sort the array first — this both enables two pointers AND makes duplicate triplets easy to skip (equal values end up adjacent).",
+        "Fix ONE number, nums[i], and the problem reduces to Two Sum II on the remaining sorted subarray: find two numbers summing to -nums[i].",
+        "After finding a valid triplet (or moving a pointer past a duplicate), skip over any repeated values at i, left, and right to avoid outputting the same triplet twice."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every triplet with three nested loops, using a set to filter out duplicate triplets.",
+          "code": "#include <iostream>\n#include <vector>\n#include <set>\n#include <algorithm>\n\nusing namespace std;\n\nvector<vector<int>> threeSum(vector<int> &nums)\n{\n    set<vector<int>> triplets;\n    int n = nums.size();\n\n    for (int i = 0; i < n; i++)\n        for (int j = i + 1; j < n; j++)\n            for (int k = j + 1; k < n; k++)\n            {\n                if (nums[i] + nums[j] + nums[k] == 0)\n                {\n                    vector<int> t = {nums[i], nums[j], nums[k]};\n                    sort(t.begin(), t.end());\n                    triplets.insert(t);\n                }\n            }\n\n    return vector<vector<int>>(triplets.begin(), triplets.end());\n}\n\nint main()\n{\n    vector<int> nums = {-1, 0, 1, 2, -1, -4};\n\n    auto result = threeSum(nums);\n    for (auto &t : result) cout << t[0] << \" \" << t[1] << \" \" << t[2] << \" | \";\n\n    return 0;\n}",
+          "output": "-1 -1 2 | -1 0 1 | ",
+          "timeComplexity": "O(n³)",
+          "spaceComplexity": "O(n) for the dedup set"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sort once, fix each nums[i], then two-pointer the rest for a sum of -nums[i] — skipping duplicates at every level.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nvector<vector<int>> threeSum(vector<int> &nums)\n{\n    sort(nums.begin(), nums.end());\n    vector<vector<int>> result;\n    int n = nums.size();\n\n    for (int i = 0; i < n - 2; i++)\n    {\n        if (i > 0 && nums[i] == nums[i - 1]) continue; // skip duplicate i\n\n        int left = i + 1, right = n - 1;\n        while (left < right)\n        {\n            int sum = nums[i] + nums[left] + nums[right];\n            if (sum == 0)\n            {\n                result.push_back({nums[i], nums[left], nums[right]});\n                while (left < right && nums[left] == nums[left + 1]) left++;\n                while (left < right && nums[right] == nums[right - 1]) right--;\n                left++;\n                right--;\n            }\n            else if (sum < 0) left++;\n            else right--;\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {-1, 0, 1, 2, -1, -4};\n\n    auto result = threeSum(nums);\n    for (auto &t : result) cout << t[0] << \" \" << t[1] << \" \" << t[2] << \" | \";\n\n    return 0;\n}",
+          "output": "-1 -1 2 | -1 0 1 | ",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the sort and result"
+        }
+      ]
     }
   ],
   "codeExamples": [
