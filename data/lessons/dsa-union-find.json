@@ -1,0 +1,140 @@
+{
+  "id": "dsa-union-find",
+  "moduleId": "graphs",
+  "title": "Union Find / Disjoint Set",
+  "description": "A different kind of tool entirely: quickly answering 'are these two vertices in the same group?' — with path compression, and cycle detection as its classic use.",
+  "objectives": [
+    "Understand the problem union find solves: tracking disjoint groups",
+    "Implement find() with path compression",
+    "Implement union() to merge two groups",
+    "Use union find to detect a cycle in an undirected graph"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: A New Kind of Question"
+    },
+    {
+      "type": "paragraph",
+      "text": "BFS and DFS answer \"how do I reach every vertex from here?\" Union find answers a different, narrower question extremely efficiently: \"are these two specific vertices already connected, directly or indirectly?\""
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Union Find?"
+    },
+    {
+      "type": "definition",
+      "term": "Union find (disjoint set)",
+      "text": "Union find is a data structure that tracks a collection of disjoint (non-overlapping) groups, supporting two operations: find (which group is this element in?) and union (merge two groups into one)."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Structure: A parent Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> parent(n);\nfor (int i = 0; i < n; i++)\n{\n    parent[i] = i; // everyone starts as their OWN group's root\n}"
+    },
+    {
+      "type": "note",
+      "text": "Each element points to a \"parent\" — following parent pointers upward eventually reaches a root, which represents that entire group. Initially, everyone is their own root, meaning n separate groups."
+    },
+    {
+      "type": "heading",
+      "text": "4. find() — With Path Compression"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int find(vector<int> &parent, int x)\n{\n    if (parent[x] != x)\n    {\n        parent[x] = find(parent, parent[x]); // PATH COMPRESSION — flatten the chain as we go\n    }\n    return parent[x];\n}"
+    },
+    {
+      "type": "definition",
+      "term": "Path compression",
+      "text": "Path compression makes every node visited during a find() point directly to the root, so future find() calls on those same nodes become nearly instant."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example: union() and Cycle Detection"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(vector<int> &parent, int x)\n{\n    if (parent[x] != x)\n    {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nbool unite(vector<int> &parent, int a, int b)\n{\n    int rootA = find(parent, a);\n    int rootB = find(parent, b);\n\n    if (rootA == rootB)\n    {\n        return false; // already connected — adding this edge would create a CYCLE\n    }\n\n    parent[rootA] = rootB; // merge the two groups\n    return true;\n}\n\nint main()\n{\n    int n = 5;\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    vector<pair<int, int>> edges = {{0, 1}, {1, 2}, {3, 4}, {0, 2}};\n\n    for (auto &edge : edges)\n    {\n        if (unite(parent, edge.first, edge.second))\n        {\n            cout << \"Union: \" << edge.first << \"-\" << edge.second << endl;\n        }\n        else\n        {\n            cout << \"Cycle detected: \" << edge.first << \"-\" << edge.second << endl;\n        }\n    }\n\n    return 0;\n}",
+      "output": "Union: 0-1\nUnion: 1-2\nUnion: 3-4\nCycle detected: 0-2",
+      "retypePractice": true,
+      "retypeId": "dsa-union-find-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why the last edge is flagged",
+      "points": [
+        "After processing (0,1) and (1,2), vertices 0, 1, and 2 all belong to the SAME group (connected, directly or indirectly)",
+        "(3,4) forms a completely separate second group",
+        "When (0,2) is processed, find(0) and find(2) return the SAME root — they're already connected",
+        "Adding an edge between two vertices already in the same group would create a cycle, exactly what unite() correctly detects and reports"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Merging friend groups, and noticing when two people are already in the same one",
+      "text": "Imagine tracking separate friend groups as people get introduced to each other. Introducing two people from entirely different groups merges those groups into one. But if someone tries to \"introduce\" two people who turn out to already be in the same friend group (through some other chain of mutual friends), that's not a new connection at all — it's redundant, exactly like a cycle in a graph."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting path compression — find() still works without it, but degrades toward O(n) per call on a long chain instead of staying nearly O(1).",
+        "Comparing a and b directly instead of comparing find(a) and find(b) — two elements in the same group don't necessarily have the same immediate parent, only the same ROOT.",
+        "Assuming union find can answer 'what is the shortest path between these two' — it can only answer 'are they connected at all,' nothing about the path itself.",
+        "Forgetting to initialize parent[i] = i for every element before use — an uninitialized parent array doesn't represent 'everyone is their own group' correctly."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What problem does union find solve?",
+          "answer": "Efficiently tracking a collection of disjoint groups, answering 'are these two elements in the same group' and merging two groups together."
+        },
+        {
+          "question": "What does path compression do in find()?",
+          "answer": "It makes every node visited during the find() call point directly to the root, so future find() calls on those nodes become nearly instant."
+        },
+        {
+          "question": "How can union find be used to detect a cycle in an undirected graph?",
+          "answer": "Process each edge with union(); if the two vertices already share the same root (are already connected) before the edge is added, that edge would create a cycle."
+        }
+      ],
+      "thirtySecondAnswer": "Union find tracks disjoint groups using a parent array, where each element points toward a root representing its group. find(x) follows parent pointers up to the root, applying path compression along the way so future calls become nearly instant. union(a, b) merges two groups by connecting their roots — but if find(a) and find(b) already return the same root, they're already connected, and forcing that edge would create a cycle, which is exactly how union find is used to detect cycles while building an undirected graph edge by edge."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Union Find",
+      "text": "Union find = merging friend groups. find() = which group's root am I part of? union() = merge two groups. Same root already? That new edge is a cycle."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-union-find-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(vector<int> &parent, int x)\n{\n    if (parent[x] != x)\n    {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nbool unite(vector<int> &parent, int a, int b)\n{\n    int rootA = find(parent, a);\n    int rootB = find(parent, b);\n\n    if (rootA == rootB)\n    {\n        return false;\n    }\n\n    parent[rootA] = rootB;\n    return true;\n}\n\nint main()\n{\n    int n = 5;\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    vector<pair<int, int>> edges = {{0, 1}, {1, 2}, {3, 4}, {0, 2}};\n\n    for (auto &edge : edges)\n    {\n        if (unite(parent, edge.first, edge.second))\n        {\n            cout << \"Union: \" << edge.first << \"-\" << edge.second << endl;\n        }\n        else\n        {\n            cout << \"Cycle detected: \" << edge.first << \"-\" << edge.second << endl;\n        }\n    }\n\n    return 0;\n}", "output": "Union: 0-1\nUnion: 1-2\nUnion: 3-4\nCycle detected: 0-2" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-union-find-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(vector<int> &parent, int x)\n{\n    if (parent[x] != x)\n    {\n        parent[x] = find(parent, parent[x]);\n    }\n    return parent[x];\n}\n\nbool unite(vector<int> &parent, int a, int b)\n{\n    int rootA = find(parent, a);\n    int rootB = find(parent, b);\n\n    if (rootA == rootB)\n    {\n        return false;\n    }\n\n    parent[rootA] = rootB;\n    return true;\n}\n\nint main()\n{\n    int n = 5;\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    vector<pair<int, int>> edges = {{0, 1}, {1, 2}, {3, 4}, {0, 2}};\n\n    for (auto &edge : edges)\n    {\n        if (unite(parent, edge.first, edge.second))\n        {\n            cout << \"Union: \" << edge.first << \"-\" << edge.second << endl;\n        }\n        else\n        {\n            cout << \"Cycle detected: \" << edge.first << \"-\" << edge.second << endl;\n        }\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-union-find-basic"]
+  }
+}

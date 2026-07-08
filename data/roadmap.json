@@ -247,7 +247,8 @@
         { "id": "dsa-adjacency-list", "title": "Adjacency List", "lesson": "dsa-adjacency-list" },
         { "id": "dsa-graph-bfs", "title": "Graph BFS", "lesson": "dsa-graph-bfs" },
         { "id": "dsa-graph-dfs", "title": "Graph DFS", "lesson": "dsa-graph-dfs" },
-        { "id": "dsa-topological-sort", "title": "Topological Sort", "lesson": "dsa-topological-sort" }
+        { "id": "dsa-topological-sort", "title": "Topological Sort", "lesson": "dsa-topological-sort" },
+        { "id": "dsa-union-find", "title": "Union Find / Disjoint Set", "lesson": "dsa-union-find" }
       ]
     }
   ]
