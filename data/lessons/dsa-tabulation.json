@@ -219,6 +219,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-213-tab",
+      "number": 213,
+      "title": "House Robber II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/house-robber-ii/",
+      "problemStatement": "Same as House Robber, but the houses are arranged in a CIRCLE — the first and last houses are now adjacent too.",
+      "examples": [
+        { "input": "nums = [2,3,2]", "output": "3" }
+      ],
+      "constraints": ["1 <= nums.length <= 100"],
+      "hints": [
+        "The circle adds exactly one new constraint: house 0 and house n-1 can never BOTH be robbed.",
+        "That means the true answer must fall into one of two cases: robbing houses [0, n-2] (excluding the last), or robbing houses [1, n-1] (excluding the first) — take the better of the two.",
+        "Each case is just this lesson's ORIGINAL linear House Robber table, run on a subrange — no new recurrence needed, just two calls to it."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full table array for each of the two linear subranges.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint robLinear(vector<int>& nums, int start, int end)\n{\n    int n = end - start + 1;\n    if (n <= 0) return 0;\n    if (n == 1) return nums[start];\n\n    vector<int> table(n);\n    table[0] = nums[start];\n    table[1] = max(nums[start], nums[start + 1]);\n\n    for (int i = 2; i < n; i++)\n        table[i] = max(table[i - 1], table[i - 2] + nums[start + i]);\n\n    return table[n - 1];\n}\n\nint rob(vector<int>& nums)\n{\n    int n = nums.size();\n    if (n == 1) return nums[0];\n\n    return max(robLinear(nums, 0, n - 2), robLinear(nums, 1, n - 1));\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 2};\n    cout << rob(nums);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the two full tables"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same two-subrange approach, with each subrange's table collapsed to two variables.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint robLinear(vector<int>& nums, int start, int end)\n{\n    int prev2 = 0, prev1 = 0;\n    for (int i = start; i <= end; i++)\n    {\n        int current = max(prev1, prev2 + nums[i]);\n        prev2 = prev1;\n        prev1 = current;\n    }\n    return prev1;\n}\n\nint rob(vector<int>& nums)\n{\n    int n = nums.size();\n    if (n == 1) return nums[0];\n\n    return max(robLinear(nums, 0, n - 2), robLinear(nums, 1, n - 1));\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, 2};\n    cout << rob(nums);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
