@@ -239,6 +239,42 @@
           "spaceComplexity": "O(n) for two rolling rows"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1092",
+      "number": 1092,
+      "title": "Shortest Common Supersequence",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/shortest-common-supersequence/",
+      "problemStatement": "Given two strings str1 and str2, return the shortest string that has BOTH str1 and str2 as subsequences. If multiple answers exist, return any.",
+      "examples": [
+        { "input": "str1 = \"abac\", str2 = \"cab\"", "output": "\"cabac\"" }
+      ],
+      "constraints": ["1 <= str1.length, str2.length <= 1000"],
+      "hints": [
+        "The shortest supersequence keeps the LCS ONCE (shared) and appends every non-LCS character from both strings exactly once — length = len(str1) + len(str2) - LCS length.",
+        "Build the full LCS dp table first (this lesson's exact recurrence), then RECONSTRUCT the answer by walking the table backward from (m, n) to (0, 0).",
+        "During the walk: on a matching character, take it once and move diagonally; on a mismatch, take whichever string's character corresponds to the larger neighboring dp value, and advance only that string — this greedily preserves the LCS while including every extra character."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build the full LCS dp table, then reconstruct the supersequence by backtracking through it character by character.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nstring shortestCommonSupersequence(string str1, string str2)\n{\n    int m = str1.size(), n = str2.size();\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));\n\n    for (int i = 1; i <= m; i++)\n        for (int j = 1; j <= n; j++)\n        {\n            if (str1[i - 1] == str2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;\n            else dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n        }\n\n    string result;\n    int i = m, j = n;\n    while (i > 0 && j > 0)\n    {\n        if (str1[i - 1] == str2[j - 1])\n        {\n            result += str1[i - 1];\n            i--; j--;\n        }\n        else if (dp[i - 1][j] >= dp[i][j - 1])\n        {\n            result += str1[i - 1];\n            i--;\n        }\n        else\n        {\n            result += str2[j - 1];\n            j--;\n        }\n    }\n    while (i > 0) { result += str1[i - 1]; i--; }\n    while (j > 0) { result += str2[j - 1]; j--; }\n\n    reverse(result.begin(), result.end());\n    return result;\n}\n\nint main()\n{\n    cout << shortestCommonSupersequence(\"abac\", \"cab\");\n\n    return 0;\n}",
+          "output": "cabac",
+          "timeComplexity": "O(m * n) to build the table, O(m + n) to reconstruct",
+          "spaceComplexity": "O(m * n) for the full 2D table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same approach — the reconstruction walk inherently needs the FULL table (not just the last two rows), since backtracking must revisit earlier rows, so this is already the space-optimal form for a problem that needs the actual output string, not just its length.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nstring shortestCommonSupersequence(string str1, string str2)\n{\n    int m = str1.size(), n = str2.size();\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));\n\n    for (int i = 1; i <= m; i++)\n        for (int j = 1; j <= n; j++)\n        {\n            if (str1[i - 1] == str2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;\n            else dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n        }\n\n    string result;\n    result.reserve(m + n);\n    int i = m, j = n;\n    while (i > 0 && j > 0)\n    {\n        if (str1[i - 1] == str2[j - 1])\n        {\n            result += str1[i - 1];\n            i--; j--;\n        }\n        else if (dp[i - 1][j] >= dp[i][j - 1])\n        {\n            result += str1[i - 1];\n            i--;\n        }\n        else\n        {\n            result += str2[j - 1];\n            j--;\n        }\n    }\n    while (i > 0) { result += str1[i - 1]; i--; }\n    while (j > 0) { result += str2[j - 1]; j--; }\n\n    reverse(result.begin(), result.end());\n    return result;\n}\n\nint main()\n{\n    cout << shortestCommonSupersequence(\"abac\", \"cab\");\n\n    return 0;\n}",
+          "output": "cabac",
+          "timeComplexity": "O(m * n)",
+          "spaceComplexity": "O(m * n) — reconstruction requires the full table"
+        }
+      ]
     }
   ],
   "codeExamples": [
