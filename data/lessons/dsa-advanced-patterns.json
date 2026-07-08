@@ -345,6 +345,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-76",
+      "number": 76,
+      "title": "Minimum Window Substring",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/minimum-window-substring/",
+      "problemStatement": "Given strings s and t, return the smallest substring of s that contains every character of t (including duplicates), or an empty string if none exists.",
+      "examples": [
+        { "input": "s = \"ADOBECODEBANC\", t = \"ABC\"", "output": "\"BANC\"" }
+      ],
+      "constraints": ["1 <= s.length, t.length <= 10^5"],
+      "hints": [
+        "This is this lesson's own combined pattern taken further: 'substring, minimize length' is Sliding Window; 'contains every character of t' needs fast frequency tracking, which is Hashing.",
+        "Track needed character counts from t in one map, and current window counts in another; a counter of 'how many distinct required characters are currently fully satisfied' avoids re-comparing the two maps on every step.",
+        "Grow the window's right edge until all requirements are met, then GREEDILY shrink from the left as long as the window is still valid, recording the smallest valid window seen along the way."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every substring directly for whether it contains all of t's characters.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool contains(const string &window, unordered_map<char, int> need)\n{\n    unordered_map<char, int> have;\n    for (char c : window) have[c]++;\n    for (auto &entry : need)\n        if (have[entry.first] < entry.second) return false;\n    return true;\n}\n\nstring minWindow(string s, string t)\n{\n    unordered_map<char, int> need;\n    for (char c : t) need[c]++;\n\n    string best = \"\";\n    for (int i = 0; i < (int)s.size(); i++)\n        for (int j = i; j < (int)s.size(); j++)\n        {\n            string window = s.substr(i, j - i + 1);\n            if (contains(window, need))\n            {\n                if (best.empty() || window.size() < best.size()) best = window;\n                break;\n            }\n        }\n    return best;\n}\n\nint main()\n{\n    cout << minWindow(\"ADOBECODEBANC\", \"ABC\");\n\n    return 0;\n}",
+          "output": "BANC",
+          "timeComplexity": "O(n^3) worst case — substring generation plus a linear containment check",
+          "spaceComplexity": "O(k) for the character count maps"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sliding window plus hashing: grow to satisfy requirements, then greedily shrink while still valid, tracking a 'satisfied count' to avoid recomparing maps.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <climits>\n\nusing namespace std;\n\nstring minWindow(string s, string t)\n{\n    unordered_map<char, int> need, window;\n    for (char c : t) need[c]++;\n\n    int required = need.size();\n    int formed = 0;\n    int left = 0;\n    int bestLen = INT_MAX, bestStart = 0;\n\n    for (int right = 0; right < (int)s.size(); right++)\n    {\n        char c = s[right];\n        window[c]++;\n        if (need.count(c) && window[c] == need[c]) formed++;\n\n        while (formed == required)\n        {\n            if (right - left + 1 < bestLen)\n            {\n                bestLen = right - left + 1;\n                bestStart = left;\n            }\n\n            char leftChar = s[left];\n            window[leftChar]--;\n            if (need.count(leftChar) && window[leftChar] < need[leftChar]) formed--;\n            left++;\n        }\n    }\n\n    return bestLen == INT_MAX ? \"\" : s.substr(bestStart, bestLen);\n}\n\nint main()\n{\n    cout << minWindow(\"ADOBECODEBANC\", \"ABC\");\n\n    return 0;\n}",
+          "output": "BANC",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k) for the character count maps"
+        }
+      ]
     }
   ],
   "codeExamples": [
