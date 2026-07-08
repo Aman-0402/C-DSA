@@ -177,6 +177,42 @@
           "spaceComplexity": "O(n) for the queue and result"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-199",
+      "number": 199,
+      "title": "Binary Tree Right Side View",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/binary-tree-right-side-view/",
+      "problemStatement": "Given the root of a binary tree, return the values visible from the right side, ordered top to bottom (the last node of each level).",
+      "examples": [
+        { "input": "root = [1,2,3,null,5,null,4]", "output": "[1,3,4]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 100"],
+      "hints": [
+        "'What's visible from the right' at each level is exactly the LAST node processed in that level's BFS pass — no separate logic needed once levels are already being tracked.",
+        "This is LC 102's exact level-size-snapshot technique — just keep only the last value of each level instead of the whole list.",
+        "Since the inner loop already knows levelSize, the last iteration (i == levelSize - 1) is exactly the rightmost node of that level."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect every full level (like LC 102), then take the last element of each level afterward.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvector<int> rightSideView(TreeNode* root)\n{\n    vector<vector<int>> levels;\n    if (root == nullptr) return {};\n\n    queue<TreeNode*> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        int levelSize = q.size();\n        vector<int> level;\n        for (int i = 0; i < levelSize; i++)\n        {\n            TreeNode* node = q.front(); q.pop();\n            level.push_back(node->val);\n            if (node->left) q.push(node->left);\n            if (node->right) q.push(node->right);\n        }\n        levels.push_back(level);\n    }\n\n    vector<int> result;\n    for (auto &level : levels) result.push_back(level.back());\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(3);\n    root->left->right = new TreeNode(5);\n    root->right->right = new TreeNode(4);\n\n    vector<int> result = rightSideView(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 3 4 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for storing every level"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same BFS, but only ever keep the LAST value seen in each level's inner loop — no full level lists stored.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvector<int> rightSideView(TreeNode* root)\n{\n    vector<int> result;\n    if (root == nullptr) return result;\n\n    queue<TreeNode*> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        int levelSize = q.size();\n\n        for (int i = 0; i < levelSize; i++)\n        {\n            TreeNode* node = q.front(); q.pop();\n\n            if (i == levelSize - 1) result.push_back(node->val); // rightmost of this level\n\n            if (node->left) q.push(node->left);\n            if (node->right) q.push(node->right);\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(3);\n    root->left->right = new TreeNode(5);\n    root->right->right = new TreeNode(4);\n\n    vector<int> result = rightSideView(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 3 4 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the queue, O(h) for the result"
+        }
+      ]
     }
   ],
   "codeExamples": [
