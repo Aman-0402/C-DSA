@@ -1,0 +1,145 @@
+{
+  "id": "dsa-big-o-notation",
+  "moduleId": "complexity-analysis",
+  "title": "Big O Notation",
+  "description": "The formal language for the growth shapes from Time and Space Complexity: dropping constants, the common complexity classes, and why worst case matters.",
+  "objectives": [
+    "Understand Big O as a formal notation for growth shape",
+    "Know why constants and lower-order terms are dropped",
+    "Recognize the common complexity classes in order",
+    "Understand Big O's focus on worst-case behavior"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We've Been Using This Informally"
+    },
+    {
+      "type": "paragraph",
+      "text": "Time Complexity already used O(1), O(n), and O(n²) without formally defining the notation itself. Let's make it precise."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Big O Notation?"
+    },
+    {
+      "type": "definition",
+      "term": "Big O notation",
+      "text": "Big O notation describes the upper-bound growth rate of an algorithm's time or space usage as input size (n) grows, focusing on the dominant factor and ignoring constants."
+    },
+    {
+      "type": "heading",
+      "text": "3. Why We Drop Constants"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void printTwice(vector<int> &numbers)\n{\n    for (int n : numbers) cout << n; // n operations\n    for (int n : numbers) cout << n; // another n operations\n}\n// technically 2n operations total — but we call this O(n), not O(2n)"
+    },
+    {
+      "type": "note",
+      "text": "Big O cares about the growth shape, not the exact count. 2n still grows linearly — doubling the input still roughly doubles the work, the same shape as n alone. The constant factor (2, in this case) is dropped, and we simply write O(n)."
+    },
+    {
+      "type": "heading",
+      "text": "4. Why We Drop Lower-Order Terms"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Suppose an algorithm does n² + n operations total\n// As n grows large, n² completely dominates n — we call this O(n²), not O(n² + n)"
+    },
+    {
+      "type": "note",
+      "text": "For large n, n² grows so much faster than n that the +n barely matters. Big O keeps only the dominant (fastest-growing) term and drops the rest — this is what makes it a clean description of long-term growth shape, not an exact operation count."
+    },
+    {
+      "type": "heading",
+      "text": "5. Common Complexity Classes, Fastest to Slowest"
+    },
+    {
+      "type": "table",
+      "headers": ["Notation", "Name", "Example"],
+      "rows": [
+        ["O(1)", "Constant", "Accessing numbers[0]"],
+        ["O(log n)", "Logarithmic", "Binary Search — a preview, its own upcoming topic"],
+        ["O(n)", "Linear", "A single loop over the input"],
+        ["O(n log n)", "Linearithmic", "sort() — recall Sorting using sort()'s complexity"],
+        ["O(n²)", "Quadratic", "Nested loops over the same input"],
+        ["O(2ⁿ)", "Exponential", "Certain brute-force recursive approaches, covered later"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. A Preview: O(log n)"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — Binary Search, coming up soon, is the classic example of O(log n): an algorithm that cuts the remaining problem roughly in half with each step, rather than checking every element one by one. log n grows extremely slowly — doubling n only adds one more step, a dramatic improvement over linear time for large inputs."
+    },
+    {
+      "type": "heading",
+      "text": "7. Worst-Case Focus"
+    },
+    {
+      "type": "note",
+      "text": "Big O, as typically used in interviews and DSA, most commonly describes the worst case — the maximum work an algorithm could possibly need, for the least favorable input. This gives a reliable guarantee: 'this algorithm will never do worse than this,' rather than an average that could hide a bad edge case."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Describing a trip as \"a few hours\" instead of \"3 hours 47 minutes and 12 seconds\"",
+      "text": "Saying a trip takes \"a few hours\" captures the useful shape of the information — long enough to plan around — without getting lost in exact-to-the-second precision that would vary by traffic, weather, and every other minor factor. Big O is that same kind of useful approximation: it captures the growth shape that actually matters for decision-making, deliberately ignoring precise constants that vary by machine and implementation."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing O(2n) or O(n² + n) instead of simplifying to O(n) or O(n²) — Big O always drops constants and lower-order terms.",
+        "Assuming Big O gives an exact operation count — it describes growth shape, not a precise number.",
+        "Confusing best case, average case, and worst case — Big O in interviews and DSA almost always refers to worst case unless stated otherwise.",
+        "Assuming a 'better' Big O class is always faster in absolute terms for every input size — the comparison is about growth as n gets large, not necessarily at small, fixed sizes."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does Big O notation describe?",
+          "answer": "The upper-bound growth rate of an algorithm's time or space usage as input size grows, focusing on the dominant factor."
+        },
+        {
+          "question": "Why are constants dropped in Big O, e.g. writing O(n) instead of O(2n)?",
+          "answer": "Because Big O describes growth shape, not an exact count — 2n and n both grow linearly, the same fundamental shape as input size increases."
+        },
+        {
+          "question": "List the common complexity classes from fastest to slowest.",
+          "answer": "O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ)."
+        },
+        {
+          "question": "Does Big O typically describe best case, average case, or worst case?",
+          "answer": "Worst case, most commonly — the maximum possible work for the least favorable input, giving a reliable upper-bound guarantee."
+        }
+      ],
+      "thirtySecondAnswer": "Big O notation formally describes an algorithm's growth shape as input size grows, dropping constants (O(2n) simplifies to O(n)) and lower-order terms (O(n² + n) simplifies to O(n²)), since those don't affect the fundamental growth pattern for large inputs. The common classes, from fastest to slowest, are O(1), O(log n), O(n), O(n log n), O(n²), and O(2ⁿ) — with O(log n), previewed via Binary Search, and O(n log n), already seen in sort()'s complexity, being especially important benchmarks. Big O, as typically used in interviews, describes worst-case behavior: a guarantee about the maximum work required, regardless of how favorable the input happens to be."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Big O Notation",
+      "text": "Big O = the growth SHAPE, not an exact count. Drop constants, drop lower-order terms. O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ). Usually worst case."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}

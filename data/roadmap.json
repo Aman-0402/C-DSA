@@ -151,7 +151,8 @@
       "title": "Complexity Analysis",
       "topics": [
         { "id": "dsa-time-complexity", "title": "Time Complexity", "lesson": "dsa-time-complexity" },
-        { "id": "dsa-space-complexity", "title": "Space Complexity", "lesson": "dsa-space-complexity" }
+        { "id": "dsa-space-complexity", "title": "Space Complexity", "lesson": "dsa-space-complexity" },
+        { "id": "dsa-big-o-notation", "title": "Big O Notation", "lesson": "dsa-big-o-notation" }
       ]
     }
   ]
