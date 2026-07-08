@@ -244,6 +244,42 @@
           "spaceComplexity": "O(h) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-101",
+      "number": 101,
+      "title": "Symmetric Tree",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/symmetric-tree/",
+      "problemStatement": "Given the root of a binary tree, return true if it is a mirror of itself around its center.",
+      "examples": [
+        { "input": "root = [1,2,2,3,4,4,3]", "output": "true" }
+      ],
+      "constraints": ["1 <= number of nodes <= 1000"],
+      "hints": [
+        "This is Same Tree's comparison idea, but comparing a tree against a MIRRORED version of itself rather than against a separate second tree.",
+        "Write a helper isMirror(left, right) that checks: both nullptr, OR both have equal values AND left's left mirrors right's right AND left's right mirrors right's left.",
+        "Call the helper on root->left and root->right — that's the entire check."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect a level-order traversal including null markers, then check if it reads the same forward and backward level by level.",
+          "code": "#include <iostream>\n#include <queue>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nbool isSymmetric(TreeNode* root)\n{\n    if (root == nullptr) return true;\n\n    queue<TreeNode*> q;\n    q.push(root->left);\n    q.push(root->right);\n\n    while (!q.empty())\n    {\n        TreeNode* a = q.front(); q.pop();\n        TreeNode* b = q.front(); q.pop();\n\n        if (a == nullptr && b == nullptr) continue;\n        if (a == nullptr || b == nullptr || a->val != b->val) return false;\n\n        q.push(a->left); q.push(b->right);\n        q.push(a->right); q.push(b->left);\n    }\n\n    return true;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(2);\n    root->left->left = new TreeNode(3);\n    root->left->right = new TreeNode(4);\n    root->right->left = new TreeNode(4);\n    root->right->right = new TreeNode(3);\n\n    cout << (isSymmetric(root) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the queue"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A recursive mirror-check helper, comparing outer and inner pairs of children.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nbool isMirror(TreeNode* left, TreeNode* right)\n{\n    if (left == nullptr && right == nullptr) return true;\n    if (left == nullptr || right == nullptr) return false;\n\n    return left->val == right->val\n        && isMirror(left->left, right->right)\n        && isMirror(left->right, right->left);\n}\n\nbool isSymmetric(TreeNode* root)\n{\n    if (root == nullptr) return true;\n    return isMirror(root->left, root->right);\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(2);\n    root->left->left = new TreeNode(3);\n    root->left->right = new TreeNode(4);\n    root->right->left = new TreeNode(4);\n    root->right->right = new TreeNode(3);\n\n    cout << (isSymmetric(root) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
