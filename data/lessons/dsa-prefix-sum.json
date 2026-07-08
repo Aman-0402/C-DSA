@@ -280,6 +280,51 @@
           "spaceComplexity": "O(n), no branch needed at query time"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1732",
+      "number": 1732,
+      "title": "Find the Highest Altitude",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/find-the-highest-altitude/",
+      "problemStatement": "A biker starts at altitude 0. Given gain, where gain[i] is the net altitude change from point i to point i+1, return the biker's highest altitude reached.",
+      "examples": [
+        { "input": "gain = [-5,1,5,0,-7]", "output": "1", "explanation": "Altitudes: 0,-5,-4,1,1,-6 — the highest is 1." },
+        { "input": "gain = [-4,-3,-2,-1,4,3,2]", "output": "0" }
+      ],
+      "constraints": ["n == gain.length", "1 <= n <= 100", "-100 <= gain[i] <= 100"],
+      "hints": [
+        "The altitude at point i is a running total of gain — sound familiar? It's this lesson's prefix sum pattern, starting from 0.",
+        "You need the MAXIMUM altitude reached, not the final one — track the best value seen as you build the running total.",
+        "There's no need to store every altitude in an array; only the current altitude and the best-so-far matter as you move forward."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each point, re-sum all gains from the start to reach that point's altitude, tracking the maximum found.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint largestAltitude(vector<int> &gain)\n{\n    int best = 0;\n\n    for (int i = 0; i < gain.size(); i++)\n    {\n        int altitude = 0;\n        for (int j = 0; j <= i; j++) altitude += gain[j];\n        best = max(best, altitude);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> gain = {-5, 1, 5, 0, -7};\n\n    cout << largestAltitude(gain) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Better",
+          "explanation": "Build the full altitude array as a running prefix sum starting from 0, then scan it for the maximum.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint largestAltitude(vector<int> &gain)\n{\n    vector<int> altitudes(gain.size() + 1, 0);\n\n    for (int i = 0; i < gain.size(); i++)\n    {\n        altitudes[i + 1] = altitudes[i] + gain[i];\n    }\n\n    int best = altitudes[0];\n    for (int a : altitudes) best = max(best, a);\n\n    return best;\n}\n\nint main()\n{\n    vector<int> gain = {-5, 1, 5, 0, -7};\n\n    cout << largestAltitude(gain) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the altitudes array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Track the current altitude and the best altitude seen so far in a single pass — no array needed at all.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint largestAltitude(vector<int> &gain)\n{\n    int altitude = 0;\n    int best = 0;\n\n    for (int g : gain)\n    {\n        altitude += g;\n        best = max(best, altitude);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> gain = {-5, 1, 5, 0, -7};\n\n    cout << largestAltitude(gain) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
