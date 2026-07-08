@@ -1,0 +1,133 @@
+{
+  "id": "dsa-doubly-linked-list",
+  "moduleId": "linked-list",
+  "title": "Doubly Linked List",
+  "description": "Adding a prev pointer to enable backward traversal — the exact structure behind STL list's bidirectional iterators, plus its memory trade-off.",
+  "objectives": [
+    "Add a prev pointer to enable backward traversal",
+    "Traverse a doubly linked list in both directions",
+    "Understand how prev simplifies deletion",
+    "Know the memory trade-off compared to a singly linked list"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Singly Only Goes One Way"
+    },
+    {
+      "type": "paragraph",
+      "text": "Singly Linked List's nodes only knew their next neighbor — no way to go backward. This is exactly why Iterators described list's iterators as bidirectional, unlike forward_list's forward-only ones. A doubly linked list is what makes that backward movement possible."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Node Now Has Two Pointers"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "struct Node\n{\n    int data;\n    Node *next;\n    Node *prev; // NEW — points to the PREVIOUS node\n};"
+    },
+    {
+      "type": "definition",
+      "term": "Doubly linked list",
+      "text": "A doubly linked list is a linked list where each node stores pointers to both its next and previous neighbors, allowing traversal in either direction."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example: Insert and Traverse Both Ways"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n    Node *prev;\n};\n\nclass DoublyLinkedList\n{\nprivate:\n    Node *head;\n    Node *tail;\n\npublic:\n    DoublyLinkedList()\n    {\n        head = nullptr;\n        tail = nullptr;\n    }\n\n    void insertAtEnd(int value)\n    {\n        Node *newNode = new Node{value, nullptr, nullptr};\n\n        if (head == nullptr)\n        {\n            head = tail = newNode;\n            return;\n        }\n\n        newNode->prev = tail; // link BACKWARD to the old tail\n        tail->next = newNode; // link FORWARD from the old tail\n        tail = newNode;       // this node is the new tail\n    }\n\n    void printForward()\n    {\n        Node *current = head;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->next;\n        }\n        cout << endl;\n    }\n\n    void printBackward()\n    {\n        Node *current = tail;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->prev;\n        }\n        cout << endl;\n    }\n};\n\nint main()\n{\n    DoublyLinkedList list;\n    list.insertAtEnd(10);\n    list.insertAtEnd(20);\n    list.insertAtEnd(30);\n\n    list.printForward();\n    list.printBackward();\n\n    return 0;\n}",
+      "output": "10 20 30 \n30 20 10 ",
+      "retypePractice": true,
+      "retypeId": "dsa-doubly-linked-list-basic"
+    },
+    {
+      "type": "note",
+      "text": "tail is now tracked too — with prev links, walking backward from tail is just as natural as walking forward from head. This is exactly what powers rbegin()/rend() from Iterators, previously used on vector — list's version works the same way, using prev instead of pointer arithmetic."
+    },
+    {
+      "type": "heading",
+      "text": "4. Why prev Simplifies Deletion"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Deleting nodeToDelete (not head, not tail), given ONLY a pointer to it:\nnodeToDelete->prev->next = nodeToDelete->next;\nnodeToDelete->next->prev = nodeToDelete->prev;\ndelete nodeToDelete;"
+    },
+    {
+      "type": "warning",
+      "text": "Recall Singly Linked List's deletion: it had to walk from head, specifically tracking the node BEFORE the target, since a singly linked node has no way to look backward on its own. With prev, a node can find its own predecessor directly — nodeToDelete->prev — no separate search needed at all, given just a pointer to the node itself."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Trade-off: Extra Memory Per Node"
+    },
+    {
+      "type": "note",
+      "text": "Recall forward_list's motivation: minimizing memory by storing only one link per node. A doubly linked list is the opposite trade-off — an extra pointer (prev) per node costs real memory (recall sizeof from Memory Addresses), in exchange for bidirectional traversal and simpler deletion. Neither choice is universally correct; it depends on whether that extra memory or that extra capability matters more for the problem at hand."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A scavenger hunt where every box also points back to the previous one",
+      "text": "Recall the one-way scavenger hunt from Singly Linked List. A doubly linked list is that same hunt, except every box also has a second note pointing back to whichever box sent you there — letting you retrace your steps at any point, at the cost of every box now needing to carry two notes instead of one."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to update BOTH next and prev when inserting or deleting a node — a doubly linked list requires keeping both directions consistent.",
+        "Forgetting to update tail when inserting at the end, or head when inserting/deleting at the front.",
+        "Assuming a doubly linked list is always better than singly linked — it costs extra memory per node, which matters when memory is tight.",
+        "Deleting a node without first saving pointers to its neighbors — updating nodeToDelete->next before reading nodeToDelete->prev (or vice versa) in the wrong order can lose the reference needed."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the key structural difference between a singly and doubly linked list?",
+          "answer": "A doubly linked list's nodes store an additional prev pointer to the previous node, alongside next, enabling traversal in both directions."
+        },
+        {
+          "question": "Why does a prev pointer simplify deleting a specific node?",
+          "answer": "Because the node can find its own predecessor directly via prev, without needing a separate traversal from the head to locate the node just before it, as a singly linked list requires."
+        },
+        {
+          "question": "What is the trade-off of using a doubly linked list instead of a singly linked list?",
+          "answer": "Extra memory per node for the additional prev pointer, in exchange for bidirectional traversal and simpler deletion given just a pointer to the target node."
+        }
+      ],
+      "thirtySecondAnswer": "A doubly linked list adds a prev pointer to each node alongside next, enabling traversal in both directions — exactly the structure behind STL list's bidirectional iterators. This makes deleting a given node simpler: it can find its own predecessor directly through prev, without the separate 'walk from head to find the node before it' search a singly linked list requires. The cost is one extra pointer's worth of memory per node, the opposite trade-off from forward_list, which minimizes memory by keeping only a single link."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Doubly Linked List",
+      "text": "Doubly linked = every box has TWO notes, one pointing forward, one pointing back. Costs extra memory per box, buys you backward traversal and easy self-deletion."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-doubly-linked-list-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n    Node *prev;\n};\n\nclass DoublyLinkedList\n{\nprivate:\n    Node *head;\n    Node *tail;\n\npublic:\n    DoublyLinkedList()\n    {\n        head = nullptr;\n        tail = nullptr;\n    }\n\n    void insertAtEnd(int value)\n    {\n        Node *newNode = new Node{value, nullptr, nullptr};\n\n        if (head == nullptr)\n        {\n            head = tail = newNode;\n            return;\n        }\n\n        newNode->prev = tail;\n        tail->next = newNode;\n        tail = newNode;\n    }\n\n    void printForward()\n    {\n        Node *current = head;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->next;\n        }\n        cout << endl;\n    }\n\n    void printBackward()\n    {\n        Node *current = tail;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->prev;\n        }\n        cout << endl;\n    }\n};\n\nint main()\n{\n    DoublyLinkedList list;\n    list.insertAtEnd(10);\n    list.insertAtEnd(20);\n    list.insertAtEnd(30);\n\n    list.printForward();\n    list.printBackward();\n\n    return 0;\n}", "output": "10 20 30 \n30 20 10 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-doubly-linked-list-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n    Node *prev;\n};\n\nclass DoublyLinkedList\n{\nprivate:\n    Node *head;\n    Node *tail;\n\npublic:\n    DoublyLinkedList()\n    {\n        head = nullptr;\n        tail = nullptr;\n    }\n\n    void insertAtEnd(int value)\n    {\n        Node *newNode = new Node{value, nullptr, nullptr};\n\n        if (head == nullptr)\n        {\n            head = tail = newNode;\n            return;\n        }\n\n        newNode->prev = tail;\n        tail->next = newNode;\n        tail = newNode;\n    }\n\n    void printForward()\n    {\n        Node *current = head;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->next;\n        }\n        cout << endl;\n    }\n\n    void printBackward()\n    {\n        Node *current = tail;\n        while (current != nullptr)\n        {\n            cout << current->data << \" \";\n            current = current->prev;\n        }\n        cout << endl;\n    }\n};\n\nint main()\n{\n    DoublyLinkedList list;\n    list.insertAtEnd(10);\n    list.insertAtEnd(20);\n    list.insertAtEnd(30);\n\n    list.printForward();\n    list.printBackward();\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-doubly-linked-list-basic"]
+  }
+}
