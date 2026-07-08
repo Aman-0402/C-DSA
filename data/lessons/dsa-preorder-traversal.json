@@ -96,6 +96,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Preorder Traversal",
       "text": "Preorder = Node, Left, Right — announce the manager, THEN their whole branch. Parent always comes before children in the output — perfect for rebuilding a tree."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Preorder Traversal in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-144",
+      "number": 144,
+      "title": "Binary Tree Preorder Traversal",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/binary-tree-preorder-traversal/",
+      "problemStatement": "Given the root of a binary tree, return its preorder (Node, Left, Right) traversal as a list of values.",
+      "examples": [
+        { "input": "root = [1,null,2,3]", "output": "[1,2,3]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 100"],
+      "hints": [
+        "This is exactly this lesson's own preorder() function — no variation, just collecting into a vector instead of printing directly.",
+        "The recursive version is the simplest, but this is also a classic 'implement it iteratively with an explicit stack' interview follow-up.",
+        "For the iterative version, push right child before left child onto the stack — that way left gets popped and processed first, matching Node-Left-Right order."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "This lesson's own recursive traversal, collecting into a result vector instead of printing.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid preorder(TreeNode* node, vector<int> &result)\n{\n    if (node == nullptr) return;\n    result.push_back(node->val);\n    preorder(node->left, result);\n    preorder(node->right, result);\n}\n\nvector<int> preorderTraversal(TreeNode* root)\n{\n    vector<int> result;\n    preorder(root, result);\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->right = new TreeNode(2);\n    root->right->left = new TreeNode(3);\n\n    vector<int> result = preorderTraversal(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result, O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "An iterative version using an explicit stack — pushing right before left so left is processed first.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvector<int> preorderTraversal(TreeNode* root)\n{\n    vector<int> result;\n    if (root == nullptr) return result;\n\n    stack<TreeNode*> st;\n    st.push(root);\n\n    while (!st.empty())\n    {\n        TreeNode* node = st.top();\n        st.pop();\n\n        result.push_back(node->val);\n\n        if (node->right) st.push(node->right);\n        if (node->left) st.push(node->left);\n    }\n\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->right = new TreeNode(2);\n    root->right->left = new TreeNode(3);\n\n    vector<int> result = preorderTraversal(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack, no recursion call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
