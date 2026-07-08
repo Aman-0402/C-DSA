@@ -153,6 +153,42 @@
           "spaceComplexity": "O(total characters stored)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-211",
+      "number": 211,
+      "title": "Design Add and Search Words Data Structure",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
+      "problemStatement": "Design a data structure that supports addWord(word) and search(word), where search may contain '.' characters that match any single letter.",
+      "examples": [
+        { "input": "addWord(\"bad\"); addWord(\"dad\"); addWord(\"mad\"); search(\"pad\"); search(\"bad\"); search(\".ad\"); search(\"b..\")", "output": "false, true, true, true" }
+      ],
+      "constraints": ["1 <= word.length <= 25", "word consists of lowercase English letters and possibly '.'", "up to 10^4 total calls"],
+      "hints": [
+        "addWord is identical to LC 208's insert() — the wildcard only affects search.",
+        "'.' means 'try every child at this position' — this turns a simple loop into a DFS/backtracking search over the trie.",
+        "Write a recursive helper(node, word, index): on '.', recurse into every entry in node->children; on a normal character, recurse into just that one child (or fail if it doesn't exist)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Store all added words in a vector; for each search, compare position-by-position against every stored word, treating '.' as a wildcard match.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nclass WordDictionary {\npublic:\n    vector<string> words;\n\n    void addWord(string word)\n    {\n        words.push_back(word);\n    }\n\n    bool matches(const string &word, const string &candidate)\n    {\n        if (word.size() != candidate.size()) return false;\n        for (int i = 0; i < (int)word.size(); i++)\n            if (word[i] != '.' && word[i] != candidate[i]) return false;\n        return true;\n    }\n\n    bool search(string word)\n    {\n        for (auto &w : words) if (matches(word, w)) return true;\n        return false;\n    }\n};\n\nint main()\n{\n    WordDictionary wd;\n    wd.addWord(\"bad\");\n    wd.addWord(\"dad\");\n    wd.addWord(\"mad\");\n\n    cout << boolalpha << wd.search(\"pad\") << \", \";\n    cout << wd.search(\"bad\") << \", \";\n    cout << wd.search(\".ad\") << \", \";\n    cout << wd.search(\"b..\");\n\n    return 0;\n}",
+          "output": "false, true, true, true",
+          "timeComplexity": "O(n * L) per search, where n is the number of stored words and L is word length",
+          "spaceComplexity": "O(total characters stored)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Trie for addWord, with a recursive DFS search that branches into every child on a '.' wildcard.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    bool isEndOfWord = false;\n};\n\nclass WordDictionary {\npublic:\n    TrieNode* root;\n\n    WordDictionary()\n    {\n        root = new TrieNode();\n    }\n\n    void addWord(string word)\n    {\n        TrieNode* node = root;\n        for (char c : word)\n        {\n            if (node->children.find(c) == node->children.end())\n                node->children[c] = new TrieNode();\n            node = node->children[c];\n        }\n        node->isEndOfWord = true;\n    }\n\n    bool dfs(TrieNode* node, const string &word, int index)\n    {\n        if (node == nullptr) return false;\n        if (index == (int)word.size()) return node->isEndOfWord;\n\n        char c = word[index];\n        if (c == '.')\n        {\n            for (auto &entry : node->children)\n                if (dfs(entry.second, word, index + 1)) return true;\n            return false;\n        }\n        else\n        {\n            if (node->children.find(c) == node->children.end()) return false;\n            return dfs(node->children[c], word, index + 1);\n        }\n    }\n\n    bool search(string word)\n    {\n        return dfs(root, word, 0);\n    }\n};\n\nint main()\n{\n    WordDictionary wd;\n    wd.addWord(\"bad\");\n    wd.addWord(\"dad\");\n    wd.addWord(\"mad\");\n\n    cout << boolalpha << wd.search(\"pad\") << \", \";\n    cout << wd.search(\"bad\") << \", \";\n    cout << wd.search(\".ad\") << \", \";\n    cout << wd.search(\"b..\");\n\n    return 0;\n}",
+          "output": "false, true, true, true",
+          "timeComplexity": "O(26^d) worst case per search, where d is the number of '.' characters; O(L) when there are none",
+          "spaceComplexity": "O(total characters stored), plus O(L) recursion depth"
+        }
+      ]
     }
   ],
   "codeExamples": [
