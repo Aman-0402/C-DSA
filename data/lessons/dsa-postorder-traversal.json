@@ -1,0 +1,134 @@
+{
+  "id": "dsa-postorder-traversal",
+  "moduleId": "trees",
+  "title": "Postorder Traversal",
+  "description": "Left, Right, Node — visiting children before the parent, essential for safely deleting a tree without losing pointers.",
+  "objectives": [
+    "Implement postorder traversal (Left-Right-Node)",
+    "Understand why postorder is required for safely deleting a tree",
+    "Recognize that height() from Trees was already postorder-shaped",
+    "Trace postorder traversal on a real tree"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Third Depth-First Order"
+    },
+    {
+      "type": "paragraph",
+      "text": "Preorder visited the node first; Inorder visited it in between. Postorder visits it last — after both children are fully done."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Postorder?"
+    },
+    {
+      "type": "definition",
+      "term": "Postorder traversal",
+      "text": "Postorder traversal recursively traverses the left subtree, then the right subtree, then visits the current node: Left → Right → Node."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid postorder(TreeNode *node)\n{\n    if (node == nullptr) return; // BASE CASE\n\n    postorder(node->left);        // LEFT\n    postorder(node->right);       // RIGHT\n    cout << node->data << \" \";    // NODE\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    postorder(root);\n\n    return 0;\n}",
+      "output": "4 5 2 3 1 ",
+      "retypePractice": true,
+      "retypeId": "dsa-postorder-traversal-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "postorder(1) first fully finishes the LEFT subtree (rooted at 2): postorder(4), then postorder(5), THEN visit 2",
+        "Only after ALL of that is done does it move to the RIGHT subtree: visit 3",
+        "1 itself — the root — is visited dead last, after everything else",
+        "Result: 4 5 2 3 1"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Use Case: Safely Deleting a Tree"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void deleteTree(TreeNode *node)\n{\n    if (node == nullptr) return;\n\n    deleteTree(node->left);   // delete children FIRST\n    deleteTree(node->right);\n    delete node;               // THEN delete this node\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Recall delete: freeing memory and then trying to use it is a dangling-pointer bug. If node were deleted BEFORE its children, node->left and node->right would already be invalid — there'd be no safe way to reach the children anymore. Postorder guarantees both children are fully cleaned up before the parent itself is freed, exactly matching the order memory safety requires."
+    },
+    {
+      "type": "heading",
+      "text": "5. height() Was Already Postorder-Shaped"
+    },
+    {
+      "type": "note",
+      "text": "Look back at height() from Trees: return 1 + max(height(node->left), height(node->right));. Both children are fully computed (Left, then Right) before the current node's own result is combined and returned (Node, last) — that's postorder in spirit, even without an explicit cout statement. Any algorithm needing a node's OWN answer to depend on its children's answers is naturally postorder-shaped."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Dismantling a company from the bottom up",
+      "text": "Recall the org chart from Trees. Shutting down a department safely means letting go of each team member before their manager — never the other way around, or the manager would be left \"managing\" people who no longer report anywhere. Postorder traversal enforces exactly this: children are always fully handled before their parent."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Deleting a node before its children — this loses the only remaining reference to those children, causing a memory leak (recall delete).",
+        "Mixing up the order — Left, Right, Node must stay in that exact sequence for it to be postorder specifically.",
+        "Not recognizing when a problem is naturally postorder-shaped — any calculation where a node needs its children's results first (height, node counts, subtree sums) fits this pattern.",
+        "Forgetting the base case (node == nullptr) — needed both for traversal and for safe recursive deletion."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the visiting order for postorder traversal?",
+          "answer": "Left subtree first, then the right subtree, then the current node — Left, Right, Node."
+        },
+        {
+          "question": "Why must a tree's nodes be deleted in postorder, not preorder?",
+          "answer": "Because deleting a node before its children would leave no valid pointer left to reach and free those children, causing a memory leak — postorder guarantees children are fully cleaned up before their parent."
+        },
+        {
+          "question": "What kind of tree problems are naturally postorder-shaped?",
+          "answer": "Any calculation where a node's own result depends on first knowing its children's results, such as computing height or counting nodes — the children must be resolved before the parent can combine their answers."
+        }
+      ],
+      "thirtySecondAnswer": "Postorder traversal visits the left subtree, then the right subtree, then the current node — Left, Right, Node, the reverse priority of preorder. This makes it the required order for safely deleting a tree: deleting a node before its children would immediately lose the only pointers needed to reach and free them, so children must always be fully processed first. It's also the natural shape for any calculation depending on children's results, like height() from Trees, which computes both children's heights before combining them into the current node's own answer."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Postorder Traversal",
+      "text": "Postorder = Left, Right, Node — children finish before the parent. Delete a tree bottom-up, never top-down. Any 'depends on children's answers' problem is postorder-shaped."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-postorder-traversal-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid postorder(TreeNode *node)\n{\n    if (node == nullptr) return;\n\n    postorder(node->left);\n    postorder(node->right);\n    cout << node->data << \" \";\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    postorder(root);\n\n    return 0;\n}", "output": "4 5 2 3 1 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-postorder-traversal-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid postorder(TreeNode *node)\n{\n    if (node == nullptr) return;\n\n    postorder(node->left);\n    postorder(node->right);\n    cout << node->data << \" \";\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    postorder(root);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-postorder-traversal-basic"]
+  }
+}
