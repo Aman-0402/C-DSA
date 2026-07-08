@@ -236,6 +236,50 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-303",
+      "number": 303,
+      "title": "Range Sum Query - Immutable",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/range-sum-query-immutable/",
+      "problemStatement": "Design a class NumArray that, given an integer array nums, supports sumRange(left, right) — the sum of nums between indices left and right inclusive — called MANY times, with nums never changing.",
+      "examples": [
+        { "input": "nums=[-2,0,3,-5,2,-1]; sumRange(0,2), sumRange(2,5), sumRange(0,5)", "output": "1, -1, -3" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4", "-10^5 <= nums[i] <= 10^5", "0 <= left <= right < nums.length", "sumRange called up to 10^4 times"],
+      "hints": [
+        "The word 'Immutable' in the title is the biggest clue — nums never changes, so anything computed once can be reused for every future call.",
+        "This is precisely the many-queries-on-the-same-array scenario this whole lesson is built around — precompute a prefix sum ONCE in the constructor.",
+        "A prefix array padded with a leading 0 (size n+1) removes the l==0 special case entirely: sumRange(l, r) = prefix[r+1] - prefix[l]."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Store nums as-is and re-sum the requested range from scratch on every single call — ignores that nums never changes.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass NumArray {\npublic:\n    vector<int> nums;\n\n    NumArray(vector<int> &input) { nums = input; }\n\n    int sumRange(int left, int right)\n    {\n        int sum = 0;\n        for (int i = left; i <= right; i++) sum += nums[i];\n        return sum;\n    }\n};\n\nint main()\n{\n    vector<int> nums = {-2, 0, 3, -5, 2, -1};\n    NumArray obj(nums);\n\n    cout << obj.sumRange(0, 2) << \" \" << obj.sumRange(2, 5) << \" \" << obj.sumRange(0, 5) << endl;\n\n    return 0;\n}",
+          "output": "1 -1 -3",
+          "timeComplexity": "O(1) construct, O(n) per query",
+          "spaceComplexity": "O(n) for storing nums"
+        },
+        {
+          "label": "Better",
+          "explanation": "Precompute a standard 0-indexed prefix sum array in the constructor; sumRange handles the l==0 edge case with a branch.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass NumArray {\npublic:\n    vector<int> prefix;\n\n    NumArray(vector<int> &nums)\n    {\n        prefix.resize(nums.size());\n        prefix[0] = nums[0];\n        for (int i = 1; i < nums.size(); i++) prefix[i] = prefix[i - 1] + nums[i];\n    }\n\n    int sumRange(int left, int right)\n    {\n        return (left == 0) ? prefix[right] : prefix[right] - prefix[left - 1];\n    }\n};\n\nint main()\n{\n    vector<int> nums = {-2, 0, 3, -5, 2, -1};\n    NumArray obj(nums);\n\n    cout << obj.sumRange(0, 2) << \" \" << obj.sumRange(2, 5) << \" \" << obj.sumRange(0, 5) << endl;\n\n    return 0;\n}",
+          "output": "1 -1 -3",
+          "timeComplexity": "O(n) construct, O(1) per query",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Pad the prefix array with a leading 0 (size n+1) so sumRange never needs a special case: sumRange(l, r) = prefix[r+1] - prefix[l], always.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass NumArray {\npublic:\n    vector<int> prefix;\n\n    NumArray(vector<int> &nums)\n    {\n        prefix.assign(nums.size() + 1, 0);\n        for (int i = 0; i < nums.size(); i++) prefix[i + 1] = prefix[i] + nums[i];\n    }\n\n    int sumRange(int left, int right)\n    {\n        return prefix[right + 1] - prefix[left];\n    }\n};\n\nint main()\n{\n    vector<int> nums = {-2, 0, 3, -5, 2, -1};\n    NumArray obj(nums);\n\n    cout << obj.sumRange(0, 2) << \" \" << obj.sumRange(2, 5) << \" \" << obj.sumRange(0, 5) << endl;\n\n    return 0;\n}",
+          "output": "1 -1 -3",
+          "timeComplexity": "O(n) construct, O(1) per query",
+          "spaceComplexity": "O(n), no branch needed at query time"
+        }
+      ]
     }
   ],
   "codeExamples": [
