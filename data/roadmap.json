@@ -180,7 +180,8 @@
       "id": "searching-sorting",
       "title": "Searching & Sorting",
       "topics": [
-        { "id": "dsa-sorting", "title": "Sorting", "lesson": "dsa-sorting" }
+        { "id": "dsa-sorting", "title": "Sorting", "lesson": "dsa-sorting" },
+        { "id": "dsa-binary-search", "title": "Binary Search", "lesson": "dsa-binary-search" }
       ]
     }
   ]

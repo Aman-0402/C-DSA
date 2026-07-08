@@ -1,0 +1,144 @@
+{
+  "id": "dsa-binary-search",
+  "moduleId": "searching-sorting",
+  "title": "Binary Search",
+  "description": "The O(log n) algorithm promised back in Big O Notation: cutting the search space in half with every step, on a sorted array.",
+  "objectives": [
+    "Implement binary search correctly",
+    "Trace binary search step by step",
+    "Understand why it achieves O(log n)",
+    "Know binary search requires a sorted input"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: This Was Promised in Big O Notation"
+    },
+    {
+      "type": "paragraph",
+      "text": "Big O Notation previewed O(log n) with: \"Binary Search... cuts the remaining problem roughly in half with each step.\" Here it is."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Linear Search Is O(n)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Checking every element one by one\nfor (int i = 0; i < numbers.size(); i++)\n{\n    if (numbers[i] == target) { /* found at i */ }\n}"
+    },
+    {
+      "type": "paragraph",
+      "text": "For a sorted array specifically, checking every element wastes information — the sorted order itself tells us a lot about where the target could possibly be."
+    },
+    {
+      "type": "heading",
+      "text": "3. What is Binary Search?"
+    },
+    {
+      "type": "definition",
+      "term": "Binary search",
+      "text": "Binary search finds a target in a sorted array by repeatedly checking the middle element and discarding the half of the remaining range that cannot contain the target."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint binarySearch(vector<int> &numbers, int target)\n{\n    int left = 0;\n    int right = numbers.size() - 1;\n\n    while (left <= right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (numbers[mid] == target)\n        {\n            return mid;\n        }\n        else if (numbers[mid] < target)\n        {\n            left = mid + 1; // target must be in the RIGHT half\n        }\n        else\n        {\n            right = mid - 1; // target must be in the LEFT half\n        }\n    }\n    return -1; // not found\n}\n\nint main()\n{\n    vector<int> numbers = {2, 5, 8, 12, 16, 23, 38, 45};\n\n    cout << binarySearch(numbers, 23) << endl;\n\n    return 0;\n}",
+      "output": "5",
+      "retypePractice": true,
+      "retypeId": "dsa-binary-search-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it (target = 23)",
+      "points": [
+        "left=0, right=7, mid=3 → numbers[3]=12, too small → left = 4",
+        "left=4, right=7, mid=5 → numbers[5]=23, found! → return 5"
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "mid = left + (right - left) / 2 is deliberately written this way instead of (left + right) / 2 — for very large arrays, left + right could theoretically overflow int (recall Type Modifiers), while this form avoids that risk entirely."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why O(log n): Halving Each Step"
+    },
+    {
+      "type": "note",
+      "text": "Every comparison eliminates half of whatever range remains. Starting with n elements: n → n/2 → n/4 → n/8 → ... → 1. The number of halvings needed to shrink n down to 1 is exactly log₂n — this is the direct source of binary search's O(log n) complexity, and exactly the shape previewed in Big O Notation."
+    },
+    {
+      "type": "heading",
+      "text": "6. The Requirement: Must Be Sorted"
+    },
+    {
+      "type": "warning",
+      "text": "Binary search's correctness depends entirely on the array being sorted — that's what guarantees \"if numbers[mid] is too small, the target can only be to the right\" is actually true. Running binary search on an unsorted array gives unreliable results, since that guarantee no longer holds."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Looking up a word in a physical dictionary",
+      "text": "Nobody looks up a word in a dictionary by reading every page from the start — you open somewhere in the middle, see whether your word comes before or after that page alphabetically, and jump to the middle of the correct remaining half. Repeating that a few times finds any word almost instantly, in a dictionary of any size — precisely binary search's logarithmic behavior."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Running binary search on an unsorted array — the technique's correctness assumes sorted order.",
+        "Using while (left < right) instead of while (left <= right), missing the case where left equals right (a single remaining candidate).",
+        "Forgetting to update left = mid + 1 or right = mid - 1 — reusing mid itself in the next range causes an infinite loop.",
+        "Writing (left + right) / 2 instead of left + (right - left) / 2 — a theoretical overflow risk for very large ranges."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is binary search, and what does it require of its input?",
+          "answer": "An algorithm that finds a target in a sorted array by repeatedly checking the middle element and discarding the half that cannot contain the target — it requires the array to be sorted."
+        },
+        {
+          "question": "What is binary search's time complexity, and why?",
+          "answer": "O(log n) — because each comparison halves the remaining search range, and it takes log₂n halvings to shrink n elements down to one."
+        },
+        {
+          "question": "Why is mid = left + (right - left) / 2 preferred over (left + right) / 2?",
+          "answer": "It avoids a theoretical integer overflow when left and right are both large, since (left + right) could exceed int's range before the division happens."
+        }
+      ],
+      "thirtySecondAnswer": "Binary search finds a target in a sorted array by repeatedly checking the middle element and discarding half of the remaining range based on whether the target is smaller or larger — left = mid + 1 or right = mid - 1. Because each step halves the remaining search space, it takes only log₂n steps to narrow n elements down to one, giving O(log n) time, exactly the complexity class previewed in Big O Notation. Binary search's correctness depends entirely on the array being sorted; running it on unsorted data gives unreliable results."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Binary Search",
+      "text": "Binary search = looking up a word in a dictionary. Check the middle, discard the wrong half, repeat. Requires sorted order. O(log n) — halved every step."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-binary-search-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint binarySearch(vector<int> &numbers, int target)\n{\n    int left = 0;\n    int right = numbers.size() - 1;\n\n    while (left <= right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (numbers[mid] == target)\n        {\n            return mid;\n        }\n        else if (numbers[mid] < target)\n        {\n            left = mid + 1;\n        }\n        else\n        {\n            right = mid - 1;\n        }\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> numbers = {2, 5, 8, 12, 16, 23, 38, 45};\n\n    cout << binarySearch(numbers, 23) << endl;\n\n    return 0;\n}", "output": "5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-binary-search-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint binarySearch(vector<int> &numbers, int target)\n{\n    int left = 0;\n    int right = numbers.size() - 1;\n\n    while (left <= right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (numbers[mid] == target)\n        {\n            return mid;\n        }\n        else if (numbers[mid] < target)\n        {\n            left = mid + 1;\n        }\n        else\n        {\n            right = mid - 1;\n        }\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> numbers = {2, 5, 8, 12, 16, 23, 38, 45};\n\n    cout << binarySearch(numbers, 23) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-binary-search-basic"]
+  }
+}
