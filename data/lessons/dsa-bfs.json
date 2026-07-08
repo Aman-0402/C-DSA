@@ -212,6 +212,42 @@
           "spaceComplexity": "O(n) for the queue, O(h) for the result"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1161-bfs",
+      "number": 1161,
+      "title": "Maximum Level Sum of a Binary Tree",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/maximum-level-sum-of-a-binary-tree/",
+      "problemStatement": "Given the root of a binary tree, the level of its root is 1, the level of its children is 2, and so on. Return the smallest level x such that the sum of all the values of nodes at level x is maximal.",
+      "examples": [
+        { "input": "root = [1,7,0,7,-8,null,null]", "output": "2", "explanation": "Level 1 sums to 1, level 2 sums to 7+0=7, level 3 sums to 7+(-8)=-1. Level 2 has the maximum sum." }
+      ],
+      "constraints": ["1 <= number of nodes <= 10^4", "-10^5 <= Node.val <= 10^5"],
+      "hints": [
+        "Same BFS level snapshot pattern — track a running sum instead of a running max per level.",
+        "Track both the best sum seen so far and the level index it occurred at; only update on a strictly greater sum so the SMALLEST such level wins ties.",
+        "Level index starts at 1, not 0 — increment it once per completed level."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect every full level into a vector, then scan the sums afterward to find the first maximum.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nint maxLevelSum(TreeNode* root)\n{\n    vector<int> sums;\n    queue<TreeNode*> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        int levelSize = q.size();\n        int sum = 0;\n        for (int i = 0; i < levelSize; i++)\n        {\n            TreeNode* node = q.front(); q.pop();\n            sum += node->val;\n            if (node->left) q.push(node->left);\n            if (node->right) q.push(node->right);\n        }\n        sums.push_back(sum);\n    }\n\n    int bestLevel = 1, bestSum = sums[0];\n    for (int i = 1; i < (int)sums.size(); i++)\n    {\n        if (sums[i] > bestSum)\n        {\n            bestSum = sums[i];\n            bestLevel = i + 1;\n        }\n    }\n    return bestLevel;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(7);\n    root->right = new TreeNode(0);\n    root->left->left = new TreeNode(7);\n    root->left->right = new TreeNode(-8);\n\n    cout << maxLevelSum(root);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for storing every level's sum"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same BFS, tracking the best (sum, level) pair directly during traversal — no intermediate sums array stored.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <climits>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nint maxLevelSum(TreeNode* root)\n{\n    queue<TreeNode*> q;\n    q.push(root);\n\n    int level = 0, bestLevel = 1;\n    int bestSum = INT_MIN;\n\n    while (!q.empty())\n    {\n        level++;\n        int levelSize = q.size();\n        int sum = 0;\n        for (int i = 0; i < levelSize; i++)\n        {\n            TreeNode* node = q.front(); q.pop();\n            sum += node->val;\n            if (node->left) q.push(node->left);\n            if (node->right) q.push(node->right);\n        }\n        if (sum > bestSum)\n        {\n            bestSum = sum;\n            bestLevel = level;\n        }\n    }\n\n    return bestLevel;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->left = new TreeNode(7);\n    root->right = new TreeNode(0);\n    root->left->left = new TreeNode(7);\n    root->left->right = new TreeNode(-8);\n\n    cout << maxLevelSum(root);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the queue only"
+        }
+      ]
     }
   ],
   "codeExamples": [
