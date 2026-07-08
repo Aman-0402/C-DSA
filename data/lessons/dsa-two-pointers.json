@@ -272,6 +272,43 @@
           "spaceComplexity": "O(1) — in place, fewer redundant writes"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-26",
+      "number": 26,
+      "title": "Remove Duplicates from Sorted Array",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/",
+      "problemStatement": "Given a sorted array nums, remove duplicates in place so each unique element appears once, keeping relative order. Return k, the number of unique elements — the first k elements of nums must hold them.",
+      "examples": [
+        { "input": "nums = [1,1,2]", "output": "k = 2, nums = [1,2,...]" },
+        { "input": "nums = [0,0,1,1,1,2,2,3,3,4]", "output": "k = 5, nums = [0,1,2,3,4,...]" }
+      ],
+      "constraints": ["1 <= nums.length <= 3*10^4", "-100 <= nums[i] <= 100", "nums sorted in non-decreasing order"],
+      "hints": [
+        "Since nums is SORTED, every duplicate of a value sits immediately next to it — you never need to look far to detect a repeat.",
+        "This is the same-direction two-pointer shape from Move Zeroes: a slow pointer marks where the next UNIQUE value should go.",
+        "The fast pointer only needs to compare against nums[slow] (the last kept unique value) to decide whether the current value is new."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect unique values into a separate vector using a set for dedup, then copy them back — extra space, and doesn't exploit sortedness.",
+          "code": "#include <iostream>\n#include <vector>\n#include <set>\n\nusing namespace std;\n\nint removeDuplicates(vector<int> &nums)\n{\n    set<int> unique(nums.begin(), nums.end());\n    int i = 0;\n    for (int val : unique) nums[i++] = val;\n    return unique.size();\n}\n\nint main()\n{\n    vector<int> nums = {0, 0, 1, 1, 1, 2, 2, 3, 3, 4};\n\n    int k = removeDuplicates(nums);\n    cout << k << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n log n) for the set",
+          "spaceComplexity": "O(n) for the set"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same-direction two pointers exploiting sortedness: slow marks the next unique slot, fast scans ahead comparing only to the last kept value.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint removeDuplicates(vector<int> &nums)\n{\n    int slow = 0;\n\n    for (int fast = 1; fast < nums.size(); fast++)\n    {\n        if (nums[fast] != nums[slow])\n        {\n            slow++;\n            nums[slow] = nums[fast];\n        }\n    }\n\n    return slow + 1;\n}\n\nint main()\n{\n    vector<int> nums = {0, 0, 1, 1, 1, 2, 2, 3, 3, 4};\n\n    int k = removeDuplicates(nums);\n    cout << k << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — in place"
+        }
+      ]
     }
   ],
   "codeExamples": [
