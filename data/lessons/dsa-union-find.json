@@ -195,6 +195,42 @@
           "spaceComplexity": "O(n) for the parent array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1971-uf",
+      "number": 1971,
+      "title": "Find if Path Exists in Graph",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/find-if-path-exists-in-graph/",
+      "problemStatement": "Given an undirected graph as a list of edges, and two vertices source and destination, return true if there is a path between them.",
+      "examples": [
+        { "input": "n = 3, edges = [[0,1],[1,2],[2,0]], source = 0, destination = 2", "output": "true" }
+      ],
+      "constraints": ["1 <= n <= 2 * 10^5", "0 <= edges.length <= 2 * 10^5"],
+      "hints": [
+        "Instead of BFS/DFS, union() every edge first, then just compare find(source) and find(destination) — same root means connected.",
+        "This trades traversal for the union find structure this lesson builds — a clean 'are these two connected at all' fit, with no need to reconstruct a path.",
+        "For a single static query like this, BFS/DFS work just as well; union find shines more when checking MANY connectivity queries against a fixed or growing edge set."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Union find without path compression.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    while (parent[x] != x) x = parent[x];\n    return x;\n}\n\nbool validPath(int n, vector<vector<int>>& edges, int source, int destination)\n{\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    for (auto &e : edges)\n    {\n        int rootA = find(e[0], parent);\n        int rootB = find(e[1], parent);\n        if (rootA != rootB) parent[rootA] = rootB;\n    }\n\n    return find(source, parent) == find(destination, parent);\n}\n\nint main()\n{\n    vector<vector<int>> edges = {{0, 1}, {1, 2}, {2, 0}};\n    cout << boolalpha << validPath(3, edges, 0, 2);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(edges * n) worst case without path compression",
+          "spaceComplexity": "O(n) for the parent array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Union find with path compression.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint find(int x, vector<int>& parent)\n{\n    if (parent[x] != x) parent[x] = find(parent[x], parent);\n    return parent[x];\n}\n\nbool validPath(int n, vector<vector<int>>& edges, int source, int destination)\n{\n    vector<int> parent(n);\n    for (int i = 0; i < n; i++) parent[i] = i;\n\n    for (auto &e : edges)\n    {\n        int rootA = find(e[0], parent);\n        int rootB = find(e[1], parent);\n        if (rootA != rootB) parent[rootA] = rootB;\n    }\n\n    return find(source, parent) == find(destination, parent);\n}\n\nint main()\n{\n    vector<vector<int>> edges = {{0, 1}, {1, 2}, {2, 0}};\n    cout << boolalpha << validPath(3, edges, 0, 2);\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(edges * α(n)) — near-constant find() amortized with path compression",
+          "spaceComplexity": "O(n) for the parent array"
+        }
+      ]
     }
   ],
   "codeExamples": [
