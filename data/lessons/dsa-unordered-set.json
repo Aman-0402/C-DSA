@@ -139,6 +139,42 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-349-unordered-set",
+      "number": 349,
+      "title": "Intersection of Two Arrays",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/intersection-of-two-arrays/",
+      "problemStatement": "Given nums1 and nums2, return their intersection with unique elements only, in any order.",
+      "examples": [
+        { "input": "nums1 = [1,2,2,1], nums2 = [2,2]", "output": "[2]" }
+      ],
+      "constraints": ["1 <= nums1.length, nums2.length <= 1000"],
+      "hints": [
+        "Two unordered_set instances: one built from nums1 for fast membership checks, one collecting the unique result.",
+        "Scanning nums2, check membership in the first set — a match goes into the result set (which naturally de-duplicates).",
+        "Convert the result set back to a vector at the end."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every nums2 element, scan all of nums1.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nvector<int> intersection(vector<int> &nums1, vector<int> &nums2)\n{\n    unordered_set<int> result;\n\n    for (int b : nums2)\n    {\n        for (int a : nums1)\n        {\n            if (a == b) { result.insert(b); break; }\n        }\n    }\n\n    return vector<int>(result.begin(), result.end());\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 2, 2, 1};\n    vector<int> nums2 = {2, 2};\n\n    vector<int> result = intersection(nums1, nums2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "2 ",
+          "timeComplexity": "O(n × m)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "nums1 in a set for O(1) checks, scan nums2 once, collect matches into a second set.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nvector<int> intersection(vector<int> &nums1, vector<int> &nums2)\n{\n    unordered_set<int> set1(nums1.begin(), nums1.end());\n    unordered_set<int> result;\n\n    for (int b : nums2)\n    {\n        if (set1.count(b)) result.insert(b);\n    }\n\n    return vector<int>(result.begin(), result.end());\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 2, 2, 1};\n    vector<int> nums2 = {2, 2};\n\n    vector<int> result = intersection(nums1, nums2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "2 ",
+          "timeComplexity": "O(n + m)",
+          "spaceComplexity": "O(n + m)"
+        }
+      ]
     }
   ],
   "codeExamples": [
