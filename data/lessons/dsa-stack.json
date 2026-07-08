@@ -1,0 +1,123 @@
+{
+  "id": "dsa-stack",
+  "moduleId": "stacks-queues",
+  "title": "Stack",
+  "description": "The classic stack DSA problem: checking balanced parentheses, using LIFO order to match every closing bracket against its most recent opener.",
+  "objectives": [
+    "Solve the balanced parentheses problem using a stack",
+    "Understand why LIFO order fits this problem naturally",
+    "Trace the algorithm step by step",
+    "Recognize the 'match against the most recent unmatched item' signal for stack"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Container Mechanics Already Covered"
+    },
+    {
+      "type": "paragraph",
+      "text": "The earlier stack topic covered push(), pop(), top(), and empty(). Here's the single most iconic problem that a stack solves cleanly."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Balanced Parentheses"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Is this string \"balanced\" — every opening bracket has a matching, correctly-ordered closer?\n\"(a+b)\"      // balanced\n\"([a+b])\"    // balanced\n\"(a+b]\"      // NOT balanced — wrong closer\n\"((a+b)\"     // NOT balanced — missing a closer"
+    },
+    {
+      "type": "heading",
+      "text": "3. Why a Stack Fits This Problem"
+    },
+    {
+      "type": "note",
+      "text": "When a closing bracket appears, it must match the MOST RECENTLY opened, still-unmatched bracket — not just any earlier one. That's exactly LIFO (recall Stack Memory's plate analogy): the last opener pushed is the first one that needs to be matched and popped."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <stack>\n#include <string>\n\nusing namespace std;\n\nbool isBalanced(string s)\n{\n    stack<char> openers;\n\n    for (char c : s)\n    {\n        if (c == '(' || c == '[' || c == '{')\n        {\n            openers.push(c);\n        }\n        else if (c == ')' || c == ']' || c == '}')\n        {\n            if (openers.empty())\n            {\n                return false; // closer with nothing to match\n            }\n\n            char top = openers.top();\n            if ((c == ')' && top != '(') ||\n                (c == ']' && top != '[') ||\n                (c == '}' && top != '{'))\n            {\n                return false; // WRONG kind of opener at the top\n            }\n            openers.pop();\n        }\n    }\n    return openers.empty(); // balanced only if every opener was matched\n}\n\nint main()\n{\n    cout << isBalanced(\"([a+b])\") << endl;\n    cout << isBalanced(\"(a+b]\") << endl;\n\n    return 0;\n}",
+      "output": "1\n0",
+      "retypePractice": true,
+      "retypeId": "dsa-stack-balanced"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing \"([a+b])\"",
+      "points": [
+        "'(' → push → stack: (",
+        "'[' → push → stack: ( [",
+        "'a', '+', 'b' → ignored (not brackets)",
+        "']' → top is '[' → matches! pop → stack: (",
+        "')' → top is '(' → matches! pop → stack: (empty)",
+        "End of string, stack is empty → balanced, return true"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Nested boxes, each needing to be closed in reverse order",
+      "text": "Recall the plate-stack analogy from Stack Memory. Opening nested boxes and closing them must happen in reverse order — the last box you opened is the first one you're able to close, because it's sitting right on top. A stack tracking open brackets works identically: the most recently opened one must be the next one matched and closed."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Checking for an empty stack too late — calling top() or pop() on an empty stack (e.g. an extra closing bracket with nothing open) is undefined; check empty() first.",
+        "Forgetting to check that the stack is empty at the very end — a string like \"((a+b)\" has every closer matched correctly, but leaves an unmatched opener still on the stack.",
+        "Matching a closer against the WRONG type of opener — top() must be checked for the correct matching bracket type, not just 'any' opener.",
+        "Using a queue instead of a stack — FIFO order would match brackets in the wrong order entirely; this problem specifically needs LIFO."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Why is a stack the right data structure for checking balanced parentheses?",
+          "answer": "Because a closing bracket must match the most recently opened, still-unmatched opener — exactly LIFO order, which a stack naturally enforces."
+        },
+        {
+          "question": "Walk through the algorithm for checking balanced parentheses using a stack.",
+          "answer": "Push every opening bracket onto the stack; for each closing bracket, check the stack isn't empty and its top matches the correct opener type, then pop it. At the end, the string is balanced only if the stack is empty."
+        },
+        {
+          "question": "What are the two ways a string can fail the balanced-parentheses check?",
+          "answer": "A closing bracket appears with no matching opener available (empty stack, or wrong opener type on top), or the string ends with unmatched openers still left on the stack."
+        }
+      ],
+      "thirtySecondAnswer": "Balanced parentheses is the classic stack problem: push every opening bracket, and for every closing bracket, check that the stack isn't empty and its top element is the matching opener type before popping it. The string is balanced only if every closer found a correct match and the stack ends empty, meaning no unmatched openers remain. This works because a closer must always match the most recently opened, still-unmatched bracket — exactly the LIFO order a stack enforces, the same principle behind the function call stack from Stack Memory."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Stack (DSA)",
+      "text": "Balanced parentheses = nested boxes, close the most recently opened one first. Push openers, pop-and-check on closers, balanced only if the stack ends empty."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-stack-balanced", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <stack>\n#include <string>\n\nusing namespace std;\n\nbool isBalanced(string s)\n{\n    stack<char> openers;\n\n    for (char c : s)\n    {\n        if (c == '(' || c == '[' || c == '{')\n        {\n            openers.push(c);\n        }\n        else if (c == ')' || c == ']' || c == '}')\n        {\n            if (openers.empty())\n            {\n                return false;\n            }\n\n            char top = openers.top();\n            if ((c == ')' && top != '(') ||\n                (c == ']' && top != '[') ||\n                (c == '}' && top != '{'))\n            {\n                return false;\n            }\n            openers.pop();\n        }\n    }\n    return openers.empty();\n}\n\nint main()\n{\n    cout << isBalanced(\"([a+b])\") << endl;\n    cout << isBalanced(\"(a+b]\") << endl;\n\n    return 0;\n}", "output": "1\n0" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-stack-balanced",
+      "reference": "#include <iostream>\n#include <stack>\n#include <string>\n\nusing namespace std;\n\nbool isBalanced(string s)\n{\n    stack<char> openers;\n\n    for (char c : s)\n    {\n        if (c == '(' || c == '[' || c == '{')\n        {\n            openers.push(c);\n        }\n        else if (c == ')' || c == ']' || c == '}')\n        {\n            if (openers.empty())\n            {\n                return false;\n            }\n\n            char top = openers.top();\n            if ((c == ')' && top != '(') ||\n                (c == ']' && top != '[') ||\n                (c == '}' && top != '{'))\n            {\n                return false;\n            }\n            openers.pop();\n        }\n    }\n    return openers.empty();\n}\n\nint main()\n{\n    cout << isBalanced(\"([a+b])\") << endl;\n    cout << isBalanced(\"(a+b]\") << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-stack-balanced"]
+  }
+}

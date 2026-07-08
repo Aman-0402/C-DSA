@@ -201,6 +201,13 @@
         { "id": "dsa-doubly-linked-list", "title": "Doubly Linked List", "lesson": "dsa-doubly-linked-list" },
         { "id": "dsa-circular-linked-list", "title": "Circular Linked List", "lesson": "dsa-circular-linked-list" }
       ]
+    },
+    {
+      "id": "stacks-queues",
+      "title": "Stacks & Queues",
+      "topics": [
+        { "id": "dsa-stack", "title": "Stack", "lesson": "dsa-stack" }
+      ]
     }
   ]
 }
