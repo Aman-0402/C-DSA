@@ -153,6 +153,42 @@
           "spaceComplexity": "O(n) worst case, but bounded by the 3000ms window"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-232",
+      "number": 232,
+      "title": "Implement Queue using Stacks",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/implement-queue-using-stacks/",
+      "problemStatement": "Implement a FIFO queue using only two stacks, supporting push, pop, peek, and empty.",
+      "examples": [
+        { "input": "push(1); push(2); peek(); pop(); empty()", "output": "1, 1, false" }
+      ],
+      "constraints": ["1 <= x <= 9", "at most 100 calls"],
+      "hints": [
+        "This is exactly this lesson's own two-stack queue example — push onto 'in', and transfer 'in' into 'out' (reversing order a second time) only when 'out' is empty and something needs to come out.",
+        "peek() needs the same transfer-if-needed logic as pop(), just reading the top instead of removing it.",
+        "empty() is true only when BOTH stacks are empty — a non-empty 'in' still holds queued elements, even if 'out' happens to be empty at that moment."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use a single stack and reverse the ENTIRE thing on every push, keeping it always in queue (FIFO) order — wasteful compared to the two-stack transfer-when-needed approach.",
+          "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nclass MyQueue {\npublic:\n    stack<int> s;\n\n    void push(int x)\n    {\n        stack<int> temp;\n        while (!s.empty()) { temp.push(s.top()); s.pop(); }\n        temp.push(x);\n        while (!temp.empty()) { s.push(temp.top()); temp.pop(); }\n    }\n\n    int pop() { int front = s.top(); s.pop(); return front; }\n    int peek() { return s.top(); }\n    bool empty() { return s.empty(); }\n};\n\nint main()\n{\n    MyQueue q;\n    q.push(1);\n    q.push(2);\n    cout << q.peek() << \", \";\n    cout << q.pop() << \", \";\n    cout << (q.empty() ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "1, 1, false",
+          "timeComplexity": "O(n) per push, O(1) per pop/peek",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "This lesson's two-stack design: O(1) push, and transfer-only-when-needed for pop/peek, giving amortized O(1) for everything.",
+          "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nclass MyQueue {\npublic:\n    stack<int> in, out;\n\n    void transferIfNeeded()\n    {\n        if (out.empty())\n        {\n            while (!in.empty()) { out.push(in.top()); in.pop(); }\n        }\n    }\n\n    void push(int x) { in.push(x); }\n\n    int pop()\n    {\n        transferIfNeeded();\n        int front = out.top();\n        out.pop();\n        return front;\n    }\n\n    int peek()\n    {\n        transferIfNeeded();\n        return out.top();\n    }\n\n    bool empty() { return in.empty() && out.empty(); }\n};\n\nint main()\n{\n    MyQueue q;\n    q.push(1);\n    q.push(2);\n    cout << q.peek() << \", \";\n    cout << q.pop() << \", \";\n    cout << (q.empty() ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "1, 1, false",
+          "timeComplexity": "O(1) amortized for every operation",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
