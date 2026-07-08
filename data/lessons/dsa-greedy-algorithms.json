@@ -255,6 +255,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-134",
+      "number": 134,
+      "title": "Gas Station",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/gas-station/",
+      "problemStatement": "There are n gas stations in a circle. Car starts with an empty tank. Given gas[i] (fuel gained at station i) and cost[i] (fuel needed to reach station i+1), return the starting station index that allows completing the full circuit, or -1 if impossible (guaranteed unique if it exists).",
+      "examples": [
+        { "input": "gas = [1,2,3,4,5], cost = [3,4,5,1,2]", "output": "3" }
+      ],
+      "constraints": ["1 <= n <= 10^5", "gas.length == cost.length"],
+      "hints": [
+        "First check feasibility: a solution exists only if sum(gas) >= sum(cost) overall — otherwise there simply isn't enough total fuel, no matter the start.",
+        "Greedy key insight: if the tank goes negative starting from some station, NONE of the stations between the old start and the failure point could have worked as a start either — skip straight past all of them.",
+        "One pass: track a running tank; the moment it goes negative, reset tank to 0 and set the candidate start to the very next station."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every possible starting station and simulate the full circuit for each.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint canCompleteCircuit(vector<int>& gas, vector<int>& cost)\n{\n    int n = gas.size();\n\n    for (int start = 0; start < n; start++)\n    {\n        int tank = 0;\n        bool works = true;\n        for (int step = 0; step < n; step++)\n        {\n            int station = (start + step) % n;\n            tank += gas[station] - cost[station];\n            if (tank < 0) { works = false; break; }\n        }\n        if (works) return start;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> gas = {1, 2, 3, 4, 5};\n    vector<int> cost = {3, 4, 5, 1, 2};\n\n    cout << canCompleteCircuit(gas, cost);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n^2) worst case",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Single greedy pass: reset the candidate start the moment the running tank goes negative, since no station in between could have worked either.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint canCompleteCircuit(vector<int>& gas, vector<int>& cost)\n{\n    int totalTank = 0, tank = 0, start = 0;\n\n    for (int i = 0; i < (int)gas.size(); i++)\n    {\n        int diff = gas[i] - cost[i];\n        totalTank += diff;\n        tank += diff;\n\n        if (tank < 0)\n        {\n            start = i + 1;\n            tank = 0;\n        }\n    }\n\n    return totalTank >= 0 ? start : -1;\n}\n\nint main()\n{\n    vector<int> gas = {1, 2, 3, 4, 5};\n    vector<int> cost = {3, 4, 5, 1, 2};\n\n    cout << canCompleteCircuit(gas, cost);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
