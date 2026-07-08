@@ -309,6 +309,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-4",
+      "number": 4,
+      "title": "Median of Two Sorted Arrays",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+      "problemStatement": "Given two sorted arrays nums1 and nums2, return the median of the two combined sorted arrays, in O(log(m+n)) time.",
+      "examples": [
+        { "input": "nums1 = [1,3], nums2 = [2]", "output": "2.00000" }
+      ],
+      "constraints": ["0 <= m, n <= 1000", "1 <= m + n <= 2000"],
+      "hints": [
+        "Clue: 'sorted arrays' + a log-time requirement — this is Binary Search, but on a PARTITION POINT rather than a single value.",
+        "Binary search over the smaller array's partition index i; the corresponding partition j in the other array is forced by the requirement that the left half must hold exactly (m+n+1)/2 elements total.",
+        "A partition is correct when nums1's left edge <= nums2's right edge AND nums2's left edge <= nums1's right edge — then the median is derivable directly from the four boundary values, without ever merging the arrays."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Merge both arrays (like Merge Sort's merge step) and directly index the middle.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\ndouble findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2)\n{\n    vector<int> merged;\n    int i = 0, j = 0;\n\n    while (i < (int)nums1.size() && j < (int)nums2.size())\n        merged.push_back(nums1[i] <= nums2[j] ? nums1[i++] : nums2[j++]);\n    while (i < (int)nums1.size()) merged.push_back(nums1[i++]);\n    while (j < (int)nums2.size()) merged.push_back(nums2[j++]);\n\n    int n = merged.size();\n    if (n % 2 == 1) return merged[n / 2];\n    return (merged[n / 2 - 1] + merged[n / 2]) / 2.0;\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 3};\n    vector<int> nums2 = {2};\n    cout << findMedianSortedArrays(nums1, nums2);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(m + n)",
+          "spaceComplexity": "O(m + n) for the merged array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Binary search on the smaller array's partition point — never merges anything, and never even looks at most of the elements.",
+          "code": "#include <iostream>\n#include <vector>\n#include <climits>\n#include <algorithm>\n\nusing namespace std;\n\ndouble findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2)\n{\n    if (nums1.size() > nums2.size()) return findMedianSortedArrays(nums2, nums1);\n\n    int m = nums1.size(), n = nums2.size();\n    int low = 0, high = m;\n    int half = (m + n + 1) / 2;\n\n    while (low <= high)\n    {\n        int i = (low + high) / 2;\n        int j = half - i;\n\n        int left1 = (i == 0) ? INT_MIN : nums1[i - 1];\n        int right1 = (i == m) ? INT_MAX : nums1[i];\n        int left2 = (j == 0) ? INT_MIN : nums2[j - 1];\n        int right2 = (j == n) ? INT_MAX : nums2[j];\n\n        if (left1 <= right2 && left2 <= right1)\n        {\n            if ((m + n) % 2 == 0) return (max(left1, left2) + min(right1, right2)) / 2.0;\n            return max(left1, left2);\n        }\n        else if (left1 > right2) high = i - 1;\n        else low = i + 1;\n    }\n\n    return -1.0; // unreachable for valid sorted inputs\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 3};\n    vector<int> nums2 = {2};\n    cout << findMedianSortedArrays(nums1, nums2);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(log(min(m, n)))",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
