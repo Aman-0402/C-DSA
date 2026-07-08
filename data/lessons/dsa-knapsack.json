@@ -190,6 +190,42 @@
           "spaceComplexity": "O(P) for a single row"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-474",
+      "number": 474,
+      "title": "Ones and Zeroes",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/ones-and-zeroes/",
+      "problemStatement": "Given a list of binary strings, and integers m and n, find the size of the largest subset such that there are at most m 0's and at most n 1's total across the subset.",
+      "examples": [
+        { "input": "strs = [\"10\",\"0001\",\"111001\",\"1\",\"0\"], m = 5, n = 3", "output": "4" }
+      ],
+      "constraints": ["1 <= strs.length <= 600"],
+      "hints": [
+        "This is 0/1 Knapsack with a TWO-DIMENSIONAL capacity instead of one — each string 'costs' some zeros AND some ones, capped by m and n independently.",
+        "dp[i][j] = the max number of strings usable with at most i zeros and at most j ones — each string is still skip-or-take, exactly like this lesson's recurrence.",
+        "Count each string's zeros/ones first, then for every string, update dp[i][j] = max(dp[i][j], dp[i-zeros][j-ones] + 1) — a 2D version of LC 416's subset-sum update."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "3D dp table: dp[k][i][j] = max strings usable from the first k strings, with budget (i zeros, j ones).",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nint findMaxForm(vector<string>& strs, int m, int n)\n{\n    int k = strs.size();\n    vector<vector<vector<int>>> dp(k + 1, vector<vector<int>>(m + 1, vector<int>(n + 1, 0)));\n\n    for (int s = 1; s <= k; s++)\n    {\n        int zeros = 0, ones = 0;\n        for (char c : strs[s - 1]) (c == '0') ? zeros++ : ones++;\n\n        for (int i = 0; i <= m; i++)\n            for (int j = 0; j <= n; j++)\n            {\n                dp[s][i][j] = dp[s - 1][i][j];\n                if (zeros <= i && ones <= j)\n                    dp[s][i][j] = max(dp[s][i][j], dp[s - 1][i - zeros][j - ones] + 1);\n            }\n    }\n\n    return dp[k][m][n];\n}\n\nint main()\n{\n    vector<string> strs = {\"10\", \"0001\", \"111001\", \"1\", \"0\"};\n    cout << findMaxForm(strs, 5, 3);\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(strings * m * n)",
+          "spaceComplexity": "O(strings * m * n) for the full 3D table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Only the previous string's table is ever needed — collapse to a 2D table, updated in reverse over BOTH dimensions per string.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nint findMaxForm(vector<string>& strs, int m, int n)\n{\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));\n\n    for (auto &str : strs)\n    {\n        int zeros = 0, ones = 0;\n        for (char c : str) (c == '0') ? zeros++ : ones++;\n\n        for (int i = m; i >= zeros; i--)\n            for (int j = n; j >= ones; j--)\n                dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1);\n    }\n\n    return dp[m][n];\n}\n\nint main()\n{\n    vector<string> strs = {\"10\", \"0001\", \"111001\", \"1\", \"0\"};\n    cout << findMaxForm(strs, 5, 3);\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(strings * m * n)",
+          "spaceComplexity": "O(m * n) for a single 2D table"
+        }
+      ]
     }
   ],
   "codeExamples": [
