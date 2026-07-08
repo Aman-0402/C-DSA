@@ -169,6 +169,42 @@
           "spaceComplexity": "O(n) for the merge step's temp storage"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-88",
+      "number": 88,
+      "title": "Merge Sorted Array",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/merge-sorted-array/",
+      "problemStatement": "Given two sorted arrays nums1 (with m real elements plus n trailing zeros as extra space) and nums2 (n elements), merge nums2 into nums1 in place so nums1 becomes one sorted array.",
+      "examples": [
+        { "input": "nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3", "output": "[1,2,2,3,5,6]" }
+      ],
+      "constraints": ["nums1.length == m + n", "nums2.length == n"],
+      "hints": [
+        "This is exactly Merge Sort's merge() step — combining two already-sorted sequences into one.",
+        "Merging from the FRONT into nums1 would overwrite elements before they've been read — merging from the BACK avoids that entirely, since the empty trailing space is already there.",
+        "Three pointers: one at the end of nums1's real elements (m-1), one at the end of nums2 (n-1), one at the very end of the combined array (m+n-1) — always place the larger of the two candidates at the write pointer, moving inward."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "This lesson's merge() logic, but writing into a separate temp array first, then copying it back into nums1.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid merge(vector<int> &nums1, int m, vector<int> &nums2, int n)\n{\n    vector<int> temp;\n    int i = 0, j = 0;\n\n    while (i < m && j < n)\n    {\n        if (nums1[i] <= nums2[j]) temp.push_back(nums1[i++]);\n        else temp.push_back(nums2[j++]);\n    }\n    while (i < m) temp.push_back(nums1[i++]);\n    while (j < n) temp.push_back(nums2[j++]);\n\n    nums1 = temp;\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 2, 3, 0, 0, 0};\n    vector<int> nums2 = {2, 5, 6};\n\n    merge(nums1, 3, nums2, 3);\n    for (int n : nums1) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 2 2 3 5 6 ",
+          "timeComplexity": "O(m + n)",
+          "spaceComplexity": "O(m + n) for the temp array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Merge from the back, placing the larger of the two remaining candidates at the current write position — no extra array needed.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid merge(vector<int> &nums1, int m, vector<int> &nums2, int n)\n{\n    int i = m - 1;\n    int j = n - 1;\n    int write = m + n - 1;\n\n    while (j >= 0)\n    {\n        if (i >= 0 && nums1[i] > nums2[j])\n        {\n            nums1[write--] = nums1[i--];\n        }\n        else\n        {\n            nums1[write--] = nums2[j--];\n        }\n    }\n}\n\nint main()\n{\n    vector<int> nums1 = {1, 2, 3, 0, 0, 0};\n    vector<int> nums2 = {2, 5, 6};\n\n    merge(nums1, 3, nums2, 3);\n    for (int n : nums1) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "1 2 2 3 5 6 ",
+          "timeComplexity": "O(m + n)",
+          "spaceComplexity": "O(1) — in place"
+        }
+      ]
     }
   ],
   "codeExamples": [
