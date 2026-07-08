@@ -205,6 +205,42 @@
           "spaceComplexity": "O(1) — in place"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-75",
+      "number": 75,
+      "title": "Sort Colors",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/sort-colors/",
+      "problemStatement": "Given an array nums with only values 0, 1, and 2 (representing red, white, blue), sort it in place so same colors are adjacent, in order 0,1,2, in one pass without a library sort.",
+      "examples": [
+        { "input": "nums = [2,0,2,1,1,0]", "output": "[0,0,1,1,2,2]" }
+      ],
+      "constraints": ["1 <= nums.length <= 300", "nums[i] is 0, 1, or 2"],
+      "hints": [
+        "With only 3 possible values, a general-purpose sort (like Merge Sort) is overkill — counting how many of each value exist is enough.",
+        "Simplest approach: count the 0s, 1s, and 2s, then overwrite the array with that many of each in order.",
+        "A cleverer one-pass approach (the Dutch National Flag algorithm) uses three pointers — low, mid, high — swapping elements into the correct zone as a single scan proceeds, no counting pass needed."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Count the 0s, 1s, and 2s in one pass, then overwrite the array with the correct counts in a second pass.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid sortColors(vector<int> &nums)\n{\n    int count0 = 0, count1 = 0, count2 = 0;\n\n    for (int n : nums)\n    {\n        if (n == 0) count0++;\n        else if (n == 1) count1++;\n        else count2++;\n    }\n\n    int i = 0;\n    while (count0--) nums[i++] = 0;\n    while (count1--) nums[i++] = 1;\n    while (count2--) nums[i++] = 2;\n}\n\nint main()\n{\n    vector<int> nums = {2, 0, 2, 1, 1, 0};\n\n    sortColors(nums);\n    for (int n : nums) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "0 0 1 1 2 2 ",
+          "timeComplexity": "O(n), but two passes",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "The Dutch National Flag algorithm: three pointers partition the array into 0s, 1s, and 2s in a single pass.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid sortColors(vector<int> &nums)\n{\n    int low = 0, mid = 0, high = nums.size() - 1;\n\n    while (mid <= high)\n    {\n        if (nums[mid] == 0)\n        {\n            swap(nums[low], nums[mid]);\n            low++;\n            mid++;\n        }\n        else if (nums[mid] == 1)\n        {\n            mid++;\n        }\n        else\n        {\n            swap(nums[mid], nums[high]);\n            high--;\n        }\n    }\n}\n\nint main()\n{\n    vector<int> nums = {2, 0, 2, 1, 1, 0};\n\n    sortColors(nums);\n    for (int n : nums) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "0 0 1 1 2 2 ",
+          "timeComplexity": "O(n), single pass",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
