@@ -129,6 +129,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Sorting",
       "text": "Bubble Sort = adjacent swaps only, O(n²), simple but slow. Merge Sort = split, sort halves, merge, O(n log n) — log n levels of splitting × O(n) merging per level."
+    },
+    {
+      "type": "heading",
+      "text": "6. LeetCode: Sorting in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-912",
+      "number": 912,
+      "title": "Sort an Array",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/sort-an-array/",
+      "problemStatement": "Given an array of integers nums, sort it in ascending order, implementing your own sorting algorithm (not calling a built-in sort).",
+      "examples": [
+        { "input": "nums = [5,2,3,1]", "output": "[1,2,3,5]" }
+      ],
+      "constraints": ["1 <= nums.length <= 5*10^4"],
+      "hints": [
+        "This is a direct invitation to implement one of this lesson's two algorithms yourself — Bubble Sort or Merge Sort.",
+        "Bubble Sort works but its O(n²) time will be too slow for the largest inputs allowed by the constraints.",
+        "Merge Sort's divide-and-conquer structure — split, recursively sort each half, merge — achieves the O(n log n) needed to handle the full input size."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Bubble Sort: repeatedly swap adjacent out-of-order elements until no swaps are needed.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> sortArray(vector<int> &nums)\n{\n    int n = nums.size();\n\n    for (int i = 0; i < n - 1; i++)\n    {\n        for (int j = 0; j < n - 1 - i; j++)\n        {\n            if (nums[j] > nums[j + 1])\n            {\n                swap(nums[j], nums[j + 1]);\n            }\n        }\n    }\n\n    return nums;\n}\n\nint main()\n{\n    vector<int> nums = {5, 2, 3, 1};\n\n    vector<int> result = sortArray(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 5 ",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1) — in place"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Merge Sort: divide and conquer, splitting until single elements, then merging sorted halves back together.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid merge(vector<int> &nums, int left, int mid, int right)\n{\n    vector<int> temp;\n    int i = left, j = mid + 1;\n\n    while (i <= mid && j <= right)\n    {\n        if (nums[i] <= nums[j]) temp.push_back(nums[i++]);\n        else temp.push_back(nums[j++]);\n    }\n    while (i <= mid) temp.push_back(nums[i++]);\n    while (j <= right) temp.push_back(nums[j++]);\n\n    for (int k = 0; k < temp.size(); k++) nums[left + k] = temp[k];\n}\n\nvoid mergeSort(vector<int> &nums, int left, int right)\n{\n    if (left >= right) return;\n\n    int mid = left + (right - left) / 2;\n    mergeSort(nums, left, mid);\n    mergeSort(nums, mid + 1, right);\n    merge(nums, left, mid, right);\n}\n\nvector<int> sortArray(vector<int> &nums)\n{\n    mergeSort(nums, 0, nums.size() - 1);\n    return nums;\n}\n\nint main()\n{\n    vector<int> nums = {5, 2, 3, 1};\n\n    vector<int> result = sortArray(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 5 ",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(n) for the merge step's temp storage"
+        }
+      ]
     }
   ],
   "codeExamples": [
