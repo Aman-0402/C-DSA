@@ -1,0 +1,133 @@
+{
+  "id": "dsa-strings",
+  "moduleId": "array-string-techniques",
+  "title": "Strings",
+  "description": "Strings through a DSA lens: treating a string as an indexable array of characters, palindrome checks, and anagram detection.",
+  "objectives": [
+    "Treat a string as an array of characters for algorithmic purposes",
+    "Solve the palindrome check problem using two pointers",
+    "Solve the anagram check problem using frequency counting",
+    "Recognize which array techniques transfer directly to strings"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: From Syntax to Technique"
+    },
+    {
+      "type": "paragraph",
+      "text": "std::string covered length(), substr(), find(), and concatenation. For DSA purposes, a string is best thought of the same way as an array: an indexable, iterable sequence — and nearly every array technique we've covered applies directly."
+    },
+    {
+      "type": "heading",
+      "text": "2. A String Is Just a Character Array Here"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "string word = \"hello\";\n\ncout << word[0];        // 'h' — indexing works exactly like an array\ncout << word.length();  // 5 — matches the array's size() concept"
+    },
+    {
+      "type": "note",
+      "text": "Because of this, Two Pointers, Sliding Window, and Prefix Sum all apply to strings the exact same way they apply to a vector<int> — the element type is char instead of int, but the patterns are identical."
+    },
+    {
+      "type": "heading",
+      "text": "3. Classic Pattern: Palindrome Check with Two Pointers"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    int left = 0;\n    int right = s.length() - 1;\n\n    while (left < right)\n    {\n        if (s[left] != s[right])\n        {\n            return false;\n        }\n        left++;\n        right--;\n    }\n    return true;\n}\n\nint main()\n{\n    cout << isPalindrome(\"racecar\") << endl;\n    cout << isPalindrome(\"hello\") << endl;\n\n    return 0;\n}",
+      "output": "1\n0",
+      "retypePractice": true,
+      "retypeId": "dsa-strings-palindrome"
+    },
+    {
+      "type": "note",
+      "text": "This is exactly Two Pointers' opposite-ends pattern: start from both ends, compare, and move inward. If any pair of matching positions disagrees, it's not a palindrome — if the pointers meet without disagreement, it is. O(n) time, O(1) extra space."
+    },
+    {
+      "type": "heading",
+      "text": "4. Classic Pattern: Anagram Check with Frequency Count"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool isAnagram(string a, string b)\n{\n    if (a.length() != b.length())\n    {\n        return false;\n    }\n\n    unordered_map<char, int> freq;\n\n    for (char c : a)\n    {\n        freq[c]++; // count characters in a\n    }\n    for (char c : b)\n    {\n        freq[c]--; // subtract characters in b\n    }\n\n    for (auto entry : freq)\n    {\n        if (entry.second != 0)\n        {\n            return false; // counts don't cancel out — not an anagram\n        }\n    }\n    return true;\n}\n\nint main()\n{\n    cout << isAnagram(\"listen\", \"silent\") << endl;\n    cout << isAnagram(\"hello\", \"world\") << endl;\n\n    return 0;\n}",
+      "output": "1\n0",
+      "retypePractice": true,
+      "retypeId": "dsa-strings-anagram"
+    },
+    {
+      "type": "note",
+      "text": "This is unordered_map's frequency-counting pattern from earlier, applied twice: count up every character in a, then count down every character in b. If both strings are true anagrams, every count lands back at exactly 0 — any leftover non-zero count means the character frequencies didn't match."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Checking if two Scrabble racks have the exact same letters",
+      "text": "Comparing two Scrabble letter racks for the exact same tiles — regardless of order — is exactly the anagram-check pattern: tally what's in the first rack, subtract what's in the second, and see if everything cancels to zero. A palindrome, meanwhile, is like checking if a word reads the same from both ends inward at once — the two-pointer pattern, letter by letter."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to check string lengths first in an anagram check — different lengths can never be anagrams, and skipping this check can waste work or even cause subtle bugs.",
+        "Assuming a palindrome check needs to build a reversed copy of the string — the two-pointer approach does it in O(1) extra space, no copy needed.",
+        "Forgetting string indexing is zero-based, exactly like array indexing, when writing two-pointer or sliding-window logic on a string.",
+        "Not recognizing when an array technique already learned (two pointers, sliding window, prefix sum) applies directly to a string problem."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Why do array techniques like two pointers and sliding window apply directly to strings?",
+          "answer": "Because a string is an indexable, iterable sequence just like an array — the only difference is the element type is char instead of int."
+        },
+        {
+          "question": "How would you check if a string is a palindrome in O(n) time and O(1) space?",
+          "answer": "Use two pointers starting at both ends, comparing characters and moving inward; if any pair disagrees, it's not a palindrome."
+        },
+        {
+          "question": "How would you check if two strings are anagrams of each other?",
+          "answer": "Compare their lengths first, then use a frequency count (e.g. unordered_map<char, int>) — incrementing counts for one string and decrementing for the other; if every count ends at zero, they're anagrams."
+        }
+      ],
+      "thirtySecondAnswer": "For DSA purposes, a string behaves just like an array of characters — indexable and iterable — so techniques like Two Pointers, Sliding Window, and frequency counting with unordered_map all apply directly. A palindrome check uses two pointers from both ends moving inward, comparing characters, in O(n) time and O(1) space. An anagram check uses frequency counting: tally each character in the first string, subtract for the second, and confirm every count cancels to exactly zero — the same pattern unordered_map used for counting occurrences elsewhere."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Strings (DSA)",
+      "text": "String = an array of char for algorithm purposes. Palindrome = two pointers closing inward. Anagram = tally up, tally down, check everything cancels to zero."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-strings-palindrome", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    int left = 0;\n    int right = s.length() - 1;\n\n    while (left < right)\n    {\n        if (s[left] != s[right])\n        {\n            return false;\n        }\n        left++;\n        right--;\n    }\n    return true;\n}\n\nint main()\n{\n    cout << isPalindrome(\"racecar\") << endl;\n    cout << isPalindrome(\"hello\") << endl;\n\n    return 0;\n}", "output": "1\n0" },
+    { "id": "dsa-strings-anagram", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool isAnagram(string a, string b)\n{\n    if (a.length() != b.length())\n    {\n        return false;\n    }\n\n    unordered_map<char, int> freq;\n\n    for (char c : a)\n    {\n        freq[c]++;\n    }\n    for (char c : b)\n    {\n        freq[c]--;\n    }\n\n    for (auto entry : freq)\n    {\n        if (entry.second != 0)\n        {\n            return false;\n        }\n    }\n    return true;\n}\n\nint main()\n{\n    cout << isAnagram(\"listen\", \"silent\") << endl;\n    cout << isAnagram(\"hello\", \"world\") << endl;\n\n    return 0;\n}", "output": "1\n0" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-strings-palindrome",
+      "reference": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    int left = 0;\n    int right = s.length() - 1;\n\n    while (left < right)\n    {\n        if (s[left] != s[right])\n        {\n            return false;\n        }\n        left++;\n        right--;\n    }\n    return true;\n}\n\nint main()\n{\n    cout << isPalindrome(\"racecar\") << endl;\n    cout << isPalindrome(\"hello\") << endl;\n\n    return 0;\n}"
+    },
+    {
+      "id": "dsa-strings-anagram",
+      "reference": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool isAnagram(string a, string b)\n{\n    if (a.length() != b.length())\n    {\n        return false;\n    }\n\n    unordered_map<char, int> freq;\n\n    for (char c : a)\n    {\n        freq[c]++;\n    }\n    for (char c : b)\n    {\n        freq[c]--;\n    }\n\n    for (auto entry : freq)\n    {\n        if (entry.second != 0)\n        {\n            return false;\n        }\n    }\n    return true;\n}\n\nint main()\n{\n    cout << isAnagram(\"listen\", \"silent\") << endl;\n    cout << isAnagram(\"hello\", \"world\") << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-strings-palindrome", "dsa-strings-anagram"]
+  }
+}
