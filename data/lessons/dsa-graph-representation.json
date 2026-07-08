@@ -1,0 +1,107 @@
+{
+  "id": "dsa-graph-representation",
+  "moduleId": "graphs",
+  "title": "Graph Representation",
+  "description": "The overview before Adjacency Matrix and Adjacency List: two fundamentally different ways to actually store a graph in code.",
+  "objectives": [
+    "Understand why a graph needs an explicit representation, unlike a tree's simple Node struct",
+    "Preview the two main representations: adjacency matrix and adjacency list",
+    "Know the basic space trade-off between them",
+    "Get oriented before the two dedicated deep-dive topics"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Trees Had an Obvious Structure"
+    },
+    {
+      "type": "paragraph",
+      "text": "A TreeNode was simple: exactly a left pointer and a right pointer, built directly into the struct. A graph vertex can connect to any number of other vertices — there's no fixed number of pointer fields that would work for every graph. We need a different, explicit way to store \"who connects to whom.\""
+    },
+    {
+      "type": "heading",
+      "text": "2. What Does \"Representation\" Mean Here?"
+    },
+    {
+      "type": "definition",
+      "term": "Graph representation",
+      "text": "A graph representation is the data structure used to store which vertices are connected to which, since a graph's connections can't be hard-coded into a fixed struct the way a binary tree's left/right can."
+    },
+    {
+      "type": "heading",
+      "text": "3. Two Main Approaches"
+    },
+    {
+      "type": "table",
+      "headers": ["Representation", "Basic idea"],
+      "rows": [
+        ["Adjacency Matrix", "A 2D grid — matrix[i][j] tells you whether an edge exists between vertex i and vertex j"],
+        ["Adjacency List", "For each vertex, a list of exactly the vertices it directly connects to"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — each gets its own dedicated topic right after this one, with full implementation and a proper look at the trade-offs."
+    },
+    {
+      "type": "heading",
+      "text": "4. A Quick Taste of the Trade-off"
+    },
+    {
+      "type": "note",
+      "text": "Recall 2D Arrays for the matrix idea, and vector<vector<int>> for the list idea — both use structures we've already built. The matrix always uses space proportional to (number of vertices)², regardless of how many edges actually exist; the list only uses space proportional to the actual number of edges. Which one is better depends entirely on how densely connected the graph is — exactly what the next two topics dig into."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A seating chart's cross-reference table vs each guest's personal invite list",
+      "text": "One way to record who's friends with whom at a big event is a giant grid — every guest against every other guest, marking yes/no for each pair (a matrix). Another way is giving each guest a personal list of just their actual friends (a list). If most people only know a handful of others, the personal list wastes far less paper than filling out an enormous mostly-empty grid."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming a graph needs one 'correct' representation — the right choice depends on the graph's density and what operations are needed most.",
+        "Forgetting a graph, unlike a tree, has no built-in fixed-size node structure — the representation itself IS the graph's storage.",
+        "Assuming representation choice doesn't affect algorithm performance — it does, significantly, as the next two topics show.",
+        "Conflating the graph's vertices/edges (the abstract concept) with the specific data structure used to represent them (a separate, practical choice)."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Why does a graph need an explicit representation, while a binary tree doesn't need anything beyond a simple Node struct?",
+          "answer": "Because a graph vertex can connect to any number of other vertices, with no fixed limit — unlike a binary tree's fixed left/right pointers, there's no single struct shape that would work for every graph."
+        },
+        {
+          "question": "What are the two main ways to represent a graph?",
+          "answer": "An adjacency matrix, a 2D grid marking whether an edge exists between each pair of vertices, and an adjacency list, where each vertex stores a list of just the vertices it directly connects to."
+        },
+        {
+          "question": "What is the basic space trade-off between the two representations?",
+          "answer": "An adjacency matrix always uses space proportional to the number of vertices squared, regardless of edge count; an adjacency list uses space proportional to the actual number of edges."
+        }
+      ],
+      "thirtySecondAnswer": "Unlike a tree's fixed left/right Node struct, a graph vertex can connect to any number of others, so it needs an explicit representation to store its connections. The two main approaches are an adjacency matrix — a 2D grid where matrix[i][j] marks whether an edge exists between vertices i and j — and an adjacency list, where each vertex stores a list of just its actual neighbors. The basic trade-off is space: a matrix always costs (vertices)² regardless of how many edges actually exist, while a list costs space proportional only to the real edge count, making it far more efficient for sparse graphs — the exact detail explored in the next two topics."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Graph Representation",
+      "text": "Adjacency matrix = a giant grid, everyone against everyone. Adjacency list = each vertex's own short list of actual friends. Sparse graph → list wins on space."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}

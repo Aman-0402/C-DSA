@@ -241,7 +241,8 @@
       "id": "graphs",
       "title": "Graphs",
       "topics": [
-        { "id": "dsa-graphs", "title": "Graphs", "lesson": "dsa-graphs" }
+        { "id": "dsa-graphs", "title": "Graphs", "lesson": "dsa-graphs" },
+        { "id": "dsa-graph-representation", "title": "Graph Representation", "lesson": "dsa-graph-representation" }
       ]
     }
   ]
