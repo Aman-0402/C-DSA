@@ -1,0 +1,155 @@
+{
+  "id": "dsa-time-complexity",
+  "moduleId": "complexity-analysis",
+  "title": "Time Complexity",
+  "description": "The payoff deferred since Topic 1: how the amount of work an algorithm does grows as input size grows, and the O(1)/O(n)/O(n²) shapes.",
+  "objectives": [
+    "Understand time complexity as a description of growth, not exact runtime",
+    "Recognize constant, linear, and quadratic time from code shape",
+    "Understand why this matters more as input size grows",
+    "Preview Big O notation as the formal language for this"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: This Was Deferred Since Lesson One"
+    },
+    {
+      "type": "paragraph",
+      "text": "Nearly every earlier lesson included a line like \"Time Complexity: Not applicable to our current topic — we will study it properly before using it in DSA.\" That deferred moment has arrived."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Time Complexity?"
+    },
+    {
+      "type": "definition",
+      "term": "Time complexity",
+      "text": "Time complexity describes how the amount of work an algorithm performs grows as the size of its input grows — not an exact time in seconds, but a shape of growth."
+    },
+    {
+      "type": "note",
+      "text": "Introduction to C++ asked exactly this question early on: \"If the input grows from 10 elements to 1,000,000 elements, how does the algorithm's work grow?\" Time complexity is the formal answer to that question."
+    },
+    {
+      "type": "heading",
+      "text": "3. Constant Time — Doesn't Grow at All"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int getFirst(vector<int> &numbers)\n{\n    return numbers[0]; // always exactly one operation, regardless of size\n}"
+    },
+    {
+      "type": "note",
+      "text": "Whether numbers has 5 elements or 5 million, numbers[0] takes the same single step. This is constant time — the work doesn't depend on input size at all."
+    },
+    {
+      "type": "heading",
+      "text": "4. Linear Time — Grows Proportionally"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int sum(vector<int> &numbers)\n{\n    int total = 0;\n    for (int i = 0; i < numbers.size(); i++) // runs once PER element\n    {\n        total += numbers[i];\n    }\n    return total;\n}"
+    },
+    {
+      "type": "note",
+      "text": "Double the size of numbers, and the loop runs roughly twice as many times. The work grows in direct proportion to the input size — this is linear time."
+    },
+    {
+      "type": "heading",
+      "text": "5. Quadratic Time — Nested Loops"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "void printAllPairs(vector<int> &numbers)\n{\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        for (int j = 0; j < numbers.size(); j++) // a full inner loop, for EVERY outer step\n        {\n            cout << numbers[i] << \",\" << numbers[j] << \" \";\n        }\n    }\n}"
+    },
+    {
+      "type": "warning",
+      "text": "For every single element the outer loop visits, the entire inner loop runs again. With n elements, that's n × n = n² total operations — this grows dramatically faster than linear time. Recall the 2D Arrays nested-loop pattern; the same shape here has a real complexity cost."
+    },
+    {
+      "type": "heading",
+      "text": "6. Why This Matters at Scale"
+    },
+    {
+      "type": "table",
+      "headers": ["n", "O(n)", "O(n²)"],
+      "rows": [
+        ["10", "10 operations", "100 operations"],
+        ["1,000", "1,000 operations", "1,000,000 operations"],
+        ["1,000,000", "1,000,000 operations", "1,000,000,000,000 operations"]
+      ]
+    },
+    {
+      "type": "warning",
+      "text": "At small n, the difference barely matters. At the sizes real DSA problems and interviews often test — thousands or millions of elements — an O(n²) approach can become genuinely too slow to finish in reasonable time, while an O(n) approach handles it easily. This is precisely why time complexity is a central part of coding interviews, not just an academic exercise."
+    },
+    {
+      "type": "heading",
+      "text": "7. A Preview: Big O Notation"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — O(1), O(n), and O(n²) are examples of Big O notation, the formal way of writing these growth shapes, covered fully in the very next topic."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Checking one locker vs checking every locker vs checking every pair of lockers",
+      "text": "Grabbing locker #5 directly takes the same effort no matter how many lockers exist in the building — constant time. Checking every locker one by one to find something takes longer as the building grows — linear time. Comparing every locker against every other locker gets dramatically slower as the building grows — quadratic time, since doubling the lockers roughly quadruples the comparisons."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Thinking time complexity measures exact seconds — it describes growth shape, independent of any specific machine's speed.",
+        "Missing a nested loop hiding inside a function call — if a loop calls a function that itself loops over the input, the real complexity may be higher than it looks at first glance.",
+        "Assuming a lower time complexity is always better in every real situation — for very small inputs, a 'worse' complexity algorithm can sometimes be faster in practice due to lower overhead, though this rarely dominates the analysis at the level we'll use it.",
+        "Confusing time complexity with output size — an algorithm that must print n² pairs cannot be faster than O(n²), regardless of how efficient the underlying logic is."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is time complexity?",
+          "answer": "A description of how the amount of work an algorithm performs grows as its input size grows, independent of any specific machine's raw speed."
+        },
+        {
+          "question": "What is the time complexity of accessing a single array element by index?",
+          "answer": "Constant time — it takes the same one step regardless of the array's size."
+        },
+        {
+          "question": "What is the time complexity of a single loop over n elements?",
+          "answer": "Linear time — the work grows directly proportional to n."
+        },
+        {
+          "question": "Why does a nested loop over the same collection typically indicate quadratic time?",
+          "answer": "Because the inner loop runs fully for every single step of the outer loop, giving roughly n × n = n² total operations."
+        }
+      ],
+      "thirtySecondAnswer": "Time complexity describes how an algorithm's amount of work grows as its input size grows, not an exact runtime in seconds. Accessing a single array element is constant time, since it doesn't depend on size at all. A single loop over every element is linear time, growing proportionally with input size. A nested loop over the same collection is typically quadratic time, since the inner loop runs fully for every step of the outer one. This distinction matters enormously at scale — an O(n²) algorithm can become impractically slow on large inputs where an O(n) algorithm remains fast, which is why time complexity is central to DSA and coding interviews."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Time Complexity",
+      "text": "O(1) = grab one locker. O(n) = check every locker once. O(n²) = compare every locker against every other locker. Doubling n barely moves O(1), doubles O(n), quadruples O(n²)."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}

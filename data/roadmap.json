@@ -145,6 +145,13 @@
       "topics": [
         { "id": "cpp-recursion", "title": "Recursion", "lesson": "cpp-recursion" }
       ]
+    },
+    {
+      "id": "complexity-analysis",
+      "title": "Complexity Analysis",
+      "topics": [
+        { "id": "dsa-time-complexity", "title": "Time Complexity", "lesson": "dsa-time-complexity" }
+      ]
     }
   ]
 }
