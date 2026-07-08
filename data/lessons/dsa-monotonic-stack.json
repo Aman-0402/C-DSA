@@ -1,0 +1,145 @@
+{
+  "id": "dsa-monotonic-stack",
+  "moduleId": "stacks-queues",
+  "title": "Monotonic Stack",
+  "description": "A stack kept in sorted order by popping violations before pushing: solving Next Greater Element in O(n) instead of O(n²).",
+  "objectives": [
+    "Understand a monotonic stack as a stack maintained in sorted order",
+    "Solve the Next Greater Element problem in O(n)",
+    "Understand why popping before pushing keeps the invariant",
+    "Understand the amortized O(n) analysis"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: A Stack, With an Extra Rule"
+    },
+    {
+      "type": "paragraph",
+      "text": "Stack solved balanced parentheses using plain LIFO order. A monotonic stack adds one rule on top: elements inside it are always kept in increasing (or always decreasing) order, enforced by popping violators before pushing anything new."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Next Greater Element"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// For each element, find the NEXT element to its right that's greater than it (or -1 if none)\nvector<int> numbers = {2, 1, 2, 4, 3};\n// answer:                {4, 2, 4, -1, -1}"
+    },
+    {
+      "type": "heading",
+      "text": "3. The Naive Approach: O(n²)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "for (int i = 0; i < numbers.size(); i++)\n{\n    for (int j = i + 1; j < numbers.size(); j++) // scan RIGHT for every element\n    {\n        if (numbers[j] > numbers[i]) { /* found it */ break; }\n    }\n}"
+    },
+    {
+      "type": "warning",
+      "text": "Recall the nested-loop shape from Time Complexity — checking every element against every later element is O(n²), and it repeats a lot of work: many elements end up re-scanning the same territory."
+    },
+    {
+      "type": "heading",
+      "text": "4. What is a Monotonic Stack?"
+    },
+    {
+      "type": "definition",
+      "term": "Monotonic stack",
+      "text": "A monotonic stack maintains its elements in sorted order (increasing or decreasing) by popping any elements that would violate that order before pushing a new one."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 1, 2, 4, 3};\n    vector<int> result(numbers.size(), -1);\n    stack<int> indices; // stores INDICES, kept so their values are decreasing top-to-bottom\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        while (!indices.empty() && numbers[indices.top()] < numbers[i])\n        {\n            result[indices.top()] = numbers[i]; // numbers[i] IS the next greater element\n            indices.pop();\n        }\n        indices.push(i);\n    }\n\n    for (int val : result)\n    {\n        cout << val << \" \";\n    }\n\n    return 0;\n}",
+      "output": "4 2 4 -1 -1 ",
+      "retypePractice": true,
+      "retypeId": "dsa-monotonic-stack-nge"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it (numbers = {2, 1, 2, 4, 3})",
+      "points": [
+        "i=0 (2): stack empty → push index 0 → stack: [0]",
+        "i=1 (1): numbers[0]=2 is NOT < 1 → push index 1 → stack: [0, 1]",
+        "i=2 (2): numbers[1]=1 < 2 → pop 1, result[1]=2. numbers[0]=2 is NOT < 2 → push index 2 → stack: [0, 2]",
+        "i=3 (4): numbers[2]=2 < 4 → pop 2, result[2]=4. numbers[0]=2 < 4 → pop 0, result[0]=4. stack empty → push index 3 → stack: [3]",
+        "i=4 (3): numbers[3]=4 is NOT < 3 → push index 4 → stack: [3, 4]",
+        "End: result[3] and result[4] never got popped → stay -1 → final: 4 2 4 -1 -1"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Why O(n): Amortized Analysis"
+    },
+    {
+      "type": "note",
+      "text": "Each index is pushed onto the stack exactly once, and popped at most once — across the entire algorithm, that's at most 2n total stack operations, giving O(n) overall, even though it might look like a nested loop (a for loop containing a while loop) at first glance. This 'each element does a bounded amount of total work across the whole run' reasoning is called amortized analysis."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "People in a line, watching for someone taller behind them",
+      "text": "Imagine people standing in a line, each wanting to know the next person behind them who's taller. As each new, taller person joins the back of the line, everyone shorter still waiting for an answer gets it immediately — resolved and removed from waiting — leaving only people taller than the newcomer still watching. That's the monotonic stack: shorter/smaller waiting elements get resolved and popped the moment something bigger arrives."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Defaulting to the O(n²) nested-loop approach when a single-pass monotonic stack solves it in O(n).",
+        "Storing values instead of indices on the stack — indices are usually needed to know WHERE in the result array to record the answer.",
+        "Getting the comparison direction backward — 'next GREATER element' pops while the stack's top is SMALLER than the current value; a 'next smaller' variant would flip that comparison.",
+        "Assuming the nested for/while loops mean O(n²) — the amortized analysis (each index pushed and popped at most once) is what actually determines the true O(n) complexity here."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a monotonic stack?",
+          "answer": "A stack maintained in sorted (increasing or decreasing) order, by popping any elements that would violate that order before pushing a new one."
+        },
+        {
+          "question": "How does a monotonic stack solve Next Greater Element in O(n)?",
+          "answer": "For each new element, pop and resolve every smaller element still waiting on the stack (the new element is their next greater element), then push the current element's index."
+        },
+        {
+          "question": "Why is Next Greater Element with a monotonic stack O(n) despite having a loop inside a loop?",
+          "answer": "Because each index is pushed at most once and popped at most once across the entire run, giving at most 2n total operations — an amortized O(n), not O(n²)."
+        }
+      ],
+      "thirtySecondAnswer": "A monotonic stack keeps its elements in sorted order by popping violators before pushing new ones. For Next Greater Element, storing indices on the stack while numbers[indices.top()] < numbers[i], each smaller element still waiting gets popped and resolved (its next greater element is the current one) before the current index is pushed. Despite the while loop nested inside a for loop, the true complexity is O(n), not O(n²), because each index is pushed and popped at most once across the whole run — an amortized analysis, contrasting with the naive O(n²) nested-loop comparison approach."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Monotonic Stack",
+      "text": "Monotonic stack = people in line watching for someone taller. New taller arrival resolves and removes everyone shorter still waiting. Each person waits once, resolved once — O(n) total, not O(n²)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-monotonic-stack-nge", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 1, 2, 4, 3};\n    vector<int> result(numbers.size(), -1);\n    stack<int> indices;\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        while (!indices.empty() && numbers[indices.top()] < numbers[i])\n        {\n            result[indices.top()] = numbers[i];\n            indices.pop();\n        }\n        indices.push(i);\n    }\n\n    for (int val : result)\n    {\n        cout << val << \" \";\n    }\n\n    return 0;\n}", "output": "4 2 4 -1 -1 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-monotonic-stack-nge",
+      "reference": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 1, 2, 4, 3};\n    vector<int> result(numbers.size(), -1);\n    stack<int> indices;\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        while (!indices.empty() && numbers[indices.top()] < numbers[i])\n        {\n            result[indices.top()] = numbers[i];\n            indices.pop();\n        }\n        indices.push(i);\n    }\n\n    for (int val : result)\n    {\n        cout << val << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-monotonic-stack-nge"]
+  }
+}
