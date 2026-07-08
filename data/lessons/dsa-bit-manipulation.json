@@ -370,6 +370,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-371",
+      "number": 371,
+      "title": "Sum of Two Integers",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/sum-of-two-integers/",
+      "problemStatement": "Given two integers a and b, return their sum WITHOUT using the + or - operators.",
+      "examples": [
+        { "input": "a = 1, b = 2", "output": "3" }
+      ],
+      "constraints": ["-1000 <= a, b <= 1000"],
+      "hints": [
+        "Binary addition without a carry is exactly XOR: a ^ b gives the sum of each bit position ignoring any carry-out.",
+        "The carry itself, at each bit position, is produced only where BOTH bits are 1 — that's exactly a & b, shifted left one position (a carry moves to the NEXT higher bit).",
+        "Repeat: sum = a ^ b, carry = (a & b) << 1, then a = sum, b = carry — loop until there's no carry left (b becomes 0), just like manual long addition, but recomputed as full binary numbers each round instead of digit by digit."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Simulate long addition bit by bit, tracking a running carry explicitly across 32 bit positions.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint getSum(int a, int b)\n{\n    int result = 0;\n    int carry = 0;\n\n    for (int i = 0; i < 32; i++)\n    {\n        int bitA = (a >> i) & 1;\n        int bitB = (b >> i) & 1;\n\n        int sumBit = bitA ^ bitB ^ carry;\n        carry = (bitA & bitB) | (bitA & carry) | (bitB & carry);\n\n        result |= (sumBit << i);\n    }\n\n    return result;\n}\n\nint main()\n{\n    cout << getSum(1, 2);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(32)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "XOR gives the carry-free sum directly; AND-then-shift gives the carry — repeat until the carry vanishes, without looping over individual bit positions.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint getSum(int a, int b)\n{\n    while (b != 0)\n    {\n        int carry = (unsigned int)(a & b) << 1;\n        a = a ^ b;\n        b = carry;\n    }\n    return a;\n}\n\nint main()\n{\n    cout << getSum(1, 2);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(1) amortized — bounded by the number of bits (32), but typically finishes far sooner",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
