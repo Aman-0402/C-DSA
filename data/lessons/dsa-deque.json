@@ -112,6 +112,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Deque (Sliding Window Max)",
       "text": "Monotonic deque = a leaderboard, new high score kicks out everyone smaller from the back. Front = current champion, expired front = aged out of the window."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Deque in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-641",
+      "number": 641,
+      "title": "Design Circular Deque",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/design-circular-deque/",
+      "problemStatement": "Design a fixed-capacity circular double-ended queue supporting insertFront, insertLast, deleteFront, deleteLast, getFront, getRear, isEmpty, and isFull, all in O(1).",
+      "examples": [
+        { "input": "cap=3; insertLast(1); insertLast(2); insertFront(3); isFull(); getRear(); isFull()", "output": "true, true, true, false, 2, true" }
+      ],
+      "constraints": ["1 <= capacity <= 1000", "at most 2000 calls"],
+      "hints": [
+        "This is Design Circular Queue extended to BOTH ends — the same fixed-array-plus-modulo trick applies, just with insertion/deletion now possible at either side.",
+        "insertFront needs to move the head index BACKWARD (with wraparound) before writing — (head - 1 + capacity) % capacity avoids negative indices.",
+        "insertLast, deleteFront, and isEmpty/isFull work exactly like Design Circular Queue's version — deleteLast is the only genuinely new operation, computed from the current tail position."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Use std::deque directly, letting the STL handle all the underlying wraparound and resizing.",
+          "code": "#include <iostream>\n#include <deque>\n\nusing namespace std;\n\nclass MyCircularDeque {\npublic:\n    deque<int> data;\n    int capacity;\n\n    MyCircularDeque(int k) : capacity(k) {}\n\n    bool insertFront(int value) { if ((int)data.size()==capacity) return false; data.push_front(value); return true; }\n    bool insertLast(int value) { if ((int)data.size()==capacity) return false; data.push_back(value); return true; }\n    bool deleteFront() { if (data.empty()) return false; data.pop_front(); return true; }\n    bool deleteLast() { if (data.empty()) return false; data.pop_back(); return true; }\n    int getFront() { return data.empty() ? -1 : data.front(); }\n    int getRear() { return data.empty() ? -1 : data.back(); }\n    bool isEmpty() { return data.empty(); }\n    bool isFull() { return (int)data.size() == capacity; }\n};\n\nint main()\n{\n    MyCircularDeque dq(3);\n    cout << dq.insertLast(1) << \" \" << dq.insertLast(2) << \" \" << dq.insertFront(3) << \" \";\n    cout << dq.isFull() << \" \" << dq.getRear() << \" \" << dq.isFull() << endl;\n\n    return 0;\n}",
+          "output": "1 1 1 1 2 1",
+          "timeComplexity": "O(1) per operation",
+          "spaceComplexity": "O(capacity)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A fixed-size array with head/count tracking, extended with backward-wrapping insertFront and a computed tail for deleteLast/getRear.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass MyCircularDeque {\npublic:\n    vector<int> data;\n    int capacity, head, count;\n\n    MyCircularDeque(int k) : data(k), capacity(k), head(0), count(0) {}\n\n    bool insertFront(int value)\n    {\n        if (count == capacity) return false;\n        head = (head - 1 + capacity) % capacity;\n        data[head] = value;\n        count++;\n        return true;\n    }\n\n    bool insertLast(int value)\n    {\n        if (count == capacity) return false;\n        data[(head + count) % capacity] = value;\n        count++;\n        return true;\n    }\n\n    bool deleteFront()\n    {\n        if (count == 0) return false;\n        head = (head + 1) % capacity;\n        count--;\n        return true;\n    }\n\n    bool deleteLast()\n    {\n        if (count == 0) return false;\n        count--;\n        return true;\n    }\n\n    int getFront() { return count == 0 ? -1 : data[head]; }\n    int getRear() { return count == 0 ? -1 : data[(head + count - 1) % capacity]; }\n    bool isEmpty() { return count == 0; }\n    bool isFull() { return count == capacity; }\n};\n\nint main()\n{\n    MyCircularDeque dq(3);\n    cout << dq.insertLast(1) << \" \" << dq.insertLast(2) << \" \" << dq.insertFront(3) << \" \";\n    cout << dq.isFull() << \" \" << dq.getRear() << \" \" << dq.isFull() << endl;\n\n    return 0;\n}",
+          "output": "1 1 1 1 2 1",
+          "timeComplexity": "O(1) per operation",
+          "spaceComplexity": "O(capacity), fixed"
+        }
+      ]
     }
   ],
   "codeExamples": [
