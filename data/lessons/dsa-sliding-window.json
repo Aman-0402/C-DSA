@@ -1,0 +1,156 @@
+{
+  "id": "dsa-sliding-window",
+  "moduleId": "array-string-techniques",
+  "title": "Sliding Window",
+  "description": "Two Pointers' same-direction cousin: sliding a window across an array, updating its sum incrementally instead of recomputing it from scratch.",
+  "objectives": [
+    "Understand the problem sliding window solves",
+    "Solve the fixed-size max-subarray-sum problem in O(n)",
+    "Understand the subtract-leaving/add-entering update pattern",
+    "Preview variable-size sliding windows"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Two Pointers' Same-Direction Cousin"
+    },
+    {
+      "type": "paragraph",
+      "text": "Two Pointers previewed a same-direction variant. Sliding window is exactly that idea, specialized for tracking a contiguous \"window\" of elements as it moves across an array."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Recomputing Every Window Sum"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {2, 1, 5, 1, 3, 2};\nint k = 3;\n\nint maxSum = 0;\nfor (int i = 0; i <= numbers.size() - k; i++)\n{\n    int windowSum = 0;\n    for (int j = i; j < i + k; j++) // recomputes the ENTIRE window sum every time\n    {\n        windowSum += numbers[j];\n    }\n    maxSum = max(maxSum, windowSum);\n}"
+    },
+    {
+      "type": "warning",
+      "text": "The inner loop redoes k additions for every single window position, even though consecutive windows overlap almost entirely — this is O(n × k), wasteful repeated work."
+    },
+    {
+      "type": "heading",
+      "text": "3. What is Sliding Window?"
+    },
+    {
+      "type": "definition",
+      "term": "Sliding window",
+      "text": "Sliding window maintains a running result over a contiguous range of elements, updating it incrementally as the range moves by one position, instead of recomputing it from scratch."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Key Insight: Subtract Leaving, Add Entering"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Moving the window one step right:\nwindowSum = windowSum - numbers[i] + numbers[i + k]; // remove the element leaving, add the one entering"
+    },
+    {
+      "type": "note",
+      "text": "Two consecutive windows of size k share k-1 elements — only one element leaves (the old start) and one enters (the new end). Updating the sum by subtracting the leaving element and adding the entering one avoids re-adding everything in between."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 1, 5, 1, 3, 2};\n    int k = 3;\n\n    int windowSum = 0;\n    for (int i = 0; i < k; i++)\n    {\n        windowSum += numbers[i]; // build the FIRST window normally\n    }\n\n    int maxSum = windowSum;\n\n    for (int i = k; i < numbers.size(); i++)\n    {\n        windowSum = windowSum - numbers[i - k] + numbers[i]; // slide by one\n        maxSum = max(maxSum, windowSum);\n    }\n\n    cout << maxSum << endl;\n\n    return 0;\n}",
+      "output": "9",
+      "retypePractice": true,
+      "retypeId": "dsa-sliding-window-maxsum"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "First window [2,1,5] → sum = 8",
+        "Slide: remove 2, add 1 → [1,5,1] → sum = 8 - 2 + 1 = 7",
+        "Slide: remove 1, add 3 → [5,1,3] → sum = 7 - 1 + 3 = 9",
+        "Slide: remove 5, add 2 → [1,3,2] → sum = 9 - 5 + 2 = 6",
+        "Maximum seen: 9"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Complexity: O(n) Instead of O(n × k)"
+    },
+    {
+      "type": "note",
+      "text": "Each slide does two operations (one subtract, one add), regardless of k — the total work across the whole array is O(n), a real improvement over the naive O(n × k), especially when k is large."
+    },
+    {
+      "type": "heading",
+      "text": "7. A Preview: Variable-Size Windows"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — some problems need the window's size to grow and shrink dynamically (for example, \"find the shortest subarray with sum ≥ target\"), rather than staying fixed at k. That's a variable-size sliding window, built from the same core idea but with both ends moving independently as needed."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A 3-day moving average, updated daily",
+      "text": "Tracking a rolling 3-day average temperature doesn't require re-adding all three days from scratch every single day — you drop yesterday's oldest day from the total and add today's new reading. That's a sliding window: the total updates incrementally as the window of days shifts forward by one."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Recomputing the window sum from scratch on every slide — defeats the entire purpose; use subtract-leaving/add-entering instead.",
+        "Getting the leaving index wrong — the element leaving the window at step i is numbers[i - k], not numbers[i].",
+        "Forgetting to initialize the first window's sum with a normal loop before starting the sliding updates.",
+        "Applying a fixed-size window approach to a problem that actually needs a variable-size window, or vice versa."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What problem does the sliding window technique solve?",
+          "answer": "Avoiding repeated, redundant work when computing a running result (like a sum) over every contiguous range of a fixed size in an array."
+        },
+        {
+          "question": "How is a fixed-size window's sum updated when it slides by one position?",
+          "answer": "Subtract the element leaving the window (the old start) and add the element entering it (the new end) — windowSum = windowSum - numbers[i-k] + numbers[i]."
+        },
+        {
+          "question": "What is the time complexity of the sliding window approach for finding the maximum sum subarray of size k, compared to the naive approach?",
+          "answer": "O(n) with sliding window, versus O(n × k) for naively recomputing each window's sum from scratch."
+        }
+      ],
+      "thirtySecondAnswer": "Sliding window maintains a running result, like a sum, over a contiguous range of elements, updating it incrementally as the window moves rather than recomputing it from scratch each time. For a fixed-size window of length k, sliding it by one position only requires subtracting the element that just left and adding the element that just entered — windowSum - numbers[i-k] + numbers[i] — turning an O(n × k) naive approach into O(n). This is a close cousin of the same-direction variant of Two Pointers, and can also be extended to variable-size windows for problems where the window itself needs to grow and shrink dynamically."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Sliding Window",
+      "text": "Sliding window = a rolling average, drop the oldest, add the newest. subtract leaving + add entering, never recompute the whole thing."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-sliding-window-maxsum", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 1, 5, 1, 3, 2};\n    int k = 3;\n\n    int windowSum = 0;\n    for (int i = 0; i < k; i++)\n    {\n        windowSum += numbers[i];\n    }\n\n    int maxSum = windowSum;\n\n    for (int i = k; i < numbers.size(); i++)\n    {\n        windowSum = windowSum - numbers[i - k] + numbers[i];\n        maxSum = max(maxSum, windowSum);\n    }\n\n    cout << maxSum << endl;\n\n    return 0;\n}", "output": "9" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-sliding-window-maxsum",
+      "reference": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 1, 5, 1, 3, 2};\n    int k = 3;\n\n    int windowSum = 0;\n    for (int i = 0; i < k; i++)\n    {\n        windowSum += numbers[i];\n    }\n\n    int maxSum = windowSum;\n\n    for (int i = k; i < numbers.size(); i++)\n    {\n        windowSum = windowSum - numbers[i - k] + numbers[i];\n        maxSum = max(maxSum, windowSum);\n    }\n\n    cout << maxSum << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-sliding-window-maxsum"]
+  }
+}
