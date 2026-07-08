@@ -226,6 +226,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-338",
+      "number": 338,
+      "title": "Counting Bits",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/counting-bits/",
+      "problemStatement": "Given an integer n, return an array ans where ans[i] is the number of 1 bits in the binary representation of i, for every i from 0 to n.",
+      "examples": [
+        { "input": "n = 5", "output": "[0,1,1,2,1,2]" }
+      ],
+      "constraints": ["0 <= n <= 10^5"],
+      "hints": [
+        "Calling LC 191's hammingWeight() independently for every i from 0 to n works, but recomputes from scratch each time — no reuse of smaller answers.",
+        "DP recurrence: dp[i] = dp[i >> 1] + (i & 1) — dropping i's last bit (i >> 1) gives a SMALLER number whose bit count is already known; add back 1 if that dropped bit was itself a 1.",
+        "This is bit manipulation meeting 1D DP directly — the 'smaller subproblem' is just i with its last bit removed."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Call a Hamming-weight count independently for every i from 0 to n, no shared work between them.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint countBits(int n)\n{\n    int count = 0;\n    while (n > 0)\n    {\n        count += (n & 1);\n        n >>= 1;\n    }\n    return count;\n}\n\nvector<int> countBitsArray(int n)\n{\n    vector<int> result(n + 1);\n    for (int i = 0; i <= n; i++) result[i] = countBits(i);\n    return result;\n}\n\nint main()\n{\n    vector<int> result = countBitsArray(5);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "0 1 1 2 1 2 ",
+          "timeComplexity": "O(n log n) — O(log i) work repeated independently for each i",
+          "spaceComplexity": "O(n) for the result array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "DP: each dp[i] reuses the already-computed answer for i with its last bit dropped.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> countBitsArray(int n)\n{\n    vector<int> dp(n + 1, 0);\n    for (int i = 1; i <= n; i++)\n        dp[i] = dp[i >> 1] + (i & 1);\n    return dp;\n}\n\nint main()\n{\n    vector<int> result = countBitsArray(5);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "0 1 1 2 1 2 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result array"
+        }
+      ]
     }
   ],
   "codeExamples": [
