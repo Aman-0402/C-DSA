@@ -113,6 +113,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Queue (Two Stacks)",
       "text": "Two stacks = flip a plate pile onto a second pile. One flip cancels the first stack's reversal, giving true FIFO. Only flip when 'out' is empty — amortized O(1)."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Queue in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-933",
+      "number": 933,
+      "title": "Number of Recent Calls",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/number-of-recent-calls/",
+      "problemStatement": "Implement RecentCounter: ping(t) adds a new request at time t, and returns how many requests happened in the range [t - 3000, t] (inclusive), in milliseconds.",
+      "examples": [
+        { "input": "ping(1); ping(100); ping(3001); ping(3002)", "output": "1, 2, 3, 3" }
+      ],
+      "constraints": ["1 <= t <= 10^9", "ping calls are strictly increasing in t"],
+      "hints": [
+        "This is 'how many recent items fall within a sliding time window' — a queue naturally models a FIFO window of recent requests.",
+        "Every ping adds to the BACK of the queue. Any request older than t - 3000 needs to be removed from the FRONT — exactly FIFO order.",
+        "Since t is strictly increasing, requests naturally leave the window from the front first — no request ever needs to be removed from the middle."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Store every ping in a vector, then count matching entries with a full scan on every call.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass RecentCounter {\npublic:\n    vector<int> pings;\n\n    int ping(int t)\n    {\n        pings.push_back(t);\n        int count = 0;\n        for (int p : pings)\n        {\n            if (p >= t - 3000) count++;\n        }\n        return count;\n    }\n};\n\nint main()\n{\n    RecentCounter rc;\n    cout << rc.ping(1) << \" \" << rc.ping(100) << \" \" << rc.ping(3001) << \" \" << rc.ping(3002) << endl;\n\n    return 0;\n}",
+          "output": "1 2 3 3",
+          "timeComplexity": "O(n) per call",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A queue holds only requests still inside the window — pop from the front while they're too old, then the queue's size is the answer.",
+          "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nclass RecentCounter {\npublic:\n    queue<int> requests;\n\n    int ping(int t)\n    {\n        requests.push(t);\n\n        while (requests.front() < t - 3000)\n        {\n            requests.pop();\n        }\n\n        return requests.size();\n    }\n};\n\nint main()\n{\n    RecentCounter rc;\n    cout << rc.ping(1) << \" \" << rc.ping(100) << \" \" << rc.ping(3001) << \" \" << rc.ping(3002) << endl;\n\n    return 0;\n}",
+          "output": "1 2 3 3",
+          "timeComplexity": "O(1) amortized per call",
+          "spaceComplexity": "O(n) worst case, but bounded by the 3000ms window"
+        }
+      ]
     }
   ],
   "codeExamples": [
