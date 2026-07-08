@@ -179,6 +179,42 @@
           "spaceComplexity": "O(n) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-682",
+      "number": 682,
+      "title": "Baseball Game",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/baseball-game/",
+      "problemStatement": "Given a list of operations: an integer (record a score), \"+\" (sum of the previous two scores), \"D\" (double the previous score), or \"C\" (invalidate/remove the previous score) — return the sum of all valid scores at the end.",
+      "examples": [
+        { "input": "ops = [\"5\",\"2\",\"C\",\"D\",\"+\"]", "output": "30", "explanation": "5, 2 (cancelled), 10 (double of 5), 15 (10+5) → 5+10+15=30." }
+      ],
+      "constraints": ["1 <= ops.length <= 1000"],
+      "hints": [
+        "Every operation depends only on the MOST RECENT score(s) — \"+\" and \"D\" need the last one or two, \"C\" removes the last one — this 'operate on the most recent' pattern is a direct stack signal.",
+        "Push a plain integer score directly. For \"+\" and \"D\", compute using top() (and the value just below top for \"+\") and push the result — don't pop the values \"+\" reads, they stay valid.",
+        "\"C\" is the only operation that actually removes a score — pop() it."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Maintain scores in a vector, using back() and indexing to simulate stack-like access.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint calPoints(vector<string> &ops)\n{\n    vector<int> scores;\n\n    for (string &op : ops)\n    {\n        if (op == \"C\")\n        {\n            scores.pop_back();\n        }\n        else if (op == \"D\")\n        {\n            scores.push_back(scores.back() * 2);\n        }\n        else if (op == \"+\")\n        {\n            int n = scores.size();\n            scores.push_back(scores[n - 1] + scores[n - 2]);\n        }\n        else\n        {\n            scores.push_back(stoi(op));\n        }\n    }\n\n    int total = 0;\n    for (int s : scores) total += s;\n    return total;\n}\n\nint main()\n{\n    vector<string> ops = {\"5\", \"2\", \"C\", \"D\", \"+\"};\n\n    cout << calPoints(ops) << endl;\n\n    return 0;\n}",
+          "output": "30",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "The same logic using an actual stack<int>, matching the operation-on-most-recent-item shape directly.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n#include <string>\n\nusing namespace std;\n\nint calPoints(vector<string> &ops)\n{\n    stack<int> scores;\n\n    for (string &op : ops)\n    {\n        if (op == \"C\")\n        {\n            scores.pop();\n        }\n        else if (op == \"D\")\n        {\n            scores.push(scores.top() * 2);\n        }\n        else if (op == \"+\")\n        {\n            int top = scores.top();\n            scores.pop();\n            int newTop = top + scores.top();\n            scores.push(top);\n            scores.push(newTop);\n        }\n        else\n        {\n            scores.push(stoi(op));\n        }\n    }\n\n    int total = 0;\n    while (!scores.empty())\n    {\n        total += scores.top();\n        scores.pop();\n    }\n    return total;\n}\n\nint main()\n{\n    vector<string> ops = {\"5\", \"2\", \"C\", \"D\", \"+\"};\n\n    cout << calPoints(ops) << endl;\n\n    return 0;\n}",
+          "output": "30",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
