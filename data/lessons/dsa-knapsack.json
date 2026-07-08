@@ -226,6 +226,42 @@
           "spaceComplexity": "O(m * n) for a single 2D table"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1049",
+      "number": 1049,
+      "title": "Last Stone Weight II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/last-stone-weight-ii/",
+      "problemStatement": "Given stone weights, repeatedly smash any two together (both destroyed if equal, or the smaller destroyed and the larger reduced by the smaller's weight otherwise) until at most one stone remains. Return the smallest possible weight of that remaining stone.",
+      "examples": [
+        { "input": "stones = [2,7,4,1,8,1]", "output": "1" }
+      ],
+      "constraints": ["1 <= stones.length <= 30"],
+      "hints": [
+        "The smashing process is equivalent to splitting stones into two groups and computing |sum(group A) - sum(group B)| — every smash sequence corresponds to some such partition, and vice versa.",
+        "Minimizing |sum - 2 * subsetSum| means finding the subset sum CLOSEST TO (but not exceeding) totalSum / 2 — this is exactly LC 416's subset-sum reachability question, just answering 'closest' instead of 'exact'.",
+        "Run the same boolean subset-sum dp up to totalSum / 2; the best achievable subset sum found gives the final answer as totalSum - 2 * bestSum."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp table tracking subset-sum reachability up to totalSum / 2.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nint lastStoneWeightII(vector<int>& stones)\n{\n    int total = accumulate(stones.begin(), stones.end(), 0);\n    int target = total / 2;\n    int n = stones.size();\n\n    vector<vector<bool>> dp(n + 1, vector<bool>(target + 1, false));\n    for (int i = 0; i <= n; i++) dp[i][0] = true;\n\n    for (int i = 1; i <= n; i++)\n        for (int w = 0; w <= target; w++)\n        {\n            dp[i][w] = dp[i - 1][w];\n            if (stones[i - 1] <= w) dp[i][w] = dp[i][w] || dp[i - 1][w - stones[i - 1]];\n        }\n\n    int bestSum = 0;\n    for (int w = target; w >= 0; w--)\n        if (dp[n][w]) { bestSum = w; break; }\n\n    return total - 2 * bestSum;\n}\n\nint main()\n{\n    vector<int> stones = {2, 7, 4, 1, 8, 1};\n    cout << lastStoneWeightII(stones);\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n * total)",
+          "spaceComplexity": "O(n * total) for the full 2D table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Collapse to a single rolling row, iterated right to left per stone.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nint lastStoneWeightII(vector<int>& stones)\n{\n    int total = accumulate(stones.begin(), stones.end(), 0);\n    int target = total / 2;\n\n    vector<bool> dp(target + 1, false);\n    dp[0] = true;\n\n    for (int stone : stones)\n        for (int w = target; w >= stone; w--)\n            dp[w] = dp[w] || dp[w - stone];\n\n    int bestSum = 0;\n    for (int w = target; w >= 0; w--)\n        if (dp[w]) { bestSum = w; break; }\n\n    return total - 2 * bestSum;\n}\n\nint main()\n{\n    vector<int> stones = {2, 7, 4, 1, 8, 1};\n    cout << lastStoneWeightII(stones);\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n * total)",
+          "spaceComplexity": "O(total) for a single row"
+        }
+      ]
     }
   ],
   "codeExamples": [
