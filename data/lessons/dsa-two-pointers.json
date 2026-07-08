@@ -133,6 +133,55 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Two Pointers",
       "text": "Two pointers = two people walking toward each other down a sorted hallway. Sum too small → light person steps forward. Sum too big → heavy person steps back. Meet in O(n), not O(n²)."
+    },
+    {
+      "type": "heading",
+      "text": "9. LeetCode: Two Pointers in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-167",
+      "number": 167,
+      "title": "Two Sum II - Input Array Is Sorted",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "problemStatement": "Given a 1-indexed sorted array numbers, return the indices (1-indexed) of the two numbers that add up to target. Exactly one solution exists, and each element may be used only once.",
+      "examples": [
+        { "input": "numbers = [2,7,11,15], target = 9", "output": "[1,2]", "explanation": "numbers[1-1] + numbers[2-1] = 2 + 7 = 9." },
+        { "input": "numbers = [2,3,4], target = 6", "output": "[1,3]" }
+      ],
+      "constraints": ["2 <= numbers.length <= 3*10^4", "numbers sorted in non-decreasing order", "-1000 <= numbers[i] <= 1000"],
+      "hints": [
+        "This is EXACTLY this lesson's pair-sum-in-a-sorted-array problem — the array is explicitly sorted for you.",
+        "Start pointers at both ends; the sortedness guarantees moving left up only increases the sum, and moving right down only decreases it.",
+        "The answer needs 1-indexed positions — remember to add 1 to each 0-indexed pointer before returning."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every pair with nested loops, ignoring that the array is sorted.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int> &numbers, int target)\n{\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        for (int j = i + 1; j < numbers.size(); j++)\n        {\n            if (numbers[i] + numbers[j] == target) return {i + 1, j + 1};\n        }\n    }\n    return {};\n}\n\nint main()\n{\n    vector<int> numbers = {2, 7, 11, 15};\n\n    vector<int> result = twoSum(numbers, 9);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "1 2",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Better",
+          "explanation": "Use a hash map to remember each value's index, checking for target - numbers[i] in one pass — doesn't need sortedness at all.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int> &numbers, int target)\n{\n    unordered_map<int, int> seen;\n\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        int need = target - numbers[i];\n        if (seen.count(need)) return {seen[need] + 1, i + 1};\n        seen[numbers[i]] = i;\n    }\n    return {};\n}\n\nint main()\n{\n    vector<int> numbers = {2, 7, 11, 15};\n\n    vector<int> result = twoSum(numbers, 9);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "1 2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the hash map"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two pointers from opposite ends, exploiting the guaranteed sorted order to use O(1) extra space instead of a hash map.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int> &numbers, int target)\n{\n    int left = 0, right = numbers.size() - 1;\n\n    while (left < right)\n    {\n        int sum = numbers[left] + numbers[right];\n        if (sum == target) return {left + 1, right + 1};\n        else if (sum < target) left++;\n        else right--;\n    }\n    return {};\n}\n\nint main()\n{\n    vector<int> numbers = {2, 7, 11, 15};\n\n    vector<int> result = twoSum(numbers, 9);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "1 2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
