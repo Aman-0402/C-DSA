@@ -1,0 +1,145 @@
+{
+  "id": "dsa-adjacency-list",
+  "moduleId": "graphs",
+  "title": "Adjacency List",
+  "description": "Each vertex keeps just its own neighbors: O(V+E) space, the far more common representation for sparse graphs and graph traversal.",
+  "objectives": [
+    "Build an adjacency list for a graph",
+    "Understand the O(V+E) space cost",
+    "Know that edge checks cost O(degree), not O(1)",
+    "Compare adjacency list against adjacency matrix directly"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Other Representation"
+    },
+    {
+      "type": "paragraph",
+      "text": "Graph Representation previewed the list as \"for each vertex, a list of exactly the vertices it directly connects to.\" This is the representation you'll see far more often in practice, especially for BFS/Graph BFS and DFS/Graph DFS coming up next."
+    },
+    {
+      "type": "heading",
+      "text": "2. Building an Adjacency List"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int vertices = 5;\nvector<vector<int>> adj(vertices); // adj[i] holds a list of i's DIRECT neighbors\n\n// Add an undirected edge between vertex 0 and vertex 1:\nadj[0].push_back(1);\nadj[1].push_back(0); // undirected — record BOTH directions"
+    },
+    {
+      "type": "note",
+      "text": "Recall push_back() from vector. adj[i] only ever stores i's actual neighbors — no wasted entries for pairs that aren't connected, unlike the matrix's full grid."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> adj(vertices);\n\n    // Undirected edges: 0-1, 0-2, 1-3\n    adj[0].push_back(1); adj[1].push_back(0);\n    adj[0].push_back(2); adj[2].push_back(0);\n    adj[1].push_back(3); adj[3].push_back(1);\n\n    for (int v = 0; v < vertices; v++)\n    {\n        cout << v << \": \";\n        for (int neighbor : adj[v])\n        {\n            cout << neighbor << \" \";\n        }\n        cout << endl;\n    }\n\n    return 0;\n}",
+      "output": "0: 1 2 \n1: 0 3 \n2: 0 \n3: 1 ",
+      "retypePractice": true,
+      "retypeId": "dsa-adjacency-list-basic"
+    },
+    {
+      "type": "note",
+      "text": "Compare directly to Adjacency Matrix's grid for the same graph: instead of a full 4×4 table with mostly zeros, each vertex's row only lists exactly who it's actually connected to."
+    },
+    {
+      "type": "heading",
+      "text": "4. Space: O(V+E)"
+    },
+    {
+      "type": "note",
+      "text": "Total space is proportional to the number of vertices (V, for the outer array) plus the total number of edges (E, for all the neighbor entries combined) — recall Space Complexity. For a sparse graph, where E is much smaller than V², this is dramatically less than the matrix's fixed O(V²)."
+    },
+    {
+      "type": "heading",
+      "text": "5. Edge Check: O(degree), Not O(1)"
+    },
+    {
+      "type": "warning",
+      "text": "This is the trade-off: checking \"does an edge exist between vertex A and vertex B\" with an adjacency list means scanning through A's neighbor list — O(degree of A) in the worst case, not the matrix's guaranteed O(1). For graph traversal (visiting every neighbor of a vertex, which BFS and DFS do constantly), this is exactly what's needed anyway — an adjacency list gives you a vertex's neighbors directly, without wasting time scanning a whole row of mostly zeros."
+    },
+    {
+      "type": "heading",
+      "text": "6. Matrix vs List — Final Comparison"
+    },
+    {
+      "type": "table",
+      "headers": ["Adjacency Matrix", "Adjacency List"],
+      "rows": [
+        ["O(V²) space, always", "O(V+E) space — efficient for sparse graphs"],
+        ["O(1) edge existence check", "O(degree) edge existence check"],
+        ["Iterating a vertex's neighbors wastes time on non-edges", "Iterating a vertex's neighbors is direct and efficient"],
+        ["Better for dense graphs", "Better for sparse graphs — the far more common real-world case"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Each person's own contact list, instead of a village-wide grid",
+      "text": "Recall the matrix's round-robin tournament grid. Most real social networks are more like everyone just keeping their own personal contact list — Aman's list has his actual friends, not a full village-wide grid marking yes/no against every single other resident. For a sparse network like that, personal lists are dramatically more efficient than one giant grid."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to add both directions for an undirected edge — adj[0].push_back(1); alone only records the connection from 0's side.",
+        "Assuming edge existence checks are O(1) with an adjacency list — they're O(degree), since the neighbor list must be scanned.",
+        "Using an adjacency matrix for a large, sparse graph out of habit — the O(V²) cost is usually unjustified there.",
+        "Forgetting adjacency list is the standard choice for traversal-heavy algorithms like BFS and DFS, where visiting each neighbor directly is exactly what's needed."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does an adjacency list represent a graph?",
+          "answer": "Each vertex stores a list of exactly the vertices it directly connects to, rather than a full grid marking every possible pair."
+        },
+        {
+          "question": "What is the space complexity of an adjacency list, and how does it compare to a matrix's?",
+          "answer": "O(V+E), proportional to vertices plus actual edges — far better than a matrix's fixed O(V²) for a sparse graph."
+        },
+        {
+          "question": "Why is edge-existence checking slower with an adjacency list than a matrix?",
+          "answer": "Because it requires scanning through a vertex's neighbor list, O(degree) in the worst case, rather than a matrix's direct O(1) index lookup."
+        },
+        {
+          "question": "Why is adjacency list generally preferred for graph traversal algorithms like BFS and DFS?",
+          "answer": "Because traversal needs to visit each vertex's actual neighbors directly and efficiently, which an adjacency list provides without wasting time scanning a full row of mostly non-existent edges, as a matrix would."
+        }
+      ],
+      "thirtySecondAnswer": "An adjacency list represents a graph by storing, for each vertex, a list of just its actual neighbors — adj[i].push_back(neighbor). This costs O(V+E) space, proportional to vertices plus actual edges, dramatically better than a matrix's fixed O(V²) for sparse graphs, which are far more common in practice. The trade-off is that checking whether a specific edge exists costs O(degree), scanning a neighbor list, rather than a matrix's O(1) lookup — but for traversal algorithms like BFS and DFS, which need to visit every neighbor of a vertex anyway, an adjacency list is both more space-efficient and a more natural fit."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Adjacency List",
+      "text": "Adjacency list = everyone's own personal contact list, not a village-wide grid. O(V+E) space, efficient for sparse graphs. The standard choice for BFS/DFS traversal."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-adjacency-list-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> adj(vertices);\n\n    adj[0].push_back(1); adj[1].push_back(0);\n    adj[0].push_back(2); adj[2].push_back(0);\n    adj[1].push_back(3); adj[3].push_back(1);\n\n    for (int v = 0; v < vertices; v++)\n    {\n        cout << v << \": \";\n        for (int neighbor : adj[v])\n        {\n            cout << neighbor << \" \";\n        }\n        cout << endl;\n    }\n\n    return 0;\n}", "output": "0: 1 2 \n1: 0 3 \n2: 0 \n3: 1 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-adjacency-list-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int vertices = 4;\n    vector<vector<int>> adj(vertices);\n\n    adj[0].push_back(1); adj[1].push_back(0);\n    adj[0].push_back(2); adj[2].push_back(0);\n    adj[1].push_back(3); adj[3].push_back(1);\n\n    for (int v = 0; v < vertices; v++)\n    {\n        cout << v << \": \";\n        for (int neighbor : adj[v])\n        {\n            cout << neighbor << \" \";\n        }\n        cout << endl;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-adjacency-list-basic"]
+  }
+}
