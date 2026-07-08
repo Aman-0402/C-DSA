@@ -221,6 +221,43 @@
           "spaceComplexity": "O(1) extra, excluding the returned prefix"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-242",
+      "number": 242,
+      "title": "Valid Anagram",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/valid-anagram/",
+      "problemStatement": "Given strings s and t, return true if t is an anagram of s.",
+      "examples": [
+        { "input": "s = \"anagram\", t = \"nagaram\"", "output": "true" },
+        { "input": "s = \"rat\", t = \"car\"", "output": "false" }
+      ],
+      "constraints": ["1 <= s.length, t.length <= 5*10^4", "s and t consist of lowercase English letters"],
+      "hints": [
+        "This is exactly this lesson's isAnagram pattern — same length check, same tally-and-cancel idea.",
+        "Since the problem guarantees lowercase English letters only, the character range is small and fixed — is a full hash map really necessary?",
+        "A fixed-size array of 26 counters (indexed by c - 'a') can replace the unordered_map, avoiding hashing overhead entirely."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort both strings — two true anagrams become character-for-character identical once sorted.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nbool isAnagram(string s, string t)\n{\n    if (s.size() != t.size()) return false;\n\n    sort(s.begin(), s.end());\n    sort(t.begin(), t.end());\n\n    return s == t;\n}\n\nint main()\n{\n    cout << (isAnagram(\"anagram\", \"nagaram\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n log n) for the two sorts",
+          "spaceComplexity": "O(1) extra beyond the sort itself"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "This lesson's tally-up/tally-down pattern, using a fixed 26-size array instead of a hash map since the alphabet is known and small.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n\nusing namespace std;\n\nbool isAnagram(string s, string t)\n{\n    if (s.size() != t.size()) return false;\n\n    vector<int> counts(26, 0);\n\n    for (char c : s) counts[c - 'a']++;\n    for (char c : t) counts[c - 'a']--;\n\n    for (int c : counts)\n    {\n        if (c != 0) return false;\n    }\n\n    return true;\n}\n\nint main()\n{\n    cout << (isAnagram(\"anagram\", \"nagaram\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — fixed 26-size array"
+        }
+      ]
     }
   ],
   "codeExamples": [
