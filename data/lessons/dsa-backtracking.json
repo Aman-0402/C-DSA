@@ -297,6 +297,42 @@
           "spaceComplexity": "O(4^n × n) for the output, O(n) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-22",
+      "number": 22,
+      "title": "Generate Parentheses",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/generate-parentheses/",
+      "problemStatement": "Given n pairs of parentheses, return all combinations of well-formed parentheses strings.",
+      "examples": [
+        { "input": "n = 3", "output": "[\"((()))\",\"(()())\",\"(())()\",\"()(())\",\"()()()\"]" }
+      ],
+      "constraints": ["1 <= n <= 8"],
+      "hints": [
+        "Instead of generating every possible string and checking validity afterward, track two counts as choices are made: how many '(' used, and how many ')' used — this PRUNES invalid branches immediately instead of discovering them too late.",
+        "'(' can be added anytime open count is less than n. ')' can only be added if close count is less than open count — otherwise the string would become invalid.",
+        "Base case: current string's length equals 2n — record it."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Generate every string of length 2n using '(' and ')' freely, then filter to keep only the valid ones.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nbool isValid(string &s)\n{\n    int balance = 0;\n    for (char c : s)\n    {\n        balance += (c == '(') ? 1 : -1;\n        if (balance < 0) return false;\n    }\n    return balance == 0;\n}\n\nvoid generate(int n, string &current, vector<string> &result)\n{\n    if (current.size() == 2 * n)\n    {\n        if (isValid(current)) result.push_back(current);\n        return;\n    }\n\n    current.push_back('(');\n    generate(n, current, result);\n    current.pop_back();\n\n    current.push_back(')');\n    generate(n, current, result);\n    current.pop_back();\n}\n\nint main()\n{\n    string current;\n    vector<string> result;\n    generate(3, current, result);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(2^(2n) × n) — generates every string before filtering",
+          "spaceComplexity": "O(2^(2n) × n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Track open/close counts to prune invalid branches immediately — never even attempts an invalid placement.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nvoid backtrack(int n, int openCount, int closeCount, string &current, vector<string> &result)\n{\n    if (current.size() == 2 * n)\n    {\n        result.push_back(current);\n        return;\n    }\n\n    if (openCount < n)\n    {\n        current.push_back('(');\n        backtrack(n, openCount + 1, closeCount, current, result);\n        current.pop_back();\n    }\n\n    if (closeCount < openCount)\n    {\n        current.push_back(')');\n        backtrack(n, openCount, closeCount + 1, current, result);\n        current.pop_back();\n    }\n}\n\nvector<string> generateParenthesis(int n)\n{\n    vector<string> result;\n    string current;\n    backtrack(n, 0, 0, current, result);\n    return result;\n}\n\nint main()\n{\n    auto result = generateParenthesis(3);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(4^n / √n) — the Catalan number bound, far fewer branches explored",
+          "spaceComplexity": "O(4^n / √n) for the output"
+        }
+      ]
     }
   ],
   "codeExamples": [
