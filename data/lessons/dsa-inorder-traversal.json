@@ -100,6 +100,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Inorder Traversal",
       "text": "Inorder = Left, Node, Right — smaller, current, bigger, at every branch. On a BST, this automatically comes out fully sorted. No sorting algorithm needed — the tree's shape does it for you."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Inorder Traversal in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-94",
+      "number": 94,
+      "title": "Binary Tree Inorder Traversal",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+      "problemStatement": "Given the root of a binary tree, return its inorder (Left, Node, Right) traversal as a list of values.",
+      "examples": [
+        { "input": "root = [1,null,2,3]", "output": "[1,3,2]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 100"],
+      "hints": [
+        "This is exactly this lesson's own inorder() function — collect into a vector instead of printing.",
+        "The iterative version is trickier than preorder's: it needs to walk all the way left first, using a stack to remember the path back up.",
+        "Push every node while going left. When you can't go left anymore, pop, visit, then move to that node's right child and repeat."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "This lesson's own recursive Left-Node-Right traversal, collecting into a vector.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid inorder(TreeNode* node, vector<int> &result)\n{\n    if (node == nullptr) return;\n    inorder(node->left, result);\n    result.push_back(node->val);\n    inorder(node->right, result);\n}\n\nvector<int> inorderTraversal(TreeNode* root)\n{\n    vector<int> result;\n    inorder(root, result);\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->right = new TreeNode(2);\n    root->right->left = new TreeNode(3);\n\n    vector<int> result = inorderTraversal(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 3 2 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result, O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative: push while going left, pop-visit-go-right when left is exhausted.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvector<int> inorderTraversal(TreeNode* root)\n{\n    vector<int> result;\n    stack<TreeNode*> st;\n    TreeNode* current = root;\n\n    while (current != nullptr || !st.empty())\n    {\n        while (current != nullptr)\n        {\n            st.push(current);\n            current = current->left;\n        }\n\n        current = st.top();\n        st.pop();\n        result.push_back(current->val);\n\n        current = current->right;\n    }\n\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->right = new TreeNode(2);\n    root->right->left = new TreeNode(3);\n\n    vector<int> result = inorderTraversal(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 3 2 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack, no recursion call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
