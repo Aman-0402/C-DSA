@@ -143,6 +143,42 @@
           "spaceComplexity": "O(n) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1047",
+      "number": 1047,
+      "title": "Remove All Adjacent Duplicates In String",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/",
+      "problemStatement": "Given a string s, repeatedly remove adjacent pairs of identical letters until no more can be removed, and return the final string.",
+      "examples": [
+        { "input": "s = \"abbaca\"", "output": "\"ca\"", "explanation": "\"abbaca\" -> remove \"bb\" -> \"aaca\" -> remove \"aa\" -> \"ca\"." }
+      ],
+      "constraints": ["1 <= s.length <= 10^5"],
+      "hints": [
+        "Removing 'bb' can EXPOSE a new adjacent pair ('aa') that wasn't adjacent before — this cascading behavior is exactly what a stack naturally handles in one pass.",
+        "Walk the string, pushing each character — but before pushing, check if it matches the character currently on TOP of the stack.",
+        "If it matches the top, pop instead of pushing (they cancel out); otherwise push normally. What remains on the stack at the end is the answer."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Repeatedly scan the string for any adjacent matching pair and remove it, restarting the scan each time.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nstring removeDuplicates(string s)\n{\n    bool changed = true;\n    while (changed)\n    {\n        changed = false;\n        for (int i = 0; i + 1 < s.size(); i++)\n        {\n            if (s[i] == s[i + 1])\n            {\n                s.erase(i, 2);\n                changed = true;\n                break;\n            }\n        }\n    }\n    return s;\n}\n\nint main()\n{\n    cout << removeDuplicates(\"abbaca\") << endl;\n\n    return 0;\n}",
+          "output": "ca",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the mutable string"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A single-pass stack: push a character, or pop instead if it matches the current top — cascading cancellations handled automatically.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nstring removeDuplicates(string s)\n{\n    string stack; // used as a stack via back()/push_back()/pop_back()\n\n    for (char c : s)\n    {\n        if (!stack.empty() && stack.back() == c)\n        {\n            stack.pop_back();\n        }\n        else\n        {\n            stack.push_back(c);\n        }\n    }\n\n    return stack;\n}\n\nint main()\n{\n    cout << removeDuplicates(\"abbaca\") << endl;\n\n    return 0;\n}",
+          "output": "ca",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
