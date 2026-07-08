@@ -291,6 +291,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-763",
+      "number": 763,
+      "title": "Partition Labels",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/partition-labels/",
+      "problemStatement": "Given a string s, partition it into as many parts as possible so that each letter appears in at most one part. Return the sizes of these parts.",
+      "examples": [
+        { "input": "s = \"ababcbacadefegdehijhklij\"", "output": "[9,7,8]" }
+      ],
+      "constraints": ["1 <= s.length <= 500"],
+      "hints": [
+        "First record the LAST index each character appears at anywhere in the string — that's the earliest a partition containing that character could possibly end.",
+        "Scan once, greedily tracking 'end', the farthest last-occurrence seen among all characters in the CURRENT partition so far.",
+        "The moment the scan index reaches end, the current partition is forced to close right there (extending it further would only be needed if a new character's last-occurrence pushed end forward) — record its size and start a new partition."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each candidate partition start, repeatedly rescan the growing partition to check whether any of its characters appear again later, expanding until stable.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_set>\n#include <algorithm>\n\nusing namespace std;\n\nvector<int> partitionLabels(string s)\n{\n    vector<int> result;\n    int n = s.size();\n    int start = 0;\n\n    while (start < n)\n    {\n        unordered_set<char> inPartition;\n        int end = start;\n\n        int i = start;\n        while (i <= end)\n        {\n            inPartition.insert(s[i]);\n            for (int j = i + 1; j < n; j++)\n                if (inPartition.count(s[j])) end = max(end, j);\n            i++;\n        }\n\n        result.push_back(end - start + 1);\n        start = end + 1;\n    }\n    return result;\n}\n\nint main()\n{\n    string s = \"ababcbacadefegdehijhklij\";\n    vector<int> result = partitionLabels(s);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "9 7 8 ",
+          "timeComplexity": "O(n^2) worst case from the repeated rescans",
+          "spaceComplexity": "O(1) alphabet-bounded set"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Precompute each character's last occurrence once, then a single greedy pass tracking the current partition's end boundary.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nvector<int> partitionLabels(string s)\n{\n    vector<int> lastIndex(26, 0);\n    for (int i = 0; i < (int)s.size(); i++)\n        lastIndex[s[i] - 'a'] = i;\n\n    vector<int> result;\n    int start = 0, end = 0;\n\n    for (int i = 0; i < (int)s.size(); i++)\n    {\n        end = max(end, lastIndex[s[i] - 'a']);\n        if (i == end)\n        {\n            result.push_back(end - start + 1);\n            start = i + 1;\n        }\n    }\n    return result;\n}\n\nint main()\n{\n    string s = \"ababcbacadefegdehijhklij\";\n    vector<int> result = partitionLabels(s);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "9 7 8 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — fixed 26-letter array"
+        }
+      ]
     }
   ],
   "codeExamples": [
