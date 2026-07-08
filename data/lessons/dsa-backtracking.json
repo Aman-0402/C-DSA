@@ -189,6 +189,42 @@
           "spaceComplexity": "O(n × n!) for the output"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-77",
+      "number": 77,
+      "title": "Combinations",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/combinations/",
+      "problemStatement": "Given two integers n and k, return all possible combinations of k numbers chosen from the range [1, n].",
+      "examples": [
+        { "input": "n = 4, k = 2", "output": "[[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]" }
+      ],
+      "constraints": ["1 <= n <= 20", "1 <= k <= n"],
+      "hints": [
+        "Unlike Permutations, order doesn't matter here — [1,2] and [2,1] are the SAME combination, so only one should be generated.",
+        "Prevent duplicates by only ever choosing numbers LARGER than the last one picked — pass a 'start' index forward instead of tracking a used[] array.",
+        "Base case: once the current combination has k numbers, record it and stop going deeper."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Generate every subset (like Subsets) and keep only the ones with exactly k elements.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(int n, int index, vector<int> &current, vector<vector<int>> &result)\n{\n    if (index > n)\n    {\n        if (current.size() == 2) result.push_back(current); // hardcoded k=2 for this demo\n        return;\n    }\n\n    backtrack(n, index + 1, current, result);\n\n    current.push_back(index);\n    backtrack(n, index + 1, current, result);\n    current.pop_back();\n}\n\nint main()\n{\n    vector<int> current;\n    vector<vector<int>> result;\n\n    backtrack(4, 1, current, result);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(2ⁿ) — generates every subset before filtering",
+          "spaceComplexity": "O(2ⁿ)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Backtracking with a 'start' index that only moves forward — each choice only considers numbers larger than the last one picked, so no duplicate combination is ever generated.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(int n, int k, int start, vector<int> &current, vector<vector<int>> &result)\n{\n    if (current.size() == k)\n    {\n        result.push_back(current);\n        return;\n    }\n\n    for (int i = start; i <= n; i++)\n    {\n        current.push_back(i);\n        backtrack(n, k, i + 1, current, result);\n        current.pop_back();\n    }\n}\n\nvector<vector<int>> combine(int n, int k)\n{\n    vector<vector<int>> result;\n    vector<int> current;\n    backtrack(n, k, 1, current, result);\n    return result;\n}\n\nint main()\n{\n    auto result = combine(4, 2);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(k × C(n,k))",
+          "spaceComplexity": "O(k × C(n,k)) for the output"
+        }
+      ]
     }
   ],
   "codeExamples": [
