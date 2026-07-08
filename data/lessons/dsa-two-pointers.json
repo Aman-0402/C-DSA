@@ -182,6 +182,51 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-125",
+      "number": 125,
+      "title": "Valid Palindrome",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/valid-palindrome/",
+      "problemStatement": "Given a string s, considering only alphanumeric characters and ignoring case, return true if it reads the same forward and backward.",
+      "examples": [
+        { "input": "s = \"A man, a plan, a canal: Panama\"", "output": "true" },
+        { "input": "s = \"race a car\"", "output": "false" }
+      ],
+      "constraints": ["1 <= s.length <= 2*10^5", "s consists of printable ASCII characters"],
+      "hints": [
+        "A palindrome check is naturally a two-pointer, opposite-ends problem — compare the first and last relevant characters, moving inward.",
+        "'Only alphanumeric, ignoring case' means you need to SKIP punctuation/spaces and lowercase each character before comparing — can this be done without building a whole new cleaned string?",
+        "Move the left pointer forward while it's on a non-alphanumeric character, and the right pointer backward the same way, before ever comparing them."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build a fully cleaned (alphanumeric-only, lowercased) copy of the string, then compare it to its own reverse.",
+          "code": "#include <iostream>\n#include <string>\n#include <cctype>\n#include <algorithm>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    string cleaned;\n    for (char c : s)\n    {\n        if (isalnum(c)) cleaned += tolower(c);\n    }\n\n    string reversed = cleaned;\n    reverse(reversed.begin(), reversed.end());\n\n    return cleaned == reversed;\n}\n\nint main()\n{\n    string s = \"A man, a plan, a canal: Panama\";\n\n    cout << (isPalindrome(s) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the cleaned string and its reverse"
+        },
+        {
+          "label": "Better",
+          "explanation": "Build the cleaned string once, then compare it with two pointers from opposite ends instead of building a whole second reversed copy.",
+          "code": "#include <iostream>\n#include <string>\n#include <cctype>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    string cleaned;\n    for (char c : s)\n    {\n        if (isalnum(c)) cleaned += tolower(c);\n    }\n\n    int left = 0, right = cleaned.size() - 1;\n    while (left < right)\n    {\n        if (cleaned[left] != cleaned[right]) return false;\n        left++;\n        right--;\n    }\n\n    return true;\n}\n\nint main()\n{\n    string s = \"A man, a plan, a canal: Panama\";\n\n    cout << (isPalindrome(s) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the cleaned string"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two pointers directly on the ORIGINAL string, skipping non-alphanumeric characters on the fly — no cleaned copy built at all.",
+          "code": "#include <iostream>\n#include <string>\n#include <cctype>\n\nusing namespace std;\n\nbool isPalindrome(string s)\n{\n    int left = 0, right = s.size() - 1;\n\n    while (left < right)\n    {\n        while (left < right && !isalnum(s[left])) left++;\n        while (left < right && !isalnum(s[right])) right--;\n\n        if (tolower(s[left]) != tolower(s[right])) return false;\n\n        left++;\n        right--;\n    }\n\n    return true;\n}\n\nint main()\n{\n    string s = \"A man, a plan, a canal: Panama\";\n\n    cout << (isPalindrome(s) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) extra"
+        }
+      ]
     }
   ],
   "codeExamples": [
