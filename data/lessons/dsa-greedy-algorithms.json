@@ -147,6 +147,42 @@
           "spaceComplexity": "O(1) extra space beyond the sort"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-121",
+      "number": 121,
+      "title": "Best Time to Buy and Sell Stock",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+      "problemStatement": "Given an array of daily stock prices, find the maximum profit from buying on one day and selling on a LATER day. Return 0 if no profit is possible.",
+      "examples": [
+        { "input": "prices = [7,1,5,3,6,4]", "output": "5" }
+      ],
+      "constraints": ["1 <= prices.length <= 10^5"],
+      "hints": [
+        "Greedy choice: at every day, the best possible buy day so far is simply the lowest price seen up to that point — never reconsidered once a later, lower price appears.",
+        "Track minPriceSoFar as you scan once; at each day, the best possible profit if selling TODAY is prices[today] - minPriceSoFar.",
+        "Track a running maxProfit across all days — no need to try every buy/sell pair explicitly."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every pair of buy day and later sell day, keeping the best profit found.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint maxProfit(vector<int>& prices)\n{\n    int best = 0;\n    for (int buy = 0; buy < (int)prices.size(); buy++)\n        for (int sell = buy + 1; sell < (int)prices.size(); sell++)\n            best = max(best, prices[sell] - prices[buy]);\n    return best;\n}\n\nint main()\n{\n    vector<int> prices = {7, 1, 5, 3, 6, 4};\n    cout << maxProfit(prices);\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Single pass, greedily tracking the lowest price seen so far and the best profit possible against it.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint maxProfit(vector<int>& prices)\n{\n    int minPriceSoFar = INT_MAX;\n    int maxProfitSoFar = 0;\n\n    for (int price : prices)\n    {\n        minPriceSoFar = min(minPriceSoFar, price);\n        maxProfitSoFar = max(maxProfitSoFar, price - minPriceSoFar);\n    }\n\n    return maxProfitSoFar;\n}\n\nint main()\n{\n    vector<int> prices = {7, 1, 5, 3, 6, 4};\n    cout << maxProfit(prices);\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
