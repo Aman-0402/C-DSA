@@ -190,6 +190,42 @@
           "spaceComplexity": "O(k)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-205-unordered-map",
+      "number": 205,
+      "title": "Isomorphic Strings",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/isomorphic-strings/",
+      "problemStatement": "Given strings s and t, return true if the characters of s can be replaced to get t, with a consistent one-to-one mapping.",
+      "examples": [
+        { "input": "s = \"egg\", t = \"add\"", "output": "true" }
+      ],
+      "constraints": ["1 <= s.length <= 5*10^4"],
+      "hints": [
+        "Two unordered_map<char, char> instances track the mapping in both directions — s to t, and t to s.",
+        "[]'s auto-creation means checking count() first tells you whether a mapping already exists before comparing it.",
+        "A conflict in either direction immediately disqualifies the strings."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every pair of positions for consistency.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nbool isIsomorphic(string s, string t)\n{\n    for (int i = 0; i < s.size(); i++)\n        for (int j = 0; j < s.size(); j++)\n            if ((s[i] == s[j]) != (t[i] == t[j])) return false;\n    return true;\n}\n\nint main()\n{\n    cout << (isIsomorphic(\"egg\", \"add\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two unordered_map instances enforcing the bijection in a single pass.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool isIsomorphic(string s, string t)\n{\n    unordered_map<char, char> sToT, tToS;\n\n    for (int i = 0; i < s.size(); i++)\n    {\n        char a = s[i], b = t[i];\n        if (sToT.count(a) && sToT[a] != b) return false;\n        if (tToS.count(b) && tToS[b] != a) return false;\n        sToT[a] = b;\n        tToS[b] = a;\n    }\n    return true;\n}\n\nint main()\n{\n    cout << (isIsomorphic(\"egg\", \"add\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k)"
+        }
+      ]
     }
   ],
   "codeExamples": [
