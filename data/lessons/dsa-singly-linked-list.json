@@ -306,6 +306,42 @@
           "spaceComplexity": "O(1) — in place"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-203",
+      "number": 203,
+      "title": "Remove Linked List Elements",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/remove-linked-list-elements/",
+      "problemStatement": "Given the head of a linked list and an integer val, remove all nodes with that value and return the new head.",
+      "examples": [
+        { "input": "head = [1,2,6,3,4,5,6], val = 6", "output": "[1,2,3,4,5]" }
+      ],
+      "constraints": ["0 <= list length <= 10^4"],
+      "hints": [
+        "Deleting the HEAD node is a special case (no 'previous' node exists) — this lesson's deleteValue() has to check for it separately.",
+        "A dummy node placed BEFORE the real head sidesteps that special case entirely: now every node to delete, including the original head, has a 'previous' node.",
+        "Walk with a pointer that always looks one node ahead — skip over (delete) any node whose value matches, otherwise advance."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "This lesson's own deleteValue() logic, called repeatedly until no more matches exist — handling the head specially each time.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* removeElements(ListNode* head, int val)\n{\n    while (head != nullptr && head->val == val)\n    {\n        ListNode* temp = head;\n        head = head->next;\n        delete temp;\n    }\n\n    ListNode* current = head;\n    while (current != nullptr && current->next != nullptr)\n    {\n        if (current->next->val == val)\n        {\n            ListNode* temp = current->next;\n            current->next = current->next->next;\n            delete temp;\n        }\n        else\n        {\n            current = current->next;\n        }\n    }\n\n    return head;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(6);\n    head->next->next->next = new ListNode(3);\n\n    ListNode* result = removeElements(head, 6);\n    for (ListNode* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A dummy node before head eliminates the special-case head-deletion branch entirely — one uniform loop handles every deletion.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* removeElements(ListNode* head, int val)\n{\n    ListNode dummy(0);\n    dummy.next = head;\n    ListNode* current = &dummy;\n\n    while (current->next != nullptr)\n    {\n        if (current->next->val == val)\n        {\n            ListNode* temp = current->next;\n            current->next = current->next->next;\n            delete temp;\n        }\n        else\n        {\n            current = current->next;\n        }\n    }\n\n    return dummy.next;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(6);\n    head->next->next->next = new ListNode(3);\n\n    ListNode* result = removeElements(head, 6);\n    for (ListNode* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — no special-case branch needed"
+        }
+      ]
     }
   ],
   "codeExamples": [
