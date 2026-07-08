@@ -1,0 +1,160 @@
+{
+  "id": "dsa-heap",
+  "moduleId": "heap",
+  "title": "Heap",
+  "description": "The array-based binary tree structure behind priority_queue: the heap property, parent/child index math, and inserting via sift-up.",
+  "objectives": [
+    "Understand the heap property for a max-heap",
+    "Represent a binary tree using a plain array/vector",
+    "Implement insertion with sift-up",
+    "Understand why heap operations are O(log n)"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: priority_queue Previewed This"
+    },
+    {
+      "type": "paragraph",
+      "text": "priority_queue mentioned it's \"typically implemented as a binary heap, built on top of a vector.\" Let's finally build one, by hand."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Heap, Structurally?"
+    },
+    {
+      "type": "definition",
+      "term": "Binary heap",
+      "text": "A binary heap is a complete binary tree (every level fully filled, except possibly the last, filled left to right) satisfying the heap property, stored efficiently in a plain array."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Heap Property"
+    },
+    {
+      "type": "note",
+      "text": "For a max-heap: every parent node's value is greater than or equal to both its children's values. This doesn't mean the array is fully sorted — only that each parent beats its own children, which is enough to guarantee the single largest value always sits at the very root."
+    },
+    {
+      "type": "heading",
+      "text": "4. Representing a Heap in an Array"
+    },
+    {
+      "type": "table",
+      "headers": ["Relationship", "Index formula (0-based)"],
+      "rows": [
+        ["Parent of index i", "(i - 1) / 2"],
+        ["Left child of index i", "2i + 1"],
+        ["Right child of index i", "2i + 2"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "No pointers needed at all — recall Linked List's Node with explicit next/prev; a heap needs none of that. The tree's shape is entirely implicit in the array's positions, using nothing but arithmetic on indices."
+    },
+    {
+      "type": "heading",
+      "text": "5. Inserting: Sift-Up"
+    },
+    {
+      "type": "flow",
+      "title": "Adding a new value",
+      "steps": ["Add the new value at the END of the array (next open spot)", "Compare it to its parent", "If it's bigger than its parent, swap them", "Repeat comparing/swapping upward until it's smaller than its parent, or it reaches the root"]
+    },
+    {
+      "type": "heading",
+      "text": "6. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass MaxHeap\n{\nprivate:\n    vector<int> data;\n\n    void siftUp(int i)\n    {\n        while (i > 0 && data[(i - 1) / 2] < data[i])\n        {\n            swap(data[(i - 1) / 2], data[i]); // parent is smaller — swap up\n            i = (i - 1) / 2;\n        }\n    }\n\npublic:\n    void insert(int value)\n    {\n        data.push_back(value); // add at the end\n        siftUp(data.size() - 1); // restore the heap property\n    }\n\n    int top()\n    {\n        return data[0]; // the max is ALWAYS at the root\n    }\n};\n\nint main()\n{\n    MaxHeap heap;\n    heap.insert(5);\n    heap.insert(10);\n    heap.insert(3);\n    heap.insert(8);\n\n    cout << heap.top() << endl;\n\n    return 0;\n}",
+      "output": "10",
+      "retypePractice": true,
+      "retypeId": "dsa-heap-insert"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing the inserts",
+      "points": [
+        "insert(5): data=[5], no parent to compare",
+        "insert(10): data=[5,10], parent of index1 is index0=5, 5<10 → swap → data=[10,5]",
+        "insert(3): data=[10,5,3], parent of index2 is index0=10, 10 is NOT <3 → no swap, stays",
+        "insert(8): data=[10,5,3,8], parent of index3 is index1=5, 5<8 → swap → data=[10,8,3,5]. New index1's parent is index0=10, 10 is NOT <8 → stop",
+        "top() returns data[0] = 10 — the maximum, always at the root"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Why O(log n)"
+    },
+    {
+      "type": "note",
+      "text": "A complete binary tree with n nodes has a height of only about log₂n — recall this exact reasoning from Binary Search's halving argument, mirrored here. siftUp() moves at most one step per level, so it does at most O(log n) swaps, no matter how large the heap grows."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A tournament bracket where the strongest always rises to the top",
+      "text": "A single-elimination tournament bracket only guarantees the eventual overall winner beat whoever they faced directly — not that every player is ranked against every other player. A heap works the same way: each parent only needs to beat its own two children directly, not the entire structure, and that's enough to guarantee the single overall best value ends up at the very top."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming a heap is fully sorted — it isn't; only each parent-child relationship is guaranteed, not the whole array.",
+        "Getting the index formulas backward — parent is (i-1)/2, children are 2i+1 and 2i+2, using 0-based indexing.",
+        "Forgetting to add the new element at the END before sifting up — sift-up only works correctly starting from the last position.",
+        "Confusing a heap with a binary search tree — a heap only guarantees parent vs children, not left-vs-right ordering the way a BST does."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the heap property for a max-heap?",
+          "answer": "Every parent node's value is greater than or equal to both of its children's values, guaranteeing the maximum value is always at the root."
+        },
+        {
+          "question": "How is a binary heap typically represented in memory, and what are the index formulas for parent and children?",
+          "answer": "As a plain array — for index i (0-based), the parent is at (i-1)/2, the left child is at 2i+1, and the right child is at 2i+2."
+        },
+        {
+          "question": "How does sift-up work when inserting into a heap?",
+          "answer": "Add the new value at the end of the array, then repeatedly compare it to its parent and swap upward while it's larger than its parent, until it's no longer larger or it reaches the root."
+        },
+        {
+          "question": "Why is heap insertion O(log n)?",
+          "answer": "Because a complete binary tree with n nodes has height roughly log₂n, and sift-up moves at most one level per step, bounding the number of swaps by the tree's height."
+        }
+      ],
+      "thirtySecondAnswer": "A binary heap is a complete binary tree stored in a plain array, with no pointers needed — a parent at index i has children at 2i+1 and 2i+2, and its own parent at (i-1)/2. The heap property for a max-heap guarantees every parent is at least as large as its children, which is enough to keep the maximum value always at the root, index 0. Inserting adds the new value at the end and sifts it upward, swapping with its parent while it's larger, until the property is restored — bounded by the tree's height, giving O(log n) insertion, the same logarithmic reasoning behind Binary Search."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Heap",
+      "text": "Heap = a tournament bracket in an array. Parent beats its own children only, not everyone. (i-1)/2 = parent, 2i+1/2i+2 = children. Sift up = bubble the new value toward the top while it keeps winning."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-heap-insert", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass MaxHeap\n{\nprivate:\n    vector<int> data;\n\n    void siftUp(int i)\n    {\n        while (i > 0 && data[(i - 1) / 2] < data[i])\n        {\n            swap(data[(i - 1) / 2], data[i]);\n            i = (i - 1) / 2;\n        }\n    }\n\npublic:\n    void insert(int value)\n    {\n        data.push_back(value);\n        siftUp(data.size() - 1);\n    }\n\n    int top()\n    {\n        return data[0];\n    }\n};\n\nint main()\n{\n    MaxHeap heap;\n    heap.insert(5);\n    heap.insert(10);\n    heap.insert(3);\n    heap.insert(8);\n\n    cout << heap.top() << endl;\n\n    return 0;\n}", "output": "10" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-heap-insert",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass MaxHeap\n{\nprivate:\n    vector<int> data;\n\n    void siftUp(int i)\n    {\n        while (i > 0 && data[(i - 1) / 2] < data[i])\n        {\n            swap(data[(i - 1) / 2], data[i]);\n            i = (i - 1) / 2;\n        }\n    }\n\npublic:\n    void insert(int value)\n    {\n        data.push_back(value);\n        siftUp(data.size() - 1);\n    }\n\n    int top()\n    {\n        return data[0];\n    }\n};\n\nint main()\n{\n    MaxHeap heap;\n    heap.insert(5);\n    heap.insert(10);\n    heap.insert(3);\n    heap.insert(8);\n\n    cout << heap.top() << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-heap-insert"]
+  }
+}

@@ -211,6 +211,13 @@
         { "id": "dsa-queue", "title": "Queue", "lesson": "dsa-queue" },
         { "id": "dsa-deque", "title": "Deque", "lesson": "dsa-deque" }
       ]
+    },
+    {
+      "id": "heap",
+      "title": "Heap",
+      "topics": [
+        { "id": "dsa-heap", "title": "Heap", "lesson": "dsa-heap" }
+      ]
     }
   ]
 }
