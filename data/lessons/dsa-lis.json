@@ -163,6 +163,42 @@
           "spaceComplexity": "O(n) for the tails array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-673",
+      "number": 673,
+      "title": "Number of Longest Increasing Subsequences",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/",
+      "problemStatement": "Given an integer array nums, return the number of longest increasing subsequences (not just the length).",
+      "examples": [
+        { "input": "nums = [1,3,5,4,7]", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 2000"],
+      "hints": [
+        "Keep this lesson's exact dp[i] = LIS length ending at i, but add a second array: count[i] = how many distinct LIS of that length end at index i.",
+        "When extending from j to i (nums[j] < nums[i]): if dp[j] + 1 > dp[i], this is a NEW best length — reset count[i] = count[j]. If dp[j] + 1 == dp[i], this is an EQUALLY good way to reach that length — accumulate: count[i] += count[j].",
+        "Find maxLen = the overall best across dp[], then sum count[i] for every i where dp[i] == maxLen — multiple indices can each independently achieve the longest length."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "This lesson's O(n^2) LIS double loop, extended to also track a count array alongside dp.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint findNumberOfLIS(vector<int>& nums)\n{\n    int n = nums.size();\n    vector<int> dp(n, 1), count(n, 1);\n\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < i; j++)\n            if (nums[j] < nums[i])\n            {\n                if (dp[j] + 1 > dp[i])\n                {\n                    dp[i] = dp[j] + 1;\n                    count[i] = count[j];\n                }\n                else if (dp[j] + 1 == dp[i])\n                {\n                    count[i] += count[j];\n                }\n            }\n\n    int maxLen = 0;\n    for (int val : dp) maxLen = max(maxLen, val);\n\n    int result = 0;\n    for (int i = 0; i < n; i++)\n        if (dp[i] == maxLen) result += count[i];\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 3, 5, 4, 7};\n    cout << findNumberOfLIS(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n) for the dp and count arrays"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same O(n^2) structure — unlike plain LIS length, counting distinct subsequences genuinely requires examining every valid extension, so there's no O(n log n) reduction here without a more advanced data structure (e.g. a Fenwick tree keyed by value).",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint findNumberOfLIS(vector<int>& nums)\n{\n    int n = nums.size();\n    vector<int> dp(n, 1), count(n, 1);\n    int maxLen = 1;\n\n    for (int i = 0; i < n; i++)\n    {\n        for (int j = 0; j < i; j++)\n            if (nums[j] < nums[i])\n            {\n                if (dp[j] + 1 > dp[i])\n                {\n                    dp[i] = dp[j] + 1;\n                    count[i] = count[j];\n                }\n                else if (dp[j] + 1 == dp[i])\n                {\n                    count[i] += count[j];\n                }\n            }\n        maxLen = max(maxLen, dp[i]);\n    }\n\n    int result = 0;\n    for (int i = 0; i < n; i++)\n        if (dp[i] == maxLen) result += count[i];\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 3, 5, 4, 7};\n    cout << findNumberOfLIS(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n) for the dp and count arrays"
+        }
+      ]
     }
   ],
   "codeExamples": [
