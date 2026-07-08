@@ -172,6 +172,42 @@
           "spaceComplexity": "O(h) call stack, h = tree height"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-100",
+      "number": 100,
+      "title": "Same Tree",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/same-tree/",
+      "problemStatement": "Given the roots of two binary trees p and q, return true if they are structurally identical with the same node values.",
+      "examples": [
+        { "input": "p = [1,2,3], q = [1,2,3]", "output": "true" }
+      ],
+      "constraints": ["0 <= number of nodes <= 100"],
+      "hints": [
+        "Two trees match only if BOTH are empty at the same spots, or BOTH have a node with the same value AND matching left/right subtrees — a direct recursive comparison.",
+        "Base cases: both nullptr → true (matching empty). Exactly one nullptr → false (structural mismatch).",
+        "Recursive case: values must match, AND both left subtrees must match, AND both right subtrees must match."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Serialize both trees to strings (preorder with null markers) and compare the strings.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid serialize(TreeNode* node, string &out)\n{\n    if (node == nullptr) { out += \"#,\"; return; }\n    out += to_string(node->val) + \",\";\n    serialize(node->left, out);\n    serialize(node->right, out);\n}\n\nbool isSameTree(TreeNode* p, TreeNode* q)\n{\n    string sp, sq;\n    serialize(p, sp);\n    serialize(q, sq);\n    return sp == sq;\n}\n\nint main()\n{\n    TreeNode* p = new TreeNode(1); p->left = new TreeNode(2); p->right = new TreeNode(3);\n    TreeNode* q = new TreeNode(1); q->left = new TreeNode(2); q->right = new TreeNode(3);\n\n    cout << (isSameTree(p, q) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the serialized strings"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Direct recursive comparison, no serialization needed.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nbool isSameTree(TreeNode* p, TreeNode* q)\n{\n    if (p == nullptr && q == nullptr) return true;\n    if (p == nullptr || q == nullptr) return false;\n\n    return p->val == q->val && isSameTree(p->left, q->left) && isSameTree(p->right, q->right);\n}\n\nint main()\n{\n    TreeNode* p = new TreeNode(1); p->left = new TreeNode(2); p->right = new TreeNode(3);\n    TreeNode* q = new TreeNode(1); q->left = new TreeNode(2); q->right = new TreeNode(3);\n\n    cout << (isSameTree(p, q) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
