@@ -249,6 +249,43 @@
           "spaceComplexity": "O(min(n, charset size)) for the window set"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-567",
+      "number": 567,
+      "title": "Permutation in String",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/permutation-in-string/",
+      "problemStatement": "Given strings s1 and s2, return true if s2 contains a permutation (any character reordering) of s1 as a contiguous substring.",
+      "examples": [
+        { "input": "s1 = \"ab\", s2 = \"eidbaooo\"", "output": "true", "explanation": "s2 contains \"ba\", a permutation of \"ab\"." },
+        { "input": "s1 = \"ab\", s2 = \"eidboaoo\"", "output": "false" }
+      ],
+      "constraints": ["1 <= s1.length, s2.length <= 10^4", "s1 and s2 lowercase English letters"],
+      "hints": [
+        "A permutation of s1 has EXACTLY the same character counts as s1, just reordered — you're really searching for any window with matching letter frequencies.",
+        "s1's length never changes, so this is a FIXED-size window (size = s1.length) sliding across s2, unlike the variable-size windows seen so far.",
+        "Track each window's letter counts as an array of 26 numbers, updating it with the same subtract-leaving/add-entering idea as any sliding window, and compare it to s1's target counts."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every window of s1's length in s2, sort both the window and s1 and compare — a sorted permutation looks identical.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nbool checkInclusion(string s1, string s2)\n{\n    int k = s1.size();\n    string sortedS1 = s1;\n    sort(sortedS1.begin(), sortedS1.end());\n\n    for (int i = 0; i + k <= (int)s2.size(); i++)\n    {\n        string window = s2.substr(i, k);\n        sort(window.begin(), window.end());\n        if (window == sortedS1) return true;\n    }\n\n    return false;\n}\n\nint main()\n{\n    cout << (checkInclusion(\"ab\", \"eidbaooo\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n × k log k)",
+          "spaceComplexity": "O(k) per window copy"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Fixed-size sliding window using 26-letter frequency counts instead of sorting — slide by decrementing the leaving character's count and incrementing the entering one's.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n\nusing namespace std;\n\nbool checkInclusion(string s1, string s2)\n{\n    int k = s1.size();\n    if (k > (int)s2.size()) return false;\n\n    vector<int> need(26, 0), window(26, 0);\n    for (char c : s1) need[c - 'a']++;\n\n    for (int i = 0; i < k; i++) window[s2[i] - 'a']++;\n    if (window == need) return true;\n\n    for (int i = k; i < (int)s2.size(); i++)\n    {\n        window[s2[i] - 'a']++;\n        window[s2[i - k] - 'a']--;\n        if (window == need) return true;\n    }\n\n    return false;\n}\n\nint main()\n{\n    cout << (checkInclusion(\"ab\", \"eidbaooo\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n) — 26-length array comparisons are O(1)",
+          "spaceComplexity": "O(1) — fixed 26-size arrays"
+        }
+      ]
     }
   ],
   "codeExamples": [
