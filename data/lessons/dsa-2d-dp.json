@@ -270,6 +270,42 @@
           "spaceComplexity": "O(n) for a single row"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-931",
+      "number": 931,
+      "title": "Minimum Falling Path Sum",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/minimum-falling-path-sum/",
+      "problemStatement": "Given an n x n matrix, find the minimum sum of a falling path — starting at any cell in the first row, and at each step moving to the row below in the same column or a diagonally adjacent column.",
+      "examples": [
+        { "input": "matrix = [[2,1,3],[6,5,4],[7,8,9]]", "output": "13" }
+      ],
+      "constraints": ["1 <= n <= 100"],
+      "hints": [
+        "Same bottom-up shape as LC 120's Triangle, but each cell now has up to THREE cells below it (down-left, down, down-right) instead of two.",
+        "Recurrence, filled from the second-to-last row upward: dp[j] = matrix[row][j] + min(dp[j-1], dp[j], dp[j+1]) — guarding j-1 and j+1 against going out of bounds.",
+        "Unlike Unique Paths' single fixed starting corner, the path may START anywhere in the first row — the final answer is the MIN across the entire finished top row, not one fixed cell."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp grid, filled bottom-up.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint minFallingPathSum(vector<vector<int>>& matrix)\n{\n    int n = matrix.size();\n    vector<vector<int>> dp = matrix;\n\n    for (int row = n - 2; row >= 0; row--)\n        for (int j = 0; j < n; j++)\n        {\n            int best = dp[row + 1][j];\n            if (j > 0) best = min(best, dp[row + 1][j - 1]);\n            if (j < n - 1) best = min(best, dp[row + 1][j + 1]);\n            dp[row][j] = matrix[row][j] + best;\n        }\n\n    int result = INT_MAX;\n    for (int j = 0; j < n; j++) result = min(result, dp[0][j]);\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> matrix = {{2, 1, 3}, {6, 5, 4}, {7, 8, 9}};\n    cout << minFallingPathSum(matrix);\n\n    return 0;\n}",
+          "output": "13",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n^2) for the full dp grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Each row only depends on the row directly below — collapse to a single rolling row.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint minFallingPathSum(vector<vector<int>>& matrix)\n{\n    int n = matrix.size();\n    vector<int> dp = matrix[n - 1];\n\n    for (int row = n - 2; row >= 0; row--)\n    {\n        vector<int> newDp(n);\n        for (int j = 0; j < n; j++)\n        {\n            int best = dp[j];\n            if (j > 0) best = min(best, dp[j - 1]);\n            if (j < n - 1) best = min(best, dp[j + 1]);\n            newDp[j] = matrix[row][j] + best;\n        }\n        dp = newDp;\n    }\n\n    int result = INT_MAX;\n    for (int val : dp) result = min(result, val);\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> matrix = {{2, 1, 3}, {6, 5, 4}, {7, 8, 9}};\n    cout << minFallingPathSum(matrix);\n\n    return 0;\n}",
+          "output": "13",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n) for a single row"
+        }
+      ]
     }
   ],
   "codeExamples": [
