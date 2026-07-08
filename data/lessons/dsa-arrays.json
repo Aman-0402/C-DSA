@@ -272,6 +272,51 @@
           "spaceComplexity": "O(1) extra"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1470",
+      "number": 1470,
+      "title": "Shuffle the Array",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/shuffle-the-array/",
+      "problemStatement": "Given nums of 2n numbers, where the first n are x1..xn and the last n are y1..yn, return the array in the shuffled form x1,y1,x2,y2,...,xn,yn.",
+      "examples": [
+        { "input": "nums = [2,5,1,3,4,7], n = 3", "output": "[2,3,5,4,1,7]", "explanation": "x = [2,5,1], y = [3,4,7], interleaved." },
+        { "input": "nums = [1,2,3,4], n = 2", "output": "[1,3,2,4]" }
+      ],
+      "constraints": ["1 <= n <= 500", "nums.length == 2n", "1 <= nums[i] <= 10^3"],
+      "hints": [
+        "The 'x' half is nums[0..n-1] and the 'y' half is nums[n..2n-1] — figure out those two ranges first.",
+        "The shuffled position for x[i] is always 2*i, and for y[i] is always 2*i+1 — no searching required, just a direct index formula.",
+        "You can fill both positions for a given i in the SAME loop iteration, computing y[i] as nums[i + n] without ever splitting into two separate arrays."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Split nums into two separate x and y vectors first, then build the result by walking both simultaneously.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> shuffle(vector<int> &nums, int n)\n{\n    vector<int> x(nums.begin(), nums.begin() + n);\n    vector<int> y(nums.begin() + n, nums.end());\n    vector<int> result;\n\n    for (int i = 0; i < n; i++)\n    {\n        result.push_back(x[i]);\n        result.push_back(y[i]);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {2, 5, 1, 3, 4, 7};\n\n    vector<int> result = shuffle(nums, 3);\n\n    for (int v : result) cout << v << \" \";\n\n    return 0;\n}",
+          "output": "2 3 5 4 1 7 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for x, y, AND result — three extra arrays"
+        },
+        {
+          "label": "Better",
+          "explanation": "Skip building x and y separately — read directly from nums at the right offsets while still push_back-ing into a growing result.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> shuffle(vector<int> &nums, int n)\n{\n    vector<int> result;\n\n    for (int i = 0; i < n; i++)\n    {\n        result.push_back(nums[i]);\n        result.push_back(nums[i + n]);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {2, 5, 1, 3, 4, 7};\n\n    vector<int> result = shuffle(nums, 3);\n\n    for (int v : result) cout << v << \" \";\n\n    return 0;\n}",
+          "output": "2 3 5 4 1 7 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for result only"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Pre-size the result vector and write directly to computed indices 2*i and 2*i+1 — no push_back reallocation overhead at all.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> shuffle(vector<int> &nums, int n)\n{\n    vector<int> result(2 * n);\n\n    for (int i = 0; i < n; i++)\n    {\n        result[2 * i] = nums[i];\n        result[2 * i + 1] = nums[i + n];\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {2, 5, 1, 3, 4, 7};\n\n    vector<int> result = shuffle(nums, 3);\n\n    for (int v : result) cout << v << \" \";\n\n    return 0;\n}",
+          "output": "2 3 5 4 1 7 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for result — the minimum possible"
+        }
+      ]
     }
   ],
   "codeExamples": [
