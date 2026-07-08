@@ -311,6 +311,42 @@
           "spaceComplexity": "O(h) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-450",
+      "number": 450,
+      "title": "Delete Node in a BST",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/delete-node-in-a-bst/",
+      "problemStatement": "Given the root of a BST and a key, delete the node with that key, keeping the tree a valid BST, and return the new root.",
+      "examples": [
+        { "input": "root = [5,3,6,2,4,null,7], key = 3", "output": "[5,4,6,2,null,null,7]", "explanation": "3 has two children; it's replaced by its inorder successor, 4." }
+      ],
+      "constraints": ["0 <= number of nodes <= 10^4"],
+      "hints": [
+        "Find the node first using this lesson's search-style walk. Deletion then has three distinct cases, based on how many children the found node has.",
+        "0 or 1 child: simply replace the node with its (possibly null) single child — no restructuring needed, similar to a linked list's 'skip over it' deletion.",
+        "2 children: the node CAN'T just be removed — replace its value with its inorder successor (the smallest value in its right subtree), then delete that successor from the right subtree instead (which is guaranteed to have at most one child)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect all values except the key, then rebuild a fresh BST from scratch by re-inserting each one.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid collect(TreeNode* node, int key, vector<int> &values)\n{\n    if (node == nullptr) return;\n    collect(node->left, key, values);\n    if (node->val != key) values.push_back(node->val);\n    collect(node->right, key, values);\n}\n\nTreeNode* insert(TreeNode* node, int value)\n{\n    if (node == nullptr) return new TreeNode(value);\n    if (value < node->val) node->left = insert(node->left, value);\n    else node->right = insert(node->right, value);\n    return node;\n}\n\nTreeNode* deleteNode(TreeNode* root, int key)\n{\n    vector<int> values;\n    collect(root, key, values);\n\n    TreeNode* newRoot = nullptr;\n    for (int v : values) newRoot = insert(newRoot, v);\n    return newRoot;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(3);\n    root->right = new TreeNode(6);\n    root->left->left = new TreeNode(2);\n    root->left->right = new TreeNode(4);\n    root->right->right = new TreeNode(7);\n\n    TreeNode* result = deleteNode(root, 3);\n    cout << result->val << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n) — rebuilds the whole tree",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Locate the node, then handle its removal based on child count — reuses existing nodes, no rebuilding.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* findMin(TreeNode* node)\n{\n    while (node->left != nullptr) node = node->left;\n    return node;\n}\n\nTreeNode* deleteNode(TreeNode* root, int key)\n{\n    if (root == nullptr) return nullptr;\n\n    if (key < root->val)\n    {\n        root->left = deleteNode(root->left, key);\n    }\n    else if (key > root->val)\n    {\n        root->right = deleteNode(root->right, key);\n    }\n    else\n    {\n        if (root->left == nullptr) return root->right;\n        if (root->right == nullptr) return root->left;\n\n        TreeNode* successor = findMin(root->right);\n        root->val = successor->val;\n        root->right = deleteNode(root->right, successor->val);\n    }\n\n    return root;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(3);\n    root->right = new TreeNode(6);\n    root->left->left = new TreeNode(2);\n    root->left->right = new TreeNode(4);\n    root->right->right = new TreeNode(7);\n\n    TreeNode* result = deleteNode(root, 3);\n    cout << result->val << endl;\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(log n) on a balanced BST",
+          "spaceComplexity": "O(log n) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
