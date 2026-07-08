@@ -299,6 +299,43 @@
           "spaceComplexity": "O(k) for the count map"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-387",
+      "number": 387,
+      "title": "First Unique Character in a String",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/first-unique-character-in-a-string/",
+      "problemStatement": "Given a string s, return the index of its first non-repeating character, or -1 if none exists.",
+      "examples": [
+        { "input": "s = \"leetcode\"", "output": "0", "explanation": "'l' appears once and is first." },
+        { "input": "s = \"loveleetcode\"", "output": "2", "explanation": "'v' is the first character appearing exactly once." }
+      ],
+      "constraints": ["1 <= s.length <= 10^5"],
+      "hints": [
+        "This is exactly this lesson's Section 2 pattern — the only difference is returning an INDEX instead of the character itself.",
+        "Pass 1: tally every character's total count with unordered_map<char, int>.",
+        "Pass 2: walk the string again in original order, returning the index of the first character whose count is exactly 1."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each character, count its occurrences across the whole string from scratch.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nint firstUniqChar(string s)\n{\n    for (int i = 0; i < s.size(); i++)\n    {\n        if (count(s.begin(), s.end(), s[i]) == 1) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    cout << firstUniqChar(\"leetcode\") << endl;\n\n    return 0;\n}",
+          "output": "0",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two passes with a frequency map: tally everything first, then find the first index with count 1.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nint firstUniqChar(string s)\n{\n    unordered_map<char, int> freq;\n    for (char c : s) freq[c]++;\n\n    for (int i = 0; i < s.size(); i++)\n    {\n        if (freq[s[i]] == 1) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    cout << firstUniqChar(\"leetcode\") << endl;\n\n    return 0;\n}",
+          "output": "0",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(k)"
+        }
+      ]
     }
   ],
   "codeExamples": [
