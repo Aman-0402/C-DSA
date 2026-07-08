@@ -141,6 +141,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-70-dp",
+      "number": 70,
+      "title": "Climbing Stairs",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/climbing-stairs/",
+      "problemStatement": "You can climb 1 or 2 steps at a time. Given n steps, return the number of distinct ways to reach the top.",
+      "examples": [
+        { "input": "n = 5", "output": "8" }
+      ],
+      "constraints": ["1 <= n <= 45"],
+      "hints": [
+        "Optimal substructure: the number of ways to reach step n is exactly ways(n-1) + ways(n-2) — the last move was either a 1-step from n-1 or a 2-step from n-2.",
+        "That recurrence is structurally identical to LC 509's Fibonacci relation — this problem IS Fibonacci, just phrased differently.",
+        "Overlapping subproblems appear the same way: computing ways(n-1) and ways(n-2) both independently need ways(n-3), and so on down the naive recursive tree."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Naive recursion mirroring the ways(n) = ways(n-1) + ways(n-2) recurrence directly.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint climbStairs(int n)\n{\n    if (n <= 2) return n;\n    return climbStairs(n - 1) + climbStairs(n - 2);\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(2^n) — exponential, identical blowup to naive Fibonacci",
+          "spaceComplexity": "O(n) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Bottom-up iteration, keeping only the last two values — same technique as LC 509's optimal Fibonacci.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint climbStairs(int n)\n{\n    if (n <= 2) return n;\n\n    int prev2 = 1, prev1 = 2;\n    for (int i = 3; i <= n; i++)\n    {\n        int current = prev1 + prev2;\n        prev2 = prev1;\n        prev1 = current;\n    }\n    return prev1;\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [],
