@@ -1,0 +1,150 @@
+{
+  "id": "dsa-trees",
+  "moduleId": "trees",
+  "title": "Trees",
+  "description": "From linear to branching: tree terminology, a TreeNode structure, and why trees are naturally suited to recursive algorithms.",
+  "objectives": [
+    "Understand a tree as a branching, hierarchical structure",
+    "Know core terminology: root, leaf, parent, child, height, depth",
+    "Define a basic TreeNode structure",
+    "Write a first recursive tree algorithm: computing height"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Linked List Was Linear, Trees Branch"
+    },
+    {
+      "type": "paragraph",
+      "text": "Every linked list so far had exactly one \"next\" per node — a straight line. A tree lets a node have multiple children, branching outward instead of continuing in one direction."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Tree?"
+    },
+    {
+      "type": "definition",
+      "term": "Tree",
+      "text": "A tree is a hierarchical structure of nodes, starting from one root node, where each node can have zero or more child nodes, and no node is ever its own ancestor (no cycles)."
+    },
+    {
+      "type": "heading",
+      "text": "3. Tree Terminology"
+    },
+    {
+      "type": "table",
+      "headers": ["Term", "Meaning"],
+      "rows": [
+        ["Root", "The single topmost node — the tree's starting point"],
+        ["Parent / Child", "A node directly connected to a node below it (child) / above it (parent)"],
+        ["Leaf", "A node with no children"],
+        ["Height", "The number of edges on the longest path from a node down to a leaf"],
+        ["Depth", "The number of edges from the root down to a specific node"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. A TreeNode Structure"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "struct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};"
+    },
+    {
+      "type": "note",
+      "text": "This particular shape — exactly two children, left and right — is a binary tree, the specific and extremely common kind we'll focus on going forward (its own dedicated topic next). Recall Node from Linked List: same idea (a struct holding data plus pointers to related nodes), just with two links instead of one, branching instead of chaining."
+    },
+    {
+      "type": "heading",
+      "text": "5. Trees Are Naturally Recursive"
+    },
+    {
+      "type": "note",
+      "text": "This is the single most important idea about trees: every subtree is itself a complete, valid tree. root->left points to the root of an entirely separate, smaller tree — which is exactly why Recursion fits trees so naturally: a tree algorithm typically handles the current node, then recursively calls itself on left and right, trusting each call to correctly solve its own smaller subtree."
+    },
+    {
+      "type": "heading",
+      "text": "6. A First Recursive Tree Algorithm: Height"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <algorithm>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nint height(TreeNode *node)\n{\n    if (node == nullptr) // BASE CASE — an empty tree has height -1 (no edges at all)\n    {\n        return -1;\n    }\n    return 1 + max(height(node->left), height(node->right)); // RECURSIVE CASE\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n\n    cout << height(root) << endl;\n\n    return 0;\n}",
+      "output": "2",
+      "retypePractice": true,
+      "retypeId": "dsa-trees-height"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "The tree: 1 is root, with children 2 and 3; 2 has a child 4",
+        "height(4) = 1 + max(height(nullptr), height(nullptr)) = 1 + max(-1,-1) = 0 — a leaf has height 0",
+        "height(2) = 1 + max(height(4)=0, height(nullptr)=-1) = 1 + 0 = 1",
+        "height(3) = 1 + max(-1,-1) = 0 — also a leaf",
+        "height(1) = 1 + max(height(2)=1, height(3)=0) = 1 + 1 = 2 — the final answer"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A family tree, or a company's org chart",
+      "text": "An org chart has one CEO at the root, managers reporting up through it, and individual contributors as leaves with no one reporting to them. Asking \"what's the longest chain of command below this manager?\" is exactly the height question — and answering it naturally means asking the same question of each of that manager's direct reports first, recursively, exactly like the height() function does."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing height and depth — height measures downward from a node to its deepest leaf; depth measures downward from the root to that specific node.",
+        "Forgetting the base case when a node is nullptr — an empty subtree needs a defined height (commonly -1 or 0, depending on convention) for the recursion to terminate correctly.",
+        "Writing an iterative loop for tree problems out of habit — most tree algorithms are naturally, and often most clearly, expressed recursively.",
+        "Forgetting that every subtree is a complete tree in its own right — this is what justifies calling the same function recursively on left and right with full confidence."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a tree, structurally?",
+          "answer": "A hierarchical structure of nodes starting from one root, where each node can have zero or more children, with no cycles."
+        },
+        {
+          "question": "What is the difference between a node's height and its depth?",
+          "answer": "Height is the number of edges from that node down to its deepest leaf; depth is the number of edges from the root down to that node."
+        },
+        {
+          "question": "Why are trees naturally suited to recursive algorithms?",
+          "answer": "Because every subtree of a tree is itself a complete, valid tree — a recursive call on a child node is solving a smaller instance of the exact same problem."
+        }
+      ],
+      "thirtySecondAnswer": "A tree is a hierarchical, branching structure of nodes starting from a single root, where each node can have multiple children, unlike a linked list's single linear chain. Key terms include leaf (a node with no children), height (edges down to the deepest leaf), and depth (edges from the root down to a node). Trees are naturally recursive: every subtree is itself a complete tree, which is why algorithms like computing height work by handling the current node and recursively calling themselves on its children, trusting each call to correctly solve its own smaller subtree — exactly the base-case/recursive-case shape from Recursion, applied to a branching structure instead of a single chain."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Trees",
+      "text": "Tree = an org chart. Root = the CEO. Leaf = nobody reporting further down. Every subtree is its own complete tree — that's why recursion fits trees so naturally."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-trees-height", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <algorithm>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nint height(TreeNode *node)\n{\n    if (node == nullptr)\n    {\n        return -1;\n    }\n    return 1 + max(height(node->left), height(node->right));\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n\n    cout << height(root) << endl;\n\n    return 0;\n}", "output": "2" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-trees-height",
+      "reference": "#include <iostream>\n#include <algorithm>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nint height(TreeNode *node)\n{\n    if (node == nullptr)\n    {\n        return -1;\n    }\n    return 1 + max(height(node->left), height(node->right));\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n\n    cout << height(root) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-trees-height"]
+  }
+}

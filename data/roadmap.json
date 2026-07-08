@@ -219,6 +219,13 @@
         { "id": "dsa-heap", "title": "Heap", "lesson": "dsa-heap" },
         { "id": "dsa-priority-queue", "title": "Priority Queue", "lesson": "dsa-priority-queue" }
       ]
+    },
+    {
+      "id": "trees",
+      "title": "Trees",
+      "topics": [
+        { "id": "dsa-trees", "title": "Trees", "lesson": "dsa-trees" }
+      ]
     }
   ]
 }
