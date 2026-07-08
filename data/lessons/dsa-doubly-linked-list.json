@@ -152,6 +152,42 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-146",
+      "number": 146,
+      "title": "LRU Cache",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/lru-cache/",
+      "problemStatement": "Design a Least Recently Used (LRU) cache with a fixed capacity, supporting get(key) and put(key, value), both in O(1) average time. When capacity is exceeded, evict the least recently used item.",
+      "examples": [
+        { "input": "capacity=2; put(1,1); put(2,2); get(1); put(3,3); get(2); put(4,4); get(1); get(3); get(4)", "output": "1, -1, -1, 3, 4" }
+      ],
+      "constraints": ["1 <= capacity <= 3000", "at most 2*10^5 calls"],
+      "hints": [
+        "O(1) 'find by key' needs a hash map. O(1) 'move to most-recently-used position' and 'evict the least-recently-used' need a data structure where any node can be unlinked and relinked instantly — a doubly linked list, exactly this lesson's structure.",
+        "Combine them: unordered_map<key, Node*> for instant lookup, plus a doubly linked list ordered by recency, with the map's values pointing directly into the list.",
+        "On every get() or put() of an existing key, move that node to the front (most recent). When capacity is exceeded, remove the node at the back (least recent) and erase it from the map too."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Store entries in a vector, scanning it linearly for every get/put and shifting the accessed entry's position — correct, but O(n) per operation.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nclass LRUCache {\npublic:\n    int capacity;\n    vector<pair<int,int>> items; // most recent at the back\n\n    LRUCache(int cap) : capacity(cap) {}\n\n    int get(int key)\n    {\n        for (int i = 0; i < items.size(); i++)\n        {\n            if (items[i].first == key)\n            {\n                pair<int,int> entry = items[i];\n                items.erase(items.begin() + i);\n                items.push_back(entry);\n                return entry.second;\n            }\n        }\n        return -1;\n    }\n\n    void put(int key, int value)\n    {\n        for (int i = 0; i < items.size(); i++)\n        {\n            if (items[i].first == key) { items.erase(items.begin() + i); break; }\n        }\n\n        if (items.size() == capacity) items.erase(items.begin());\n\n        items.push_back({key, value});\n    }\n};\n\nint main()\n{\n    LRUCache cache(2);\n    cache.put(1, 1);\n    cache.put(2, 2);\n    cout << cache.get(1) << \", \";\n    cache.put(3, 3);\n    cout << cache.get(2) << \", \";\n    cache.put(4, 4);\n    cout << cache.get(1) << \", \" << cache.get(3) << \", \" << cache.get(4) << endl;\n\n    return 0;\n}",
+          "output": "1, -1, -1, 3, 4",
+          "timeComplexity": "O(n) per get/put",
+          "spaceComplexity": "O(capacity)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A hash map paired with a doubly linked list: the map gives O(1) lookup, the list gives O(1) move-to-front and O(1) evict-from-back.",
+          "code": "#include <iostream>\n#include <unordered_map>\n\nusing namespace std;\n\nstruct Node {\n    int key, value;\n    Node *prev, *next;\n    Node(int k, int v) : key(k), value(v), prev(nullptr), next(nullptr) {}\n};\n\nclass LRUCache {\npublic:\n    int capacity;\n    unordered_map<int, Node*> cache;\n    Node *head, *tail; // head = most recent, tail = least recent\n\n    LRUCache(int cap) : capacity(cap)\n    {\n        head = new Node(0, 0);\n        tail = new Node(0, 0);\n        head->next = tail;\n        tail->prev = head;\n    }\n\n    void remove(Node* node)\n    {\n        node->prev->next = node->next;\n        node->next->prev = node->prev;\n    }\n\n    void insertAtFront(Node* node)\n    {\n        node->next = head->next;\n        node->prev = head;\n        head->next->prev = node;\n        head->next = node;\n    }\n\n    int get(int key)\n    {\n        if (!cache.count(key)) return -1;\n\n        Node* node = cache[key];\n        remove(node);\n        insertAtFront(node);\n        return node->value;\n    }\n\n    void put(int key, int value)\n    {\n        if (cache.count(key))\n        {\n            remove(cache[key]);\n            delete cache[key];\n        }\n\n        Node* node = new Node(key, value);\n        cache[key] = node;\n        insertAtFront(node);\n\n        if (cache.size() > capacity)\n        {\n            Node* lru = tail->prev;\n            remove(lru);\n            cache.erase(lru->key);\n            delete lru;\n        }\n    }\n};\n\nint main()\n{\n    LRUCache cache(2);\n    cache.put(1, 1);\n    cache.put(2, 2);\n    cout << cache.get(1) << \", \";\n    cache.put(3, 3);\n    cout << cache.get(2) << \", \";\n    cache.put(4, 4);\n    cout << cache.get(1) << \", \" << cache.get(3) << \", \" << cache.get(4) << endl;\n\n    return 0;\n}",
+          "output": "1, -1, -1, 3, 4",
+          "timeComplexity": "O(1) per get/put",
+          "spaceComplexity": "O(capacity)"
+        }
+      ]
     }
   ],
   "codeExamples": [
