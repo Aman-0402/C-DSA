@@ -191,6 +191,51 @@
           "spaceComplexity": "O(1) extra — in place"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-724",
+      "number": 724,
+      "title": "Find Pivot Index",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/find-pivot-index/",
+      "problemStatement": "Given an array nums, return the leftmost pivot index where the sum of all elements to its left equals the sum of all elements to its right (0 if either side is empty). Return -1 if no such index exists.",
+      "examples": [
+        { "input": "nums = [1,7,3,6,5,6]", "output": "3", "explanation": "Left sum (1+7+3)=11, right sum (5+6)=11." },
+        { "input": "nums = [1,2,3]", "output": "-1" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4", "-1000 <= nums[i] <= 1000"],
+      "hints": [
+        "leftSum at index i is exactly this lesson's prefix[i-1] — the sum of everything before i.",
+        "rightSum at index i can be derived from the array's TOTAL sum: total - prefix[i] (everything except index 0..i).",
+        "You don't need to store the whole prefix array — a running leftSum updated as you scan, combined with the precomputed total, is enough."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every candidate index, re-sum its left side and right side from scratch.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint pivotIndex(vector<int> &nums)\n{\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int left = 0, right = 0;\n        for (int j = 0; j < i; j++) left += nums[j];\n        for (int j = i + 1; j < nums.size(); j++) right += nums[j];\n        if (left == right) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {1, 7, 3, 6, 5, 6};\n\n    cout << pivotIndex(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Better",
+          "explanation": "Build the prefix sum array once, then for each i derive leftSum = prefix[i-1] and rightSum = total - prefix[i].",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint pivotIndex(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<int> prefix(n);\n    prefix[0] = nums[0];\n    for (int i = 1; i < n; i++) prefix[i] = prefix[i - 1] + nums[i];\n\n    int total = prefix[n - 1];\n\n    for (int i = 0; i < n; i++)\n    {\n        int left = (i == 0) ? 0 : prefix[i - 1];\n        int right = total - prefix[i];\n        if (left == right) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {1, 7, 3, 6, 5, 6};\n\n    cout << pivotIndex(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the prefix array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Precompute only the total sum, then track a running leftSum in a single pass — no prefix array stored at all.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nint pivotIndex(vector<int> &nums)\n{\n    int total = accumulate(nums.begin(), nums.end(), 0);\n    int leftSum = 0;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int rightSum = total - leftSum - nums[i];\n        if (leftSum == rightSum) return i;\n        leftSum += nums[i];\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {1, 7, 3, 6, 5, 6};\n\n    cout << pivotIndex(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
