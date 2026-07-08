@@ -271,6 +271,42 @@
           "spaceComplexity": "O(k) for the heap"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-295",
+      "number": 295,
+      "title": "Find Median from Data Stream",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/find-median-from-data-stream/",
+      "problemStatement": "Design MedianFinder, supporting addNum(num) and findMedian(), maintaining the median of all numbers added so far.",
+      "examples": [
+        { "input": "addNum(1); addNum(2); findMedian(); addNum(3); findMedian()", "output": "1.5, 2" }
+      ],
+      "constraints": ["-10^5 <= num <= 10^5", "at most 5*10^4 calls"],
+      "hints": [
+        "The median splits all numbers into a lower half and an upper half — tracking those two halves directly, always balanced, avoids re-sorting on every call.",
+        "A MAX-heap holds the lower half (so its top is the largest of the small numbers), and a MIN-heap holds the upper half (so its top is the smallest of the large numbers) — together their tops border the median.",
+        "After every insertion, rebalance so the two heaps differ in size by at most 1 — the median is then either the larger heap's top (odd total) or the average of both tops (even total)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Keep all numbers in a sorted vector, re-inserting in sorted position on every addNum() call.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nclass MedianFinder {\npublic:\n    vector<int> nums;\n\n    void addNum(int num)\n    {\n        nums.insert(upper_bound(nums.begin(), nums.end(), num), num);\n    }\n\n    double findMedian()\n    {\n        int n = nums.size();\n        if (n % 2 == 1) return nums[n / 2];\n        return (nums[n / 2 - 1] + nums[n / 2]) / 2.0;\n    }\n};\n\nint main()\n{\n    MedianFinder mf;\n    mf.addNum(1); mf.addNum(2);\n    cout << mf.findMedian() << \" \";\n    mf.addNum(3);\n    cout << mf.findMedian() << endl;\n\n    return 0;\n}",
+          "output": "1.5 2",
+          "timeComplexity": "O(n) per addNum (insertion shifts elements)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two balanced heaps — a max-heap for the lower half, a min-heap for the upper half — give O(log n) insertion and O(1) median lookup.",
+          "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nclass MedianFinder {\npublic:\n    priority_queue<int> lower; // max-heap\n    priority_queue<int, vector<int>, greater<int>> upper; // min-heap\n\n    void addNum(int num)\n    {\n        if (lower.empty() || num <= lower.top()) lower.push(num);\n        else upper.push(num);\n\n        if (lower.size() > upper.size() + 1)\n        {\n            upper.push(lower.top());\n            lower.pop();\n        }\n        else if (upper.size() > lower.size())\n        {\n            lower.push(upper.top());\n            upper.pop();\n        }\n    }\n\n    double findMedian()\n    {\n        if (lower.size() > upper.size()) return lower.top();\n        return (lower.top() + upper.top()) / 2.0;\n    }\n};\n\nint main()\n{\n    MedianFinder mf;\n    mf.addNum(1); mf.addNum(2);\n    cout << mf.findMedian() << \" \";\n    mf.addNum(3);\n    cout << mf.findMedian() << endl;\n\n    return 0;\n}",
+          "output": "1.5 2",
+          "timeComplexity": "O(log n) per addNum, O(1) per findMedian",
+          "spaceComplexity": "O(n) across both heaps"
+        }
+      ]
     }
   ],
   "codeExamples": [
