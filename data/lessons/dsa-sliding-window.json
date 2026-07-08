@@ -286,6 +286,42 @@
           "spaceComplexity": "O(1) — fixed 26-size arrays"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-438",
+      "number": 438,
+      "title": "Find All Anagrams in a String",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
+      "problemStatement": "Given strings s and p, return the starting indices of all of p's anagrams (character reorderings) found as substrings in s.",
+      "examples": [
+        { "input": "s = \"cbaebabacd\", p = \"abc\"", "output": "[0,6]", "explanation": "\"cba\" at index 0 and \"bac\" at index 6 are both anagrams of \"abc\"." }
+      ],
+      "constraints": ["1 <= s.length, p.length <= 3*10^4", "s and p lowercase English letters"],
+      "hints": [
+        "This is Permutation in String's exact technique — a fixed-size window (size = p.length) sliding across s, comparing letter-frequency counts.",
+        "The only difference: instead of returning true on the first match, COLLECT every starting index where the window's counts match p's.",
+        "Reuse the same 26-length frequency array and subtract-leaving/add-entering slide from Permutation in String."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every window of p's length in s, sort both and compare.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nvector<int> findAnagrams(string s, string p)\n{\n    vector<int> result;\n    int k = p.size();\n    string sortedP = p;\n    sort(sortedP.begin(), sortedP.end());\n\n    for (int i = 0; i + k <= (int)s.size(); i++)\n    {\n        string window = s.substr(i, k);\n        sort(window.begin(), window.end());\n        if (window == sortedP) result.push_back(i);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> result = findAnagrams(\"cbaebabacd\", \"abc\");\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "0 6 ",
+          "timeComplexity": "O(n × k log k)",
+          "spaceComplexity": "O(k) per window copy"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Fixed-size sliding window with 26-letter frequency counts, recording every index where the window matches p's counts.",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n\nusing namespace std;\n\nvector<int> findAnagrams(string s, string p)\n{\n    vector<int> result;\n    int k = p.size();\n    if (k > (int)s.size()) return result;\n\n    vector<int> need(26, 0), window(26, 0);\n    for (char c : p) need[c - 'a']++;\n\n    for (int i = 0; i < k; i++) window[s[i] - 'a']++;\n    if (window == need) result.push_back(0);\n\n    for (int i = k; i < (int)s.size(); i++)\n    {\n        window[s[i] - 'a']++;\n        window[s[i - k] - 'a']--;\n        if (window == need) result.push_back(i - k + 1);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> result = findAnagrams(\"cbaebabacd\", \"abc\");\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "0 6 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — fixed 26-size arrays, output not counted"
+        }
+      ]
     }
   ],
   "codeExamples": [
