@@ -135,6 +135,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Sliding Window",
       "text": "Sliding window = a rolling average, drop the oldest, add the newest. subtract leaving + add entering, never recompute the whole thing."
+    },
+    {
+      "type": "heading",
+      "text": "9. LeetCode: Sliding Window in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-643",
+      "number": 643,
+      "title": "Maximum Average Subarray I",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/maximum-average-subarray-i/",
+      "problemStatement": "Given an array nums and an integer k, find the contiguous subarray of length k that has the maximum average value, and return that average.",
+      "examples": [
+        { "input": "nums = [1,12,-5,-6,50,3], k = 4", "output": "12.75000", "explanation": "Subarray [12,-5,-6,50] sums to 51, average 51/4 = 12.75." }
+      ],
+      "constraints": ["1 <= k <= nums.length <= 10^5", "-10^4 <= nums[i] <= 10^4"],
+      "hints": [
+        "Maximizing the AVERAGE of a fixed-size window is the same as maximizing its SUM — the window size k never changes, so whichever window has the largest sum also has the largest average.",
+        "This is exactly this lesson's fixed-size max-subarray-sum example, with one extra step: divide the best sum by k at the end.",
+        "Build the first window's sum normally, then slide using subtract-leaving/add-entering, tracking the best sum seen."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recompute each window's sum from scratch with a nested loop.",
+          "code": "#include <iostream>\n#include <vector>\n#include <climits>\n\nusing namespace std;\n\ndouble findMaxAverage(vector<int> &nums, int k)\n{\n    int n = nums.size();\n    int maxSum = INT_MIN;\n\n    for (int i = 0; i <= n - k; i++)\n    {\n        int sum = 0;\n        for (int j = i; j < i + k; j++) sum += nums[j];\n        maxSum = max(maxSum, sum);\n    }\n\n    return (double)maxSum / k;\n}\n\nint main()\n{\n    vector<int> nums = {1, 12, -5, -6, 50, 3};\n\n    cout << findMaxAverage(nums, 4) << endl;\n\n    return 0;\n}",
+          "output": "12.75",
+          "timeComplexity": "O(n × k)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Fixed-size sliding window: build the first window's sum, then slide with subtract-leaving/add-entering, tracking the best sum.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\ndouble findMaxAverage(vector<int> &nums, int k)\n{\n    int n = nums.size();\n    int windowSum = 0;\n\n    for (int i = 0; i < k; i++) windowSum += nums[i];\n\n    int maxSum = windowSum;\n\n    for (int i = k; i < n; i++)\n    {\n        windowSum = windowSum - nums[i - k] + nums[i];\n        maxSum = max(maxSum, windowSum);\n    }\n\n    return (double)maxSum / k;\n}\n\nint main()\n{\n    vector<int> nums = {1, 12, -5, -6, 50, 3};\n\n    cout << findMaxAverage(nums, 4) << endl;\n\n    return 0;\n}",
+          "output": "12.75",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
