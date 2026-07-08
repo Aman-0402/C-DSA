@@ -153,6 +153,42 @@
           "spaceComplexity": "O(n × 2ⁿ) for the output, O(n) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-46",
+      "number": 46,
+      "title": "Permutations",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/permutations/",
+      "problemStatement": "Given an array nums of distinct integers, return all possible permutations.",
+      "examples": [
+        { "input": "nums = [1,2,3]", "output": "[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]" }
+      ],
+      "constraints": ["1 <= nums.length <= 6", "all elements distinct"],
+      "hints": [
+        "Unlike Subsets' 'include or exclude' choice, here EVERY element must be used, just in different ORDERS — the choice at each step is 'which unused element goes next.'",
+        "Track which elements are already 'used' in the current permutation being built (a boolean array works well) — trying each unused one, recursing, then marking it unused again (unchoose).",
+        "A permutation is complete once the current combination's size equals nums.size()."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Generate all n^n sequences by choosing freely at each position (including repeats), then filter to keep only the valid permutations.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid generate(vector<int> &nums, vector<int> &current, vector<vector<int>> &result)\n{\n    if (current.size() == nums.size())\n    {\n        vector<int> sortedCurrent = current;\n        vector<int> sortedNums = nums;\n        // only keep it if it's a genuine permutation (all values used exactly once)\n        for (int i = 0; i < sortedCurrent.size(); i++)\n        {\n            int count1 = 0, count2 = 0;\n            for (int v : sortedCurrent) if (v == sortedCurrent[i]) count1++;\n            for (int v : sortedNums) if (v == sortedCurrent[i]) count2++;\n            if (count1 != count2) return;\n        }\n        result.push_back(current);\n        return;\n    }\n\n    for (int n : nums)\n    {\n        current.push_back(n);\n        generate(nums, current, result);\n        current.pop_back();\n    }\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3};\n    vector<int> current;\n    vector<vector<int>> result;\n\n    generate(nums, current, result);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n^n) generated before filtering",
+          "spaceComplexity": "O(n^n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Backtracking with a 'used' tracker: at each position, try every unused element, recurse, then mark it unused again.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(vector<int> &nums, vector<bool> &used, vector<int> &current, vector<vector<int>> &result)\n{\n    if (current.size() == nums.size())\n    {\n        result.push_back(current);\n        return;\n    }\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        if (used[i]) continue;\n\n        used[i] = true;\n        current.push_back(nums[i]);\n\n        backtrack(nums, used, current, result);\n\n        current.pop_back();\n        used[i] = false;\n    }\n}\n\nvector<vector<int>> permute(vector<int> &nums)\n{\n    vector<vector<int>> result;\n    vector<int> current;\n    vector<bool> used(nums.size(), false);\n\n    backtrack(nums, used, current, result);\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3};\n\n    auto result = permute(nums);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n × n!)",
+          "spaceComplexity": "O(n × n!) for the output"
+        }
+      ]
     }
   ],
   "codeExamples": [
