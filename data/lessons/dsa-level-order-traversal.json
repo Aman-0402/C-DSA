@@ -1,0 +1,122 @@
+{
+  "id": "dsa-level-order-traversal",
+  "moduleId": "trees",
+  "title": "Level Order Traversal",
+  "description": "The breadth-first traversal, finally: visiting every node level by level using a queue instead of recursion.",
+  "objectives": [
+    "Understand why recursion alone doesn't naturally give level-by-level order",
+    "Implement level order traversal using a queue",
+    "Trace the algorithm step by step",
+    "Recognize level order as the tree-specific case of BFS"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Breadth-First Family, Finally"
+    },
+    {
+      "type": "paragraph",
+      "text": "Preorder, Inorder, and Postorder were all depth-first — commit to one path, backtrack later. Level Order is the breadth-first approach previewed in Tree Traversals: visit every node at the current depth before moving to the next."
+    },
+    {
+      "type": "heading",
+      "text": "2. Why Recursion Alone Doesn't Give This"
+    },
+    {
+      "type": "warning",
+      "text": "Recall Recursion's call stack (from Stack Memory): a recursive call dives all the way down one path before returning — inherently depth-first behavior. Getting a level-by-level order needs a fundamentally different tool: a structure that processes things in the order they were discovered, which is exactly what a queue (FIFO, from Queue) provides."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Tool: A Queue"
+    },
+    {
+      "type": "flow",
+      "title": "The core idea",
+      "steps": ["Push root into a queue", "While the queue isn't empty: pop the front node, visit it, push its children (left, then right) onto the back", "Because it's FIFO, all of one level gets processed before any of the next level even starts"]
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid levelOrder(TreeNode *root)\n{\n    if (root == nullptr) return;\n\n    queue<TreeNode *> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        TreeNode *current = q.front();\n        q.pop();\n\n        cout << current->data << \" \";\n\n        if (current->left != nullptr) q.push(current->left);\n        if (current->right != nullptr) q.push(current->right);\n    }\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    levelOrder(root);\n\n    return 0;\n}",
+      "output": "1 2 3 4 5 ",
+      "retypePractice": true,
+      "retypeId": "dsa-level-order-traversal-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "q = [1]. Pop 1, visit it, push its children → q = [2, 3]",
+        "Pop 2, visit it, push its children → q = [3, 4, 5]",
+        "Pop 3, visit it, no children to push → q = [4, 5]",
+        "Pop 4, visit it → q = [5]. Pop 5, visit it → q = []",
+        "Result: 1 2 3 4 5 — level by level: root, then both of level 1, then both of level 2"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Announcing an org chart one entire rank at a time",
+      "text": "Recall the org chart. Level order is announcing the CEO, then EVERY VP together (before any director), then EVERY director together (before any manager) — rank by rank, never diving into one VP's entire branch before acknowledging the other VPs. That strict rank-by-rank order is exactly what a queue naturally enforces."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to write level order recursively the same way as the other three orders — it fundamentally needs a queue, not the call stack, to get level-by-level behavior.",
+        "Forgetting to check for nullptr before pushing a child — pushing null children would need extra guards later, or crash on dereference.",
+        "Using a stack instead of a queue — that would produce a different, depth-first-flavored order, not level order.",
+        "Forgetting the initial nullptr check for an empty tree — levelOrder(nullptr) should simply do nothing."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is level order traversal?",
+          "answer": "A breadth-first traversal that visits every node at the current depth/level before moving on to the next level."
+        },
+        {
+          "question": "Why can't level order traversal be implemented the same recursive way as preorder/inorder/postorder?",
+          "answer": "Because recursion naturally dives depth-first down one path before backtracking; level order needs a queue to process nodes in the order they were discovered, level by level."
+        },
+        {
+          "question": "Describe the algorithm for level order traversal.",
+          "answer": "Push the root into a queue; while the queue isn't empty, pop the front node, visit it, and push its non-null children onto the back — FIFO order naturally processes each level fully before the next begins."
+        }
+      ],
+      "thirtySecondAnswer": "Level order traversal is the breadth-first approach previewed in Tree Traversals: visiting every node at the current level before moving to the next. Unlike the depth-first orders, it can't be written with simple recursion, since recursion naturally dives down one path first — instead, it uses a queue: push the root, then repeatedly pop the front node, visit it, and push its children onto the back, letting FIFO order naturally process one full level before the next begins."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Level Order Traversal",
+      "text": "Level order = announce one entire rank before moving to the next. Needs a QUEUE, not recursion — FIFO naturally enforces level-by-level order."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-level-order-traversal-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid levelOrder(TreeNode *root)\n{\n    if (root == nullptr) return;\n\n    queue<TreeNode *> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        TreeNode *current = q.front();\n        q.pop();\n\n        cout << current->data << \" \";\n\n        if (current->left != nullptr) q.push(current->left);\n        if (current->right != nullptr) q.push(current->right);\n    }\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    levelOrder(root);\n\n    return 0;\n}", "output": "1 2 3 4 5 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-level-order-traversal-basic",
+      "reference": "#include <iostream>\n#include <queue>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nvoid levelOrder(TreeNode *root)\n{\n    if (root == nullptr) return;\n\n    queue<TreeNode *> q;\n    q.push(root);\n\n    while (!q.empty())\n    {\n        TreeNode *current = q.front();\n        q.pop();\n\n        cout << current->data << \" \";\n\n        if (current->left != nullptr) q.push(current->left);\n        if (current->right != nullptr) q.push(current->right);\n    }\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    levelOrder(root);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-level-order-traversal-basic"]
+  }
+}
