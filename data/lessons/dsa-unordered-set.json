@@ -248,6 +248,43 @@
           "spaceComplexity": "O(n)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-219",
+      "number": 219,
+      "title": "Contains Duplicate II",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/contains-duplicate-ii/",
+      "problemStatement": "Given an array nums and an integer k, return true if there are two DISTINCT indices i and j such that nums[i] == nums[j] and |i - j| <= k.",
+      "examples": [
+        { "input": "nums = [1,2,3,1], k = 3", "output": "true" },
+        { "input": "nums = [1,2,3,1,2,3], k = 2", "output": "false" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5", "0 <= k <= 10^5"],
+      "hints": [
+        "This is Contains Duplicate PLUS a distance constraint — the duplicate only counts if it's within k positions.",
+        "Recall Sliding Window: maintain a set representing only the last k+1 elements, not the whole array seen so far.",
+        "Before checking each new element against the window-set, remove whatever fell OUTSIDE the window (the element k+1 positions back)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each index, check every other index within k positions for a match.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool containsNearbyDuplicate(vector<int> &nums, int k)\n{\n    for (int i = 0; i < nums.size(); i++)\n    {\n        for (int j = i + 1; j <= i + k && j < nums.size(); j++)\n        {\n            if (nums[i] == nums[j]) return true;\n        }\n    }\n    return false;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 1};\n\n    cout << (containsNearbyDuplicate(nums, 3) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n × k)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A sliding window of size k, maintained as an unordered_set — check membership before inserting, and evict the element that just fell out of range.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nbool containsNearbyDuplicate(vector<int> &nums, int k)\n{\n    unordered_set<int> window;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        if (window.count(nums[i])) return true;\n\n        window.insert(nums[i]);\n\n        if (window.size() > k)\n        {\n            window.erase(nums[i - k]);\n        }\n    }\n\n    return false;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 1};\n\n    cout << (containsNearbyDuplicate(nums, 3) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(min(n, k))"
+        }
+      ]
     }
   ],
   "codeExamples": [
