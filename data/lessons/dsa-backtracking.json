@@ -369,6 +369,42 @@
           "spaceComplexity": "O(L) call stack, no extra grid"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-51",
+      "number": 51,
+      "title": "N-Queens",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/n-queens/",
+      "problemStatement": "Place n queens on an n×n chessboard so no two queens attack each other (same row, column, or diagonal). Return all distinct solutions.",
+      "examples": [
+        { "input": "n = 4", "output": "2 solutions" }
+      ],
+      "constraints": ["1 <= n <= 9"],
+      "hints": [
+        "Since no two queens can share a row, exactly one queen per row can be placed — this turns the problem into 'choose a column for each row, one row at a time,' a natural backtracking structure.",
+        "At each row, try every column; a column choice is valid only if it doesn't conflict with any queen already placed in an earlier row (same column, or same diagonal).",
+        "Diagonal conflicts can be checked with simple arithmetic: two cells (r1,c1) and (r2,c2) share a diagonal if r1-c1 == r2-c2 (one direction) or r1+c1 == r2+c2 (the other)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every possible placement of n queens anywhere on the board (not just one per row), checking full validity only once all n are placed.",
+          "code": "#include <iostream>\n#include <vector>\n#include <cstdlib>\n\nusing namespace std;\n\nbool isValid(vector<int> &cols, int row, int col)\n{\n    for (int r = 0; r < row; r++)\n    {\n        if (cols[r] == col) return false;\n        if (abs(cols[r] - col) == abs(r - row)) return false;\n    }\n    return true;\n}\n\nvoid backtrack(int n, int row, vector<int> &cols, int &count)\n{\n    if (row == n)\n    {\n        count++;\n        return;\n    }\n\n    for (int col = 0; col < n; col++)\n    {\n        if (isValid(cols, row, col))\n        {\n            cols[row] = col;\n            backtrack(n, row + 1, cols, count);\n            cols[row] = -1;\n        }\n    }\n}\n\nint main()\n{\n    int n = 4;\n    vector<int> cols(n, -1);\n    int count = 0;\n\n    backtrack(n, 0, cols, count);\n    cout << count << \" solutions\" << endl;\n\n    return 0;\n}",
+          "output": "2 solutions",
+          "timeComplexity": "O(n!)",
+          "spaceComplexity": "O(n) for cols and the call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same one-queen-per-row backtracking, but with hash sets tracking used columns and diagonals for O(1) conflict checks instead of scanning all placed queens.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nvoid backtrack(int n, int row, vector<int> &cols,\n               unordered_set<int> &usedCols, unordered_set<int> &usedDiag1, unordered_set<int> &usedDiag2,\n               int &count)\n{\n    if (row == n)\n    {\n        count++;\n        return;\n    }\n\n    for (int col = 0; col < n; col++)\n    {\n        int diag1 = row - col;\n        int diag2 = row + col;\n\n        if (usedCols.count(col) || usedDiag1.count(diag1) || usedDiag2.count(diag2)) continue;\n\n        usedCols.insert(col); usedDiag1.insert(diag1); usedDiag2.insert(diag2);\n        backtrack(n, row + 1, cols, usedCols, usedDiag1, usedDiag2, count);\n        usedCols.erase(col); usedDiag1.erase(diag1); usedDiag2.erase(diag2);\n    }\n}\n\nint main()\n{\n    int n = 4;\n    vector<int> cols(n, -1);\n    unordered_set<int> usedCols, usedDiag1, usedDiag2;\n    int count = 0;\n\n    backtrack(n, 0, cols, usedCols, usedDiag1, usedDiag2, count);\n    cout << count << \" solutions\" << endl;\n\n    return 0;\n}",
+          "output": "2 solutions",
+          "timeComplexity": "O(n!) — same branching, but O(1) per conflict check instead of O(n)",
+          "spaceComplexity": "O(n) for the tracking sets"
+        }
+      ]
     }
   ],
   "codeExamples": [
