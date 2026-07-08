@@ -352,6 +352,42 @@
           "spaceComplexity": "O(h) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-112",
+      "number": 112,
+      "title": "Path Sum",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/path-sum/",
+      "problemStatement": "Given the root of a binary tree and an integer targetSum, return true if there exists a root-to-leaf path whose values sum to targetSum.",
+      "examples": [
+        { "input": "root = [5,4,8,11,null,13,4,7,2], targetSum = 22", "output": "true", "explanation": "5+4+11+2 = 22." }
+      ],
+      "constraints": ["0 <= number of nodes <= 5000"],
+      "hints": [
+        "Recall recursion over an array's index (sumArray) from Recursion in DSA — this is the same 'shrink the problem toward a base case' idea, but shrinking a target sum as it recurses down a tree instead of shrinking an index.",
+        "At each node, subtract its value from the remaining target, then recurse into the children with that new, smaller target.",
+        "Base case: a LEAF node (no children) succeeds only if its own value exactly equals whatever target remains at that point."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect every complete root-to-leaf path's total sum into a list, then check if targetSum appears among them.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid collectSums(TreeNode* node, int sum, vector<int> &sums)\n{\n    if (node == nullptr) return;\n    sum += node->val;\n\n    if (node->left == nullptr && node->right == nullptr)\n    {\n        sums.push_back(sum);\n        return;\n    }\n\n    collectSums(node->left, sum, sums);\n    collectSums(node->right, sum, sums);\n}\n\nbool hasPathSum(TreeNode* root, int targetSum)\n{\n    vector<int> sums;\n    collectSums(root, 0, sums);\n\n    for (int s : sums)\n    {\n        if (s == targetSum) return true;\n    }\n    return false;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(4);\n    root->left->left = new TreeNode(11);\n    root->left->left->left = new TreeNode(7);\n    root->left->left->right = new TreeNode(2);\n    root->right = new TreeNode(8);\n    root->right->left = new TreeNode(13);\n\n    cout << (hasPathSum(root, 22) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for storing every path sum"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Shrink the remaining target as recursion descends — no list of sums needed, just a running subtraction.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nbool hasPathSum(TreeNode* root, int targetSum)\n{\n    if (root == nullptr) return false;\n\n    int remaining = targetSum - root->val;\n\n    if (root->left == nullptr && root->right == nullptr)\n    {\n        return remaining == 0;\n    }\n\n    return hasPathSum(root->left, remaining) || hasPathSum(root->right, remaining);\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(5);\n    root->left = new TreeNode(4);\n    root->left->left = new TreeNode(11);\n    root->left->left->left = new TreeNode(7);\n    root->left->left->right = new TreeNode(2);\n    root->right = new TreeNode(8);\n    root->right->left = new TreeNode(13);\n\n    cout << (hasPathSum(root, 22) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
