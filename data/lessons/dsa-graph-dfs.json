@@ -234,6 +234,42 @@
           "spaceComplexity": "O(n^2) worst case for the adjacency list"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-130",
+      "number": 130,
+      "title": "Surrounded Regions",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/surrounded-regions/",
+      "problemStatement": "Given an m x n board of 'X' and 'O', flip every 'O' that is NOT connected to a border 'O' into 'X' (regions fully surrounded by 'X' get captured).",
+      "examples": [
+        { "input": "board = [[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"O\",\"O\",\"X\"],[\"X\",\"X\",\"O\",\"X\"],[\"X\",\"O\",\"X\",\"X\"]]", "output": "[[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"X\",\"X\",\"X\"],[\"X\",\"O\",\"X\",\"X\"]]" }
+      ],
+      "constraints": ["1 <= rows, cols <= 200"],
+      "hints": [
+        "Working forward — flooding each 'O' region and checking if it touches a border — means re-checking border-adjacency for every cell in every region.",
+        "Work backward instead: DFS only from BORDER 'O' cells first, marking every 'O' reachable from the border as safe (e.g. temporarily mark it '#').",
+        "After that DFS pass, a single scan converts: safe-marked cells back to 'O', and every remaining untouched 'O' (never reached from a border) to 'X'."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every 'O' cell, run a DFS/BFS with a separate visited grid to check whether that specific region touches the border.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool touchesBorder(vector<vector<char>>& board, int r, int c, vector<vector<bool>>& visited)\n{\n    int rows = board.size(), cols = board[0].size();\n    if (r < 0 || r >= rows || c < 0 || c >= cols) return false;\n    if (visited[r][c] || board[r][c] != 'O') return false;\n\n    visited[r][c] = true;\n    if (r == 0 || r == rows - 1 || c == 0 || c == cols - 1) return true;\n\n    bool result = false;\n    result |= touchesBorder(board, r + 1, c, visited);\n    result |= touchesBorder(board, r - 1, c, visited);\n    result |= touchesBorder(board, r, c + 1, visited);\n    result |= touchesBorder(board, r, c - 1, visited);\n    return result;\n}\n\nvoid solve(vector<vector<char>>& board)\n{\n    int rows = board.size(), cols = board[0].size();\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n            if (board[r][c] == 'O')\n            {\n                vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n                if (!touchesBorder(board, r, c, visited))\n                    board[r][c] = 'X';\n            }\n}\n\nint main()\n{\n    vector<vector<char>> board = {\n        {'X', 'X', 'X', 'X'},\n        {'X', 'O', 'O', 'X'},\n        {'X', 'X', 'O', 'X'},\n        {'X', 'O', 'X', 'X'}\n    };\n\n    solve(board);\n    for (auto &row : board)\n    {\n        for (char ch : row) cout << ch << \" \";\n        cout << \"| \";\n    }\n\n    return 0;\n}",
+          "output": "X X X X | X X X X | X X X X | X O X X | ",
+          "timeComplexity": "O((rows * cols)^2) worst case — a fresh DFS per 'O' cell",
+          "spaceComplexity": "O(rows * cols) per call for the visited grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "DFS only from border 'O's first, marking safe cells; then one pass converts the rest.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid markSafe(vector<vector<char>>& board, int r, int c)\n{\n    int rows = board.size(), cols = board[0].size();\n    if (r < 0 || r >= rows || c < 0 || c >= cols) return;\n    if (board[r][c] != 'O') return;\n\n    board[r][c] = '#'; // temporarily mark as safe\n    markSafe(board, r + 1, c);\n    markSafe(board, r - 1, c);\n    markSafe(board, r, c + 1);\n    markSafe(board, r, c - 1);\n}\n\nvoid solve(vector<vector<char>>& board)\n{\n    int rows = board.size(), cols = board[0].size();\n\n    for (int r = 0; r < rows; r++)\n    {\n        markSafe(board, r, 0);\n        markSafe(board, r, cols - 1);\n    }\n    for (int c = 0; c < cols; c++)\n    {\n        markSafe(board, 0, c);\n        markSafe(board, rows - 1, c);\n    }\n\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n        {\n            if (board[r][c] == 'O') board[r][c] = 'X';\n            else if (board[r][c] == '#') board[r][c] = 'O';\n        }\n}\n\nint main()\n{\n    vector<vector<char>> board = {\n        {'X', 'X', 'X', 'X'},\n        {'X', 'O', 'O', 'X'},\n        {'X', 'X', 'O', 'X'},\n        {'X', 'O', 'X', 'X'}\n    };\n\n    solve(board);\n    for (auto &row : board)\n    {\n        for (char ch : row) cout << ch << \" \";\n        cout << \"| \";\n    }\n\n    return 0;\n}",
+          "output": "X X X X | X X X X | X X X X | X O X X | ",
+          "timeComplexity": "O(rows * cols)",
+          "spaceComplexity": "O(rows * cols) worst case recursion stack, O(1) extra grid space"
+        }
+      ]
     }
   ],
   "codeExamples": [
