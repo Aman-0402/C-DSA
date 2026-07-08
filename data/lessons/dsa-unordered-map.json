@@ -1,0 +1,140 @@
+{
+  "id": "dsa-unordered-map",
+  "moduleId": "hashing",
+  "title": "unordered_map",
+  "description": "unordered_map's DSA problem-solving patterns beyond Two Sum: first non-repeating character, and grouping items by a computed key.",
+  "objectives": [
+    "Solve the first-non-repeating-character problem with two passes over a frequency map",
+    "Group elements by a computed key using unordered_map<Key, vector<Value>>",
+    "Recognize when a problem's shape signals 'use a hash map'",
+    "Distinguish this DSA usage from the STL container mechanics already covered"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Container Mechanics vs Problem Patterns"
+    },
+    {
+      "type": "paragraph",
+      "text": "The earlier unordered_map topic covered its interface — [], count(), the []-creates-entry gotcha. Hashing then applied it to Two Sum. Here we look at two more classic shapes unordered_map solves."
+    },
+    {
+      "type": "heading",
+      "text": "2. Pattern: First Non-Repeating Character"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nchar firstNonRepeating(string s)\n{\n    unordered_map<char, int> freq;\n\n    for (char c : s)\n    {\n        freq[c]++; // Pass 1: count every character\n    }\n\n    for (char c : s)\n    {\n        if (freq[c] == 1) // Pass 2: find the first one that appeared exactly once\n        {\n            return c;\n        }\n    }\n    return '\\0'; // none found\n}\n\nint main()\n{\n    cout << firstNonRepeating(\"swiss\") << endl;\n\n    return 0;\n}",
+      "output": "w",
+      "retypePractice": true,
+      "retypeId": "dsa-unordered-map-first-nonrepeat"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why two passes",
+      "points": [
+        "Pass 1 builds the complete frequency count for every character — recall unordered_map's freq[c]++ pattern",
+        "Pass 2 walks the string again, in ORIGINAL order, checking each character's final count",
+        "'swiss': s appears 3 times, w appears 1, i appears 1 — but w comes first in the string, so it's the answer",
+        "Overall: O(n) time (two linear passes), O(1) extra space in practice (bounded by the character set size, not the string length)"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Pattern: Grouping by a Computed Key"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<string> words = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n\n    unordered_map<string, vector<string>> groups;\n\n    for (string word : words)\n    {\n        string key = word;\n        sort(key.begin(), key.end()); // \"eat\" and \"tea\" both sort to \"aet\"\n\n        groups[key].push_back(word); // group by that sorted key\n    }\n\n    cout << groups.size() << endl;\n\n    return 0;\n}",
+      "output": "3",
+      "retypePractice": true,
+      "retypeId": "dsa-unordered-map-grouping"
+    },
+    {
+      "type": "note",
+      "text": "This groups anagrams: words that are rearrangements of each other produce the same sorted key. groups[\"aet\"] collects {\"eat\",\"tea\",\"ate\"}, groups[\"ant\"] collects {\"tan\",\"nat\"}, groups[\"abt\"] collects {\"bat\"} — 3 distinct groups. Notice unordered_map<string, vector<string>> — the value type doesn't have to be a simple int; it can be an entire container, exactly matching pair and container-of-containers ideas from earlier."
+    },
+    {
+      "type": "heading",
+      "text": "4. Recognizing the Signal: 'Use a Hash Map'"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Common signals a hash map applies",
+      "points": [
+        "\"Have I seen this before?\" — Two Sum, duplicate detection",
+        "\"How many times does X occur?\" — first non-repeating character, frequency-based problems",
+        "\"Group things that share some computed property\" — anagram grouping, categorizing by a derived key",
+        "Any time an O(n²) nested-loop comparison could instead become an O(1) lookup"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Sorting mail into labeled bins by zip code",
+      "text": "A mail sorting facility doesn't compare every letter to every other letter — it computes each letter's zip code (the key) and drops it straight into the matching bin. Grouping anagrams works the same way: compute each word's 'sorted letters' key, and every word with that same key lands in the same bin automatically."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Trying to find the first non-repeating character in a single pass without first knowing every character's final count — the second pass, in original order, is what makes 'first' correct.",
+        "Forgetting groups[key].push_back(word); relies on []'s auto-creation behavior — a missing key gets a fresh empty vector<string> automatically before push_back() runs.",
+        "Choosing an unstable or inconsistent grouping key — sorting the characters works because any anagram of a word produces the identical sorted string.",
+        "Reaching for nested loops when a 'count things' or 'group things' problem signals a hash map instead."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How would you find the first non-repeating character in a string?",
+          "answer": "Build a frequency count of every character in one pass, then walk the string again in original order and return the first character whose count is exactly 1."
+        },
+        {
+          "question": "How can unordered_map be used to group anagrams together?",
+          "answer": "Compute a canonical key for each word, such as its characters sorted alphabetically, then use unordered_map<string, vector<string>> to collect all words sharing that key into the same group."
+        },
+        {
+          "question": "What kinds of problems typically signal that a hash map is the right tool?",
+          "answer": "Problems asking 'have I seen this before,' 'how many times does this occur,' or 'group items by a shared property' — situations where a hash map turns an O(n²) comparison into O(1) lookups."
+        }
+      ],
+      "thirtySecondAnswer": "Beyond Two Sum, unordered_map solves two other classic shapes: finding the first non-repeating character, using a frequency count built in one pass and checked against the original string order in a second pass, and grouping anagrams, using each word's sorted-character key mapped to unordered_map<string, vector<string>> so every word sharing that key collects into the same group. Both rely on the same underlying signal: whenever a problem asks 'how many times' or 'group by a shared property,' a hash map usually turns an O(n²) brute-force comparison into an O(n) pass."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember unordered_map (DSA)",
+      "text": "First non-repeat = count everything, then re-walk in order. Group anagrams = compute a shared key (sorted letters), drop into the matching bin like sorting mail by zip code."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-unordered-map-first-nonrepeat", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nchar firstNonRepeating(string s)\n{\n    unordered_map<char, int> freq;\n\n    for (char c : s)\n    {\n        freq[c]++;\n    }\n\n    for (char c : s)\n    {\n        if (freq[c] == 1)\n        {\n            return c;\n        }\n    }\n    return '\\0';\n}\n\nint main()\n{\n    cout << firstNonRepeating(\"swiss\") << endl;\n\n    return 0;\n}", "output": "w" },
+    { "id": "dsa-unordered-map-grouping", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<string> words = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n\n    unordered_map<string, vector<string>> groups;\n\n    for (string word : words)\n    {\n        string key = word;\n        sort(key.begin(), key.end());\n\n        groups[key].push_back(word);\n    }\n\n    cout << groups.size() << endl;\n\n    return 0;\n}", "output": "3" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-unordered-map-first-nonrepeat",
+      "reference": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nchar firstNonRepeating(string s)\n{\n    unordered_map<char, int> freq;\n\n    for (char c : s)\n    {\n        freq[c]++;\n    }\n\n    for (char c : s)\n    {\n        if (freq[c] == 1)\n        {\n            return c;\n        }\n    }\n    return '\\0';\n}\n\nint main()\n{\n    cout << firstNonRepeating(\"swiss\") << endl;\n\n    return 0;\n}"
+    },
+    {
+      "id": "dsa-unordered-map-grouping",
+      "reference": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\n\nusing namespace std;\n\nint main()\n{\n    vector<string> words = {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"};\n\n    unordered_map<string, vector<string>> groups;\n\n    for (string word : words)\n    {\n        string key = word;\n        sort(key.begin(), key.end());\n\n        groups[key].push_back(word);\n    }\n\n    cout << groups.size() << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-unordered-map-first-nonrepeat", "dsa-unordered-map-grouping"]
+  }
+}

@@ -171,7 +171,8 @@
       "id": "hashing",
       "title": "Hashing",
       "topics": [
-        { "id": "dsa-hashing", "title": "Hashing", "lesson": "dsa-hashing" }
+        { "id": "dsa-hashing", "title": "Hashing", "lesson": "dsa-hashing" },
+        { "id": "dsa-unordered-map", "title": "unordered_map", "lesson": "dsa-unordered-map" }
       ]
     }
   ]
