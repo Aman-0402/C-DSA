@@ -224,7 +224,8 @@
       "id": "trees",
       "title": "Trees",
       "topics": [
-        { "id": "dsa-trees", "title": "Trees", "lesson": "dsa-trees" }
+        { "id": "dsa-trees", "title": "Trees", "lesson": "dsa-trees" },
+        { "id": "dsa-binary-trees", "title": "Binary Trees", "lesson": "dsa-binary-trees" }
       ]
     }
   ]

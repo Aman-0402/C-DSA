@@ -1,0 +1,153 @@
+{
+  "id": "dsa-binary-trees",
+  "moduleId": "trees",
+  "title": "Binary Trees",
+  "description": "Formalizing the two-children-per-node tree from Trees: the full/complete/perfect/balanced vocabulary, and counting nodes recursively.",
+  "objectives": [
+    "Define a binary tree precisely",
+    "Distinguish full, complete, perfect, and balanced binary trees",
+    "Build a small binary tree by hand",
+    "Count a binary tree's nodes recursively"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We Already Used This Shape"
+    },
+    {
+      "type": "paragraph",
+      "text": "Trees' TreeNode already had exactly left and right — that IS a binary tree. Now let's define it formally and learn its vocabulary."
+    },
+    {
+      "type": "heading",
+      "text": "2. Formal Definition"
+    },
+    {
+      "type": "definition",
+      "term": "Binary tree",
+      "text": "A binary tree is a tree in which every node has at most two children, conventionally distinguished as left and right."
+    },
+    {
+      "type": "heading",
+      "text": "3. Types of Binary Trees"
+    },
+    {
+      "type": "table",
+      "headers": ["Type", "Definition"],
+      "rows": [
+        ["Full", "Every node has either 0 or 2 children — never exactly 1"],
+        ["Complete", "Every level is fully filled except possibly the last, which fills left to right (recall Heap's array-based tree — this is exactly that shape)"],
+        ["Perfect", "Every internal node has exactly 2 children, AND every leaf is at the same depth"],
+        ["Balanced", "The height of the two subtrees of any node never differs by more than some small bound (commonly 1) — kept roughly even"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "These aren't mutually exclusive — a tree can be both full and balanced, for instance. \"Balanced\" specifically will matter a great deal once we reach Binary Search Trees, where an unbalanced tree can quietly ruin performance."
+    },
+    {
+      "type": "heading",
+      "text": "4. Building a Simple Binary Tree"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "struct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nTreeNode *root = new TreeNode{1, nullptr, nullptr};\nroot->left = new TreeNode{2, nullptr, nullptr};\nroot->right = new TreeNode{3, nullptr, nullptr};\nroot->left->left = new TreeNode{4, nullptr, nullptr};\nroot->left->right = new TreeNode{5, nullptr, nullptr};"
+    },
+    {
+      "type": "note",
+      "text": "This builds the same shape used to compute height in Trees, extended with one more node — a small binary tree, five nodes, built entirely with new (recall Dynamic Memory Allocation) and pointer assignment."
+    },
+    {
+      "type": "heading",
+      "text": "5. Counting Nodes Recursively"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nint countNodes(TreeNode *node)\n{\n    if (node == nullptr) // BASE CASE\n    {\n        return 0;\n    }\n    return 1 + countNodes(node->left) + countNodes(node->right); // RECURSIVE CASE\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    cout << countNodes(root) << endl;\n\n    return 0;\n}",
+      "output": "5",
+      "retypePractice": true,
+      "retypeId": "dsa-binary-trees-count"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "countNodes(4) = 1 + countNodes(nullptr) + countNodes(nullptr) = 1 + 0 + 0 = 1",
+        "countNodes(5) = 1 (same reasoning, a leaf)",
+        "countNodes(2) = 1 + countNodes(4)=1 + countNodes(5)=1 = 3",
+        "countNodes(3) = 1 + 0 + 0 = 1",
+        "countNodes(1) = 1 + countNodes(2)=3 + countNodes(3)=1 = 5 — the total"
+      ]
+    },
+    {
+      "type": "note",
+      "text": "This is the exact same recursive shape as height() from Trees — a base case for nullptr, and a recursive case combining both children's results. Most binary tree algorithms follow this identical template, just changing what gets combined and how."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A single-elimination tournament bracket, always exactly two competitors per match",
+      "text": "A tournament bracket where every match has exactly two competitors (never one, never three) is a full binary tree in spirit — each match (node) either produces two child matches or is itself a final, leaf-level result. Counting how many total matches occurred is exactly countNodes(): count this match, plus everything in the left half of the bracket, plus everything in the right half."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing complete and perfect binary trees — complete only requires the last level to fill left-to-right; perfect requires every leaf at the exact same depth.",
+        "Forgetting the base case (node == nullptr) in a recursive tree function — without it, the recursion never terminates.",
+        "Assuming a binary tree is automatically balanced — balance is a separate property that must be actively maintained or checked, not guaranteed just by being binary.",
+        "Writing a loop-based node counter when the recursive version is both simpler and more directly matches the tree's own recursive structure."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a binary tree?",
+          "answer": "A tree in which every node has at most two children, conventionally called left and right."
+        },
+        {
+          "question": "What is the difference between a complete and a perfect binary tree?",
+          "answer": "A complete binary tree fills every level fully except possibly the last, which fills left to right; a perfect binary tree requires every internal node to have exactly two children and every leaf to be at the same depth."
+        },
+        {
+          "question": "What does 'balanced' mean for a binary tree?",
+          "answer": "The height of the two subtrees of any node never differs by more than a small bound (commonly 1), keeping the tree roughly even rather than lopsided."
+        },
+        {
+          "question": "How would you count the total number of nodes in a binary tree?",
+          "answer": "Recursively: a nullptr node contributes 0, and any real node contributes 1 plus the node counts of its left and right subtrees."
+        }
+      ],
+      "thirtySecondAnswer": "A binary tree is a tree where every node has at most two children, left and right. Several named shapes matter: full (every node has 0 or 2 children, never 1), complete (every level full except possibly the last, filled left to right — the shape Heap relies on), perfect (every leaf at the same depth), and balanced (subtree heights never differ by more than a small bound), which becomes especially important once we reach Binary Search Trees. Counting a binary tree's nodes follows the same recursive template as computing its height: a nullptr contributes 0, and any real node contributes 1 plus the counts of its left and right subtrees."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Binary Trees",
+      "text": "Binary tree = a tournament bracket, always 0 or 2 per match. Full = never exactly 1 child. Complete = last row fills left to right. Perfect = every leaf same depth. Balanced = neither side towers over the other."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-binary-trees-count", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nint countNodes(TreeNode *node)\n{\n    if (node == nullptr)\n    {\n        return 0;\n    }\n    return 1 + countNodes(node->left) + countNodes(node->right);\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    cout << countNodes(root) << endl;\n\n    return 0;\n}", "output": "5" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-binary-trees-count",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nint countNodes(TreeNode *node)\n{\n    if (node == nullptr)\n    {\n        return 0;\n    }\n    return 1 + countNodes(node->left) + countNodes(node->right);\n}\n\nint main()\n{\n    TreeNode *root = new TreeNode{1, nullptr, nullptr};\n    root->left = new TreeNode{2, nullptr, nullptr};\n    root->right = new TreeNode{3, nullptr, nullptr};\n    root->left->left = new TreeNode{4, nullptr, nullptr};\n    root->left->right = new TreeNode{5, nullptr, nullptr};\n\n    cout << countNodes(root) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-binary-trees-count"]
+  }
+}
