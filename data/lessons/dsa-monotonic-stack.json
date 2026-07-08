@@ -164,6 +164,42 @@
           "spaceComplexity": "O(m) for the map and stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-503",
+      "number": 503,
+      "title": "Next Greater Element II",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/next-greater-element-ii/",
+      "problemStatement": "Given a CIRCULAR array nums, return the next greater element for every element, searching circularly (wrapping around to the start if needed).",
+      "examples": [
+        { "input": "nums = [1,2,1]", "output": "[2,-1,2]", "explanation": "The last 1 wraps around and finds 2 at index 0... but index 1 (value 2) comes first when wrapping from index 2." }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4"],
+      "hints": [
+        "This is Next Greater Element's exact monotonic stack technique, but the search needs to wrap around past the end of the array back to the beginning.",
+        "Simulate the circular wraparound by iterating index i from 0 to 2n-1, but always accessing the actual value at i % n.",
+        "The monotonic stack logic itself doesn't change at all — only the index range being walked over does."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each element, scan forward up to n-1 additional positions (wrapping with modulo) looking for a greater value.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> nextGreaterElements(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<int> result(n, -1);\n\n    for (int i = 0; i < n; i++)\n    {\n        for (int offset = 1; offset < n; offset++)\n        {\n            int j = (i + offset) % n;\n            if (nums[j] > nums[i]) { result[i] = nums[j]; break; }\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 1};\n\n    vector<int> result = nextGreaterElements(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "2 -1 2 ",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(n) for the result"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Monotonic stack over indices 0 to 2n-1 (using i % n to access values), simulating the circular wraparound in a single O(n) pass.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n\nusing namespace std;\n\nvector<int> nextGreaterElements(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<int> result(n, -1);\n    stack<int> indices;\n\n    for (int i = 0; i < 2 * n; i++)\n    {\n        int actual = nums[i % n];\n\n        while (!indices.empty() && nums[indices.top()] < actual)\n        {\n            result[indices.top()] = actual;\n            indices.pop();\n        }\n\n        if (i < n) indices.push(i);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 1};\n\n    vector<int> result = nextGreaterElements(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "2 -1 2 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
