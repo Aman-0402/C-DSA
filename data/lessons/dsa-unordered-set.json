@@ -1,0 +1,125 @@
+{
+  "id": "dsa-unordered-set",
+  "moduleId": "hashing",
+  "title": "unordered_set",
+  "description": "unordered_set's DSA patterns: contains-duplicate in O(n), and the clever O(n) longest-consecutive-sequence trick.",
+  "objectives": [
+    "Solve contains-duplicate in O(n) using unordered_set",
+    "Solve longest-consecutive-sequence in O(n) using a 'only start from sequence starts' trick",
+    "Understand why checking membership is unordered_set's core superpower",
+    "Distinguish this DSA usage from the STL container mechanics already covered"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Membership Checks Are the Core Superpower"
+    },
+    {
+      "type": "paragraph",
+      "text": "The earlier unordered_set topic covered insert(), count(), and duplicate handling. Its real DSA value is answering \"have I seen this exact value before?\" in O(1) — let's see two problems built entirely on that question."
+    },
+    {
+      "type": "heading",
+      "text": "2. Pattern: Contains Duplicate"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nbool containsDuplicate(vector<int> &numbers)\n{\n    unordered_set<int> seen;\n\n    for (int n : numbers)\n    {\n        if (seen.count(n))\n        {\n            return true; // already seen this exact value\n        }\n        seen.insert(n);\n    }\n    return false;\n}\n\nint main()\n{\n    vector<int> a = {1, 2, 3, 1};\n    vector<int> b = {1, 2, 3, 4};\n\n    cout << containsDuplicate(a) << endl;\n    cout << containsDuplicate(b) << endl;\n\n    return 0;\n}",
+      "output": "1\n0",
+      "retypePractice": true,
+      "retypeId": "dsa-unordered-set-duplicate"
+    },
+    {
+      "type": "note",
+      "text": "One pass, O(n) time, O(n) space — dramatically better than the O(n²) nested-loop comparison, or even O(n log n) if sorting first. This is the simplest possible shape of 'have I seen this before?'"
+    },
+    {
+      "type": "heading",
+      "text": "3. Pattern: Longest Consecutive Sequence"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nint longestConsecutive(vector<int> &numbers)\n{\n    unordered_set<int> numSet(numbers.begin(), numbers.end());\n    int longest = 0;\n\n    for (int n : numSet)\n    {\n        if (!numSet.count(n - 1)) // only start counting if n is the START of a sequence\n        {\n            int length = 1;\n            int current = n;\n\n            while (numSet.count(current + 1))\n            {\n                current++;\n                length++;\n            }\n\n            longest = max(longest, length);\n        }\n    }\n    return longest;\n}\n\nint main()\n{\n    vector<int> numbers = {100, 4, 200, 1, 3, 2};\n\n    cout << longestConsecutive(numbers) << endl;\n\n    return 0;\n}",
+      "output": "4",
+      "retypePractice": true,
+      "retypeId": "dsa-unordered-set-consecutive"
+    },
+    {
+      "type": "keyPoints",
+      "title": "The clever part: only starting from sequence starts",
+      "points": [
+        "numSet.count(n - 1) checks: 'does a number just before n exist?' If yes, n is NOT the start of its sequence — skip it, some other number will properly count from the true start",
+        "For {1,2,3,4}: only 1 has no predecessor (0 isn't present), so counting only ever starts there, walking 1→2→3→4, length 4",
+        "Without this check, every number would redundantly re-walk its own sequence — that check is what keeps the total work O(n) instead of O(n²)"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Checking guest badges at the door vs finding the longest unbroken parking row",
+      "text": "Contains Duplicate is a bouncer with a quick-check list, flagging the instant a badge number repeats. Longest Consecutive Sequence is like scanning a random pile of parking-space numbers to find the longest unbroken run — but instead of walking every possible starting point redundantly, you're smart about it: only start counting from a number that has no neighbor just before it, since that's guaranteed to be the true beginning of its run."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Sorting first for Contains Duplicate when unordered_set gives O(n) directly, versus O(n log n) for a sort-based approach.",
+        "Forgetting the 'is this the start of a sequence' check in Longest Consecutive Sequence — without it, every number re-walks its sequence, degrading to O(n²).",
+        "Iterating the original vector for Longest Consecutive Sequence instead of the deduplicated set — duplicates in the input would otherwise cause redundant work.",
+        "Using set instead of unordered_set for these patterns — the O(log n) tree lookups aren't needed here; unordered_set's O(1) average lookups are the whole point."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How would you check if an array contains any duplicate value, in O(n) time?",
+          "answer": "Iterate the array, inserting each value into an unordered_set; if a value is already present (checked via count() before inserting), a duplicate exists."
+        },
+        {
+          "question": "What is the key trick that makes the longest-consecutive-sequence solution O(n) instead of O(n²)?",
+          "answer": "Only starting to count a sequence's length from a number that has no predecessor (n-1) in the set — guaranteeing each sequence is only ever walked once, from its true start."
+        },
+        {
+          "question": "Why is unordered_set preferred over set for these patterns?",
+          "answer": "Because these patterns only need fast membership checks, not sorted order — unordered_set's average O(1) lookups outperform set's O(log n) tree lookups for this purpose."
+        }
+      ],
+      "thirtySecondAnswer": "unordered_set's core DSA value is answering 'have I seen this exact value before?' in O(1). Contains Duplicate uses this directly: insert values one at a time, flagging a duplicate the instant a value is already present, for O(n) overall. Longest Consecutive Sequence uses it more cleverly: put all values in a set, then for each value check whether its predecessor (n-1) exists — only numbers with no predecessor are treated as the start of a sequence, and from there the code walks forward (n+1, n+2, ...) counting the run length. That single check is what keeps total work O(n) instead of O(n²), since every sequence is walked exactly once, from its true beginning."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember unordered_set (DSA)",
+      "text": "Contains Duplicate = a bouncer's quick-check list, flag the repeat instantly. Longest Consecutive = only start counting from a number with no left-neighbor — the true start of its run."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-unordered-set-duplicate", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nbool containsDuplicate(vector<int> &numbers)\n{\n    unordered_set<int> seen;\n\n    for (int n : numbers)\n    {\n        if (seen.count(n))\n        {\n            return true;\n        }\n        seen.insert(n);\n    }\n    return false;\n}\n\nint main()\n{\n    vector<int> a = {1, 2, 3, 1};\n    vector<int> b = {1, 2, 3, 4};\n\n    cout << containsDuplicate(a) << endl;\n    cout << containsDuplicate(b) << endl;\n\n    return 0;\n}", "output": "1\n0" },
+    { "id": "dsa-unordered-set-consecutive", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nint longestConsecutive(vector<int> &numbers)\n{\n    unordered_set<int> numSet(numbers.begin(), numbers.end());\n    int longest = 0;\n\n    for (int n : numSet)\n    {\n        if (!numSet.count(n - 1))\n        {\n            int length = 1;\n            int current = n;\n\n            while (numSet.count(current + 1))\n            {\n                current++;\n                length++;\n            }\n\n            longest = max(longest, length);\n        }\n    }\n    return longest;\n}\n\nint main()\n{\n    vector<int> numbers = {100, 4, 200, 1, 3, 2};\n\n    cout << longestConsecutive(numbers) << endl;\n\n    return 0;\n}", "output": "4" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-unordered-set-duplicate",
+      "reference": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nbool containsDuplicate(vector<int> &numbers)\n{\n    unordered_set<int> seen;\n\n    for (int n : numbers)\n    {\n        if (seen.count(n))\n        {\n            return true;\n        }\n        seen.insert(n);\n    }\n    return false;\n}\n\nint main()\n{\n    vector<int> a = {1, 2, 3, 1};\n    vector<int> b = {1, 2, 3, 4};\n\n    cout << containsDuplicate(a) << endl;\n    cout << containsDuplicate(b) << endl;\n\n    return 0;\n}"
+    },
+    {
+      "id": "dsa-unordered-set-consecutive",
+      "reference": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nint longestConsecutive(vector<int> &numbers)\n{\n    unordered_set<int> numSet(numbers.begin(), numbers.end());\n    int longest = 0;\n\n    for (int n : numSet)\n    {\n        if (!numSet.count(n - 1))\n        {\n            int length = 1;\n            int current = n;\n\n            while (numSet.count(current + 1))\n            {\n                current++;\n                length++;\n            }\n\n            longest = max(longest, length);\n        }\n    }\n    return longest;\n}\n\nint main()\n{\n    vector<int> numbers = {100, 4, 200, 1, 3, 2};\n\n    cout << longestConsecutive(numbers) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-unordered-set-duplicate", "dsa-unordered-set-consecutive"]
+  }
+}
