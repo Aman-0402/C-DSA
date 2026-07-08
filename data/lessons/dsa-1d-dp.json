@@ -196,6 +196,42 @@
           "spaceComplexity": "O(n + dictionary size)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-70-1d",
+      "number": 70,
+      "title": "Climbing Stairs",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/climbing-stairs/",
+      "problemStatement": "You can climb 1 or 2 steps at a time. Given n steps, return the number of distinct ways to reach the top.",
+      "examples": [
+        { "input": "n = 5", "output": "8" }
+      ],
+      "constraints": ["1 <= n <= 45"],
+      "hints": [
+        "Apply this lesson's recipe: dp[i] = the number of distinct ways to reach step i (not 'the number of steps', the number of WAYS).",
+        "Recurrence: dp[i] = dp[i-1] + dp[i-2] — the last move to reach step i was either a 1-step from i-1 or a 2-step from i-2, so both contribute.",
+        "Base cases: dp[1] = 1, dp[2] = 2 (there's only one way to reach step 1, but two ways to reach step 2: 1+1 or a single 2-step)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full dp array, filled bottom-up per the recurrence.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint climbStairs(int n)\n{\n    if (n <= 2) return n;\n\n    vector<int> dp(n + 1);\n    dp[1] = 1;\n    dp[2] = 2;\n\n    for (int i = 3; i <= n; i++)\n        dp[i] = dp[i - 1] + dp[i - 2];\n\n    return dp[n];\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Only the last two dp values are ever needed — collapse to two variables.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint climbStairs(int n)\n{\n    if (n <= 2) return n;\n\n    int prev2 = 1, prev1 = 2;\n    for (int i = 3; i <= n; i++)\n    {\n        int current = prev1 + prev2;\n        prev2 = prev1;\n        prev1 = current;\n    }\n    return prev1;\n}\n\nint main()\n{\n    cout << climbStairs(5);\n\n    return 0;\n}",
+          "output": "8",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
