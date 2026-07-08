@@ -325,6 +325,51 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1991",
+      "number": 1991,
+      "title": "Find the Middle Index in Array",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/find-the-middle-index-in-array/",
+      "problemStatement": "Given a 0-indexed array nums, find the leftmost middleIndex where the sum of all elements strictly to its left equals the sum of all elements strictly to its right. Return -1 if none exists.",
+      "examples": [
+        { "input": "nums = [2,3,-1,8,4]", "output": "3", "explanation": "leftSum(2+3-1)=4, rightSum(4)=4." },
+        { "input": "nums = [1,-1,4]", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4", "-1000 <= nums[i] <= 1000"],
+      "hints": [
+        "This is the same shape as Find Pivot Index (LC 724) — same idea, different name.",
+        "leftSum before index i is a running total; rightSum can always be derived from the array's total sum minus leftSum minus nums[i].",
+        "A single pass with a precomputed total and a running leftSum answers this in O(n) time and O(1) extra space."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every index, re-sum its left and right sides from scratch.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findMiddleIndex(vector<int> &nums)\n{\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int left = 0, right = 0;\n        for (int j = 0; j < i; j++) left += nums[j];\n        for (int j = i + 1; j < nums.size(); j++) right += nums[j];\n        if (left == right) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, -1, 8, 4};\n\n    cout << findMiddleIndex(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Better",
+          "explanation": "Precompute the array's total sum once with accumulate(), then for each index recompute leftSum with a loop (still redundant work per index).",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nint findMiddleIndex(vector<int> &nums)\n{\n    int total = accumulate(nums.begin(), nums.end(), 0);\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int left = 0;\n        for (int j = 0; j < i; j++) left += nums[j];\n        int right = total - left - nums[i];\n        if (left == right) return i;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, -1, 8, 4};\n\n    cout << findMiddleIndex(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Track leftSum as a running total in a single pass, deriving rightSum from the precomputed total each time — no repeated summing.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n\nusing namespace std;\n\nint findMiddleIndex(vector<int> &nums)\n{\n    int total = accumulate(nums.begin(), nums.end(), 0);\n    int leftSum = 0;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int rightSum = total - leftSum - nums[i];\n        if (leftSum == rightSum) return i;\n        leftSum += nums[i];\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {2, 3, -1, 8, 4};\n\n    cout << findMiddleIndex(nums) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
