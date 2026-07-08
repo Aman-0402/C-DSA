@@ -107,6 +107,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Strings (DSA)",
       "text": "String = an array of char for algorithm purposes. Palindrome = two pointers closing inward. Anagram = tally up, tally down, check everything cancels to zero."
+    },
+    {
+      "type": "heading",
+      "text": "6. LeetCode: Strings in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-344",
+      "number": 344,
+      "title": "Reverse String",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/reverse-string/",
+      "problemStatement": "Write a function that reverses a string in place, given as a character array s, using O(1) extra space.",
+      "examples": [
+        { "input": "s = ['h','e','l','l','o']", "output": "['o','l','l','e','h']" }
+      ],
+      "constraints": ["1 <= s.length <= 10^5"],
+      "hints": [
+        "This lesson's palindrome check already uses two pointers from both ends, comparing inward — reversing is the same shape, but SWAPPING instead of comparing.",
+        "Every pair (left, right) needs to trade places exactly once — think about what happens if you swap all the way until the pointers meet.",
+        "No extra array is needed: the swap happens directly on s, in place."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build a new reversed array by reading s backward, then copy it back over s.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid reverseString(vector<char> &s)\n{\n    vector<char> reversed(s.size());\n\n    for (int i = 0; i < s.size(); i++)\n    {\n        reversed[i] = s[s.size() - 1 - i];\n    }\n\n    s = reversed;\n}\n\nint main()\n{\n    vector<char> s = {'h', 'e', 'l', 'l', 'o'};\n\n    reverseString(s);\n    for (char c : s) cout << c;\n\n    return 0;\n}",
+          "output": "olleh",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the reversed copy"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two pointers from opposite ends, swapping in place until they meet — no extra array at all.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid reverseString(vector<char> &s)\n{\n    int left = 0, right = s.size() - 1;\n\n    while (left < right)\n    {\n        swap(s[left], s[right]);\n        left++;\n        right--;\n    }\n}\n\nint main()\n{\n    vector<char> s = {'h', 'e', 'l', 'l', 'o'};\n\n    reverseString(s);\n    for (char c : s) cout << c;\n\n    return 0;\n}",
+          "output": "olleh",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) — in place"
+        }
+      ]
     }
   ],
   "codeExamples": [
