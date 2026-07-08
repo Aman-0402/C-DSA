@@ -270,6 +270,41 @@
           "spaceComplexity": "O(rows * cols) worst case recursion stack, O(1) extra grid space"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-417",
+      "number": 417,
+      "title": "Pacific Atlantic Water Flow",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
+      "problemStatement": "Given an m x n grid of heights, water flows from a cell to a neighbor of equal or lower height. The Pacific touches the top/left edges, the Atlantic touches the bottom/right edges. Return all cells from which water can reach BOTH oceans.",
+      "examples": [
+        { "input": "heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]", "output": "[[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]" }
+      ],
+      "constraints": ["1 <= rows, cols <= 200", "0 <= heights[i][j] <= 10^5"],
+      "hints": ["Checking each cell forward against both oceans re-walks huge portions of the grid per cell — very costly.",
+        "Reverse the direction: DFS INWARD from every Pacific-border cell and separately from every Atlantic-border cell, moving to a neighbor only if its height is >= the current cell's (uphill, since we're tracing backward from the ocean).",
+        "A cell qualifies for the answer only if it was reached by BOTH the Pacific DFS and the Atlantic DFS — two boolean grids, intersected at the end."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every cell, run a forward DFS/BFS (downhill only) checking separately whether it can reach the Pacific border and the Atlantic border.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool canReach(vector<vector<int>>& heights, int r, int c, bool isPacific, vector<vector<bool>>& visited)\n{\n    int rows = heights.size(), cols = heights[0].size();\n    if (visited[r][c]) return false;\n    visited[r][c] = true;\n\n    bool reached = isPacific ? (r == 0 || c == 0) : (r == rows - 1 || c == cols - 1);\n    if (reached) return true;\n\n    int dr[] = {1, -1, 0, 0};\n    int dc[] = {0, 0, 1, -1};\n    for (int i = 0; i < 4; i++)\n    {\n        int nr = r + dr[i], nc = c + dc[i];\n        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && heights[nr][nc] <= heights[r][c])\n            if (canReach(heights, nr, nc, isPacific, visited)) return true;\n    }\n    return false;\n}\n\nvector<vector<int>> pacificAtlantic(vector<vector<int>>& heights)\n{\n    int rows = heights.size(), cols = heights[0].size();\n    vector<vector<int>> result;\n\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n        {\n            vector<vector<bool>> visitedP(rows, vector<bool>(cols, false));\n            vector<vector<bool>> visitedA(rows, vector<bool>(cols, false));\n            if (canReach(heights, r, c, true, visitedP) && canReach(heights, r, c, false, visitedA))\n                result.push_back({r, c});\n        }\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> heights = {\n        {1, 2, 2, 3, 5},\n        {3, 2, 3, 4, 4},\n        {2, 4, 5, 3, 1},\n        {6, 7, 1, 4, 5},\n        {5, 1, 1, 2, 4}\n    };\n\n    vector<vector<int>> result = pacificAtlantic(heights);\n    for (auto &cell : result) cout << \"[\" << cell[0] << \",\" << cell[1] << \"] \";\n\n    return 0;\n}",
+          "output": "[0,4] [1,3] [1,4] [2,2] [3,0] [3,1] [4,0] ",
+          "timeComplexity": "O((rows * cols)^2) worst case",
+          "spaceComplexity": "O(rows * cols) per call for the visited grids"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "DFS inward from both oceans' borders just once each, then intersect the two reachability grids.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid dfs(vector<vector<int>>& heights, int r, int c, vector<vector<bool>>& visited)\n{\n    int rows = heights.size(), cols = heights[0].size();\n    visited[r][c] = true;\n\n    int dr[] = {1, -1, 0, 0};\n    int dc[] = {0, 0, 1, -1};\n    for (int i = 0; i < 4; i++)\n    {\n        int nr = r + dr[i], nc = c + dc[i];\n        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr][nc] && heights[nr][nc] >= heights[r][c])\n            dfs(heights, nr, nc, visited);\n    }\n}\n\nvector<vector<int>> pacificAtlantic(vector<vector<int>>& heights)\n{\n    int rows = heights.size(), cols = heights[0].size();\n    vector<vector<bool>> pacific(rows, vector<bool>(cols, false));\n    vector<vector<bool>> atlantic(rows, vector<bool>(cols, false));\n\n    for (int r = 0; r < rows; r++)\n    {\n        dfs(heights, r, 0, pacific);\n        dfs(heights, r, cols - 1, atlantic);\n    }\n    for (int c = 0; c < cols; c++)\n    {\n        dfs(heights, 0, c, pacific);\n        dfs(heights, rows - 1, c, atlantic);\n    }\n\n    vector<vector<int>> result;\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++)\n            if (pacific[r][c] && atlantic[r][c])\n                result.push_back({r, c});\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> heights = {\n        {1, 2, 2, 3, 5},\n        {3, 2, 3, 4, 4},\n        {2, 4, 5, 3, 1},\n        {6, 7, 1, 4, 5},\n        {5, 1, 1, 2, 4}\n    };\n\n    vector<vector<int>> result = pacificAtlantic(heights);\n    for (auto &cell : result) cout << \"[\" << cell[0] << \",\" << cell[1] << \"] \";\n\n    return 0;\n}",
+          "output": "[0,4] [1,3] [1,4] [2,2] [3,0] [3,1] [4,0] ",
+          "timeComplexity": "O(rows * cols) — each ocean's DFS visits each cell at most once",
+          "spaceComplexity": "O(rows * cols) for the two reachability grids"
+        }
+      ]
     }
   ],
   "codeExamples": [
