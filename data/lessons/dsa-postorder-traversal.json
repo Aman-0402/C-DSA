@@ -113,6 +113,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Postorder Traversal",
       "text": "Postorder = Left, Right, Node — children finish before the parent. Delete a tree bottom-up, never top-down. Any 'depends on children's answers' problem is postorder-shaped."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Postorder Traversal in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-145",
+      "number": 145,
+      "title": "Binary Tree Postorder Traversal",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/binary-tree-postorder-traversal/",
+      "problemStatement": "Given the root of a binary tree, return its postorder (Left, Right, Node) traversal as a list of values.",
+      "examples": [
+        { "input": "root = [1,null,2,3]", "output": "[3,2,1]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 100"],
+      "hints": [
+        "This is exactly this lesson's own postorder() function — collect into a vector instead of printing.",
+        "The iterative version is the trickiest of the three: one common trick is to do a REVERSED preorder (Node, Right, Left) and then reverse the whole result at the end, which produces Left-Right-Node.",
+        "That trick works because reversing 'Node, Right, Left' gives exactly 'Left, Right, Node' — postorder."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "This lesson's own recursive Left-Right-Node traversal, collecting into a vector.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvoid postorder(TreeNode* node, vector<int> &result)\n{\n    if (node == nullptr) return;\n    postorder(node->left, result);\n    postorder(node->right, result);\n    result.push_back(node->val);\n}\n\nvector<int> postorderTraversal(TreeNode* root)\n{\n    vector<int> result;\n    postorder(root, result);\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->right = new TreeNode(2);\n    root->right->left = new TreeNode(3);\n\n    vector<int> result = postorderTraversal(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "3 2 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result, O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative: a reversed preorder (Node, Right, Left), then reverse the final result to get Left, Right, Node.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n#include <algorithm>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nvector<int> postorderTraversal(TreeNode* root)\n{\n    vector<int> result;\n    if (root == nullptr) return result;\n\n    stack<TreeNode*> st;\n    st.push(root);\n\n    while (!st.empty())\n    {\n        TreeNode* node = st.top();\n        st.pop();\n\n        result.push_back(node->val); // Node\n\n        if (node->left) st.push(node->left);   // pushed first\n        if (node->right) st.push(node->right); // pushed last -- pops first, giving Node-Right-Left order\n    }\n\n    reverse(result.begin(), result.end());\n    return result;\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(1);\n    root->right = new TreeNode(2);\n    root->right->left = new TreeNode(3);\n\n    vector<int> result = postorderTraversal(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "3 2 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack and result"
+        }
+      ]
     }
   ],
   "codeExamples": [
