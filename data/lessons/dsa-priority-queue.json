@@ -235,6 +235,42 @@
           "spaceComplexity": "O(n) for the frequency map, O(k) for the heap"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-973",
+      "number": 973,
+      "title": "K Closest Points to Origin",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/k-closest-points-to-origin/",
+      "problemStatement": "Given an array of points on the X-Y plane and an integer k, return the k points closest to the origin (0,0), in any order.",
+      "examples": [
+        { "input": "points = [[1,3],[-2,2]], k = 1", "output": "[[-2,2]]" }
+      ],
+      "constraints": ["1 <= k <= points.length <= 10^4"],
+      "hints": [
+        "This wants the k SMALLEST distances — the mirror image of Kth Largest Element, which wanted the k largest values.",
+        "Since it's now 'smallest wins,' the capped heap needs to be a MAX-heap of size k instead of a min-heap — the value to discard when the heap overflows is always the current FARTHEST point.",
+        "No need for an actual square root — comparing squared distances (x² + y²) avoids the extra computation and preserves the same ordering."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort all points by squared distance and take the first k.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nvector<vector<int>> kClosest(vector<vector<int>> &points, int k)\n{\n    sort(points.begin(), points.end(), [](vector<int> &a, vector<int> &b) {\n        return (a[0]*a[0] + a[1]*a[1]) < (b[0]*b[0] + b[1]*b[1]);\n    });\n\n    return vector<vector<int>>(points.begin(), points.begin() + k);\n}\n\nint main()\n{\n    vector<vector<int>> points = {{1, 3}, {-2, 2}};\n\n    auto result = kClosest(points, 1);\n    for (auto &p : result) cout << \"[\" << p[0] << \",\" << p[1] << \"] \";\n\n    return 0;\n}",
+          "output": "[-2,2] ",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(k) for the result"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A max-heap of size k, ordered by squared distance — the farthest point is discarded whenever the heap overflows.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nvector<vector<int>> kClosest(vector<vector<int>> &points, int k)\n{\n    auto dist = [](vector<int> &p) { return p[0]*p[0] + p[1]*p[1]; };\n\n    priority_queue<pair<int, vector<int>>> maxHeap; // default max-heap, ordered by squared distance\n\n    for (auto &p : points)\n    {\n        maxHeap.push({dist(p), p});\n        if ((int)maxHeap.size() > k) maxHeap.pop();\n    }\n\n    vector<vector<int>> result;\n    while (!maxHeap.empty())\n    {\n        result.push_back(maxHeap.top().second);\n        maxHeap.pop();\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> points = {{1, 3}, {-2, 2}};\n\n    auto result = kClosest(points, 1);\n    for (auto &p : result) cout << \"[\" << p[0] << \",\" << p[1] << \"] \";\n\n    return 0;\n}",
+          "output": "[-2,2] ",
+          "timeComplexity": "O(n log k)",
+          "spaceComplexity": "O(k) for the heap"
+        }
+      ]
     }
   ],
   "codeExamples": [
