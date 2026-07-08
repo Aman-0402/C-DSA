@@ -1,0 +1,164 @@
+{
+  "id": "dsa-difference-array",
+  "moduleId": "array-string-techniques",
+  "title": "Difference Array",
+  "description": "Prefix Sum's mirror image: O(1) range updates instead of O(1) range queries, reconstructed with a prefix sum at the end.",
+  "objectives": [
+    "Understand the problem difference arrays solve: many range updates",
+    "Apply a range update in O(1) using a difference array",
+    "Reconstruct the final array using a prefix sum",
+    "See the direct relationship between this and Prefix Sum"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Opposite Problem"
+    },
+    {
+      "type": "paragraph",
+      "text": "Prefix Sum made many range queries fast on a fixed array. Difference Array solves the mirror-image problem: making many range updates fast, when you only need the final result at the end."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Many Range Updates"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers(6, 0); // {0, 0, 0, 0, 0, 0}\n\n// \"Add 5 to every element from index 1 to 3\" — naive: loop indices 1-3, O(range length) PER update\n// If asked to apply 1,000 different range updates, that's expensive if ranges are large"
+    },
+    {
+      "type": "heading",
+      "text": "3. What is a Difference Array?"
+    },
+    {
+      "type": "definition",
+      "term": "Difference array",
+      "text": "A difference array stores, at each index, the difference between that element and the previous one — letting a range update be applied in O(1) by marking only its two boundaries."
+    },
+    {
+      "type": "heading",
+      "text": "4. Applying a Range Update in O(1)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> diff(numbers.size() + 1, 0); // one extra slot at the end\n\n// To add val to every index from l to r (inclusive):\ndiff[l] += val;\ndiff[r + 1] -= val;"
+    },
+    {
+      "type": "note",
+      "text": "diff[l] += val marks \"starting here, add val.\" diff[r + 1] -= val marks \"starting here, stop adding it.\" Neither line touches the range's actual elements — each update is just two array writes, O(1), no matter how large the range is."
+    },
+    {
+      "type": "heading",
+      "text": "5. Reconstructing the Final Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> result(numbers.size());\nresult[0] = diff[0];\nfor (int i = 1; i < numbers.size(); i++)\n{\n    result[i] = result[i - 1] + diff[i]; // exactly the Prefix Sum formula\n}"
+    },
+    {
+      "type": "tip",
+      "text": "This is exactly the prefix sum computation from Prefix Sum, applied to the difference array instead of the original one. Taking the prefix sum of a difference array \"undoes\" the differencing and reveals the final, fully-updated values."
+    },
+    {
+      "type": "heading",
+      "text": "6. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int n = 6;\n    vector<int> diff(n + 1, 0);\n\n    // Add 5 to range [1, 3]\n    diff[1] += 5;\n    diff[4] -= 5;\n\n    // Add 2 to range [2, 5]\n    diff[2] += 2;\n    diff[6] -= 2;\n\n    vector<int> result(n);\n    result[0] = diff[0];\n    for (int i = 1; i < n; i++)\n    {\n        result[i] = result[i - 1] + diff[i];\n    }\n\n    for (int val : result)\n    {\n        cout << val << \" \";\n    }\n\n    return 0;\n}",
+      "output": "0 5 7 7 2 2 ",
+      "retypePractice": true,
+      "retypeId": "dsa-difference-array-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Verifying it",
+      "points": [
+        "Index 0: untouched by either update → 0",
+        "Indices 1-3: +5 from the first update → indices 1,2,3 get +5",
+        "Indices 2-5: +2 from the second update → indices 2,3,4,5 get +2",
+        "Index 1: 5. Index 2: 5+2=7. Index 3: 5+2=7. Index 4: 2. Index 5: 2 — matches 0 5 7 7 2 2"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Complexity"
+    },
+    {
+      "type": "table",
+      "headers": ["Approach", "Per update", "Final reconstruction"],
+      "rows": [
+        ["Naive (update the real array directly)", "O(range length)", "Not needed"],
+        ["Difference array", "O(1)", "O(n), once, at the end"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Marking a calendar's start and end dates instead of filling in every day",
+      "text": "Booking a week-long vacation doesn't require writing \"on vacation\" on all seven individual calendar pages one at a time — you could just note \"starts here\" on day 1 and \"ends here\" on day 8. Marking many separate trips this way, then reading through the calendar once at the very end to see the final combined schedule, is exactly the difference array technique."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the difference array needs one extra slot beyond the original array's size, for the r + 1 boundary marker.",
+        "Applying updates directly to the real array when many range updates are needed — defeats the purpose; mark boundaries in the difference array instead.",
+        "Forgetting to reconstruct the final array with a prefix sum pass at the end — the difference array alone isn't the answer, it's an intermediate representation.",
+        "Off-by-one errors on the r + 1 boundary — it marks where the effect STOPS, one past the last affected index."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What problem does a difference array solve?",
+          "answer": "Applying many range updates to an array efficiently, deferring the actual per-element work until a single final reconstruction pass."
+        },
+        {
+          "question": "How do you apply a range update, adding val to indices l through r, using a difference array?",
+          "answer": "diff[l] += val; diff[r + 1] -= val; — marking where the effect starts and where it stops, without touching the range's individual elements."
+        },
+        {
+          "question": "How do you get the final array from a difference array?",
+          "answer": "Take its prefix sum — the same running-total computation as Prefix Sum, applied to the difference array."
+        },
+        {
+          "question": "What is the time complexity of applying k range updates and then reconstructing the final array, using a difference array?",
+          "answer": "O(k) for the updates (O(1) each) plus O(n) for the final reconstruction, versus O(k × range length) for naive direct updates."
+        }
+      ],
+      "thirtySecondAnswer": "A difference array is the mirror image of prefix sum: instead of making range queries fast, it makes range updates fast. Adding a value to every index from l to r becomes just two O(1) writes — diff[l] += val and diff[r + 1] -= val — marking where the effect starts and stops, without touching any of the range's actual elements. After all updates are applied, taking the prefix sum of the difference array reconstructs the final, fully-updated array in O(n). This turns k potentially expensive range updates into k O(1) operations plus one O(n) pass at the end."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Difference Array",
+      "text": "Difference array = mark 'starts here' and 'stops here' on a calendar, don't fill in every day. Prefix-sum the difference array at the end to reveal the real schedule."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-difference-array-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int n = 6;\n    vector<int> diff(n + 1, 0);\n\n    diff[1] += 5;\n    diff[4] -= 5;\n\n    diff[2] += 2;\n    diff[6] -= 2;\n\n    vector<int> result(n);\n    result[0] = diff[0];\n    for (int i = 1; i < n; i++)\n    {\n        result[i] = result[i - 1] + diff[i];\n    }\n\n    for (int val : result)\n    {\n        cout << val << \" \";\n    }\n\n    return 0;\n}", "output": "0 5 7 7 2 2 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-difference-array-basic",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    int n = 6;\n    vector<int> diff(n + 1, 0);\n\n    diff[1] += 5;\n    diff[4] -= 5;\n\n    diff[2] += 2;\n    diff[6] -= 2;\n\n    vector<int> result(n);\n    result[0] = diff[0];\n    for (int i = 1; i < n; i++)\n    {\n        result[i] = result[i - 1] + diff[i];\n    }\n\n    for (int val : result)\n    {\n        cout << val << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-difference-array-basic"]
+  }
+}
