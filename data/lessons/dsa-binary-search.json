@@ -346,6 +346,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-34",
+      "number": 34,
+      "title": "Find First and Last Position of Element in Sorted Array",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/",
+      "problemStatement": "Given a sorted array nums and a target, return [first, last] indices of target's occurrences, or [-1,-1] if not found, in O(log n) time.",
+      "examples": [
+        { "input": "nums = [5,7,7,8,8,10], target = 8", "output": "[3,4]" }
+      ],
+      "constraints": ["0 <= nums.length <= 10^5"],
+      "hints": [
+        "A single binary search finds AN occurrence of target, but not necessarily the first or last one when duplicates exist.",
+        "Run TWO binary searches: one biased to keep searching left even after finding a match (to find the first occurrence), one biased to keep searching right (to find the last).",
+        "This is First Bad Version's boundary-search idea, applied twice with opposite bias."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Scan linearly, recording the first and last index where nums[i] == target.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> searchRange(vector<int> &nums, int target)\n{\n    int first = -1, last = -1;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        if (nums[i] == target)\n        {\n            if (first == -1) first = i;\n            last = i;\n        }\n    }\n\n    return {first, last};\n}\n\nint main()\n{\n    vector<int> nums = {5, 7, 7, 8, 8, 10};\n\n    vector<int> result = searchRange(nums, 8);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "3 4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two binary searches: one for the leftmost occurrence (bias left on a match), one for the rightmost (bias right on a match).",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findBound(vector<int> &nums, int target, bool findFirst)\n{\n    int left = 0, right = nums.size() - 1;\n    int result = -1;\n\n    while (left <= right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (nums[mid] == target)\n        {\n            result = mid;\n            if (findFirst) right = mid - 1; // keep searching left\n            else left = mid + 1;            // keep searching right\n        }\n        else if (nums[mid] < target) left = mid + 1;\n        else right = mid - 1;\n    }\n\n    return result;\n}\n\nvector<int> searchRange(vector<int> &nums, int target)\n{\n    return {findBound(nums, target, true), findBound(nums, target, false)};\n}\n\nint main()\n{\n    vector<int> nums = {5, 7, 7, 8, 8, 10};\n\n    vector<int> result = searchRange(nums, 8);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "3 4",
+          "timeComplexity": "O(log n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
