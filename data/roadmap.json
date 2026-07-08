@@ -233,7 +233,8 @@
         { "id": "dsa-postorder-traversal", "title": "Postorder Traversal", "lesson": "dsa-postorder-traversal" },
         { "id": "dsa-level-order-traversal", "title": "Level Order Traversal", "lesson": "dsa-level-order-traversal" },
         { "id": "dsa-bfs", "title": "BFS", "lesson": "dsa-bfs" },
-        { "id": "dsa-dfs", "title": "DFS", "lesson": "dsa-dfs" }
+        { "id": "dsa-dfs", "title": "DFS", "lesson": "dsa-dfs" },
+        { "id": "dsa-trie", "title": "Trie", "lesson": "dsa-trie" }
       ]
     }
   ]

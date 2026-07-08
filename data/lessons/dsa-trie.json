@@ -1,0 +1,134 @@
+{
+  "id": "dsa-trie",
+  "moduleId": "trees",
+  "title": "Trie",
+  "description": "A specialized tree for strings: sharing common prefixes across an unordered_map of children, enabling fast insert, search, and prefix queries.",
+  "objectives": [
+    "Understand a trie as a tree specialized for storing strings by shared prefix",
+    "Implement insert and search on a trie",
+    "Implement startsWith for prefix queries",
+    "Understand why a trie beats a hash set for prefix-based lookups"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: A Specialized Tree for Strings"
+    },
+    {
+      "type": "paragraph",
+      "text": "Binary Search Trees branched based on comparing whole values. A trie (pronounced \"try,\" from re-TRIE-val) branches character by character, letting words that share a prefix share the same path through the tree."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Trie?"
+    },
+    {
+      "type": "definition",
+      "term": "Trie",
+      "text": "A trie is a tree where each edge represents one character, and words sharing a common prefix share the same path from the root — with a marker on any node where a complete word ends."
+    },
+    {
+      "type": "heading",
+      "text": "3. The TrieNode Structure"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "struct TrieNode\n{\n    unordered_map<char, TrieNode *> children; // recall unordered_map<char, int> from frequency counting — here, char maps to the NEXT node\n    bool isEndOfWord = false;\n};"
+    },
+    {
+      "type": "note",
+      "text": "Unlike TreeNode's fixed left/right, a trie node can have any number of children — one per possible next character — which is exactly why unordered_map fits here: it maps each character to the node representing \"the path so far, plus this character.\""
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example: Insert, Search, StartsWith"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nusing namespace std;\n\nstruct TrieNode\n{\n    unordered_map<char, TrieNode *> children;\n    bool isEndOfWord = false;\n};\n\nclass Trie\n{\nprivate:\n    TrieNode *root;\n\npublic:\n    Trie()\n    {\n        root = new TrieNode();\n    }\n\n    void insert(string word)\n    {\n        TrieNode *current = root;\n        for (char c : word)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                current->children[c] = new TrieNode(); // create the path if it doesn't exist yet\n            }\n            current = current->children[c];\n        }\n        current->isEndOfWord = true; // mark the END of this specific word\n    }\n\n    bool search(string word)\n    {\n        TrieNode *current = root;\n        for (char c : word)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                return false; // path doesn't exist — word was never inserted\n            }\n            current = current->children[c];\n        }\n        return current->isEndOfWord; // path exists, but was it marked as a COMPLETE word?\n    }\n\n    bool startsWith(string prefix)\n    {\n        TrieNode *current = root;\n        for (char c : prefix)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                return false;\n            }\n            current = current->children[c];\n        }\n        return true; // the path exists — SOME word starts with this prefix\n    }\n};\n\nint main()\n{\n    Trie trie;\n    trie.insert(\"cat\");\n    trie.insert(\"car\");\n\n    cout << trie.search(\"cat\") << endl;\n    cout << trie.search(\"ca\") << endl;\n    cout << trie.startsWith(\"ca\") << endl;\n\n    return 0;\n}",
+      "output": "1\n0\n1",
+      "retypePractice": true,
+      "retypeId": "dsa-trie-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why these three results differ",
+      "points": [
+        "search(\"cat\") is true — \"cat\" was fully inserted, and its final node ('t') is marked isEndOfWord",
+        "search(\"ca\") is false — the path c→a exists (it's a prefix of both \"cat\" and \"car\"), but 'a' was never marked as the end of a complete word",
+        "startsWith(\"ca\") is true — it only checks whether the PATH exists, not whether anything is marked as a complete word there",
+        "\"cat\" and \"car\" share the exact same c→a path in the trie — only the branches after 'a' (to 't' and to 'r') diverge"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Why a Trie Beats a Hash Set for Prefix Queries"
+    },
+    {
+      "type": "note",
+      "text": "Recall unordered_set: checking whether an exact word exists is O(1) average — but checking whether ANY word starts with a given prefix would require scanning every stored word, O(n). A trie answers startsWith() in O(k), where k is just the prefix's length, completely independent of how many words are stored — exactly why tries power autocomplete and spell-check features."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A phone keypad's predictive text, narrowing down as you type",
+      "text": "Typing 'c', then 'a' on a predictive keyboard narrows suggestions to only words starting with \"ca\" — the keyboard doesn't rescan every word in the dictionary on each keystroke; it's already sitting at the right branch, ready to suggest whatever comes next. That's a trie: each typed character moves you one step further down an already-organized path."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing search() and startsWith() — search() requires isEndOfWord to be true at the final node; startsWith() only requires the path to exist.",
+        "Forgetting to mark isEndOfWord = true after inserting a word — without it, search() would incorrectly return false even for a fully inserted word.",
+        "Assuming a trie always uses less memory than a hash set — a trie can use MORE memory than storing raw strings, trading memory for prefix-query speed.",
+        "Forgetting that words sharing a prefix share nodes — inserting both \"cat\" and \"car\" doesn't create two separate 'c' and 'a' nodes; they reuse the same path."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is a trie?",
+          "answer": "A tree specialized for storing strings, where each edge represents one character and words sharing a common prefix share the same path from the root, with a marker at nodes where a complete word ends."
+        },
+        {
+          "question": "What is the difference between search() and startsWith() in a trie?",
+          "answer": "search() requires the final node reached to be marked isEndOfWord (a complete word was inserted); startsWith() only requires that the character path exists, regardless of whether it marks a complete word."
+        },
+        {
+          "question": "Why is a trie better suited than a hash set for prefix queries?",
+          "answer": "A trie answers 'does any word start with this prefix' in time proportional only to the prefix's length, while a hash set would need to scan every stored word to answer the same question."
+        }
+      ],
+      "thirtySecondAnswer": "A trie is a tree specialized for strings: each edge represents one character, so words sharing a common prefix — like \"cat\" and \"car\" — share the same path through the tree, using an unordered_map<char, TrieNode*> at each node to branch by next character. isEndOfWord marks where a complete word actually ends, which is why search(\"ca\") can be false even though startsWith(\"ca\") is true — the path exists as a shared prefix, but nothing was inserted ending exactly there. This structure is why tries beat a hash set for prefix-based queries like autocomplete: startsWith() only costs time proportional to the prefix length, not the number of stored words."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Trie",
+      "text": "Trie = predictive text, one keystroke narrows the branch. Shared prefixes share the same path. isEndOfWord = a real word ends HERE, not just a prefix passing through."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-trie-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nusing namespace std;\n\nstruct TrieNode\n{\n    unordered_map<char, TrieNode *> children;\n    bool isEndOfWord = false;\n};\n\nclass Trie\n{\nprivate:\n    TrieNode *root;\n\npublic:\n    Trie()\n    {\n        root = new TrieNode();\n    }\n\n    void insert(string word)\n    {\n        TrieNode *current = root;\n        for (char c : word)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                current->children[c] = new TrieNode();\n            }\n            current = current->children[c];\n        }\n        current->isEndOfWord = true;\n    }\n\n    bool search(string word)\n    {\n        TrieNode *current = root;\n        for (char c : word)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                return false;\n            }\n            current = current->children[c];\n        }\n        return current->isEndOfWord;\n    }\n\n    bool startsWith(string prefix)\n    {\n        TrieNode *current = root;\n        for (char c : prefix)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                return false;\n            }\n            current = current->children[c];\n        }\n        return true;\n    }\n};\n\nint main()\n{\n    Trie trie;\n    trie.insert(\"cat\");\n    trie.insert(\"car\");\n\n    cout << trie.search(\"cat\") << endl;\n    cout << trie.search(\"ca\") << endl;\n    cout << trie.startsWith(\"ca\") << endl;\n\n    return 0;\n}", "output": "1\n0\n1" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-trie-basic",
+      "reference": "#include <iostream>\n#include <unordered_map>\n#include <string>\n\nusing namespace std;\n\nstruct TrieNode\n{\n    unordered_map<char, TrieNode *> children;\n    bool isEndOfWord = false;\n};\n\nclass Trie\n{\nprivate:\n    TrieNode *root;\n\npublic:\n    Trie()\n    {\n        root = new TrieNode();\n    }\n\n    void insert(string word)\n    {\n        TrieNode *current = root;\n        for (char c : word)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                current->children[c] = new TrieNode();\n            }\n            current = current->children[c];\n        }\n        current->isEndOfWord = true;\n    }\n\n    bool search(string word)\n    {\n        TrieNode *current = root;\n        for (char c : word)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                return false;\n            }\n            current = current->children[c];\n        }\n        return current->isEndOfWord;\n    }\n\n    bool startsWith(string prefix)\n    {\n        TrieNode *current = root;\n        for (char c : prefix)\n        {\n            if (current->children.find(c) == current->children.end())\n            {\n                return false;\n            }\n            current = current->children[c];\n        }\n        return true;\n    }\n};\n\nint main()\n{\n    Trie trie;\n    trie.insert(\"cat\");\n    trie.insert(\"car\");\n\n    cout << trie.search(\"cat\") << endl;\n    cout << trie.search(\"ca\") << endl;\n    cout << trie.startsWith(\"ca\") << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-trie-basic"]
+  }
+}
