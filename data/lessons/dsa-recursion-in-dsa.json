@@ -111,6 +111,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Recursion in DSA",
       "text": "Fibonacci recursion = the same question asked over and over down a chain, nobody remembering past answers. Overlapping subproblems = the redundancy. Memoization (coming next) = finally remembering."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Recursion in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-509",
+      "number": 509,
+      "title": "Fibonacci Number",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/fibonacci-number/",
+      "problemStatement": "F(0) = 0, F(1) = 1, F(n) = F(n-1) + F(n-2) for n > 1. Given n, return F(n).",
+      "examples": [
+        { "input": "n = 4", "output": "3" }
+      ],
+      "constraints": ["0 <= n <= 30"],
+      "hints": [
+        "This is exactly this lesson's own Fibonacci recursion — the definition IS the recurrence.",
+        "Base cases: F(0)=0, F(1)=1, given directly.",
+        "For n <= 30, the O(2ⁿ) naive approach is still fast enough — but recall this same call tree cliffhanger gets resolved with Memoization next."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Naive recursion directly mirroring the mathematical definition — correct, but recomputes overlapping subproblems.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint fib(int n)\n{\n    if (n <= 1) return n;\n    return fib(n - 1) + fib(n - 2);\n}\n\nint main()\n{\n    cout << fib(4) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(2ⁿ)",
+          "spaceComplexity": "O(n) call stack depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative, tracking only the last two values — no recursion, no redundant recomputation.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint fib(int n)\n{\n    if (n <= 1) return n;\n\n    int prev2 = 0, prev1 = 1;\n    for (int i = 2; i <= n; i++)\n    {\n        int current = prev1 + prev2;\n        prev2 = prev1;\n        prev1 = current;\n    }\n\n    return prev1;\n}\n\nint main()\n{\n    cout << fib(4) << endl;\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
