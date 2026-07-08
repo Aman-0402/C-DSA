@@ -101,6 +101,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Dynamic Programming",
       "text": "DP = answer the same question once, write it down, read the note next time. Needs overlapping subproblems (repeated work to save) AND optimal substructure (answer built from smaller answers)."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Dynamic Programming in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-509-dp",
+      "number": 509,
+      "title": "Fibonacci Number",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/fibonacci-number/",
+      "problemStatement": "Given n, return the n-th Fibonacci number, where F(0) = 0, F(1) = 1, and F(n) = F(n-1) + F(n-2) for n > 1.",
+      "examples": [
+        { "input": "n = 5", "output": "5" }
+      ],
+      "constraints": ["0 <= n <= 30"],
+      "hints": [
+        "This is THE canonical example of overlapping subproblems from this lesson — naive recursion recomputes F(2) and F(3) many times over.",
+        "Optimal substructure: F(n) is built directly from F(n-1) and F(n-2) — nothing else is needed once those two are known.",
+        "Compare the naive recursive tree's exponential blowup against remembering each F(k) only once — that difference IS what this lesson's DP properties buy you."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Naive recursion — the exact inefficiency this lesson identifies, recomputing the same subproblems repeatedly.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint fib(int n)\n{\n    if (n < 2) return n;\n    return fib(n - 1) + fib(n - 2);\n}\n\nint main()\n{\n    cout << fib(5);\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(2^n) — exponential, from recomputing overlapping subproblems",
+          "spaceComplexity": "O(n) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Bottom-up iteration, keeping only the last two values — no recomputation, no recursion stack, no array needed.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint fib(int n)\n{\n    if (n < 2) return n;\n\n    int prev2 = 0, prev1 = 1;\n    for (int i = 2; i <= n; i++)\n    {\n        int current = prev1 + prev2;\n        prev2 = prev1;\n        prev1 = current;\n    }\n    return prev1;\n}\n\nint main()\n{\n    cout << fib(5);\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [],
