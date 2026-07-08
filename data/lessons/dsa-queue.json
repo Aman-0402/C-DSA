@@ -1,0 +1,134 @@
+{
+  "id": "dsa-queue",
+  "moduleId": "stacks-queues",
+  "title": "Queue",
+  "description": "A classic interview problem: implementing FIFO queue behavior using only two LIFO stacks, with amortized O(1) operations.",
+  "objectives": [
+    "Implement a queue using two stacks",
+    "Understand why reversing via a second stack produces FIFO order",
+    "Trace the in-stack/out-stack transfer",
+    "Understand the amortized O(1) cost"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Container Mechanics Already Covered"
+    },
+    {
+      "type": "paragraph",
+      "text": "queue's own topic covered push(), pop(), front(), back(). Here's a classic interview problem: building that same FIFO behavior using only stack — LIFO — as the building block."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem: Only Stacks Available"
+    },
+    {
+      "type": "paragraph",
+      "text": "Given only stack's push()/pop()/top() operations, how do you produce first-in-first-out behavior, when a single stack naturally gives last-in-first-out?"
+    },
+    {
+      "type": "heading",
+      "text": "3. The Trick: Two Stacks — In and Out"
+    },
+    {
+      "type": "flow",
+      "title": "The core idea",
+      "steps": ["Push new elements onto 'in'", "When popping is needed and 'out' is empty, move EVERYTHING from 'in' to 'out'", "Moving reverses the order — LIFO of LIFO becomes FIFO", "Pop from 'out'"]
+    },
+    {
+      "type": "note",
+      "text": "Reversing a reversed order restores the original order — that's the entire trick. Popping every element off in and pushing each onto out flips their order once; since in itself already reversed the true arrival order (LIFO), this second reversal cancels it out, leaving out in true FIFO order."
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nclass QueueFromStacks\n{\nprivate:\n    stack<int> in;\n    stack<int> out;\n\n    void transferIfNeeded()\n    {\n        if (out.empty())\n        {\n            while (!in.empty())\n            {\n                out.push(in.top());\n                in.pop();\n            }\n        }\n    }\n\npublic:\n    void push(int value)\n    {\n        in.push(value);\n    }\n\n    int pop()\n    {\n        transferIfNeeded();\n        int front = out.top();\n        out.pop();\n        return front;\n    }\n};\n\nint main()\n{\n    QueueFromStacks q;\n    q.push(1);\n    q.push(2);\n    q.push(3);\n\n    cout << q.pop() << \" \";\n    cout << q.pop() << \" \";\n    cout << q.pop() << \" \";\n\n    return 0;\n}",
+      "output": "1 2 3 ",
+      "retypePractice": true,
+      "retypeId": "dsa-queue-two-stacks"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "push(1), push(2), push(3): in = [1,2,3] (3 on top), out = []",
+        "pop(): out is empty → transfer: out becomes [3,2,1] (1 on top now — order flipped!), in = []. Pop 1 from out → returns 1",
+        "pop(): out = [3,2] (2 on top) → not empty, no transfer needed → returns 2",
+        "pop(): out = [3] → returns 3",
+        "Result: 1 2 3 — true FIFO order, from two LIFO stacks"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Amortized O(1)"
+    },
+    {
+      "type": "note",
+      "text": "A single pop() can look expensive — O(n) — if it triggers a full transfer. But recall Monotonic Stack's amortized reasoning: each element is pushed onto in once, moved to out at most once, and popped from out once — across any sequence of operations, that's a bounded total amount of work per element, giving amortized O(1) per operation overall, even though any single call's worst case is O(n)."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Flipping a stack of plates onto a second stack",
+      "text": "Stacking plates one at a time (in) naturally puts the last plate placed on top. Flip the entire stack over, one plate at a time, onto a second empty stack (out) — the plate that was on the very bottom of the original pile (the FIRST one placed) ends up on top of the new pile, ready to be taken first. That single flip is what turns last-in-first-out into first-in-first-out."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Transferring elements from in to out on every single pop(), even when out already has elements — this breaks the correct order and wastes work; only transfer when out is empty.",
+        "Pushing new elements directly onto out instead of in — new arrivals must go through in first, or they'd jump ahead of older elements already in out.",
+        "Assuming every pop() is O(n) — most are O(1); only the ones that trigger a transfer touch every element, and each element is only ever transferred once.",
+        "Forgetting this classic problem specifically forbids using an actual queue or deque directly — the entire point is building FIFO behavior from LIFO primitives alone."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How do you implement a queue using two stacks?",
+          "answer": "Push new elements onto an 'in' stack. When popping and the 'out' stack is empty, move every element from 'in' to 'out' (reversing their order), then pop from 'out'."
+        },
+        {
+          "question": "Why does moving elements from 'in' to 'out' produce FIFO order?",
+          "answer": "Because 'in' already reverses arrival order (LIFO), and transferring to 'out' reverses it a second time — two reversals cancel out, restoring the original first-in-first-out order."
+        },
+        {
+          "question": "What is the amortized time complexity of pop() in the two-stack queue, and why isn't every call O(n)?",
+          "answer": "Amortized O(1) — although a single pop() that triggers a transfer touches every element (O(n)), each element is only ever transferred from in to out once across its entire lifetime, spreading that cost evenly over many calls."
+        }
+      ],
+      "thirtySecondAnswer": "A queue can be built from two stacks: push new elements onto an 'in' stack, and when popping while 'out' is empty, move every element from 'in' to 'out', which reverses their order a second time and restores true first-in-first-out order — one reversal from 'in' cancels the other from 'out'. Any single pop() that triggers a transfer costs O(n), but since each element is only ever transferred once across its lifetime, the amortized cost per operation is O(1), the same amortized reasoning used for Monotonic Stack."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Queue (Two Stacks)",
+      "text": "Two stacks = flip a plate pile onto a second pile. One flip cancels the first stack's reversal, giving true FIFO. Only flip when 'out' is empty — amortized O(1)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-queue-two-stacks", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nclass QueueFromStacks\n{\nprivate:\n    stack<int> in;\n    stack<int> out;\n\n    void transferIfNeeded()\n    {\n        if (out.empty())\n        {\n            while (!in.empty())\n            {\n                out.push(in.top());\n                in.pop();\n            }\n        }\n    }\n\npublic:\n    void push(int value)\n    {\n        in.push(value);\n    }\n\n    int pop()\n    {\n        transferIfNeeded();\n        int front = out.top();\n        out.pop();\n        return front;\n    }\n};\n\nint main()\n{\n    QueueFromStacks q;\n    q.push(1);\n    q.push(2);\n    q.push(3);\n\n    cout << q.pop() << \" \";\n    cout << q.pop() << \" \";\n    cout << q.pop() << \" \";\n\n    return 0;\n}", "output": "1 2 3 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-queue-two-stacks",
+      "reference": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nclass QueueFromStacks\n{\nprivate:\n    stack<int> in;\n    stack<int> out;\n\n    void transferIfNeeded()\n    {\n        if (out.empty())\n        {\n            while (!in.empty())\n            {\n                out.push(in.top());\n                in.pop();\n            }\n        }\n    }\n\npublic:\n    void push(int value)\n    {\n        in.push(value);\n    }\n\n    int pop()\n    {\n        transferIfNeeded();\n        int front = out.top();\n        out.pop();\n        return front;\n    }\n};\n\nint main()\n{\n    QueueFromStacks q;\n    q.push(1);\n    q.push(2);\n    q.push(3);\n\n    cout << q.pop() << \" \";\n    cout << q.pop() << \" \";\n    cout << q.pop() << \" \";\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-queue-two-stacks"]
+  }
+}
