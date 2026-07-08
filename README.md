@@ -1,8 +1,33 @@
 # C++ + DSA + LeetCode Interactive eBook
 
+🔗 **Live site:** [https://aman-0402.github.io/C-DSA/](https://aman-0402.github.io/C-DSA/)
+
 A personal, frontend-only interactive learning platform for C++, Data Structures & Algorithms, and LeetCode preparation — built to feel like a premium coding IDE fused with an interactive eBook.
 
 All learning content (lessons, code examples, practice questions, interview questions, LeetCode references) is authored by the user and added incrementally. This repo contains no invented course content.
+
+## What's Inside
+
+**148 lessons across 20 modules**, taking you from C++ basics all the way through DSA and interview-ready pattern recognition:
+
+| Track | Modules |
+| --- | --- |
+| **C++ Language** | C++ Fundamentals, Control Flow, Functions, Arrays & Strings, Pointers & Memory, Object-Oriented Programming, Advanced C++, STL |
+| **DSA Foundations** | Complexity Analysis, Array & String Techniques, Hashing, Searching & Sorting, Recursion & Backtracking |
+| **Data Structures** | Linked List, Stacks & Queues, Heap, Trees, Graphs |
+| **Algorithms** | Greedy Algorithms, Dynamic Programming (Memoization, Tabulation, 1D/2D DP, Knapsack, LCS, LIS), Bit Manipulation, Advanced Problem-Solving Patterns |
+
+## LeetCode Integration
+
+Every core DSA topic is paired with real LeetCode problems solved directly inside the lesson — **247 problem instances** across the 45 DSA/Algorithms topics. The same problem often shows up under more than one topic on purpose (e.g. `#42 Trapping Rain Water` teaches both Two Pointers and Monotonic Stack), because that's how the pattern actually gets recognized in interviews.
+
+Each LeetCode entry includes:
+
+- Problem statement, examples, and constraints
+- Progressive hints (no spoilers up front)
+- A **Brute Force → Optimal** approach breakdown with full C++ code, output, and time/space complexity
+- A **"Try It Yourself"** Monaco-powered scratchpad (freeform, autosaves locally — no paste-blocking, unlike the retype-practice sections)
+- A **Mark as Solved** toggle, tracked against a live `X / 247` counter in the sidebar
 
 ## Tech Stack
 
