@@ -225,6 +225,42 @@
           "spaceComplexity": "O(k × C(n,k)) for the output"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-39",
+      "number": 39,
+      "title": "Combination Sum",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/combination-sum/",
+      "problemStatement": "Given distinct integers candidates and a target, return all unique combinations where the chosen numbers sum to target. The same number may be used an UNLIMITED number of times.",
+      "examples": [
+        { "input": "candidates = [2,3,6,7], target = 7", "output": "[[2,2,3],[7]]" }
+      ],
+      "constraints": ["1 <= candidates.length <= 30", "2 <= target <= 40"],
+      "hints": [
+        "This is Combinations' start-index trick again, but with a twist: since a number can repeat, the next recursive call should start from the SAME index, not index + 1.",
+        "Track a running sum instead of a fixed combination size — the base case is 'running sum equals target' (success) or 'running sum exceeds target' (dead end, stop exploring).",
+        "Sorting candidates first lets the search break out of the loop early once the running sum would exceed target, avoiding wasted exploration."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Explore every combination without pruning on running sum, checking the total only once a branch stops growing.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid backtrack(vector<int> &candidates, int target, int start, vector<int> &current, vector<vector<int>> &result)\n{\n    int sum = 0;\n    for (int c : current) sum += c;\n\n    if (sum == target)\n    {\n        result.push_back(current);\n        return;\n    }\n    if (sum > target || start == candidates.size()) return;\n\n    current.push_back(candidates[start]);\n    backtrack(candidates, target, start, current, result); // reuse same index\n    current.pop_back();\n\n    backtrack(candidates, target, start + 1, current, result); // move on\n}\n\nint main()\n{\n    vector<int> candidates = {2, 3, 6, 7};\n    vector<int> current;\n    vector<vector<int>> result;\n\n    backtrack(candidates, 7, 0, current, result);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(2^target) worst case — sum recomputed on every call",
+          "spaceComplexity": "O(target) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Sort first, track the running sum as a parameter, and break the loop early once a candidate would exceed the target.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nvoid backtrack(vector<int> &candidates, int remaining, int start, vector<int> &current, vector<vector<int>> &result)\n{\n    if (remaining == 0)\n    {\n        result.push_back(current);\n        return;\n    }\n\n    for (int i = start; i < candidates.size(); i++)\n    {\n        if (candidates[i] > remaining) break; // sorted, so nothing further can work either\n\n        current.push_back(candidates[i]);\n        backtrack(candidates, remaining - candidates[i], i, current, result); // reuse index i\n        current.pop_back();\n    }\n}\n\nvector<vector<int>> combinationSum(vector<int> &candidates, int target)\n{\n    sort(candidates.begin(), candidates.end());\n    vector<vector<int>> result;\n    vector<int> current;\n    backtrack(candidates, target, 0, current, result);\n    return result;\n}\n\nint main()\n{\n    vector<int> candidates = {2, 3, 6, 7};\n\n    auto result = combinationSum(candidates, 7);\n    cout << result.size() << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(2^target) worst case, but pruned significantly by the early break",
+          "spaceComplexity": "O(target) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
