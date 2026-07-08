@@ -154,6 +154,42 @@
           "spaceComplexity": "O(target) for a single row"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-494",
+      "number": 494,
+      "title": "Target Sum",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/target-sum/",
+      "problemStatement": "Given nums and a target, assign a '+' or '-' sign to each number so the resulting expression evaluates to target. Return the number of ways to do this.",
+      "examples": [
+        { "input": "nums = [1,1,1,1,1], target = 3", "output": "5" }
+      ],
+      "constraints": ["1 <= nums.length <= 20"],
+      "hints": [
+        "This looks like sign-assignment, but algebra turns it into subset sum: if P is the sum of '+' numbers and N is the sum of '-' numbers, P - N = target AND P + N = totalSum, so P = (totalSum + target) / 2.",
+        "The problem becomes: count the number of subsets that sum to exactly P — the SAME 0/1 Knapsack subset-sum shape as LC 416, but COUNTING ways instead of a boolean feasibility check.",
+        "dp[w] = the number of ways to reach sum w using items considered so far; dp[0] starts at 1 (exactly one way to make sum 0: pick nothing)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp table: dp[i][w] = the number of ways to reach sum w using the first i numbers.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n#include <cstdlib>\n\nusing namespace std;\n\nint findTargetSumWays(vector<int>& nums, int target)\n{\n    int total = accumulate(nums.begin(), nums.end(), 0);\n    if (abs(target) > total || (total + target) % 2 != 0) return 0;\n    int P = (total + target) / 2;\n\n    int n = nums.size();\n    vector<vector<int>> dp(n + 1, vector<int>(P + 1, 0));\n    dp[0][0] = 1;\n\n    for (int i = 1; i <= n; i++)\n        for (int w = 0; w <= P; w++)\n        {\n            dp[i][w] = dp[i - 1][w];\n            if (nums[i - 1] <= w) dp[i][w] += dp[i - 1][w - nums[i - 1]];\n        }\n\n    return dp[n][P];\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1, 1, 1};\n    cout << findTargetSumWays(nums, 3);\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n * P)",
+          "spaceComplexity": "O(n * P) for the full 2D table"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Collapse to a single rolling row, iterated right to left per item.",
+          "code": "#include <iostream>\n#include <vector>\n#include <numeric>\n#include <cstdlib>\n\nusing namespace std;\n\nint findTargetSumWays(vector<int>& nums, int target)\n{\n    int total = accumulate(nums.begin(), nums.end(), 0);\n    if (abs(target) > total || (total + target) % 2 != 0) return 0;\n    int P = (total + target) / 2;\n\n    vector<int> dp(P + 1, 0);\n    dp[0] = 1;\n\n    for (int num : nums)\n        for (int w = P; w >= num; w--)\n            dp[w] += dp[w - num];\n\n    return dp[P];\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1, 1, 1};\n    cout << findTargetSumWays(nums, 3);\n\n    return 0;\n}",
+          "output": "5",
+          "timeComplexity": "O(n * P)",
+          "spaceComplexity": "O(P) for a single row"
+        }
+      ]
     }
   ],
   "codeExamples": [
