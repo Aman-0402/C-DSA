@@ -199,6 +199,42 @@
           "spaceComplexity": "O(k) for the heap"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-347",
+      "number": 347,
+      "title": "Top K Frequent Elements",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/top-k-frequent-elements/",
+      "problemStatement": "Given an integer array nums and an integer k, return the k most frequent elements, in any order.",
+      "examples": [
+        { "input": "nums = [1,1,1,2,2,3], k = 2", "output": "[1,2]" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5"],
+      "hints": [
+        "This is 'kth largest,' but ranking by FREQUENCY instead of value directly — first count occurrences with a hash map (recall unordered_map's tally pattern), then apply the min-heap-of-size-k idea to the counts.",
+        "The min-heap holds (frequency, value) pairs, ordered by frequency — capped at size k, popping the least frequent whenever it grows past k.",
+        "Whatever remains in the heap at the end are the k most frequent elements."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Count frequencies with a hash map, then sort all distinct values by frequency and take the top k.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\n\nusing namespace std;\n\nvector<int> topKFrequent(vector<int> &nums, int k)\n{\n    unordered_map<int, int> counts;\n    for (int n : nums) counts[n]++;\n\n    vector<pair<int,int>> freqList; // (count, value)\n    for (auto &[val, cnt] : counts) freqList.push_back({cnt, val});\n\n    sort(freqList.begin(), freqList.end(), greater<pair<int,int>>());\n\n    vector<int> result;\n    for (int i = 0; i < k; i++) result.push_back(freqList[i].second);\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1, 2, 2, 3};\n\n    vector<int> result = topKFrequent(nums, 2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "1 2 ",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A min-heap of (frequency, value) pairs capped at size k, built from the frequency map.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n#include <queue>\n\nusing namespace std;\n\nvector<int> topKFrequent(vector<int> &nums, int k)\n{\n    unordered_map<int, int> counts;\n    for (int n : nums) counts[n]++;\n\n    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> minHeap;\n\n    for (auto &[val, cnt] : counts)\n    {\n        minHeap.push({cnt, val});\n        if ((int)minHeap.size() > k) minHeap.pop();\n    }\n\n    vector<int> result;\n    while (!minHeap.empty())\n    {\n        result.push_back(minHeap.top().second);\n        minHeap.pop();\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 1, 1, 2, 2, 3};\n\n    vector<int> result = topKFrequent(nums, 2);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "2 1 ",
+          "timeComplexity": "O(n log k)",
+          "spaceComplexity": "O(n) for the frequency map, O(k) for the heap"
+        }
+      ]
     }
   ],
   "codeExamples": [
