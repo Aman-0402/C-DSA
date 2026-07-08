@@ -418,6 +418,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-153",
+      "number": 153,
+      "title": "Find Minimum in Rotated Sorted Array",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
+      "problemStatement": "Given a sorted array rotated at an unknown pivot, with no duplicate values, return the minimum element in O(log n) time.",
+      "examples": [
+        { "input": "nums = [3,4,5,1,2]", "output": "1" }
+      ],
+      "constraints": ["1 <= nums.length <= 5000", "all values unique"],
+      "hints": [
+        "The minimum is exactly the 'pivot point' where the rotation happened — everything before it is larger than everything after it.",
+        "Comparing nums[mid] to nums[right] tells you which side the pivot is on: if nums[mid] > nums[right], the minimum must be somewhere to the right of mid; otherwise it's at mid or to the left.",
+        "Unlike standard binary search, never discard mid itself when nums[mid] <= nums[right] — it could BE the minimum."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Scan the whole array tracking the minimum seen.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findMin(vector<int> &nums)\n{\n    int minVal = nums[0];\n    for (int n : nums) minVal = min(minVal, n);\n    return minVal;\n}\n\nint main()\n{\n    vector<int> nums = {3, 4, 5, 1, 2};\n\n    cout << findMin(nums) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Binary search comparing nums[mid] to nums[right] to decide which half contains the rotation pivot (the minimum).",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findMin(vector<int> &nums)\n{\n    int left = 0, right = nums.size() - 1;\n\n    while (left < right)\n    {\n        int mid = left + (right - left) / 2;\n\n        if (nums[mid] > nums[right])\n        {\n            left = mid + 1; // minimum is to the right\n        }\n        else\n        {\n            right = mid; // minimum is at mid or to the left\n        }\n    }\n\n    return nums[left];\n}\n\nint main()\n{\n    vector<int> nums = {3, 4, 5, 1, 2};\n\n    cout << findMin(nums) << endl;\n\n    return 0;\n}",
+          "output": "1",
+          "timeComplexity": "O(log n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
