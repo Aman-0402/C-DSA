@@ -175,6 +175,13 @@
         { "id": "dsa-unordered-map", "title": "unordered_map", "lesson": "dsa-unordered-map" },
         { "id": "dsa-unordered-set", "title": "unordered_set", "lesson": "dsa-unordered-set" }
       ]
+    },
+    {
+      "id": "searching-sorting",
+      "title": "Searching & Sorting",
+      "topics": [
+        { "id": "dsa-sorting", "title": "Sorting", "lesson": "dsa-sorting" }
+      ]
     }
   ]
 }

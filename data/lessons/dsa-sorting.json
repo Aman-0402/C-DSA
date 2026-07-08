@@ -1,0 +1,150 @@
+{
+  "id": "dsa-sorting",
+  "moduleId": "searching-sorting",
+  "title": "Sorting",
+  "description": "How sorting actually works under the hood: Bubble Sort's simple O(n²) approach, and Merge Sort's divide-and-conquer O(n log n) — explaining why sort() is fast.",
+  "objectives": [
+    "Implement Bubble Sort and understand why it's O(n²)",
+    "Understand Merge Sort's divide-and-conquer approach conceptually",
+    "Understand why divide-and-conquer gives O(n log n)",
+    "Connect this back to why sort() itself is O(n log n)"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: We Already Use sort() — Now, How Does It Actually Work?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sorting using sort() covered calling the ready-made STL algorithm. Here we open the hood and see what a sorting algorithm actually does, starting with the simplest possible one."
+    },
+    {
+      "type": "heading",
+      "text": "2. Bubble Sort — The Simplest Algorithm"
+    },
+    {
+      "type": "definition",
+      "term": "Bubble Sort",
+      "text": "Bubble Sort repeatedly steps through the array, swapping adjacent elements that are out of order, until no swaps are needed — larger values gradually \"bubble\" toward the end."
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid bubbleSort(vector<int> &numbers)\n{\n    for (int i = 0; i < numbers.size() - 1; i++)\n    {\n        for (int j = 0; j < numbers.size() - 1 - i; j++)\n        {\n            if (numbers[j] > numbers[j + 1])\n            {\n                swap(numbers[j], numbers[j + 1]); // adjacent swap\n            }\n        }\n    }\n}\n\nint main()\n{\n    vector<int> numbers = {5, 2, 4, 1, 3};\n\n    bubbleSort(numbers);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}",
+      "output": "1 2 3 4 5 ",
+      "retypePractice": true,
+      "retypeId": "dsa-sorting-bubble"
+    },
+    {
+      "type": "keyPoints",
+      "title": "How it works",
+      "points": [
+        "The inner loop compares each adjacent pair, swapping if they're out of order",
+        "After one full inner pass, the LARGEST remaining element has 'bubbled' to its correct position at the end",
+        "The outer loop repeats this, each time needing to check one fewer element at the end (already sorted)",
+        "numbers.size() - 1 - i shrinks the range checked each outer pass, since the tail is already settled"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. Why Bubble Sort Is O(n²)"
+    },
+    {
+      "type": "note",
+      "text": "Recall the nested-loop shape from Time Complexity: an outer loop running roughly n times, each containing an inner loop also running roughly n times, gives O(n²) comparisons in the worst case — exactly why sort() (O(n log n)) is used in practice instead of writing this by hand."
+    },
+    {
+      "type": "heading",
+      "text": "4. A Better Way: Divide and Conquer"
+    },
+    {
+      "type": "flow",
+      "title": "Merge Sort's core idea",
+      "steps": ["Split the array into two halves", "Recursively sort each half (recall Recursion)", "Merge the two sorted halves back into one sorted array"]
+    },
+    {
+      "type": "definition",
+      "term": "Divide and conquer",
+      "text": "Divide and conquer solves a problem by splitting it into smaller subproblems of the same shape, solving those recursively, and combining their results."
+    },
+    {
+      "type": "note",
+      "text": "Merging two already-sorted halves is a single O(n) pass — walk both halves with two pointers (recall Two Pointers), always taking the smaller of the two current elements. The real cleverness is in the splitting: each split halves the problem size, and merging back up takes O(n) at every level."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why This Gives O(n log n)"
+    },
+    {
+      "type": "table",
+      "headers": ["Level of recursion", "Number of merges", "Work per level"],
+      "rows": [
+        ["Splitting n into halves, repeatedly", "log n levels (halving n takes log n steps to reach size 1)", "O(n) total merging work per level"]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "log n levels of splitting, each doing O(n) total merge work, gives O(n log n) overall — recall this exact complexity class from Big O Notation, and this is precisely why sort() is documented as O(n log n): it's built on this divide-and-conquer idea (or a close relative of it), not a simple nested-loop approach like Bubble Sort."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Sorting a deck by repeatedly swapping neighbors vs splitting it among helpers",
+      "text": "Bubble Sort is like sorting a deck of cards by only ever swapping two adjacent cards, over and over, until nothing's out of order — simple but slow for a large deck. Merge Sort is like splitting the deck among several helpers, having each sort their small pile, and then merging the sorted piles back together two at a time — dramatically faster for a large deck, at the cost of a cleverer process."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Writing a sorting algorithm by hand for production code instead of using sort() — sort() is heavily optimized and almost always the right practical choice; understanding the algorithm is about knowing WHY, not replacing it.",
+        "Confusing Bubble Sort's O(n²) with sort()'s O(n log n) — they are fundamentally different algorithmic approaches.",
+        "Missing that merging two sorted halves is itself just an O(n) two-pointer walk, not something mysterious.",
+        "Forgetting that log n levels of splitting is what makes divide-and-conquer sorting fast — halving repeatedly reaches size 1 in only log n steps, not n steps."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does Bubble Sort work, and what is its time complexity?",
+          "answer": "It repeatedly swaps adjacent out-of-order elements, letting larger values bubble toward the end over multiple passes; this nested-loop approach is O(n²)."
+        },
+        {
+          "question": "What is the divide-and-conquer approach used by Merge Sort?",
+          "answer": "Split the array into two halves, recursively sort each half, then merge the two sorted halves back together in a single O(n) pass."
+        },
+        {
+          "question": "Why does Merge Sort's divide-and-conquer approach give O(n log n) instead of O(n²)?",
+          "answer": "Splitting the array in half repeatedly takes log n levels to reach single elements, and each level does O(n) total work merging, giving O(n) × O(log n) = O(n log n)."
+        }
+      ],
+      "thirtySecondAnswer": "Bubble Sort repeatedly swaps adjacent out-of-order elements across nested loops, giving O(n²) time — simple to understand but slow for large inputs. Merge Sort instead uses divide and conquer: split the array in half, recursively sort each half, then merge the two sorted halves in a single O(n) pass. Because halving the array repeatedly takes only log n levels to reach single elements, and each level does O(n) total merging work, the overall complexity is O(n log n) — exactly the complexity class sort() achieves, which is why it dramatically outperforms a naive O(n²) approach like Bubble Sort on large inputs."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Sorting",
+      "text": "Bubble Sort = adjacent swaps only, O(n²), simple but slow. Merge Sort = split, sort halves, merge, O(n log n) — log n levels of splitting × O(n) merging per level."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-sorting-bubble", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid bubbleSort(vector<int> &numbers)\n{\n    for (int i = 0; i < numbers.size() - 1; i++)\n    {\n        for (int j = 0; j < numbers.size() - 1 - i; j++)\n        {\n            if (numbers[j] > numbers[j + 1])\n            {\n                swap(numbers[j], numbers[j + 1]);\n            }\n        }\n    }\n}\n\nint main()\n{\n    vector<int> numbers = {5, 2, 4, 1, 3};\n\n    bubbleSort(numbers);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}", "output": "1 2 3 4 5 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-sorting-bubble",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid bubbleSort(vector<int> &numbers)\n{\n    for (int i = 0; i < numbers.size() - 1; i++)\n    {\n        for (int j = 0; j < numbers.size() - 1 - i; j++)\n        {\n            if (numbers[j] > numbers[j + 1])\n            {\n                swap(numbers[j], numbers[j + 1]);\n            }\n        }\n    }\n}\n\nint main()\n{\n    vector<int> numbers = {5, 2, 4, 1, 3};\n\n    bubbleSort(numbers);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-sorting-bubble"]
+  }
+}
