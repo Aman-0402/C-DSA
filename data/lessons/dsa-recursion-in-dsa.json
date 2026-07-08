@@ -1,0 +1,132 @@
+{
+  "id": "dsa-recursion-in-dsa",
+  "moduleId": "recursion-backtracking",
+  "title": "Recursion in DSA",
+  "description": "Applying recursion's mechanics to real DSA problems: recursive array sum, Fibonacci, and the overlapping-subproblems cost that Dynamic Programming will later fix.",
+  "objectives": [
+    "Write a recursive function that processes an array",
+    "Implement Fibonacci recursively",
+    "Recognize overlapping subproblems as a hidden efficiency cost",
+    "See why this sets up the need for Dynamic Programming, covered later"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Mechanics Are Already Covered"
+    },
+    {
+      "type": "paragraph",
+      "text": "Recursion covered the base case, recursive case, and call-stack tracing using factorial. Here, we apply that same thinking to problems more typical of DSA."
+    },
+    {
+      "type": "heading",
+      "text": "2. Recursion on Arrays: Sum of an Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int sumArray(vector<int> &numbers, int index)\n{\n    if (index == numbers.size()) // BASE CASE — nothing left to add\n    {\n        return 0;\n    }\n    return numbers[index] + sumArray(numbers, index + 1); // RECURSIVE CASE\n}"
+    },
+    {
+      "type": "note",
+      "text": "Instead of a for loop, the array is processed one element at a time recursively — sumArray(numbers, index) means \"the sum of everything from index onward.\" This same recurse-over-an-array shape reappears constantly in DSA, especially once we reach Trees and Graphs, which are naturally recursive structures."
+    },
+    {
+      "type": "heading",
+      "text": "3. Fibonacci — A Classic Recursive Problem"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nint fibonacci(int n)\n{\n    if (n <= 1) // BASE CASE\n    {\n        return n;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2); // RECURSIVE CASE — calls itself TWICE\n}\n\nint main()\n{\n    cout << fibonacci(6) << endl;\n\n    return 0;\n}",
+      "output": "8",
+      "retypePractice": true,
+      "retypeId": "dsa-recursion-in-dsa-fibonacci"
+    },
+    {
+      "type": "note",
+      "text": "The Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8, 13, ... — each number is the sum of the two before it. fibonacci(6) = 8. Unlike factorial, this recursive case makes two calls instead of one, which matters a lot for what comes next."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Hidden Cost: Overlapping Subproblems"
+    },
+    {
+      "type": "flow",
+      "title": "fibonacci(4) expands into",
+      "steps": ["fibonacci(4) calls fibonacci(3) and fibonacci(2)", "fibonacci(3) calls fibonacci(2) and fibonacci(1)", "fibonacci(2) [from fibonacci(4)] calls fibonacci(1) and fibonacci(0)", "fibonacci(2) [from fibonacci(3)] ALSO calls fibonacci(1) and fibonacci(0) — AGAIN"]
+    },
+    {
+      "type": "warning",
+      "text": "fibonacci(2) gets computed twice here, completely redundantly — and this redundancy compounds badly as n grows: fibonacci(n) makes roughly 2ⁿ calls total, giving this naive version exponential time, O(2ⁿ), despite the actual sequence of answers being simple. Recall O(2ⁿ) from Big O Notation's complexity table — this is exactly that class, and exactly why it's listed as the slowest common one."
+    },
+    {
+      "type": "heading",
+      "text": "5. A Preview: Fixing This"
+    },
+    {
+      "type": "tip",
+      "text": "This wasted, repeated work has a name — overlapping subproblems — and it's the exact problem that Memoization and Dynamic Programming, covered soon, are built to solve: remembering an already-computed answer instead of recalculating it from scratch every time it's needed again."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Asking the same question to two different people who each ask it further down the chain",
+      "text": "Imagine everyone in a chain of people has to ask the two people \"below\" them a question, who each ask two more, and so on — the same question ends up being independently asked (and answered) many, many times across the whole chain, purely because nobody remembers an answer they already got. That's naive recursive Fibonacci: the same subquestions get freshly recomputed over and over."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming naive recursive Fibonacci is efficient — it's O(2ⁿ), genuinely too slow for even moderately large n without further optimization.",
+        "Forgetting the base case for a two-branch recursive function like Fibonacci — both n == 0 and n == 1 need to be handled, not just one.",
+        "Not recognizing overlapping subproblems as a distinct, nameable inefficiency — it's the specific pattern that motivates memoization and dynamic programming.",
+        "Confusing recursion's mechanics (already understood) with recursion's efficiency (a separate concern) — a correct recursive solution isn't automatically an efficient one."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "Write the recursive relation for Fibonacci.",
+          "answer": "fibonacci(n) = fibonacci(n-1) + fibonacci(n-2), with base cases fibonacci(0) = 0 and fibonacci(1) = 1."
+        },
+        {
+          "question": "What is the time complexity of the naive recursive Fibonacci implementation, and why?",
+          "answer": "O(2ⁿ) — because each call branches into two further calls, and many of those calls recompute the exact same subproblems redundantly."
+        },
+        {
+          "question": "What are overlapping subproblems?",
+          "answer": "When a recursive algorithm's subproblems repeat — the same smaller input gets recomputed multiple times independently, wasting work that could instead be reused."
+        }
+      ],
+      "thirtySecondAnswer": "Recursion applies naturally to array processing (recursing over an index instead of looping) and classic problems like Fibonacci, where fibonacci(n) = fibonacci(n-1) + fibonacci(n-2). The naive recursive Fibonacci implementation, however, has a hidden cost: because each call branches into two further calls, the same subproblems — like fibonacci(2) — get recomputed independently many times, a pattern called overlapping subproblems. This gives naive Fibonacci O(2ⁿ) time despite the underlying sequence being simple, and it's exactly the inefficiency that Memoization and Dynamic Programming, covered next, are designed to eliminate by remembering already-computed answers."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Recursion in DSA",
+      "text": "Fibonacci recursion = the same question asked over and over down a chain, nobody remembering past answers. Overlapping subproblems = the redundancy. Memoization (coming next) = finally remembering."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-recursion-in-dsa-fibonacci", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nint fibonacci(int n)\n{\n    if (n <= 1)\n    {\n        return n;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main()\n{\n    cout << fibonacci(6) << endl;\n\n    return 0;\n}", "output": "8" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-recursion-in-dsa-fibonacci",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nint fibonacci(int n)\n{\n    if (n <= 1)\n    {\n        return n;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main()\n{\n    cout << fibonacci(6) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-recursion-in-dsa-fibonacci"]
+  }
+}

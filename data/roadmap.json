@@ -183,6 +183,13 @@
         { "id": "dsa-sorting", "title": "Sorting", "lesson": "dsa-sorting" },
         { "id": "dsa-binary-search", "title": "Binary Search", "lesson": "dsa-binary-search" }
       ]
+    },
+    {
+      "id": "recursion-backtracking",
+      "title": "Recursion & Backtracking",
+      "topics": [
+        { "id": "dsa-recursion-in-dsa", "title": "Recursion in DSA", "lesson": "dsa-recursion-in-dsa" }
+      ]
     }
   ]
 }
