@@ -234,6 +234,42 @@
           "spaceComplexity": "O(cols) for a single row"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-120",
+      "number": 120,
+      "title": "Triangle",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/triangle/",
+      "problemStatement": "Given a triangular array of numbers, find the minimum path sum from top to bottom, where each step moves to an adjacent number on the row below (index j or j+1).",
+      "examples": [
+        { "input": "triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]", "output": "11" }
+      ],
+      "constraints": ["1 <= triangle.length <= 200"],
+      "hints": [
+        "Working top-down here has an awkward edge case (the triangle's sides), so instead go BOTTOM-UP: dp[j] = the minimum path sum from cell (row, j) down to the base.",
+        "Recurrence, filled from the second-to-last row upward: dp[j] = triangle[row][j] + min(dp[j], dp[j+1]) — 'dp[j]' and 'dp[j+1]' here refer to the ROW BELOW's already-computed values.",
+        "The last row's dp values are simply the triangle's own last row — no combining needed there, since there's nothing below it."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full 2D dp grid mirroring the triangle's shape, filled bottom-up.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint minimumTotal(vector<vector<int>>& triangle)\n{\n    int n = triangle.size();\n    vector<vector<int>> dp = triangle;\n\n    for (int row = n - 2; row >= 0; row--)\n        for (int j = 0; j <= row; j++)\n            dp[row][j] = triangle[row][j] + min(dp[row + 1][j], dp[row + 1][j + 1]);\n\n    return dp[0][0];\n}\n\nint main()\n{\n    vector<vector<int>> triangle = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};\n    cout << minimumTotal(triangle);\n\n    return 0;\n}",
+          "output": "11",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n^2) for the full dp grid"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Each row only depends on the row directly below — collapse to a single rolling row, updated in place.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint minimumTotal(vector<vector<int>>& triangle)\n{\n    int n = triangle.size();\n    vector<int> dp = triangle[n - 1];\n\n    for (int row = n - 2; row >= 0; row--)\n        for (int j = 0; j <= row; j++)\n            dp[j] = triangle[row][j] + min(dp[j], dp[j + 1]);\n\n    return dp[0];\n}\n\nint main()\n{\n    vector<vector<int>> triangle = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};\n    cout << minimumTotal(triangle);\n\n    return 0;\n}",
+          "output": "11",
+          "timeComplexity": "O(n^2)",
+          "spaceComplexity": "O(n) for a single row"
+        }
+      ]
     }
   ],
   "codeExamples": [
