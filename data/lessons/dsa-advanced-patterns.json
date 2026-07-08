@@ -273,6 +273,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-41",
+      "number": 41,
+      "title": "First Missing Positive",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/first-missing-positive/",
+      "problemStatement": "Given an unsorted integer array nums, return the smallest missing positive integer. Must run in O(n) time using O(1) extra space.",
+      "examples": [
+        { "input": "nums = [3,4,-1,1]", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5"],
+      "hints": [
+        "Clue: the answer is bounded — it must be in [1, n+1], since with n numbers, the missing positive can't be larger than n+1. That bound is what makes an O(1) space trick possible.",
+        "Cyclic sort: for each value v in [1, n], its 'correct' home is index v-1. Swap each valid value into its correct index, in place, until every value that CAN be correctly placed is.",
+        "After placing everything possible, scan left to right: the first index i where nums[i] != i+1 reveals the answer (i+1); if every position matches, the answer is n+1."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Hash set of all values, then scan upward from 1 checking membership — works but uses O(n) extra space.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nint firstMissingPositive(vector<int>& nums)\n{\n    unordered_set<int> present(nums.begin(), nums.end());\n\n    int candidate = 1;\n    while (present.count(candidate)) candidate++;\n\n    return candidate;\n}\n\nint main()\n{\n    vector<int> nums = {3, 4, -1, 1};\n    cout << firstMissingPositive(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the hash set"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Cyclic sort in place: swap every value into its 'home' index (value v goes to index v-1), then scan for the first mismatch.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint firstMissingPositive(vector<int>& nums)\n{\n    int n = nums.size();\n\n    for (int i = 0; i < n; i++)\n    {\n        while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i])\n        {\n            swap(nums[i], nums[nums[i] - 1]);\n        }\n    }\n\n    for (int i = 0; i < n; i++)\n        if (nums[i] != i + 1) return i + 1;\n\n    return n + 1;\n}\n\nint main()\n{\n    vector<int> nums = {3, 4, -1, 1};\n    cout << firstMissingPositive(nums);\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n) — each value is swapped into place at most once",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
