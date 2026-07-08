@@ -190,6 +190,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-191",
+      "number": 191,
+      "title": "Number of 1 Bits",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/number-of-1-bits/",
+      "problemStatement": "Given an unsigned integer, return the number of '1' bits it has (the Hamming weight).",
+      "examples": [
+        { "input": "n = 11 (binary 1011)", "output": "3" }
+      ],
+      "constraints": ["input is a 32-bit unsigned integer"],
+      "hints": [
+        "This is the lesson's own countSetBits() function, directly applicable — check the last bit with n & 1, then shift right to move to the next bit.",
+        "n & (n - 1) clears the LOWEST set bit each time — repeating this until n becomes 0 counts exactly as many times as there were set bits, skipping over the 0 bits entirely.",
+        "The n & (n-1) approach only loops once per SET bit (not once per bit position), which is faster on sparse numbers with few 1 bits."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "This lesson's countSetBits(): check and shift once per bit position, 32 iterations regardless of how many bits are actually set.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint hammingWeight(unsigned int n)\n{\n    int count = 0;\n    while (n > 0)\n    {\n        count += (n & 1);\n        n >>= 1;\n    }\n    return count;\n}\n\nint main()\n{\n    cout << hammingWeight(11);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(32) — one check per bit position",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Brian Kernighan's trick: n & (n-1) clears the lowest set bit each iteration — only loops once per SET bit, not once per bit position.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint hammingWeight(unsigned int n)\n{\n    int count = 0;\n    while (n != 0)\n    {\n        n &= (n - 1); // clear the lowest set bit\n        count++;\n    }\n    return count;\n}\n\nint main()\n{\n    cout << hammingWeight(11);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(number of set bits)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
