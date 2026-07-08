@@ -189,6 +189,42 @@
           "spaceComplexity": "O(n) for the memo array plus recursion stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-322-memo",
+      "number": 322,
+      "title": "Coin Change",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/coin-change/",
+      "problemStatement": "Given coin denominations and a target amount, return the FEWEST coins needed to make that amount, or -1 if impossible (unlimited supply of each coin).",
+      "examples": [
+        { "input": "coins = [1,2,5], amount = 11", "output": "3" }
+      ],
+      "constraints": ["1 <= coins.length <= 12", "0 <= amount <= 10^4"],
+      "hints": [
+        "Unlike Greedy Algorithms' coin-change example, arbitrary coin systems need EVERY option tried at each amount — minCoins(amount) = 1 + min over every coin of minCoins(amount - coin).",
+        "Base case: minCoins(0) = 0. If amount - coin goes negative, that coin choice is invalid and must be excluded from the min.",
+        "Cache by amount (not by which coins were used) — the SAME remaining amount reached via different coin paths is exactly the overlapping subproblem worth memoizing."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Naive recursion trying every coin at every amount, with no cache.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint coinChangeHelper(int amount, vector<int>& coins)\n{\n    if (amount == 0) return 0;\n    if (amount < 0) return INT_MAX;\n\n    int best = INT_MAX;\n    for (int coin : coins)\n    {\n        int sub = coinChangeHelper(amount - coin, coins);\n        if (sub != INT_MAX) best = min(best, sub + 1);\n    }\n    return best;\n}\n\nint coinChange(vector<int>& coins, int amount)\n{\n    int result = coinChangeHelper(amount, coins);\n    return result == INT_MAX ? -1 : result;\n}\n\nint main()\n{\n    vector<int> coins = {1, 2, 5};\n    cout << coinChange(coins, 11);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(coins^amount) — exponential branching over every coin at every level",
+          "spaceComplexity": "O(amount) recursion depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Memoized recursion — cache by remaining amount, so each distinct amount is solved exactly once.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint coinChangeHelper(int amount, vector<int>& coins, vector<int>& memo)\n{\n    if (amount == 0) return 0;\n    if (amount < 0) return INT_MAX;\n    if (memo[amount] != -2) return memo[amount];\n\n    int best = INT_MAX;\n    for (int coin : coins)\n    {\n        int sub = coinChangeHelper(amount - coin, coins, memo);\n        if (sub != INT_MAX) best = min(best, sub + 1);\n    }\n\n    memo[amount] = best;\n    return best;\n}\n\nint coinChange(vector<int>& coins, int amount)\n{\n    vector<int> memo(amount + 1, -2); // -2 = not yet computed (distinct from INT_MAX, a valid 'impossible' result)\n    int result = coinChangeHelper(amount, coins, memo);\n    return result == INT_MAX ? -1 : result;\n}\n\nint main()\n{\n    vector<int> coins = {1, 2, 5};\n    cout << coinChange(coins, 11);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(amount * coins)",
+          "spaceComplexity": "O(amount) for the memo array plus recursion stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
