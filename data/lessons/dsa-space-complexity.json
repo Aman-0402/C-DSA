@@ -1,0 +1,143 @@
+{
+  "id": "dsa-space-complexity",
+  "moduleId": "complexity-analysis",
+  "title": "Space Complexity",
+  "description": "Time Complexity's twin, also deferred since Lesson One: extra memory used relative to input size — including recursion's hidden stack cost.",
+  "objectives": [
+    "Understand space complexity as extra memory used, relative to input size",
+    "Recognize O(1) space vs O(n) space from code shape",
+    "Understand recursion's hidden space cost via the call stack",
+    "Know the basic idea of a time-space tradeoff"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Also Deferred Since Lesson One"
+    },
+    {
+      "type": "paragraph",
+      "text": "Just like Time Complexity, Space Complexity appeared in nearly every earlier lesson as \"Not applicable — we will study it properly during DSA.\" Here it is."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Space Complexity?"
+    },
+    {
+      "type": "definition",
+      "term": "Space complexity",
+      "text": "Space complexity describes how much extra memory an algorithm uses, beyond the input itself, as that input grows."
+    },
+    {
+      "type": "note",
+      "text": "\"Extra\" is the key word — the input array itself isn't usually counted, since it already exists before the algorithm runs. Space complexity is about additional memory the algorithm creates while doing its work."
+    },
+    {
+      "type": "heading",
+      "text": "3. O(1) Space — A Fixed, Small Amount"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int sum(vector<int> &numbers)\n{\n    int total = 0; // ONE extra variable, regardless of numbers' size\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        total += numbers[i];\n    }\n    return total;\n}"
+    },
+    {
+      "type": "note",
+      "text": "Whether numbers has 10 or 10 million elements, this function only ever uses total and i — two extra variables, no matter the input size. That's O(1) (constant) space."
+    },
+    {
+      "type": "heading",
+      "text": "4. O(n) Space — Extra Storage That Grows"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> doubleAll(vector<int> &numbers)\n{\n    vector<int> result; // grows to match numbers' size\n    for (int n : numbers)\n    {\n        result.push_back(n * 2);\n    }\n    return result;\n}"
+    },
+    {
+      "type": "warning",
+      "text": "result ends up holding exactly as many elements as numbers — its size grows in direct proportion to the input. This is O(n) space, distinct from (and in addition to) whatever the function's time complexity happens to be."
+    },
+    {
+      "type": "heading",
+      "text": "5. Recursion's Hidden Space Cost"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int factorial(int n)\n{\n    if (n == 0) return 1;\n    return n * factorial(n - 1);\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This looks like it uses no extra storage — no vector, no array. But recall Recursion's call-stack trace: factorial(n) pushes n stack frames before reaching the base case, each one genuinely using real memory (recall Stack Memory) until it returns. This gives factorial O(n) space complexity, entirely from the call stack itself — a cost that's easy to overlook if you only look for explicitly declared arrays or vectors."
+    },
+    {
+      "type": "heading",
+      "text": "6. A Basic Time-Space Tradeoff"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Using unordered_map (O(n) extra space) to check for duplicates in O(n) time\nunordered_map<int, bool> seen;\nfor (int n : numbers)\n{\n    if (seen[n]) { /* duplicate found */ }\n    seen[n] = true;\n}\n\n// vs. nested loops (O(1) extra space) checking duplicates in O(n²) time — no extra structure needed"
+    },
+    {
+      "type": "note",
+      "text": "Recall unordered_map's frequency-counting pattern. Using it here trades extra space (O(n), for the map) for much better time (O(n) instead of O(n²)) — a very common pattern in DSA called a time-space tradeoff: spending memory to save time, or vice versa."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Working with just a pencil vs spreading out every page of notes",
+      "text": "Solving a problem with just a pencil and a couple of scratch numbers uses almost no extra desk space, no matter how big the problem is — that's O(1) space. Spreading out a full copy of your notes, proportional to how much material there is, uses growing desk space as the material grows — that's O(n) space. Neither is universally 'better'; it depends on whether desk space (memory) or working time is the scarcer resource."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting recursion has a real space cost from the call stack, even with no explicit array or vector declared.",
+        "Counting the input itself as part of the space complexity — space complexity usually refers to extra space beyond the input.",
+        "Assuming lower time complexity always means lower space complexity, or vice versa — they're independent measurements; an algorithm can be fast in time but expensive in space, or the reverse.",
+        "Ignoring space complexity entirely and only optimizing for speed — in memory-constrained situations, space can matter just as much as time."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is space complexity?",
+          "answer": "A description of how much extra memory an algorithm uses, beyond the input itself, as the input grows."
+        },
+        {
+          "question": "What is the space complexity of a function that only uses a few extra variables, regardless of input size?",
+          "answer": "O(1) — constant space, since the extra memory used doesn't grow with input size."
+        },
+        {
+          "question": "Why does a recursive function like factorial(n) have O(n) space complexity, even without declaring any array?",
+          "answer": "Because each recursive call pushes a new stack frame that remains in memory until it returns — n calls before reaching the base case means n stack frames, an O(n) space cost from the call stack itself."
+        },
+        {
+          "question": "What is a time-space tradeoff?",
+          "answer": "Using extra memory (space) to reduce the amount of work needed (time), or vice versa — for example, using a hash map to check duplicates in O(n) time at the cost of O(n) extra space, instead of O(n²) time with O(1) extra space."
+        }
+      ],
+      "thirtySecondAnswer": "Space complexity measures how much extra memory an algorithm uses, beyond the input itself, as input size grows — a function using only a few fixed variables is O(1) space, while one building a new array proportional to the input is O(n) space. A subtle but important case is recursion: even without declaring any array, a recursive function like factorial(n) uses O(n) space because each pending call occupies a real stack frame until it returns. Time and space complexity are independent measurements, and DSA problems frequently involve a time-space tradeoff — spending extra memory, like a hash map, to reduce time from O(n²) to O(n)."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Space Complexity",
+      "text": "Space complexity = extra desk space used, beyond the input. Recursion secretly uses desk space too — one stack frame per pending call. Time-space tradeoff = spend memory to save time, or vice versa."
+    }
+  ],
+  "codeExamples": [],
+  "retypePractice": [],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": []
+  }
+}
