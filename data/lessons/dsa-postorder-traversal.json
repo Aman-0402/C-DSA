@@ -153,6 +153,42 @@
           "spaceComplexity": "O(n) for the stack and result"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-590",
+      "number": 590,
+      "title": "N-ary Tree Postorder Traversal",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/n-ary-tree-postorder-traversal/",
+      "problemStatement": "Given the root of an n-ary tree, return its postorder traversal (all children's subtrees fully visited, in order, before the node itself).",
+      "examples": [
+        { "input": "root = 1 with children [3,2,4]; 3 has children [5,6]", "output": "[5,6,3,2,4,1]" }
+      ],
+      "constraints": ["0 <= number of nodes <= 10^4"],
+      "hints": [
+        "Postorder's rule generalizes directly: visit every child's ENTIRE subtree, in order, before visiting the node itself — just with however many children instead of exactly 2.",
+        "Recursively: loop over children in order, recursing into each, then push the node's own value last.",
+        "The reversed-preorder trick also generalizes: visit Node then children in REVERSE order (pushing children left-to-right so the rightmost pops first), then reverse the whole result at the end."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recursive: visit each child's subtree in order, then the node itself last.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    vector<Node*> children;\n    Node(int x) : val(x) {}\n};\n\nvoid postorder(Node* node, vector<int> &result)\n{\n    if (node == nullptr) return;\n    for (Node* child : node->children) postorder(child, result);\n    result.push_back(node->val);\n}\n\nvector<int> postorder(Node* root)\n{\n    vector<int> result;\n    postorder(root, result);\n    return result;\n}\n\nint main()\n{\n    Node* n5 = new Node(5);\n    Node* n6 = new Node(6);\n    Node* n3 = new Node(3); n3->children = {n5, n6};\n    Node* n2 = new Node(2);\n    Node* n4 = new Node(4);\n    Node* root = new Node(1); root->children = {n3, n2, n4};\n\n    vector<int> result = postorder(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "5 6 3 2 4 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result, O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative: visit Node then children left-to-right (pushed so the rightmost pops first), then reverse the whole result.",
+          "code": "#include <iostream>\n#include <vector>\n#include <stack>\n#include <algorithm>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    vector<Node*> children;\n    Node(int x) : val(x) {}\n};\n\nvector<int> postorder(Node* root)\n{\n    vector<int> result;\n    if (root == nullptr) return result;\n\n    stack<Node*> st;\n    st.push(root);\n\n    while (!st.empty())\n    {\n        Node* node = st.top();\n        st.pop();\n\n        result.push_back(node->val);\n\n        for (Node* child : node->children) st.push(child); // left-to-right, so rightmost pops first\n    }\n\n    reverse(result.begin(), result.end());\n    return result;\n}\n\nint main()\n{\n    Node* n5 = new Node(5);\n    Node* n6 = new Node(6);\n    Node* n3 = new Node(3); n3->children = {n5, n6};\n    Node* n2 = new Node(2);\n    Node* n4 = new Node(4);\n    Node* root = new Node(1); root->children = {n3, n2, n4};\n\n    vector<int> result = postorder(root);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "5 6 3 2 4 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the stack and result"
+        }
+      ]
     }
   ],
   "codeExamples": [
