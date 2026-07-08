@@ -154,6 +154,13 @@
         { "id": "dsa-space-complexity", "title": "Space Complexity", "lesson": "dsa-space-complexity" },
         { "id": "dsa-big-o-notation", "title": "Big O Notation", "lesson": "dsa-big-o-notation" }
       ]
+    },
+    {
+      "id": "array-string-techniques",
+      "title": "Array & String Techniques",
+      "topics": [
+        { "id": "dsa-arrays", "title": "Arrays", "lesson": "dsa-arrays" }
+      ]
     }
   ]
 }

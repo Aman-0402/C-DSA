@@ -1,0 +1,150 @@
+{
+  "id": "dsa-arrays",
+  "moduleId": "array-string-techniques",
+  "title": "Arrays",
+  "description": "Arrays through a DSA lens: the complexity of each operation, in-place modification, and why insertion/deletion cost O(n).",
+  "objectives": [
+    "Know the time complexity of access, search, insertion, and deletion on an array",
+    "Modify an array in place without extra storage",
+    "Understand why insertion/deletion at an arbitrary position costs O(n)",
+    "Recognize array traversal as the base pattern for many DSA techniques"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: From Syntax to Technique"
+    },
+    {
+      "type": "paragraph",
+      "text": "The earlier Arrays topic covered declaring, indexing, and looping. Now, with Time Complexity in hand, let's look at arrays the way DSA problems actually use them."
+    },
+    {
+      "type": "heading",
+      "text": "2. Complexity of Common Operations"
+    },
+    {
+      "type": "table",
+      "headers": ["Operation", "Complexity", "Why"],
+      "rows": [
+        ["Access by index (arr[i])", "O(1)", "Direct jump to the memory address — recall Memory Addresses' spacing formula"],
+        ["Search (unsorted)", "O(n)", "Must check elements one by one in the worst case"],
+        ["Insertion at the end", "O(1)", "No shifting needed (for a vector with room to grow)"],
+        ["Insertion at an arbitrary position", "O(n)", "Every element after that position must shift over"],
+        ["Deletion at an arbitrary position", "O(n)", "Every element after that position must shift back"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "3. In-Place Modification"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid doubleInPlace(vector<int> &numbers)\n{\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        numbers[i] = numbers[i] * 2; // modify directly, no new array\n    }\n}\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    doubleInPlace(numbers);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}",
+      "output": "2 4 6 ",
+      "retypePractice": true,
+      "retypeId": "dsa-arrays-in-place"
+    },
+    {
+      "type": "definition",
+      "term": "In-place",
+      "text": "An in-place algorithm modifies its input directly, using O(1) extra space, instead of building a new separate result."
+    },
+    {
+      "type": "note",
+      "text": "Recall Pass by Reference: numbers is passed as &numbers, so doubleInPlace modifies the caller's actual array, not a copy. In-place techniques are extremely common in DSA precisely because they achieve the goal with O(1) extra space, connecting directly to Space Complexity."
+    },
+    {
+      "type": "heading",
+      "text": "4. A Classic Pattern: Finding the Maximum"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint findMax(vector<int> &numbers)\n{\n    int maxVal = numbers[0];\n    for (int i = 1; i < numbers.size(); i++)\n    {\n        if (numbers[i] > maxVal)\n        {\n            maxVal = numbers[i];\n        }\n    }\n    return maxVal;\n}\n\nint main()\n{\n    vector<int> numbers = {4, 9, 2, 7};\n\n    cout << findMax(numbers) << endl;\n\n    return 0;\n}",
+      "output": "9"
+    },
+    {
+      "type": "note",
+      "text": "This is O(n) time (must check every element in the worst case) and O(1) space (just one extra variable, maxVal) — the base shape behind an enormous number of array DSA problems: track a running answer while making a single pass."
+    },
+    {
+      "type": "heading",
+      "text": "5. Why Insertion/Deletion Cost O(n)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "vector<int> numbers = {1, 2, 3, 4, 5};\n\nnumbers.erase(numbers.begin() + 1); // remove index 1 (value 2)\n// {3, 4, 5} must all shift one position LEFT to fill the gap"
+    },
+    {
+      "type": "warning",
+      "text": "Recall vector's insert()/erase(): removing an element from the middle isn't free — every element after it must shift to close the gap, an O(n) operation in the worst case. This is the direct trade-off list solved differently, at the cost of losing indexed access."
+    },
+    {
+      "type": "heading",
+      "text": "6. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Removing a book from a tightly packed shelf",
+      "text": "Pulling a book from the middle of a tightly packed shelf leaves a gap — every book after it has to slide over to close that gap. Pulling the very last book requires no sliding at all. That's exactly why arbitrary-position insertion/deletion is O(n) while end insertion is O(1)."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming all array operations are O(1) — only direct indexed access is; search, and insertion/deletion at arbitrary positions, are O(n).",
+        "Building an unnecessary new array/vector when the problem could be solved in place with O(1) extra space.",
+        "Forgetting that finding a maximum, minimum, or sum in an unsorted array requires checking every element — there's no shortcut without additional structure or a sorted order.",
+        "Not accounting for the shifting cost of erase()/insert() at non-end positions when reasoning about an algorithm's overall time complexity."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the time complexity of accessing an array element by index?",
+          "answer": "O(1) — direct access via the element's computed memory address."
+        },
+        {
+          "question": "Why is inserting or deleting at an arbitrary position in an array O(n)?",
+          "answer": "Because every element after that position must shift to close or open the gap."
+        },
+        {
+          "question": "What does 'in-place' mean, and why is it valued in DSA?",
+          "answer": "Modifying the input directly using O(1) extra space instead of creating a new structure — valued because it minimizes space complexity."
+        },
+        {
+          "question": "What is the time and space complexity of finding the maximum value in an unsorted array?",
+          "answer": "O(n) time, since every element must be checked in the worst case, and O(1) space, since only one extra variable is needed to track the running maximum."
+        }
+      ],
+      "thirtySecondAnswer": "Arrays give O(1) indexed access, but search and arbitrary-position insertion/deletion cost O(n), since deletion or insertion in the middle requires shifting every element after that position. In-place algorithms, like doubling every element directly through a reference parameter, modify the input using only O(1) extra space instead of building a new structure. A classic pattern — tracking a running maximum with a single pass — is O(n) time and O(1) space, and this single-pass, running-answer shape underlies a large fraction of array-based DSA problems."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Arrays (DSA)",
+      "text": "Index access = O(1), grab any book instantly. Middle insert/delete = O(n), everyone else slides over. In-place = solve it without building a second shelf."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-arrays-in-place", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid doubleInPlace(vector<int> &numbers)\n{\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        numbers[i] = numbers[i] * 2;\n    }\n}\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    doubleInPlace(numbers);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}", "output": "2 4 6 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-arrays-in-place",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvoid doubleInPlace(vector<int> &numbers)\n{\n    for (int i = 0; i < numbers.size(); i++)\n    {\n        numbers[i] = numbers[i] * 2;\n    }\n}\n\nint main()\n{\n    vector<int> numbers = {1, 2, 3};\n\n    doubleInPlace(numbers);\n\n    for (int n : numbers)\n    {\n        cout << n << \" \";\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-arrays-in-place"]
+  }
+}
