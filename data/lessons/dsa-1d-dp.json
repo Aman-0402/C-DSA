@@ -304,6 +304,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-322-1d",
+      "number": 322,
+      "title": "Coin Change",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/coin-change/",
+      "problemStatement": "Given coin denominations and a target amount, return the FEWEST coins needed to make that amount, or -1 if impossible (unlimited supply of each coin).",
+      "examples": [
+        { "input": "coins = [1,2,5], amount = 11", "output": "3" }
+      ],
+      "constraints": ["1 <= coins.length <= 12", "0 <= amount <= 10^4"],
+      "hints": [
+        "State: dp[a] = the fewest coins needed to make exactly amount a.",
+        "Recurrence: dp[a] = 1 + min(dp[a - coin]) over every coin whose value is <= a — try every coin as the LAST one used to reach amount a.",
+        "Base case: dp[0] = 0. Initialize every other dp[a] to a large sentinel (impossible-so-far), and only trust dp[a - coin] when it isn't that sentinel."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Full dp array, filled bottom-up by amount, trying every coin at each amount.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint coinChange(vector<int>& coins, int amount)\n{\n    vector<int> dp(amount + 1, INT_MAX);\n    dp[0] = 0;\n\n    for (int a = 1; a <= amount; a++)\n        for (int coin : coins)\n            if (coin <= a && dp[a - coin] != INT_MAX)\n                dp[a] = min(dp[a], dp[a - coin] + 1);\n\n    return dp[amount] == INT_MAX ? -1 : dp[amount];\n}\n\nint main()\n{\n    vector<int> coins = {1, 2, 5};\n    cout << coinChange(coins, 11);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(amount * coins)",
+          "spaceComplexity": "O(amount) for the dp array"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same table, with coins sorted so the inner loop can break early once a coin exceeds the remaining amount — a minor constant-factor improvement on top of the same O(amount * coins) shape.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\n\nusing namespace std;\n\nint coinChange(vector<int>& coins, int amount)\n{\n    sort(coins.begin(), coins.end());\n    vector<int> dp(amount + 1, INT_MAX);\n    dp[0] = 0;\n\n    for (int a = 1; a <= amount; a++)\n        for (int coin : coins)\n        {\n            if (coin > a) break;\n            if (dp[a - coin] != INT_MAX) dp[a] = min(dp[a], dp[a - coin] + 1);\n        }\n\n    return dp[amount] == INT_MAX ? -1 : dp[amount];\n}\n\nint main()\n{\n    vector<int> coins = {1, 2, 5};\n    cout << coinChange(coins, 11);\n\n    return 0;\n}",
+          "output": "3",
+          "timeComplexity": "O(amount * coins), with an early-exit constant-factor improvement",
+          "spaceComplexity": "O(amount) for the dp array"
+        }
+      ]
     }
   ],
   "codeExamples": [
