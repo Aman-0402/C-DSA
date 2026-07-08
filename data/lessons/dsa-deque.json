@@ -188,6 +188,42 @@
           "spaceComplexity": "O(k) for the deque"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1438",
+      "number": 1438,
+      "title": "Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/",
+      "problemStatement": "Given an array nums and an integer limit, return the length of the longest contiguous subarray whose maximum absolute difference between any two elements is <= limit.",
+      "examples": [
+        { "input": "nums = [8,2,4,7], limit = 4", "output": "2", "explanation": "Subarray [2,4] has max diff 2, within the limit; adding any neighbor breaks it." }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5", "0 <= limit <= 10^9"],
+      "hints": [
+        "The condition to check at every window is simply max(window) - min(window) <= limit — this needs a FAST way to track both the running max AND running min of the current window at once.",
+        "This is Sliding Window Maximum's monotonic deque, applied TWICE in parallel: one deque tracking the max (decreasing order), one tracking the min (increasing order), both maintained as the window's left and right edges move.",
+        "This is a VARIABLE-size window (recall Minimum Size Subarray Sum): expand right always, and shrink left — popping expired indices from both deques — whenever the max-min gap exceeds the limit."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For every starting index, expand the window while tracking max and min directly, until the limit is violated.",
+          "code": "#include <iostream>\n#include <vector>\n#include <climits>\n\nusing namespace std;\n\nint longestSubarray(vector<int> &nums, int limit)\n{\n    int best = 0;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int mn = INT_MAX, mx = INT_MIN;\n        for (int j = i; j < nums.size(); j++)\n        {\n            mn = min(mn, nums[j]);\n            mx = max(mx, nums[j]);\n            if (mx - mn > limit) break;\n            best = max(best, j - i + 1);\n        }\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {8, 2, 4, 7};\n\n    cout << longestSubarray(nums, 4) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two monotonic deques (one max, one min) maintained alongside a variable-size sliding window — the window shrinks whenever the max-min gap exceeds the limit.",
+          "code": "#include <iostream>\n#include <vector>\n#include <deque>\n\nusing namespace std;\n\nint longestSubarray(vector<int> &nums, int limit)\n{\n    deque<int> maxD, minD; // store indices\n    int left = 0;\n    int best = 0;\n\n    for (int right = 0; right < nums.size(); right++)\n    {\n        while (!maxD.empty() && nums[maxD.back()] <= nums[right]) maxD.pop_back();\n        maxD.push_back(right);\n\n        while (!minD.empty() && nums[minD.back()] >= nums[right]) minD.pop_back();\n        minD.push_back(right);\n\n        while (nums[maxD.front()] - nums[minD.front()] > limit)\n        {\n            if (maxD.front() == left) maxD.pop_front();\n            if (minD.front() == left) minD.pop_front();\n            left++;\n        }\n\n        best = max(best, right - left + 1);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {8, 2, 4, 7};\n\n    cout << longestSubarray(nums, 4) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the two deques"
+        }
+      ]
     }
   ],
   "codeExamples": [
