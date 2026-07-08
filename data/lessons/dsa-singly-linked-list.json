@@ -122,6 +122,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Singly Linked List",
       "text": "head = the only thing you need to remember; everything else follows next. Delete = rewrite the note before it to skip straight past, then free the removed box."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Singly Linked List in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-206-sll",
+      "number": 206,
+      "title": "Reverse Linked List",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/reverse-linked-list/",
+      "problemStatement": "Given the head of a singly linked list, reverse it and return the new head.",
+      "examples": [
+        { "input": "head = [1,2,3,4,5]", "output": "[5,4,3,2,1]" }
+      ],
+      "constraints": ["0 <= list length <= 5000"],
+      "hints": [
+        "Every node's next pointer needs to flip direction — walking forward while rewiring backward needs three tracking pointers: previous, current, and next (saved before it's overwritten).",
+        "At each step: save current->next, then point current->next backward at prev, then advance prev and current forward.",
+        "The new head is whatever node was current when the loop ends (the old list's last node)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Copy every value into a vector, then overwrite the list's node values in reverse order — reverses the data without touching any pointers.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* reverseList(ListNode* head)\n{\n    vector<int> values;\n    for (ListNode* n = head; n; n = n->next) values.push_back(n->val);\n\n    ListNode* n = head;\n    for (int i = values.size() - 1; i >= 0; i--)\n    {\n        n->val = values[i];\n        n = n->next;\n    }\n\n    return head;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n\n    reverseList(head);\n    for (ListNode* n = head; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "3 2 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the values vector"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative three-pointer reversal — rewires the existing nodes' next pointers directly, in a single O(1)-space pass.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* reverseList(ListNode* head)\n{\n    ListNode* prev = nullptr;\n    ListNode* current = head;\n\n    while (current != nullptr)\n    {\n        ListNode* next = current->next; // save before overwriting\n        current->next = prev;           // flip the pointer\n        prev = current;\n        current = next;\n    }\n\n    return prev; // prev is the new head\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n\n    ListNode* newHead = reverseList(head);\n    for (ListNode* n = newHead; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "3 2 1 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
