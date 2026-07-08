@@ -383,6 +383,43 @@
           "spaceComplexity": "O(n) for the result — the minimum possible"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-11",
+      "number": 11,
+      "title": "Container With Most Water",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/container-with-most-water/",
+      "problemStatement": "Given heights of n vertical lines, find two lines that, together with the x-axis, form a container holding the most water. Return the maximum area.",
+      "examples": [
+        { "input": "height = [1,8,6,2,5,4,8,3,7]", "output": "49", "explanation": "Lines at index 1 (height 8) and index 8 (height 7): area = min(8,7) * (8-1) = 49." },
+        { "input": "height = [1,1]", "output": "1" }
+      ],
+      "constraints": ["2 <= height.length <= 10^5", "0 <= height[i] <= 10^4"],
+      "hints": [
+        "The area between two lines is min(height[left], height[right]) times the distance between them — the SHORTER line always caps the water level.",
+        "Starting pointers at both ends gives the widest possible container first — every move afterward can only shrink the width, so it must be justified by a chance at more height.",
+        "Moving the pointer at the TALLER line inward can never help (width shrinks, and the shorter line still caps the height) — only moving the SHORTER line's pointer inward has any chance of increasing the area."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every pair of lines and compute the area, keeping the maximum.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint maxArea(vector<int> &height)\n{\n    int best = 0;\n\n    for (int i = 0; i < height.size(); i++)\n    {\n        for (int j = i + 1; j < height.size(); j++)\n        {\n            int area = min(height[i], height[j]) * (j - i);\n            best = max(best, area);\n        }\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> height = {1, 8, 6, 2, 5, 4, 8, 3, 7};\n\n    cout << maxArea(height) << endl;\n\n    return 0;\n}",
+          "output": "49",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two pointers from opposite ends, always moving the shorter line inward — the only move that could possibly increase the area.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint maxArea(vector<int> &height)\n{\n    int left = 0, right = height.size() - 1;\n    int best = 0;\n\n    while (left < right)\n    {\n        int area = min(height[left], height[right]) * (right - left);\n        best = max(best, area);\n\n        if (height[left] < height[right]) left++;\n        else right--;\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> height = {1, 8, 6, 2, 5, 4, 8, 3, 7};\n\n    cout << maxArea(height) << endl;\n\n    return 0;\n}",
+          "output": "49",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
