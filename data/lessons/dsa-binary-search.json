@@ -237,6 +237,43 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-367",
+      "number": 367,
+      "title": "Valid Perfect Square",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/valid-perfect-square/",
+      "problemStatement": "Given a positive integer num, return true if it is a perfect square.",
+      "examples": [
+        { "input": "num = 16", "output": "true" },
+        { "input": "num = 14", "output": "false" }
+      ],
+      "constraints": ["1 <= num <= 2^31 - 1"],
+      "hints": [
+        "This is Sqrt(x)'s binary-search-on-the-answer idea again — search for a candidate whose square equals num exactly.",
+        "Binary search the range [1, num], checking mid*mid against num.",
+        "If the search ends without ever finding an exact match, num isn't a perfect square."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Try every integer from 1 upward, checking if its square equals num.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nbool isPerfectSquare(int num)\n{\n    long i = 1;\n    while (i * i < num) i++;\n    return i * i == num;\n}\n\nint main()\n{\n    cout << (isPerfectSquare(16) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(√num)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Binary search the range [1, num] for a candidate whose square exactly equals num.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nbool isPerfectSquare(int num)\n{\n    long left = 1, right = num;\n\n    while (left <= right)\n    {\n        long mid = left + (right - left) / 2;\n        long square = mid * mid;\n\n        if (square == num) return true;\n        else if (square < num) left = mid + 1;\n        else right = mid - 1;\n    }\n\n    return false;\n}\n\nint main()\n{\n    cout << (isPerfectSquare(16) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(log num)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
