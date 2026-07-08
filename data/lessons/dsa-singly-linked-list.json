@@ -198,6 +198,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-141",
+      "number": 141,
+      "title": "Linked List Cycle",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/linked-list-cycle/",
+      "problemStatement": "Given the head of a linked list, return true if the list has a cycle (some node's next eventually points back to an earlier node).",
+      "examples": [
+        { "input": "head = [3,2,0,-4], tail connects to node index 1", "output": "true" }
+      ],
+      "constraints": ["0 <= list length <= 10^4"],
+      "hints": [
+        "A cycle means there's no true 'end' (nullptr) to reach — walking forward forever would never terminate naturally.",
+        "The same slow/fast pointer idea from Middle of the Linked List detects this: if there's a cycle, the faster pointer will eventually LAP the slower one and they'll meet at the same node.",
+        "If the fast pointer ever reaches nullptr, there's no cycle — the list has a genuine end."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Track every visited node's address in a hash set — if a node is ever visited twice, there's a cycle.",
+          "code": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nbool hasCycle(ListNode *head)\n{\n    unordered_set<ListNode*> visited;\n\n    for (ListNode* n = head; n; n = n->next)\n    {\n        if (visited.count(n)) return true;\n        visited.insert(n);\n    }\n\n    return false;\n}\n\nint main()\n{\n    ListNode* a = new ListNode(3);\n    ListNode* b = new ListNode(2);\n    ListNode* c = new ListNode(0);\n    ListNode* d = new ListNode(-4);\n    a->next = b; b->next = c; c->next = d; d->next = b; // cycle back to b\n\n    cout << (hasCycle(a) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the visited set"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Floyd's cycle detection: slow and fast pointers, meeting only if a cycle exists — no extra memory needed.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nbool hasCycle(ListNode *head)\n{\n    ListNode* slow = head;\n    ListNode* fast = head;\n\n    while (fast != nullptr && fast->next != nullptr)\n    {\n        slow = slow->next;\n        fast = fast->next->next;\n\n        if (slow == fast) return true;\n    }\n\n    return false;\n}\n\nint main()\n{\n    ListNode* a = new ListNode(3);\n    ListNode* b = new ListNode(2);\n    ListNode* c = new ListNode(0);\n    ListNode* d = new ListNode(-4);\n    a->next = b; b->next = c; c->next = d; d->next = b;\n\n    cout << (hasCycle(a) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
