@@ -188,6 +188,42 @@
           "spaceComplexity": "O(capacity)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-430",
+      "number": 430,
+      "title": "Flatten a Multilevel Doubly Linked List",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/",
+      "problemStatement": "Given a doubly linked list where nodes may also have a 'child' pointer to a separate doubly linked list, flatten it into a single-level doubly linked list, depth-first.",
+      "examples": [
+        { "input": "1-2-3-4-5-6, with 3 having child 7-8-9-10", "output": "1,2,3,7,8,9,10,4,5,6" }
+      ],
+      "constraints": ["0 <= number of nodes <= 1000"],
+      "hints": [
+        "When a node has a child, the child list needs to be spliced in RIGHT AFTER that node, before continuing to the node's original next — this is depth-first behavior, dive into the child before returning to the sibling.",
+        "This is naturally recursive: flatten the child list, connect it in between the current node and its original next, then continue.",
+        "An iterative version can use an explicit stack: whenever a child is found, push the current next (to resume later) and continue into the child — same idea as recursion in Recursion in DSA, made explicit."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Recursive DFS: whenever a node has a child, recursively flatten it, splice it in, then continue with the (saved) original next.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node *prev, *next, *child;\n    Node(int v) : val(v), prev(nullptr), next(nullptr), child(nullptr) {}\n};\n\nvoid flattenDFS(Node* node)\n{\n    while (node != nullptr)\n    {\n        if (node->child != nullptr)\n        {\n            Node* next = node->next;\n            Node* child = node->child;\n\n            node->next = child;\n            child->prev = node;\n            node->child = nullptr;\n\n            Node* tail = child;\n            while (tail->next != nullptr) tail = tail->next; // find child list's end\n\n            tail->next = next;\n            if (next != nullptr) next->prev = tail;\n\n            flattenDFS(child); // recurse into the spliced-in child\n        }\n        node = node->next;\n    }\n}\n\nNode* flatten(Node* head)\n{\n    flattenDFS(head);\n    return head;\n}\n\nint main()\n{\n    Node* n1 = new Node(1); Node* n2 = new Node(2); Node* n3 = new Node(3);\n    Node* n4 = new Node(4); Node* n5 = new Node(5); Node* n6 = new Node(6);\n    Node* c7 = new Node(7); Node* c8 = new Node(8); Node* c9 = new Node(9); Node* c10 = new Node(10);\n\n    n1->next=n2; n2->prev=n1; n2->next=n3; n3->prev=n2; n3->next=n4; n4->prev=n3;\n    n4->next=n5; n5->prev=n4; n5->next=n6; n6->prev=n5;\n    c7->next=c8; c8->prev=c7; c8->next=c9; c9->prev=c8; c9->next=c10; c10->prev=c9;\n    n3->child = c7;\n\n    Node* result = flatten(n1);\n    for (Node* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 7 8 9 10 4 5 6 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(d) call stack, d = nesting depth"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative with an explicit stack, avoiding recursion entirely — whenever a child is found, the resume point is pushed for later.",
+          "code": "#include <iostream>\n#include <stack>\n\nusing namespace std;\n\nstruct Node {\n    int val;\n    Node *prev, *next, *child;\n    Node(int v) : val(v), prev(nullptr), next(nullptr), child(nullptr) {}\n};\n\nNode* flatten(Node* head)\n{\n    if (head == nullptr) return head;\n\n    stack<Node*> st;\n    Node* current = head;\n\n    while (current != nullptr)\n    {\n        if (current->child != nullptr)\n        {\n            if (current->next != nullptr) st.push(current->next);\n\n            current->next = current->child;\n            current->next->prev = current;\n            current->child = nullptr;\n        }\n\n        if (current->next == nullptr && !st.empty())\n        {\n            Node* resume = st.top();\n            st.pop();\n            current->next = resume;\n            resume->prev = current;\n        }\n\n        current = current->next;\n    }\n\n    return head;\n}\n\nint main()\n{\n    Node* n1 = new Node(1); Node* n2 = new Node(2); Node* n3 = new Node(3);\n    Node* n4 = new Node(4); Node* n5 = new Node(5); Node* n6 = new Node(6);\n    Node* c7 = new Node(7); Node* c8 = new Node(8); Node* c9 = new Node(9); Node* c10 = new Node(10);\n\n    n1->next=n2; n2->prev=n1; n2->next=n3; n3->prev=n2; n3->next=n4; n4->prev=n3;\n    n4->next=n5; n5->prev=n4; n5->next=n6; n6->prev=n5;\n    c7->next=c8; c8->prev=c7; c8->next=c9; c9->prev=c8; c9->next=c10; c10->prev=c9;\n    n3->child = c7;\n\n    Node* result = flatten(n1);\n    for (Node* n = result; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 2 3 7 8 9 10 4 5 6 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(d) for the stack, no recursion call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
