@@ -239,6 +239,42 @@
           "spaceComplexity": "O(h) call stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-235",
+      "number": 235,
+      "title": "Lowest Common Ancestor of a Binary Search Tree",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
+      "problemStatement": "Given a BST and two nodes p and q, return their lowest common ancestor (the deepest node that has both p and q as descendants, a node can be its own descendant).",
+      "examples": [
+        { "input": "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8", "output": "6" }
+      ],
+      "constraints": ["2 <= number of nodes <= 10^5"],
+      "hints": [
+        "In a general binary tree, finding the LCA needs searching both subtrees — but the BST ordering property gives a huge shortcut here.",
+        "If both p and q are smaller than the current node, their ancestor must be further LEFT. If both are larger, it must be further RIGHT.",
+        "The moment p and q are on DIFFERENT sides of the current node (or one equals the current node), that current node IS the split point — the lowest common ancestor."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Treat it as a general binary tree: recursively search both subtrees for p and q, without exploiting BST ordering.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q)\n{\n    if (root == nullptr || root == p || root == q) return root;\n\n    TreeNode* left = lowestCommonAncestor(root->left, p, q);\n    TreeNode* right = lowestCommonAncestor(root->right, p, q);\n\n    if (left && right) return root;\n    return left ? left : right;\n}\n\nint main()\n{\n    TreeNode* n2 = new TreeNode(2);\n    TreeNode* n8 = new TreeNode(8);\n    TreeNode* root = new TreeNode(6);\n    root->left = n2;\n    root->right = n8;\n\n    TreeNode* result = lowestCommonAncestor(root, n2, n8);\n    cout << result->val << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Exploit BST ordering: follow the single direction where p and q must diverge, no need to explore both subtrees.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q)\n{\n    if (p->val < root->val && q->val < root->val)\n    {\n        return lowestCommonAncestor(root->left, p, q);\n    }\n    if (p->val > root->val && q->val > root->val)\n    {\n        return lowestCommonAncestor(root->right, p, q);\n    }\n    return root; // split point (or one of them equals root)\n}\n\nint main()\n{\n    TreeNode* n2 = new TreeNode(2);\n    TreeNode* n8 = new TreeNode(8);\n    TreeNode* root = new TreeNode(6);\n    root->left = n2;\n    root->right = n8;\n\n    TreeNode* result = lowestCommonAncestor(root, n2, n8);\n    cout << result->val << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(log n) on a balanced BST",
+          "spaceComplexity": "O(log n) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
