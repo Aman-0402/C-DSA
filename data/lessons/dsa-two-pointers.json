@@ -346,6 +346,43 @@
           "spaceComplexity": "O(1) — in place"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-977",
+      "number": 977,
+      "title": "Squares of a Sorted Array",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/squares-of-a-sorted-array/",
+      "problemStatement": "Given a sorted array nums (may include negatives), return an array of the squares of each number, sorted in non-decreasing order.",
+      "examples": [
+        { "input": "nums = [-4,-1,0,3,10]", "output": "[0,1,9,16,100]" },
+        { "input": "nums = [-7,-3,2,3,11]", "output": "[4,9,9,49,121]" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^4", "-10^4 <= nums[i] <= 10^4", "nums sorted non-decreasing"],
+      "hints": [
+        "Squaring a negative number makes it positive — so the LARGEST squares always come from the values FARTHEST from zero, meaning either end of the sorted array.",
+        "This is an opposite-ends two-pointer problem, but with a twist: you're building the answer from the back (largest first), not comparing toward a target.",
+        "At each step, compare |nums[left]| and |nums[right]| (whichever is farther from zero contributes the current largest remaining square) and place that square at the end of the result, working inward."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Square every element, then sort the result — ignores that the input is already sorted by value.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nvector<int> sortedSquares(vector<int> &nums)\n{\n    vector<int> result(nums.size());\n\n    for (int i = 0; i < nums.size(); i++) result[i] = nums[i] * nums[i];\n\n    sort(result.begin(), result.end());\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {-4, -1, 0, 3, 10};\n\n    vector<int> result = sortedSquares(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "0 1 9 16 100 ",
+          "timeComplexity": "O(n log n) for the sort",
+          "spaceComplexity": "O(n)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Two pointers from opposite ends, filling the result from the back with the larger of the two squares at each step — exploits the sorted input directly.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> sortedSquares(vector<int> &nums)\n{\n    int n = nums.size();\n    vector<int> result(n);\n    int left = 0, right = n - 1;\n\n    for (int i = n - 1; i >= 0; i--)\n    {\n        int leftSq = nums[left] * nums[left];\n        int rightSq = nums[right] * nums[right];\n\n        if (leftSq > rightSq)\n        {\n            result[i] = leftSq;\n            left++;\n        }\n        else\n        {\n            result[i] = rightSq;\n            right--;\n        }\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {-4, -1, 0, 3, 10};\n\n    vector<int> result = sortedSquares(nums);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "0 1 9 16 100 ",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result — the minimum possible"
+        }
+      ]
     }
   ],
   "codeExamples": [
