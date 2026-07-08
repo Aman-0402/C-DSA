@@ -231,6 +231,42 @@
           "spaceComplexity": "O(n) for the parent array"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-721",
+      "number": 721,
+      "title": "Accounts Merge",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/accounts-merge/",
+      "problemStatement": "Given a list of accounts, each [name, email1, email2, ...], merge accounts that share at least one email (transitively), and return each merged account as [name, sorted emails...].",
+      "examples": [
+        { "input": "accounts = [[\"John\",\"johnsmith@mail.com\",\"john_newyork@mail.com\"],[\"John\",\"johnsmith@mail.com\",\"john00@mail.com\"],[\"Mary\",\"mary@mail.com\"],[\"John\",\"johnny@mail.com\"]]", "output": "[[\"John\",\"john00@mail.com\",\"john_newyork@mail.com\",\"johnsmith@mail.com\"],[\"Mary\",\"mary@mail.com\"],[\"John\",\"johnny@mail.com\"]]" }
+      ],
+      "constraints": ["1 <= accounts.length <= 1000"],
+      "hints": [
+        "Union find here operates on EMAILS as elements, not account indices — two emails in the same account get union()'d together.",
+        "Since 'John' appears in multiple unrelated accounts, only shared EMAILS (not shared names) determine which accounts truly merge.",
+        "After all unions, group every email by its root, sort each group's emails, and prepend the owner's name (any account containing that root's emails has the right name)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Union find on emails using string keys, without path compression.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\n\nusing namespace std;\n\nstring find(string x, unordered_map<string, string>& parent)\n{\n    while (parent[x] != x) x = parent[x];\n    return x;\n}\n\nvoid unite(string a, string b, unordered_map<string, string>& parent)\n{\n    string rootA = find(a, parent);\n    string rootB = find(b, parent);\n    if (rootA != rootB) parent[rootA] = rootB;\n}\n\nvector<vector<string>> accountsMerge(vector<vector<string>>& accounts)\n{\n    unordered_map<string, string> parent;\n    unordered_map<string, string> emailToName;\n    vector<string> emailOrder;\n\n    for (auto &account : accounts)\n    {\n        string name = account[0];\n        for (int i = 1; i < (int)account.size(); i++)\n        {\n            string email = account[i];\n            if (parent.find(email) == parent.end())\n            {\n                parent[email] = email;\n                emailOrder.push_back(email);\n            }\n            emailToName[email] = name;\n            if (i > 1) unite(account[1], email, parent);\n        }\n    }\n\n    unordered_map<string, vector<string>> groups;\n    vector<string> rootOrder;\n    for (auto &email : emailOrder)\n    {\n        string root = find(email, parent);\n        if (groups.find(root) == groups.end()) rootOrder.push_back(root);\n        groups[root].push_back(email);\n    }\n\n    vector<vector<string>> result;\n    for (auto &root : rootOrder)\n    {\n        vector<string> emails = groups[root];\n        sort(emails.begin(), emails.end());\n        vector<string> entry = {emailToName[root]};\n        for (auto &e : emails) entry.push_back(e);\n        result.push_back(entry);\n    }\n    return result;\n}\n\nint main()\n{\n    vector<vector<string>> accounts = {\n        {\"John\", \"johnsmith@mail.com\", \"john_newyork@mail.com\"},\n        {\"John\", \"johnsmith@mail.com\", \"john00@mail.com\"},\n        {\"Mary\", \"mary@mail.com\"},\n        {\"John\", \"johnny@mail.com\"}\n    };\n\n    vector<vector<string>> result = accountsMerge(accounts);\n    for (auto &entry : result)\n    {\n        for (auto &s : entry) cout << s << \" \";\n        cout << \"| \";\n    }\n\n    return 0;\n}",
+          "output": "John john00@mail.com john_newyork@mail.com johnsmith@mail.com | Mary mary@mail.com | John johnny@mail.com | ",
+          "timeComplexity": "O(n log n) for sorting emails per group, with O(n) per find() worst case without path compression",
+          "spaceComplexity": "O(n) for the parent map and grouping structures"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same structure, with path compression on the string-keyed parent map for near-constant find() calls.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\n\nusing namespace std;\n\nstring find(string x, unordered_map<string, string>& parent)\n{\n    if (parent[x] != x) parent[x] = find(parent[x], parent);\n    return parent[x];\n}\n\nvoid unite(string a, string b, unordered_map<string, string>& parent)\n{\n    string rootA = find(a, parent);\n    string rootB = find(b, parent);\n    if (rootA != rootB) parent[rootA] = rootB;\n}\n\nvector<vector<string>> accountsMerge(vector<vector<string>>& accounts)\n{\n    unordered_map<string, string> parent;\n    unordered_map<string, string> emailToName;\n    vector<string> emailOrder;\n\n    for (auto &account : accounts)\n    {\n        string name = account[0];\n        for (int i = 1; i < (int)account.size(); i++)\n        {\n            string email = account[i];\n            if (parent.find(email) == parent.end())\n            {\n                parent[email] = email;\n                emailOrder.push_back(email);\n            }\n            emailToName[email] = name;\n            if (i > 1) unite(account[1], email, parent);\n        }\n    }\n\n    unordered_map<string, vector<string>> groups;\n    vector<string> rootOrder;\n    for (auto &email : emailOrder)\n    {\n        string root = find(email, parent);\n        if (groups.find(root) == groups.end()) rootOrder.push_back(root);\n        groups[root].push_back(email);\n    }\n\n    vector<vector<string>> result;\n    for (auto &root : rootOrder)\n    {\n        vector<string> emails = groups[root];\n        sort(emails.begin(), emails.end());\n        vector<string> entry = {emailToName[root]};\n        for (auto &e : emails) entry.push_back(e);\n        result.push_back(entry);\n    }\n    return result;\n}\n\nint main()\n{\n    vector<vector<string>> accounts = {\n        {\"John\", \"johnsmith@mail.com\", \"john_newyork@mail.com\"},\n        {\"John\", \"johnsmith@mail.com\", \"john00@mail.com\"},\n        {\"Mary\", \"mary@mail.com\"},\n        {\"John\", \"johnny@mail.com\"}\n    };\n\n    vector<vector<string>> result = accountsMerge(accounts);\n    for (auto &entry : result)\n    {\n        for (auto &s : entry) cout << s << \" \";\n        cout << \"| \";\n    }\n\n    return 0;\n}",
+          "output": "John john00@mail.com john_newyork@mail.com johnsmith@mail.com | Mary mary@mail.com | John johnny@mail.com | ",
+          "timeComplexity": "O(n log n) for sorting, with near-constant find() amortized via path compression",
+          "spaceComplexity": "O(n) for the parent map and grouping structures"
+        }
+      ]
     }
   ],
   "codeExamples": [
