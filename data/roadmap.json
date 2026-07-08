@@ -257,7 +257,8 @@
       "topics": [
         { "id": "dsa-greedy-algorithms", "title": "Greedy Algorithms", "lesson": "dsa-greedy-algorithms" },
         { "id": "dsa-dynamic-programming", "title": "Dynamic Programming", "lesson": "dsa-dynamic-programming" },
-        { "id": "dsa-memoization", "title": "Memoization", "lesson": "dsa-memoization" }
+        { "id": "dsa-memoization", "title": "Memoization", "lesson": "dsa-memoization" },
+        { "id": "dsa-tabulation", "title": "Tabulation", "lesson": "dsa-tabulation" }
       ]
     }
   ]

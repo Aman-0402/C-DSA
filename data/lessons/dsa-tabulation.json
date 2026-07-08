@@ -1,0 +1,128 @@
+{
+  "id": "dsa-tabulation",
+  "moduleId": "greedy-dp",
+  "title": "Tabulation",
+  "description": "DP's other approach: building the answer iteratively from the ground up, no recursion, no call stack — bottom-up instead of top-down.",
+  "objectives": [
+    "Implement tabulated (bottom-up) Fibonacci",
+    "Understand the difference between top-down and bottom-up DP",
+    "Compare memoization and tabulation directly",
+    "Know when each approach is preferred"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Memoization Was Top-Down"
+    },
+    {
+      "type": "paragraph",
+      "text": "Memoization kept the natural recursive structure — starting from fibonacci(n) and working DOWN toward the base case, caching along the way. Tabulation flips this entirely: start from the base case and work UP toward n, with no recursion at all."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Tabulation?"
+    },
+    {
+      "type": "definition",
+      "term": "Tabulation",
+      "text": "Tabulation is a bottom-up DP approach that iteratively fills a table starting from the smallest subproblems, building up to the final answer, with no recursion involved."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nlong long fibonacci(int n)\n{\n    vector<long long> table(n + 1);\n    table[0] = 0;\n    if (n >= 1) table[1] = 1;\n\n    for (int i = 2; i <= n; i++) // build UP from the base cases\n    {\n        table[i] = table[i - 1] + table[i - 2];\n    }\n\n    return table[n];\n}\n\nint main()\n{\n    cout << fibonacci(40) << endl;\n\n    return 0;\n}",
+      "output": "102334155",
+      "retypePractice": true,
+      "retypeId": "dsa-tabulation-fibonacci"
+    },
+    {
+      "type": "keyPoints",
+      "title": "How it builds up",
+      "points": [
+        "table[0] = 0, table[1] = 1 — the base cases, filled in directly, no function calls",
+        "table[2] = table[1] + table[0] = 1",
+        "table[3] = table[2] + table[1] = 2",
+        "...continuing straight through to table[40], each step using only already-filled earlier entries",
+        "No recursion at all — just a single, ordinary for loop (recall for Loop)"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. Memoization vs Tabulation, Side by Side"
+    },
+    {
+      "type": "table",
+      "headers": ["Memoization (top-down)", "Tabulation (bottom-up)"],
+      "rows": [
+        ["Recursive — starts from n, works down", "Iterative — starts from the base case, works up"],
+        ["Uses the call stack (recall Stack Memory) — risk of stack overflow for very large n", "Uses no recursion — no stack overflow risk"],
+        ["Only computes subproblems that are ACTUALLY needed", "Computes every subproblem up to n, even if some aren't strictly needed"],
+        ["Often more directly mirrors the problem's natural recursive definition", "Often the more efficient and safer choice for large inputs"]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Building a staircase from the ground up vs figuring out the top step by asking about the step below",
+      "text": "Memoization is like standing at the top step and asking \"how tall is this?\", which asks the step below, which asks the step below that, all the way down, then answers bubble back up. Tabulation is like starting construction at the ground and building each step in order, using only the step you already finished right before it — no back-and-forth questioning needed, just steady forward progress."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to fill in the base cases (table[0], table[1]) before the loop starts — the loop's first calculations depend directly on them.",
+        "Getting the loop bounds wrong — the loop must start where the base cases end (i = 2 here) and run through i <= n to actually fill table[n].",
+        "Assuming tabulation is always strictly better than memoization — memoization can be more efficient when only a small subset of all possible subproblems is actually needed.",
+        "Forgetting tabulation still requires understanding the same recurrence relation (table[i] = table[i-1] + table[i-2]) that memoization was built around — it's a different implementation strategy, not a different underlying idea."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is tabulation?",
+          "answer": "A bottom-up dynamic programming approach that iteratively fills a table starting from the base cases, building up to the final answer, with no recursion."
+        },
+        {
+          "question": "What is the key structural difference between memoization and tabulation?",
+          "answer": "Memoization is recursive and top-down, starting from the target and working toward the base case while caching; tabulation is iterative and bottom-up, starting from the base case and building forward with a loop."
+        },
+        {
+          "question": "Why might tabulation be preferred over memoization for very large inputs?",
+          "answer": "Tabulation uses no recursion, avoiding the call stack entirely and eliminating the risk of a stack overflow that deep recursive memoization could hit."
+        }
+      ],
+      "thirtySecondAnswer": "Tabulation is DP's bottom-up approach: instead of recursing down from n and caching along the way (memoization), it starts from the base cases and iteratively builds a table forward with an ordinary loop — table[i] = table[i-1] + table[i-2] for Fibonacci, filled from i=2 up to n. Both achieve the same O(n) time complexity, but tabulation uses no recursion at all, avoiding any risk of stack overflow on very large inputs, while memoization has the advantage of only computing subproblems that are actually needed rather than every one up to n."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Tabulation",
+      "text": "Tabulation = build the staircase from the ground up, one step at a time, no recursion. Memoization = ask the step below you, recursively, then cache the answer on the way back up."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-tabulation-fibonacci", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nlong long fibonacci(int n)\n{\n    vector<long long> table(n + 1);\n    table[0] = 0;\n    if (n >= 1) table[1] = 1;\n\n    for (int i = 2; i <= n; i++)\n    {\n        table[i] = table[i - 1] + table[i - 2];\n    }\n\n    return table[n];\n}\n\nint main()\n{\n    cout << fibonacci(40) << endl;\n\n    return 0;\n}", "output": "102334155" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-tabulation-fibonacci",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nlong long fibonacci(int n)\n{\n    vector<long long> table(n + 1);\n    table[0] = 0;\n    if (n >= 1) table[1] = 1;\n\n    for (int i = 2; i <= n; i++)\n    {\n        table[i] = table[i - 1] + table[i - 2];\n    }\n\n    return table[n];\n}\n\nint main()\n{\n    cout << fibonacci(40) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-tabulation-fibonacci"]
+  }
+}
