@@ -417,6 +417,42 @@
           "spaceComplexity": "O(n) for the stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-239-adv",
+      "number": 239,
+      "title": "Sliding Window Maximum",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/sliding-window-maximum/",
+      "problemStatement": "Given an array nums and a window size k, return the maximum value in each window as it slides from the start to the end of the array.",
+      "examples": [
+        { "input": "nums = [1,3,-1,-3,5,3,6,7], k = 3", "output": "[3,3,5,5,6,7]" }
+      ],
+      "constraints": ["1 <= k <= nums.length"],
+      "hints": [
+        "Clue: 'window' + 'maximum, repeatedly' — this combines Sliding Window's mechanics with a Monotonic Deque, since a plain max-scan per window would be O(n*k).",
+        "Keep a deque of INDICES with strictly decreasing values — any index whose value is smaller than an index added after it can never be the max again while that later, bigger value stays in the window, so it's safely discarded.",
+        "The deque's front is always the current window's max; before reading it, first pop any front index that has slid out of the window's left boundary (index <= right - k)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each window position, scan all k elements to find the max.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nvector<int> maxSlidingWindow(vector<int>& nums, int k)\n{\n    vector<int> result;\n    for (int i = 0; i + k <= (int)nums.size(); i++)\n    {\n        int best = nums[i];\n        for (int j = i; j < i + k; j++) best = max(best, nums[j]);\n        result.push_back(best);\n    }\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 3, -1, -3, 5, 3, 6, 7};\n    vector<int> result = maxSlidingWindow(nums, 3);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "3 3 5 5 6 7 ",
+          "timeComplexity": "O(n * k)",
+          "spaceComplexity": "O(n - k + 1) for the result"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Monotonic decreasing deque of indices — each index pushed and popped at most once.",
+          "code": "#include <iostream>\n#include <vector>\n#include <deque>\n\nusing namespace std;\n\nvector<int> maxSlidingWindow(vector<int>& nums, int k)\n{\n    deque<int> indices; // stores indices, values strictly decreasing front to back\n    vector<int> result;\n\n    for (int i = 0; i < (int)nums.size(); i++)\n    {\n        while (!indices.empty() && indices.front() <= i - k) indices.pop_front();\n        while (!indices.empty() && nums[indices.back()] < nums[i]) indices.pop_back();\n\n        indices.push_back(i);\n\n        if (i >= k - 1) result.push_back(nums[indices.front()]);\n    }\n\n    return result;\n}\n\nint main()\n{\n    vector<int> nums = {1, 3, -1, -3, 5, 3, 6, 7};\n    vector<int> result = maxSlidingWindow(nums, 3);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "3 3 5 5 6 7 ",
+          "timeComplexity": "O(n) — each index pushed and popped at most once",
+          "spaceComplexity": "O(k) for the deque"
+        }
+      ]
     }
   ],
   "codeExamples": [
