@@ -295,6 +295,43 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-58",
+      "number": 58,
+      "title": "Length of Last Word",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/length-of-last-word/",
+      "problemStatement": "Given a string s of words separated by spaces (possibly with trailing/leading spaces), return the length of the last word.",
+      "examples": [
+        { "input": "s = \"Hello World\"", "output": "5" },
+        { "input": "s = \"   fly me   to   the moon  \"", "output": "4", "explanation": "The last word is \"moon\"." }
+      ],
+      "constraints": ["1 <= s.length <= 10^4", "s contains English letters and spaces"],
+      "hints": [
+        "The 'last word' means scanning from the END of the string is more direct than from the beginning.",
+        "There may be trailing spaces after the last word — skip over those first before the word itself even starts.",
+        "Once past any trailing spaces, count backward until either a space or the start of the string is reached — that count is the answer."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Split the string into words using a stringstream, then return the length of the last token.",
+          "code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <vector>\n\nusing namespace std;\n\nint lengthOfLastWord(string s)\n{\n    stringstream ss(s);\n    string word;\n    vector<string> words;\n\n    while (ss >> word) words.push_back(word);\n\n    return words.back().size();\n}\n\nint main()\n{\n    cout << lengthOfLastWord(\"   fly me   to   the moon  \") << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the tokenized words"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Scan from the end: skip trailing spaces, then count characters until the next space or the start of the string.",
+          "code": "#include <iostream>\n#include <string>\n\nusing namespace std;\n\nint lengthOfLastWord(string s)\n{\n    int i = s.size() - 1;\n\n    while (i >= 0 && s[i] == ' ') i--; // skip trailing spaces\n\n    int length = 0;\n    while (i >= 0 && s[i] != ' ')\n    {\n        length++;\n        i--;\n    }\n\n    return length;\n}\n\nint main()\n{\n    cout << lengthOfLastWord(\"   fly me   to   the moon  \") << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
