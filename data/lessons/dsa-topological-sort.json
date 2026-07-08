@@ -231,6 +231,42 @@
           "spaceComplexity": "O(vertices) for the color array plus recursion stack"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1203",
+      "number": 1203,
+      "title": "Sort Items by Groups Respecting Dependencies",
+      "difficulty": "Hard",
+      "link": "https://leetcode.com/problems/sort-items-by-groups-respecting-dependencies/",
+      "problemStatement": "n items belong to m groups (ungrouped items get group -1). Given beforeItems[i] (items that must precede item i), return a valid item order respecting both item-level and group-level dependencies, or [] if impossible.",
+      "examples": [
+        { "input": "n = 5, m = 2, group = [0,0,1,1,-1], beforeItems = [[],[0],[],[2],[]]", "output": "[0,1,2,3,4]" }
+      ],
+      "constraints": ["1 <= m <= n <= 3 * 10^4"],
+      "hints": [
+        "This needs TWO topological sorts stacked on top of each other: one over the individual items, and one over the groups they belong to.",
+        "First, assign every ungrouped (-1) item its own unique new group id — this turns 'items with no group' into 'items in a group of one', so every item has a group.",
+        "Topologically sort items using beforeItems edges; separately, topologically sort groups using an edge group[u] → group[v] whenever an item edge u → v crosses group boundaries; finally, bucket items by group in item-order, and concatenate the buckets in group-order."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "DFS-based topological sort (this lesson's original technique) applied twice: once for items, once for groups.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool dfsTopo(int node, vector<vector<int>>& adj, vector<int>& state, vector<int>& order)\n{\n    state[node] = 1;\n    for (int next : adj[node])\n    {\n        if (state[next] == 1) return false;\n        if (state[next] == 0 && !dfsTopo(next, adj, state, order)) return false;\n    }\n    state[node] = 2;\n    order.push_back(node);\n    return true;\n}\n\nvector<int> topoSort(vector<vector<int>>& adj, int n)\n{\n    vector<int> state(n, 0), order;\n    for (int i = 0; i < n; i++)\n        if (state[i] == 0 && !dfsTopo(i, adj, state, order)) return {};\n    return order; // pushed in postorder — caller must reverse this to get true topological order\n}\n\nvector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& beforeItems)\n{\n    int totalGroups = m;\n    for (int i = 0; i < n; i++)\n        if (group[i] == -1) group[i] = totalGroups++;\n\n    vector<vector<int>> itemAdj(n), groupAdj(totalGroups);\n    for (int i = 0; i < n; i++)\n        for (int before : beforeItems[i])\n        {\n            itemAdj[before].push_back(i);\n            if (group[before] != group[i]) groupAdj[group[before]].push_back(group[i]);\n        }\n\n    vector<int> itemOrderRev = topoSort(itemAdj, n);\n    vector<int> groupOrderRev = topoSort(groupAdj, totalGroups);\n    if (itemOrderRev.empty() && n > 0) return {};\n    if (groupOrderRev.empty() && totalGroups > 0) return {};\n\n    vector<int> itemOrder(itemOrderRev.rbegin(), itemOrderRev.rend());\n    vector<int> groupOrder(groupOrderRev.rbegin(), groupOrderRev.rend());\n\n    vector<vector<int>> buckets(totalGroups);\n    for (int item : itemOrder) buckets[group[item]].push_back(item);\n\n    vector<int> result;\n    for (int g : groupOrder)\n        for (int item : buckets[g]) result.push_back(item);\n\n    return result;\n}\n\nint main()\n{\n    vector<int> group = {0, 0, 1, 1, -1};\n    vector<vector<int>> beforeItems = {{}, {0}, {}, {2}, {}};\n\n    vector<int> result = sortItems(5, 2, group, beforeItems);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "4 2 3 0 1 ",
+          "timeComplexity": "O(n + edges) for each of the two DFS-based topological sorts",
+          "spaceComplexity": "O(n + edges) for the item and group adjacency lists"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Kahn's BFS-based topological sort applied twice — same two-level structure, iterative instead of recursive.",
+          "code": "#include <iostream>\n#include <vector>\n#include <queue>\n\nusing namespace std;\n\nvector<int> kahnTopoSort(vector<vector<int>>& adj, int n)\n{\n    vector<int> inDegree(n, 0);\n    for (int u = 0; u < n; u++)\n        for (int v : adj[u]) inDegree[v]++;\n\n    queue<int> q;\n    for (int i = 0; i < n; i++)\n        if (inDegree[i] == 0) q.push(i);\n\n    vector<int> order;\n    while (!q.empty())\n    {\n        int u = q.front(); q.pop();\n        order.push_back(u);\n        for (int v : adj[u])\n            if (--inDegree[v] == 0) q.push(v);\n    }\n\n    return (int)order.size() == n ? order : vector<int>();\n}\n\nvector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& beforeItems)\n{\n    int totalGroups = m;\n    for (int i = 0; i < n; i++)\n        if (group[i] == -1) group[i] = totalGroups++;\n\n    vector<vector<int>> itemAdj(n), groupAdj(totalGroups);\n    for (int i = 0; i < n; i++)\n        for (int before : beforeItems[i])\n        {\n            itemAdj[before].push_back(i);\n            if (group[before] != group[i]) groupAdj[group[before]].push_back(group[i]);\n        }\n\n    vector<int> itemOrder = kahnTopoSort(itemAdj, n);\n    vector<int> groupOrder = kahnTopoSort(groupAdj, totalGroups);\n    if ((int)itemOrder.size() != n || (int)groupOrder.size() != totalGroups) return {};\n\n    vector<vector<int>> buckets(totalGroups);\n    for (int item : itemOrder) buckets[group[item]].push_back(item);\n\n    vector<int> result;\n    for (int g : groupOrder)\n        for (int item : buckets[g]) result.push_back(item);\n\n    return result;\n}\n\nint main()\n{\n    vector<int> group = {0, 0, 1, 1, -1};\n    vector<vector<int>> beforeItems = {{}, {0}, {}, {2}, {}};\n\n    vector<int> result = sortItems(5, 2, group, beforeItems);\n    for (int r : result) cout << r << \" \";\n\n    return 0;\n}",
+          "output": "0 1 2 3 4 ",
+          "timeComplexity": "O(n + m + edges)",
+          "spaceComplexity": "O(n + m + edges) for the item and group adjacency lists"
+        }
+      ]
     }
   ],
   "codeExamples": [
