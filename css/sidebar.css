@@ -29,9 +29,8 @@
 .sidebar-brand .logo-mark {
   width: 30px; height: 30px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 700; font-size: 13px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .sidebar-brand .brand-text {
   display: flex; flex-direction: column;
