@@ -225,6 +225,42 @@
           "spaceComplexity": "O(total root characters) for the trie"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-677",
+      "number": 677,
+      "title": "Map Sum Pairs",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/map-sum-pairs/",
+      "problemStatement": "Implement insert(key, val) and sum(prefix), where sum returns the total of all values whose key starts with the given prefix. Inserting an existing key overwrites (not adds to) its value.",
+      "examples": [
+        { "input": "insert(\"apple\", 3); sum(\"ap\"); insert(\"app\", 2); sum(\"ap\")", "output": "3, 5" }
+      ],
+      "constraints": ["1 <= key.length, prefix.length <= 50", "1 <= val <= 1000", "up to 50 total calls"],
+      "hints": [
+        "The overwrite rule means you must track each key's current value separately (e.g. an unordered_map<string,int>) to compute the delta when a key is re-inserted.",
+        "Store a running sum at EVERY trie node along a key's path, not just at isEndOfWord — that running sum is exactly what a prefix query needs.",
+        "On insert, add (newVal - oldVal) to every node's sum along the path; on sum(prefix), just walk to that node and read its stored sum directly."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Store key-value pairs in an unordered_map; for sum(prefix), scan every key checking for the prefix and total matching values.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nclass MapSum {\npublic:\n    unordered_map<string, int> store;\n\n    void insert(string key, int val)\n    {\n        store[key] = val;\n    }\n\n    int sum(string prefix)\n    {\n        int total = 0;\n        for (auto &entry : store)\n            if (entry.first.compare(0, prefix.size(), prefix) == 0) total += entry.second;\n        return total;\n    }\n};\n\nint main()\n{\n    MapSum ms;\n    ms.insert(\"apple\", 3);\n    cout << ms.sum(\"ap\") << \", \";\n    ms.insert(\"app\", 2);\n    cout << ms.sum(\"ap\");\n\n    return 0;\n}",
+          "output": "3, 5",
+          "timeComplexity": "O(keys * key length) per sum() call",
+          "spaceComplexity": "O(total key characters)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Trie storing a running prefix-sum at every node, updated by the value delta on each insert/overwrite.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    int sum = 0;\n};\n\nclass MapSum {\npublic:\n    TrieNode* root;\n    unordered_map<string, int> values;\n\n    MapSum()\n    {\n        root = new TrieNode();\n    }\n\n    void insert(string key, int val)\n    {\n        int delta = val - (values.count(key) ? values[key] : 0);\n        values[key] = val;\n\n        TrieNode* node = root;\n        node->sum += delta;\n        for (char c : key)\n        {\n            if (node->children.find(c) == node->children.end())\n                node->children[c] = new TrieNode();\n            node = node->children[c];\n            node->sum += delta;\n        }\n    }\n\n    int sum(string prefix)\n    {\n        TrieNode* node = root;\n        for (char c : prefix)\n        {\n            if (node->children.find(c) == node->children.end()) return 0;\n            node = node->children[c];\n        }\n        return node->sum;\n    }\n};\n\nint main()\n{\n    MapSum ms;\n    ms.insert(\"apple\", 3);\n    cout << ms.sum(\"ap\") << \", \";\n    ms.insert(\"app\", 2);\n    cout << ms.sum(\"ap\");\n\n    return 0;\n}",
+          "output": "3, 5",
+          "timeComplexity": "O(key length) per insert; O(prefix length) per sum()",
+          "spaceComplexity": "O(total key characters) for the trie"
+        }
+      ]
     }
   ],
   "codeExamples": [
