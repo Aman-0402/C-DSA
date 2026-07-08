@@ -241,6 +241,50 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-169",
+      "number": 169,
+      "title": "Majority Element",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/majority-element/",
+      "problemStatement": "Given an array nums, return the majority element — the value that appears more than n/2 times. It's guaranteed one always exists.",
+      "examples": [
+        { "input": "nums = [2,2,1,1,1,2,2]", "output": "2" }
+      ],
+      "constraints": ["1 <= nums.length <= 5*10^4"],
+      "hints": [
+        "A value appearing MORE than n/2 times has a guaranteed structural consequence after sorting: it must occupy the exact middle index — think about why fewer than n/2 other elements can possibly crowd it out of that position.",
+        "That gives an O(n log n) solution using sort(), but a purely O(n) approach exists too, without sorting at all.",
+        "Boyer-Moore voting: keep a 'candidate' and a running count — matching elements increment the count, non-matching ones decrement it; when the count hits 0, switch candidates. The true majority element always survives this process."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each candidate value, count its occurrences across the whole array.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint majorityElement(vector<int> &nums)\n{\n    for (int candidate : nums)\n    {\n        int cnt = count(nums.begin(), nums.end(), candidate);\n        if (cnt > (int)nums.size() / 2) return candidate;\n    }\n    return -1;\n}\n\nint main()\n{\n    vector<int> nums = {2, 2, 1, 1, 1, 2, 2};\n\n    cout << majorityElement(nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Better",
+          "explanation": "Sort the array — the majority element, appearing more than n/2 times, is guaranteed to land at the middle index.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint majorityElement(vector<int> &nums)\n{\n    sort(nums.begin(), nums.end());\n    return nums[nums.size() / 2];\n}\n\nint main()\n{\n    vector<int> nums = {2, 2, 1, 1, 1, 2, 2};\n\n    cout << majorityElement(nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(1) extra beyond the sort"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Boyer-Moore voting: a running candidate and count, with mismatches cancelling out — the true majority always survives.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint majorityElement(vector<int> &nums)\n{\n    int candidate = nums[0];\n    int count = 0;\n\n    for (int n : nums)\n    {\n        if (count == 0) candidate = n;\n        count += (n == candidate) ? 1 : -1;\n    }\n\n    return candidate;\n}\n\nint main()\n{\n    vector<int> nums = {2, 2, 1, 1, 1, 2, 2};\n\n    cout << majorityElement(nums) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
