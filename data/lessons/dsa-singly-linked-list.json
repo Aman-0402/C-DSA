@@ -234,6 +234,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-21-sll",
+      "number": 21,
+      "title": "Merge Two Sorted Lists",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/merge-two-sorted-lists/",
+      "problemStatement": "Given the heads of two sorted linked lists, merge them into one sorted list and return its head.",
+      "examples": [
+        { "input": "list1 = [1,2,4], list2 = [1,3,4]", "output": "[1,1,2,3,4,4]" }
+      ],
+      "constraints": ["0 <= list length <= 50"],
+      "hints": [
+        "A dummy 'placeholder' head node before the real list simplifies building a new list — no special-casing 'is this the first node' needed.",
+        "Walk both lists together with a tail pointer, always attaching the smaller of the two current nodes and advancing that list.",
+        "Once one list runs out, attach whatever remains of the other directly — it's already sorted, no more comparisons needed."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Collect all values, sort them, then build a brand new list from scratch.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* mergeTwoLists(ListNode* list1, ListNode* list2)\n{\n    vector<int> values;\n    for (ListNode* n = list1; n; n = n->next) values.push_back(n->val);\n    for (ListNode* n = list2; n; n = n->next) values.push_back(n->val);\n\n    sort(values.begin(), values.end());\n\n    ListNode dummy(0);\n    ListNode* tail = &dummy;\n    for (int v : values)\n    {\n        tail->next = new ListNode(v);\n        tail = tail->next;\n    }\n\n    return dummy.next;\n}\n\nint main()\n{\n    ListNode* list1 = new ListNode(1);\n    list1->next = new ListNode(2);\n    list1->next->next = new ListNode(4);\n\n    ListNode* list2 = new ListNode(1);\n    list2->next = new ListNode(3);\n    list2->next->next = new ListNode(4);\n\n    ListNode* merged = mergeTwoLists(list1, list2);\n    for (ListNode* n = merged; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 1 2 3 4 4 ",
+          "timeComplexity": "O((n+m) log(n+m))",
+          "spaceComplexity": "O(n+m) for new nodes and values"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Iterative merge using a dummy head and a tail pointer, reusing the existing nodes — no sorting, no new list built from scratch.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* mergeTwoLists(ListNode* list1, ListNode* list2)\n{\n    ListNode dummy(0);\n    ListNode* tail = &dummy;\n\n    while (list1 != nullptr && list2 != nullptr)\n    {\n        if (list1->val <= list2->val)\n        {\n            tail->next = list1;\n            list1 = list1->next;\n        }\n        else\n        {\n            tail->next = list2;\n            list2 = list2->next;\n        }\n        tail = tail->next;\n    }\n\n    tail->next = (list1 != nullptr) ? list1 : list2;\n\n    return dummy.next;\n}\n\nint main()\n{\n    ListNode* list1 = new ListNode(1);\n    list1->next = new ListNode(2);\n    list1->next->next = new ListNode(4);\n\n    ListNode* list2 = new ListNode(1);\n    list2->next = new ListNode(3);\n    list2->next->next = new ListNode(4);\n\n    ListNode* merged = mergeTwoLists(list1, list2);\n    for (ListNode* n = merged; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "1 1 2 3 4 4 ",
+          "timeComplexity": "O(n + m)",
+          "spaceComplexity": "O(1) extra — reuses existing nodes"
+        }
+      ]
     }
   ],
   "codeExamples": [
