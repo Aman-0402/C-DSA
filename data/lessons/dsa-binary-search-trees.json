@@ -127,6 +127,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Binary Search Trees",
       "text": "BST = a number-guessing game as a tree. Smaller goes left, bigger goes right, at every node. Balanced = O(log n). Sorted-order inserts = a straight line = O(n)."
+    },
+    {
+      "type": "heading",
+      "text": "LeetCode: Binary Search Trees in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-700",
+      "number": 700,
+      "title": "Search in a Binary Search Tree",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/search-in-a-binary-search-tree/",
+      "problemStatement": "Given the root of a BST and an integer val, return the subtree rooted at the node with that value, or null if not found.",
+      "examples": [
+        { "input": "root = [4,2,7,1,3], val = 2", "output": "subtree rooted at 2: [2,1,3]" }
+      ],
+      "constraints": ["1 <= number of nodes <= 5000"],
+      "hints": [
+        "This is exactly this lesson's own search() function, just returning the node itself instead of a boolean.",
+        "Compare val against the current node: equal means found, smaller means go left, larger means go right — never both, unlike a general binary tree search.",
+        "Because only one direction is ever explored, this reaches O(log n) on a balanced tree instead of a general tree search's O(n)."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Search as if the tree had no ordering property — checking node, then blindly searching BOTH subtrees.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* searchBST(TreeNode* root, int val)\n{\n    if (root == nullptr) return nullptr;\n    if (root->val == val) return root;\n\n    TreeNode* leftResult = searchBST(root->left, val);\n    if (leftResult) return leftResult;\n\n    return searchBST(root->right, val);\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(4);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(7);\n    root->left->left = new TreeNode(1);\n    root->left->right = new TreeNode(3);\n\n    TreeNode* result = searchBST(root, 2);\n    cout << (result ? result->val : -1) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(h) call stack"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Exploit the BST property: only one subtree can possibly contain val, so only recurse into that one.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}\n};\n\nTreeNode* searchBST(TreeNode* root, int val)\n{\n    if (root == nullptr || root->val == val) return root;\n\n    if (val < root->val) return searchBST(root->left, val);\n    return searchBST(root->right, val);\n}\n\nint main()\n{\n    TreeNode* root = new TreeNode(4);\n    root->left = new TreeNode(2);\n    root->right = new TreeNode(7);\n    root->left->left = new TreeNode(1);\n    root->left->right = new TreeNode(3);\n\n    TreeNode* result = searchBST(root, 2);\n    cout << (result ? result->val : -1) << endl;\n\n    return 0;\n}",
+          "output": "2",
+          "timeComplexity": "O(log n) on a balanced BST",
+          "spaceComplexity": "O(log n) call stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
