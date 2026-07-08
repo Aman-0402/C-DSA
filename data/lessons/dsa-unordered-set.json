@@ -175,6 +175,43 @@
           "spaceComplexity": "O(n + m)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-202",
+      "number": 202,
+      "title": "Happy Number",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/happy-number/",
+      "problemStatement": "A happy number is defined by repeatedly replacing it with the sum of the squares of its digits, until it reaches 1 (happy) or loops forever in a cycle that never reaches 1 (not happy). Given n, return true if it is happy.",
+      "examples": [
+        { "input": "n = 19", "output": "true", "explanation": "19 -> 82 -> 68 -> 100 -> 1." },
+        { "input": "n = 2", "output": "false", "explanation": "Cycles forever without ever reaching 1." }
+      ],
+      "constraints": ["1 <= n <= 2^31 - 1"],
+      "hints": [
+        "The only two outcomes are: eventually reach 1, or fall into a repeating cycle that never includes 1 — there's no third possibility.",
+        "To detect 'have I entered a cycle,' track every sum seen so far — if the SAME sum ever appears twice, it's a cycle.",
+        "unordered_set's O(1) membership check is exactly the tool for 'have I seen this sum before' — the same have-I-seen-this pattern as Contains Duplicate, applied to a sequence instead of an array."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Loop for a fixed, arbitrarily large number of iterations, hoping a real cycle would have shown up by then — not a rigorously correct general solution, but a common first attempt.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nint sumOfSquares(int n)\n{\n    int sum = 0;\n    while (n > 0)\n    {\n        int digit = n % 10;\n        sum += digit * digit;\n        n /= 10;\n    }\n    return sum;\n}\n\nbool isHappy(int n)\n{\n    for (int i = 0; i < 1000; i++) // arbitrary cap — not a guarantee\n    {\n        if (n == 1) return true;\n        n = sumOfSquares(n);\n    }\n    return false;\n}\n\nint main()\n{\n    cout << (isHappy(19) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(1000) — a fixed cap, not rigorously justified",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "An unordered_set tracking every sum seen so far correctly detects any cycle the moment it repeats, with no arbitrary cap needed.",
+          "code": "#include <iostream>\n#include <unordered_set>\n\nusing namespace std;\n\nint sumOfSquares(int n)\n{\n    int sum = 0;\n    while (n > 0)\n    {\n        int digit = n % 10;\n        sum += digit * digit;\n        n /= 10;\n    }\n    return sum;\n}\n\nbool isHappy(int n)\n{\n    unordered_set<int> seen;\n\n    while (n != 1 && !seen.count(n))\n    {\n        seen.insert(n);\n        n = sumOfSquares(n);\n    }\n\n    return n == 1;\n}\n\nint main()\n{\n    cout << (isHappy(19) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(log n) per squaring step, cycle detected in bounded steps",
+          "spaceComplexity": "O(k) for the seen set, k = numbers visited before a repeat"
+        }
+      ]
     }
   ],
   "codeExamples": [
