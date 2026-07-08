@@ -114,6 +114,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember unordered_map (DSA)",
       "text": "First non-repeat = count everything, then re-walk in order. Group anagrams = compute a shared key (sorted letters), drop into the matching bin like sorting mail by zip code."
+    },
+    {
+      "type": "heading",
+      "text": "5. LeetCode: unordered_map in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1-unordered-map",
+      "number": 1,
+      "title": "Two Sum",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/two-sum/",
+      "problemStatement": "Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target.",
+      "examples": [
+        { "input": "nums = [2,7,11,15], target = 9", "output": "[0,1]" }
+      ],
+      "constraints": ["2 <= nums.length <= 10^4"],
+      "hints": [
+        "unordered_map's [] operator and count() are exactly the tools needed to check 'have I seen target - nums[i] before, and at what index?'",
+        "Insert AFTER checking, not before — otherwise a number could incorrectly pair with itself.",
+        "One pass, one map, O(n) time."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Nested loops checking every pair.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int> &nums, int target)\n{\n    for (int i = 0; i < nums.size(); i++)\n        for (int j = i + 1; j < nums.size(); j++)\n            if (nums[i] + nums[j] == target) return {i, j};\n    return {};\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 11, 15};\n\n    vector<int> result = twoSum(nums, 9);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "0 1",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "unordered_map<value, index>, checked before each insertion.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int> &nums, int target)\n{\n    unordered_map<int, int> seen;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int need = target - nums[i];\n        if (seen.count(need)) return {seen[need], i};\n        seen[nums[i]] = i;\n    }\n    return {};\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 11, 15};\n\n    vector<int> result = twoSum(nums, 9);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "0 1",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
