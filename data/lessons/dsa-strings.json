@@ -369,6 +369,43 @@
           "spaceComplexity": "O(1) extra, excluding the returned string"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-443",
+      "number": 443,
+      "title": "String Compression",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/string-compression/",
+      "problemStatement": "Given a character array chars, compress it in place: each group of consecutive repeating characters becomes the character followed by its count (count omitted if 1). Return the new length.",
+      "examples": [
+        { "input": "chars = ['a','a','b','b','c','c','c']", "output": "6, chars = ['a','2','b','2','c','3']" },
+        { "input": "chars = ['a']", "output": "1, chars = ['a']" }
+      ],
+      "constraints": ["1 <= chars.length <= 2000", "chars[i] is a lowercase/uppercase letter"],
+      "hints": [
+        "This is Move Zeroes' same-direction two-pointer shape again: a slow 'write' pointer marks where the next compressed piece goes, while a fast 'read' pointer scans ahead.",
+        "The read pointer needs to find the FULL extent of each run of identical characters before writing anything — count how many times the current character repeats consecutively.",
+        "If a run's count is greater than 1, its digits need to be written one character at a time (a count like 12 becomes the characters '1' and '2') — count > 9 splits into multiple digit characters."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Build a brand new compressed string by scanning runs, then copy its characters back over chars.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint compress(vector<char> &chars)\n{\n    string result;\n    int i = 0;\n\n    while (i < (int)chars.size())\n    {\n        char c = chars[i];\n        int count = 0;\n        while (i < (int)chars.size() && chars[i] == c)\n        {\n            count++;\n            i++;\n        }\n\n        result += c;\n        if (count > 1) result += to_string(count);\n    }\n\n    for (int j = 0; j < (int)result.size(); j++) chars[j] = result[j];\n\n    return result.size();\n}\n\nint main()\n{\n    vector<char> chars = {'a', 'a', 'b', 'b', 'c', 'c', 'c'};\n\n    int len = compress(chars);\n    cout << len << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the result string"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Same-direction two pointers: read scans each run's full extent, write places the character and any needed count digits directly back into chars — no separate string built.",
+          "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint compress(vector<char> &chars)\n{\n    int write = 0;\n    int read = 0;\n\n    while (read < (int)chars.size())\n    {\n        char c = chars[read];\n        int count = 0;\n\n        while (read < (int)chars.size() && chars[read] == c)\n        {\n            count++;\n            read++;\n        }\n\n        chars[write++] = c;\n\n        if (count > 1)\n        {\n            for (char digit : to_string(count))\n            {\n                chars[write++] = digit;\n            }\n        }\n    }\n\n    return write;\n}\n\nint main()\n{\n    vector<char> chars = {'a', 'a', 'b', 'b', 'c', 'c', 'c'};\n\n    int len = compress(chars);\n    cout << len << endl;\n\n    return 0;\n}",
+          "output": "6",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) extra — writes directly back into chars"
+        }
+      ]
     }
   ],
   "codeExamples": [
