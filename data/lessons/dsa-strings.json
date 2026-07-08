@@ -332,6 +332,43 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-151",
+      "number": 151,
+      "title": "Reverse Words in a String",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/reverse-words-in-a-string/",
+      "problemStatement": "Given a string s, reverse the order of the words (single space separated in the output, no leading/trailing spaces, multiple spaces between words in the input collapsed to one).",
+      "examples": [
+        { "input": "s = \"the sky is blue\"", "output": "\"blue is sky the\"" },
+        { "input": "s = \"  hello world  \"", "output": "\"world hello\"" }
+      ],
+      "constraints": ["1 <= s.length <= 10^4", "s contains English letters, spaces, and possibly extra/leading/trailing spaces"],
+      "hints": [
+        "Splitting on whitespace naturally discards extra spaces — think about what a standard tokenizer does with runs of spaces.",
+        "Once you have the individual words, is there a data structure from earlier in this course built exactly for adding/removing from BOTH ends efficiently?",
+        "There's also a clever O(1)-extra-space trick: reverse the ENTIRE string character by character first, then reverse each individual word back to normal in place — this fixes word order while keeping letters in the right order within each word."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Tokenize into words with a stringstream (which naturally skips extra whitespace), then join them back in reverse order.",
+          "code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <vector>\n\nusing namespace std;\n\nstring reverseWords(string s)\n{\n    stringstream ss(s);\n    string word;\n    vector<string> words;\n\n    while (ss >> word) words.push_back(word);\n\n    string result;\n    for (int i = words.size() - 1; i >= 0; i--)\n    {\n        result += words[i];\n        if (i != 0) result += \" \";\n    }\n\n    return result;\n}\n\nint main()\n{\n    cout << reverseWords(\"the sky is blue\") << endl;\n\n    return 0;\n}",
+          "output": "blue is sky the",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the tokenized words vector"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Reverse the whole string first, then reverse each individual word back in place — two passes, no separate word list needed.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nstring reverseWords(string s)\n{\n    reverse(s.begin(), s.end()); // whole string reversed: \"eulb si yks eht\"\n\n    int write = 0;\n    int n = s.size();\n    int i = 0;\n\n    while (i < n)\n    {\n        if (s[i] != ' ')\n        {\n            if (write != 0) s[write++] = ' ';\n\n            int wordStart = write;\n            while (i < n && s[i] != ' ')\n            {\n                s[write++] = s[i++];\n            }\n\n            reverse(s.begin() + wordStart, s.begin() + write); // un-reverse this word\n        }\n        else\n        {\n            i++;\n        }\n    }\n\n    s.resize(write);\n    return s;\n}\n\nint main()\n{\n    cout << reverseWords(\"the sky is blue\") << endl;\n\n    return 0;\n}",
+          "output": "blue is sky the",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(1) extra, excluding the returned string"
+        }
+      ]
     }
   ],
   "codeExamples": [
