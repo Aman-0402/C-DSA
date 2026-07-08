@@ -1,0 +1,154 @@
+{
+  "id": "dsa-two-pointers",
+  "moduleId": "array-string-techniques",
+  "title": "Two Pointers",
+  "description": "Turning an O(n²) nested-loop search into O(n) by moving two indices toward each other through a sorted array.",
+  "objectives": [
+    "Understand the two pointers pattern and when it applies",
+    "Solve the pair-sum-in-sorted-array problem in O(n)",
+    "Understand why sortedness is what makes the technique valid",
+    "Recognize the same-direction variant of the pattern"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. The Problem: Nested Loops Are O(n²)"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Find two numbers in a SORTED array that add up to target\nvector<int> numbers = {2, 4, 7, 11, 15};\nint target = 15;\n\nfor (int i = 0; i < numbers.size(); i++)\n{\n    for (int j = i + 1; j < numbers.size(); j++) // checks EVERY pair\n    {\n        if (numbers[i] + numbers[j] == target) { /* found */ }\n    }\n}"
+    },
+    {
+      "type": "warning",
+      "text": "This checks every possible pair — recall the quadratic-time nested-loop shape from Time Complexity. For a sorted array specifically, there's a much better way."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is Two Pointers?"
+    },
+    {
+      "type": "definition",
+      "term": "Two pointers",
+      "text": "Two pointers is a technique using two indices that move through a collection — often from opposite ends toward each other — to solve a problem in one pass, without checking every combination."
+    },
+    {
+      "type": "heading",
+      "text": "3. Opposite-Ends Pattern: Pair Sum in a Sorted Array"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "int left = 0;\nint right = numbers.size() - 1;\n\nwhile (left < right)\n{\n    int sum = numbers[left] + numbers[right];\n\n    if (sum == target)\n    {\n        // found it\n        break;\n    }\n    else if (sum < target)\n    {\n        left++; // sum too small — move left pointer up to increase it\n    }\n    else\n    {\n        right--; // sum too big — move right pointer down to decrease it\n    }\n}"
+    },
+    {
+      "type": "heading",
+      "text": "4. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 4, 7, 11, 15};\n    int target = 15;\n\n    int left = 0;\n    int right = numbers.size() - 1;\n\n    while (left < right)\n    {\n        int sum = numbers[left] + numbers[right];\n\n        if (sum == target)\n        {\n            cout << numbers[left] << \" + \" << numbers[right] << \" = \" << target << endl;\n            break;\n        }\n        else if (sum < target)\n        {\n            left++;\n        }\n        else\n        {\n            right--;\n        }\n    }\n\n    return 0;\n}",
+      "output": "4 + 11 = 15",
+      "retypePractice": true,
+      "retypeId": "dsa-two-pointers-pairsum"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "left=0 (2), right=4 (15) → sum=17, too big → right--",
+        "left=0 (2), right=3 (11) → sum=13, too small → left++",
+        "left=1 (4), right=3 (11) → sum=15, found! → 4 + 11 = 15"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "5. Why It Works: Sortedness Rules Out Options"
+    },
+    {
+      "type": "note",
+      "text": "Because the array is sorted, moving left forward always increases the sum (numbers only get bigger going right), and moving right backward always decreases it. If the current sum is too small, we know for certain increasing right further would only make it worse — so it's safe to only move left. This certainty, which only exists because the array is sorted, is exactly what lets two pointers skip checking every pair."
+    },
+    {
+      "type": "heading",
+      "text": "6. A Preview: The Same-Direction Variant"
+    },
+    {
+      "type": "warning",
+      "text": "This is only a preview — two pointers isn't limited to opposite ends. A same-direction variant, where both pointers start together and one moves ahead of the other (common for tasks like removing duplicates from a sorted array in place), is also common. Sliding Window, the very next topic, is a close cousin of this same-direction idea."
+    },
+    {
+      "type": "heading",
+      "text": "7. Complexity: O(n) Instead of O(n²)"
+    },
+    {
+      "type": "note",
+      "text": "left and right move toward each other, and together they can move at most n times total before meeting — giving O(n) time, a dramatic improvement over the nested loop's O(n²), with O(1) extra space (recall Space Complexity) since no new structure is built."
+    },
+    {
+      "type": "heading",
+      "text": "8. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Two people walking toward each other down a sorted hallway of lockers",
+      "text": "Imagine lockers sorted by weight, low to high, with one person starting at the lightest end and another at the heaviest end, looking for two lockers whose weights add to a target. If the current pair is too light, the person at the light end steps forward (heavier lockers only). If too heavy, the person at the heavy end steps back (lighter lockers only). They meet in the middle having checked far fewer combinations than comparing every locker to every other locker."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Using the opposite-ends two-pointer pattern on an unsorted array — the technique's correctness relies specifically on sortedness.",
+        "Moving both pointers on every iteration regardless of the comparison result — only the pointer that can actually improve the sum should move.",
+        "Using while (left <= right) when the problem needs two distinct elements — left < right correctly stops before they'd point at the same element.",
+        "Reaching for nested loops out of habit when the sorted-array pair-sum shape is recognizable — a strong signal that two pointers applies."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the two pointers technique?",
+          "answer": "Using two indices that move through a collection — often from opposite ends toward each other — to solve a problem in one pass instead of checking every combination."
+        },
+        {
+          "question": "How does two pointers solve the pair-sum-in-sorted-array problem in O(n)?",
+          "answer": "Starting pointers at both ends, moving the left pointer forward when the sum is too small and the right pointer backward when the sum is too large, using the array's sorted order to safely skip checking every pair."
+        },
+        {
+          "question": "Why does the two pointers pair-sum technique require the array to be sorted?",
+          "answer": "Sortedness guarantees moving left forward only increases the sum and moving right backward only decreases it, which is what makes it safe to rule out entire ranges of pairs without checking them individually."
+        },
+        {
+          "question": "What is the time and space complexity of the two-pointer pair-sum approach?",
+          "answer": "O(n) time, since the pointers together move at most n steps before meeting, and O(1) extra space."
+        }
+      ],
+      "thirtySecondAnswer": "Two pointers uses two indices moving through a sorted collection, often from opposite ends toward each other, to avoid the O(n²) cost of checking every pair with nested loops. For finding two numbers summing to a target in a sorted array, starting pointers at both ends and moving the low one up when the sum is too small (or the high one down when too large) solves it in O(n) time and O(1) space — the correctness relies entirely on the array being sorted, which guarantees each pointer move rules out an entire range of impossible pairs. A same-direction variant of the pattern also exists, and Sliding Window, the next topic, builds on that same idea."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Two Pointers",
+      "text": "Two pointers = two people walking toward each other down a sorted hallway. Sum too small → light person steps forward. Sum too big → heavy person steps back. Meet in O(n), not O(n²)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-two-pointers-pairsum", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 4, 7, 11, 15};\n    int target = 15;\n\n    int left = 0;\n    int right = numbers.size() - 1;\n\n    while (left < right)\n    {\n        int sum = numbers[left] + numbers[right];\n\n        if (sum == target)\n        {\n            cout << numbers[left] << \" + \" << numbers[right] << \" = \" << target << endl;\n            break;\n        }\n        else if (sum < target)\n        {\n            left++;\n        }\n        else\n        {\n            right--;\n        }\n    }\n\n    return 0;\n}", "output": "4 + 11 = 15" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-two-pointers-pairsum",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint main()\n{\n    vector<int> numbers = {2, 4, 7, 11, 15};\n    int target = 15;\n\n    int left = 0;\n    int right = numbers.size() - 1;\n\n    while (left < right)\n    {\n        int sum = numbers[left] + numbers[right];\n\n        if (sum == target)\n        {\n            cout << numbers[left] << \" + \" << numbers[right] << \" = \" << target << endl;\n            break;\n        }\n        else if (sum < target)\n        {\n            left++;\n        }\n        else\n        {\n            right--;\n        }\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-two-pointers-pairsum"]
+  }
+}
