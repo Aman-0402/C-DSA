@@ -133,6 +133,47 @@
       "type": "memoryTrick",
       "title": "Trick to Remember Hashing",
       "text": "Hash function = a library call number, sends you almost straight to the shelf. Collision = two books with the same call number, handled, not broken. Two Sum = 'have I seen the complement?' — O(1) lookup instead of O(n) scan."
+    },
+    {
+      "type": "heading",
+      "text": "8. LeetCode: Hashing in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-1",
+      "number": 1,
+      "title": "Two Sum",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/two-sum/",
+      "problemStatement": "Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target. Exactly one solution exists.",
+      "examples": [
+        { "input": "nums = [2,7,11,15], target = 9", "output": "[0,1]" },
+        { "input": "nums = [3,2,4], target = 6", "output": "[1,2]" }
+      ],
+      "constraints": ["2 <= nums.length <= 10^4", "-10^9 <= nums[i], target <= 10^9"],
+      "hints": [
+        "This is exactly this lesson's core example — the complement-lookup idea, unrestricted by sortedness (unlike Two Sum II).",
+        "For each number, the question is: 'have I already seen target - number?' — track every number seen so far, along with its index.",
+        "A hash map gives O(1) average lookup for 'have I seen this value,' turning an O(n²) nested-loop search into a single O(n) pass."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Check every pair with nested loops.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int> &nums, int target)\n{\n    for (int i = 0; i < nums.size(); i++)\n    {\n        for (int j = i + 1; j < nums.size(); j++)\n        {\n            if (nums[i] + nums[j] == target) return {i, j};\n        }\n    }\n    return {};\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 11, 15};\n\n    vector<int> result = twoSum(nums, 9);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "0 1",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A hash map tracking value-to-index, checked for each number's complement in a single pass.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_map>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int> &nums, int target)\n{\n    unordered_map<int, int> seen;\n\n    for (int i = 0; i < nums.size(); i++)\n    {\n        int complement = target - nums[i];\n        if (seen.count(complement)) return {seen[complement], i};\n        seen[nums[i]] = i;\n    }\n    return {};\n}\n\nint main()\n{\n    vector<int> nums = {2, 7, 11, 15};\n\n    vector<int> result = twoSum(nums, 9);\n    cout << result[0] << \" \" << result[1] << endl;\n\n    return 0;\n}",
+          "output": "0 1",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the hash map"
+        }
+      ]
     }
   ],
   "codeExamples": [
