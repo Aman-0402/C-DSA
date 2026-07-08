@@ -162,6 +162,42 @@
           "spaceComplexity": "O(1)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-876",
+      "number": 876,
+      "title": "Middle of the Linked List",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/middle-of-the-linked-list/",
+      "problemStatement": "Given the head of a singly linked list, return the middle node. If there are two middle nodes, return the second one.",
+      "examples": [
+        { "input": "head = [1,2,3,4,5]", "output": "[3,4,5]", "explanation": "The middle node is 3." }
+      ],
+      "constraints": ["1 <= list length <= 100"],
+      "hints": [
+        "A linked list has no length property or indexed access — finding 'the middle' requires either counting first, or a cleverer single-pass trick.",
+        "The slow/fast pointer technique: one pointer moves one step at a time, another moves two steps at a time. When the fast pointer reaches the end, the slow pointer is exactly at the middle.",
+        "This works because the fast pointer covers twice the distance in the same number of steps — by the time it's done the whole list, slow has only covered half."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Count the list's length first, then walk again to the middle index.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* middleNode(ListNode* head)\n{\n    int length = 0;\n    for (ListNode* n = head; n; n = n->next) length++;\n\n    ListNode* current = head;\n    for (int i = 0; i < length / 2; i++) current = current->next;\n\n    return current;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n    head->next->next->next = new ListNode(4);\n    head->next->next->next->next = new ListNode(5);\n\n    ListNode* mid = middleNode(head);\n    for (ListNode* n = mid; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "3 4 5 ",
+          "timeComplexity": "O(n), but two passes",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Slow/fast pointers: slow moves one step, fast moves two — a single pass finds the middle.",
+          "code": "#include <iostream>\n\nusing namespace std;\n\nstruct ListNode {\n    int val;\n    ListNode *next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};\n\nListNode* middleNode(ListNode* head)\n{\n    ListNode* slow = head;\n    ListNode* fast = head;\n\n    while (fast != nullptr && fast->next != nullptr)\n    {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n\n    return slow;\n}\n\nint main()\n{\n    ListNode* head = new ListNode(1);\n    head->next = new ListNode(2);\n    head->next->next = new ListNode(3);\n    head->next->next->next = new ListNode(4);\n    head->next->next->next->next = new ListNode(5);\n\n    ListNode* mid = middleNode(head);\n    for (ListNode* n = mid; n; n = n->next) cout << n->val << \" \";\n\n    return 0;\n}",
+          "output": "3 4 5 ",
+          "timeComplexity": "O(n), single pass",
+          "spaceComplexity": "O(1)"
+        }
+      ]
     }
   ],
   "codeExamples": [
