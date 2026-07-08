@@ -1,0 +1,130 @@
+{
+  "id": "dsa-dfs",
+  "moduleId": "trees",
+  "title": "DFS",
+  "description": "Preorder/Inorder/Postorder, generalized beyond trees: DFS on any graph-like structure, and a direct side-by-side against BFS.",
+  "objectives": [
+    "Understand DFS as Preorder/Inorder/Postorder's general form",
+    "Implement recursive DFS on a grid with a visited set",
+    "Compare BFS and DFS's exploration order directly",
+    "Know when to reach for BFS vs DFS"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: The Depth-First Orders Were All DFS on a Tree"
+    },
+    {
+      "type": "paragraph",
+      "text": "Preorder, Inorder, and Postorder all committed to one path before backtracking — that's depth-first behavior. Depth-First Search (DFS) is the general technique behind all three, applicable to any graph-like structure, not just trees."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is DFS?"
+    },
+    {
+      "type": "definition",
+      "term": "Depth-First Search (DFS)",
+      "text": "DFS explores as far as possible down one path before backtracking to try another, commonly implemented with recursion (or an explicit stack) plus a visited set to handle cycles."
+    },
+    {
+      "type": "heading",
+      "text": "3. Full Example: DFS on a Grid"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint dr[] = {1, -1, 0, 0};\nint dc[] = {0, 0, 1, -1};\n\nvoid dfs(int row, int col, vector<vector<bool>> &visited, int rows, int cols)\n{\n    visited[row][col] = true;\n    cout << row << \",\" << col << \" \";\n\n    for (int i = 0; i < 4; i++)\n    {\n        int newRow = row + dr[i];\n        int newCol = col + dc[i];\n\n        if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && !visited[newRow][newCol])\n        {\n            dfs(newRow, newCol, visited, rows, cols); // commit to this neighbor FULLY before trying the next\n        }\n    }\n}\n\nint main()\n{\n    int rows = 3, cols = 3;\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n\n    dfs(0, 0, visited, rows, cols);\n\n    return 0;\n}",
+      "output": "0,0 1,0 2,0 2,1 1,1 0,1 0,2 1,2 2,2 ",
+      "retypePractice": true,
+      "retypeId": "dsa-dfs-grid"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why the order looks so different from BFS",
+      "points": [
+        "From (0,0), DFS goes down to (1,0), then IMMEDIATELY commits fully to exploring from THERE, rather than checking (0,0)'s other neighbors first",
+        "It keeps diving — (1,0) → (2,0) → (2,1) → (1,1) → (0,1) → (0,2) → (1,2) → (2,2) — a long, deep chain before finally backtracking",
+        "Compare to BFS's grid trace: 0,0 1,0 0,1 2,0 1,1 0,2 2,1 1,2 2,2 — BFS spreads outward evenly; DFS commits to one long path first"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "4. BFS vs DFS, Side by Side"
+    },
+    {
+      "type": "table",
+      "headers": ["BFS", "DFS"],
+      "rows": [
+        ["Uses a queue (FIFO)", "Uses recursion or a stack (LIFO)"],
+        ["Explores level by level, outward evenly", "Commits to one path fully before backtracking"],
+        ["Naturally finds the SHORTEST path in an unweighted graph", "Doesn't naturally guarantee shortest path"],
+        ["Level Order Traversal (trees), general BFS (graphs)", "Preorder/Inorder/Postorder (trees), general DFS (graphs)"]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "This shortest-path property is a genuinely important practical reason to reach for BFS specifically: because it explores in expanding layers, the very first time it reaches a target node is guaranteed to be via the shortest possible number of steps, in an unweighted graph."
+    },
+    {
+      "type": "heading",
+      "text": "5. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Exploring a maze by committing to one corridor vs sending out scouts in every direction",
+      "text": "DFS is like walking into a maze and following one corridor as far as it goes before ever backtracking to try a different turn — you might end up very deep, very fast, down one path. BFS is like sending out scouts who explore one step outward in every direction simultaneously, guaranteeing that whichever scout reaches the exit first did so via the shortest possible route."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting the visited set on a graph or grid — exactly the same cycle danger as BFS applies to DFS.",
+        "Assuming DFS finds the shortest path — it doesn't guarantee this the way BFS does; DFS just guarantees every reachable node gets visited eventually.",
+        "Confusing which structure each uses — BFS needs an explicit queue; DFS is naturally recursive (using the call stack, recall Stack Memory), though an explicit stack works too.",
+        "Marking visited at the wrong point relative to recursion — in DFS, marking at the very start of the function (before exploring neighbors) is what prevents infinite recursion on a cycle."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "How does DFS relate to preorder/inorder/postorder traversal?",
+          "answer": "Those three orders are DFS applied specifically to trees; DFS itself is the general technique — commit to one path fully before backtracking — applicable to any graph-like structure."
+        },
+        {
+          "question": "What is the key structural difference between how BFS and DFS are typically implemented?",
+          "answer": "BFS uses a queue (FIFO) to process nodes in discovery order; DFS uses recursion or an explicit stack (LIFO) to commit fully to one path before backtracking."
+        },
+        {
+          "question": "Why is BFS, not DFS, typically used to find the shortest path in an unweighted graph?",
+          "answer": "BFS explores in expanding layers outward from the start, so the first time it reaches any node is guaranteed to be via the fewest possible steps — DFS makes no such guarantee, since it can reach a node via a long, roundabout path first."
+        }
+      ],
+      "thirtySecondAnswer": "DFS generalizes preorder, inorder, and postorder traversal beyond trees: commit fully to exploring one path before backtracking to try another, typically implemented via recursion (using the call stack) or an explicit stack, plus a visited set to handle cycles on graphs and grids. Compared side by side with BFS, DFS dives deep first while BFS spreads outward evenly level by level — which is exactly why BFS, not DFS, is used to find the shortest path in an unweighted graph: reaching a node for the first time via BFS's expanding layers guarantees that path used the fewest possible steps."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember DFS",
+      "text": "DFS = walk one maze corridor to its end before backtracking. BFS = send scouts outward evenly, first to arrive = shortest path. DFS: recursion/stack. BFS: queue."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-dfs-grid", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint dr[] = {1, -1, 0, 0};\nint dc[] = {0, 0, 1, -1};\n\nvoid dfs(int row, int col, vector<vector<bool>> &visited, int rows, int cols)\n{\n    visited[row][col] = true;\n    cout << row << \",\" << col << \" \";\n\n    for (int i = 0; i < 4; i++)\n    {\n        int newRow = row + dr[i];\n        int newCol = col + dc[i];\n\n        if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && !visited[newRow][newCol])\n        {\n            dfs(newRow, newCol, visited, rows, cols);\n        }\n    }\n}\n\nint main()\n{\n    int rows = 3, cols = 3;\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n\n    dfs(0, 0, visited, rows, cols);\n\n    return 0;\n}", "output": "0,0 1,0 2,0 2,1 1,1 0,1 0,2 1,2 2,2 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-dfs-grid",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint dr[] = {1, -1, 0, 0};\nint dc[] = {0, 0, 1, -1};\n\nvoid dfs(int row, int col, vector<vector<bool>> &visited, int rows, int cols)\n{\n    visited[row][col] = true;\n    cout << row << \",\" << col << \" \";\n\n    for (int i = 0; i < 4; i++)\n    {\n        int newRow = row + dr[i];\n        int newCol = col + dc[i];\n\n        if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && !visited[newRow][newCol])\n        {\n            dfs(newRow, newCol, visited, rows, cols);\n        }\n    }\n}\n\nint main()\n{\n    int rows = 3, cols = 3;\n    vector<vector<bool>> visited(rows, vector<bool>(cols, false));\n\n    dfs(0, 0, visited, rows, cols);\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-dfs-grid"]
+  }
+}
