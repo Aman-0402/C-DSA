@@ -1,0 +1,148 @@
+{
+  "id": "dsa-binary-search-trees",
+  "moduleId": "trees",
+  "title": "Binary Search Trees",
+  "description": "Finally revealing what set/map use internally: the BST ordering property, O(log n) search and insert, and why an unbalanced tree degrades to O(n).",
+  "objectives": [
+    "Understand the binary search tree ordering property",
+    "Implement search and insert on a BST",
+    "Understand why BST operations are O(log n) when balanced",
+    "Understand why an unbalanced BST degrades toward O(n)"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: set/map's O(log n) — Finally Revealed"
+    },
+    {
+      "type": "paragraph",
+      "text": "set and map were both described as \"typically implemented as a balanced binary search tree,\" without explaining what that structure actually looks like. Here it is."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Binary Search Tree?"
+    },
+    {
+      "type": "definition",
+      "term": "Binary search tree (BST)",
+      "text": "A binary search tree is a binary tree where, for every node, all values in its left subtree are smaller, and all values in its right subtree are larger."
+    },
+    {
+      "type": "heading",
+      "text": "3. The BST Property, Visualized"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "//         8\n//        / \\\n//       3   10\n//      / \\    \\\n//     1   6    14\n\n// At every single node: everything to the LEFT is smaller, everything to the RIGHT is bigger"
+    },
+    {
+      "type": "note",
+      "text": "This holds at every node, not just the root — 3's left subtree (1) is smaller than 3, and 3's right subtree (6) is bigger than 3, recursively, all the way down. This ordering is what makes binary search (recall Binary Search) possible on a tree shape instead of a flat array."
+    },
+    {
+      "type": "heading",
+      "text": "4. Searching a BST"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "bool search(TreeNode *node, int target)\n{\n    if (node == nullptr) return false; // not found\n    if (node->data == target) return true; // found it\n\n    if (target < node->data)\n    {\n        return search(node->left, target); // go LEFT — smaller values live there\n    }\n    return search(node->right, target); // go RIGHT — bigger values live there\n}"
+    },
+    {
+      "type": "note",
+      "text": "This is Binary Search's exact halving logic — \"too small, discard the right half; too big, discard the left half\" — reimagined on a tree instead of an array index range."
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example: Insert and Search"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nTreeNode *insert(TreeNode *node, int value)\n{\n    if (node == nullptr) // found the correct empty spot\n    {\n        return new TreeNode{value, nullptr, nullptr};\n    }\n\n    if (value < node->data)\n    {\n        node->left = insert(node->left, value);\n    }\n    else\n    {\n        node->right = insert(node->right, value);\n    }\n    return node;\n}\n\nbool search(TreeNode *node, int target)\n{\n    if (node == nullptr) return false;\n    if (node->data == target) return true;\n    if (target < node->data) return search(node->left, target);\n    return search(node->right, target);\n}\n\nint main()\n{\n    TreeNode *root = nullptr;\n    root = insert(root, 8);\n    root = insert(root, 3);\n    root = insert(root, 10);\n    root = insert(root, 6);\n\n    cout << search(root, 6) << endl;\n    cout << search(root, 99) << endl;\n\n    return 0;\n}",
+      "output": "1\n0",
+      "retypePractice": true,
+      "retypeId": "dsa-binary-search-trees-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing the inserts",
+      "points": [
+        "insert(8): root is empty → 8 becomes root",
+        "insert(3): 3 < 8 → go left → empty → 3 becomes root's left child",
+        "insert(10): 10 is NOT < 8 → go right → empty → 10 becomes root's right child",
+        "insert(6): 6 < 8 → go left to 3. 6 is NOT < 3 → go right → empty → 6 becomes 3's right child",
+        "Final shape: 8 with left=3 (right child 6) and right=10"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Why O(log n) — And Why It Can Degrade"
+    },
+    {
+      "type": "warning",
+      "text": "Recall Binary Trees' \"balanced\" definition. If a BST stays balanced, search and insert are O(log n), exactly like Binary Search's halving argument and Heap's height reasoning. But nothing in the basic insert() logic above actively keeps the tree balanced — inserting values in already-sorted order (1, 2, 3, 4, 5...) produces a tree that's really just a straight line, degrading every operation to O(n), no better than a linked list. Self-balancing variants (which set/map actually use internally) solve this, but are beyond our current scope."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A guessing game where every guess halves the remaining range",
+      "text": "Recall Binary Search's dictionary analogy. A BST is that same halving idea, but as a physical structure: at 8, guessing a number smaller sends you left toward smaller values, guessing bigger sends you right — repeating that at every node you visit, exactly like repeatedly guessing in a number-guessing game that always tells you 'too high' or 'too low.'"
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Assuming every BST automatically gives O(log n) — only a balanced BST does; an unbalanced one degrades toward O(n).",
+        "Forgetting insert() must reassign node->left / node->right with the recursive call's result — node->left = insert(node->left, value); is what actually attaches the new node.",
+        "Getting the comparison direction backward — smaller values always go left, larger (or equal, by convention) values always go right.",
+        "Confusing a BST with a heap — a heap only guarantees parent vs children; a BST guarantees an ordering across the ENTIRE left and right subtrees, which is what enables searching by value."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What is the binary search tree property?",
+          "answer": "For every node, all values in its left subtree are smaller than the node, and all values in its right subtree are larger."
+        },
+        {
+          "question": "How does searching a BST work?",
+          "answer": "Compare the target to the current node; if smaller, recurse left; if larger, recurse right; if equal, it's found — stopping at nullptr means not found."
+        },
+        {
+          "question": "What is the time complexity of BST search and insert, and when can it degrade?",
+          "answer": "O(log n) when the tree is balanced, but it can degrade toward O(n) if the tree becomes unbalanced — for example, inserting already-sorted values produces a tree shaped like a straight line."
+        }
+      ],
+      "thirtySecondAnswer": "A binary search tree maintains an ordering property: for every node, its entire left subtree holds smaller values and its entire right subtree holds larger values. This makes both search and insert follow the exact halving logic of Binary Search — compare against the current node and recurse left or right accordingly — giving O(log n) performance when the tree stays balanced. However, nothing in a basic BST automatically keeps it balanced; inserting values in sorted order produces a tree that's effectively a straight line, degrading every operation to O(n). This is exactly the structure — specifically a self-balancing variant — that set and map use internally."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Binary Search Trees",
+      "text": "BST = a number-guessing game as a tree. Smaller goes left, bigger goes right, at every node. Balanced = O(log n). Sorted-order inserts = a straight line = O(n)."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-binary-search-trees-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nTreeNode *insert(TreeNode *node, int value)\n{\n    if (node == nullptr)\n    {\n        return new TreeNode{value, nullptr, nullptr};\n    }\n\n    if (value < node->data)\n    {\n        node->left = insert(node->left, value);\n    }\n    else\n    {\n        node->right = insert(node->right, value);\n    }\n    return node;\n}\n\nbool search(TreeNode *node, int target)\n{\n    if (node == nullptr) return false;\n    if (node->data == target) return true;\n    if (target < node->data) return search(node->left, target);\n    return search(node->right, target);\n}\n\nint main()\n{\n    TreeNode *root = nullptr;\n    root = insert(root, 8);\n    root = insert(root, 3);\n    root = insert(root, 10);\n    root = insert(root, 6);\n\n    cout << search(root, 6) << endl;\n    cout << search(root, 99) << endl;\n\n    return 0;\n}", "output": "1\n0" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-binary-search-trees-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct TreeNode\n{\n    int data;\n    TreeNode *left;\n    TreeNode *right;\n};\n\nTreeNode *insert(TreeNode *node, int value)\n{\n    if (node == nullptr)\n    {\n        return new TreeNode{value, nullptr, nullptr};\n    }\n\n    if (value < node->data)\n    {\n        node->left = insert(node->left, value);\n    }\n    else\n    {\n        node->right = insert(node->right, value);\n    }\n    return node;\n}\n\nbool search(TreeNode *node, int target)\n{\n    if (node == nullptr) return false;\n    if (node->data == target) return true;\n    if (target < node->data) return search(node->left, target);\n    return search(node->right, target);\n}\n\nint main()\n{\n    TreeNode *root = nullptr;\n    root = insert(root, 8);\n    root = insert(root, 3);\n    root = insert(root, 10);\n    root = insert(root, 6);\n\n    cout << search(root, 6) << endl;\n    cout << search(root, 99) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-binary-search-trees-basic"]
+  }
+}
