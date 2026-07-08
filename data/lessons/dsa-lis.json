@@ -1,0 +1,144 @@
+{
+  "id": "dsa-lis",
+  "moduleId": "greedy-dp",
+  "title": "Longest Increasing Subsequence",
+  "description": "Back to 1D DP, but with a twist: dp[i] depends on checking EVERY earlier index, not just one or two fixed ones.",
+  "objectives": [
+    "Solve the Longest Increasing Subsequence (LIS) problem using 1D dynamic programming",
+    "Define a DP state as 'best ending exactly here'",
+    "Understand why LIS needs an inner loop over all earlier indices",
+    "Recognize the O(n²) DP approach to LIS"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Back to One Index, New Twist"
+    },
+    {
+      "type": "paragraph",
+      "text": "House Robber's dp[i] only ever looked back at dp[i-1] and dp[i-2] — two fixed neighbors. LIS is 1D again (one index, one array), but dp[i] must consider EVERY earlier index j from 0 to i-1, not just the last one or two."
+    },
+    {
+      "type": "heading",
+      "text": "2. The Problem"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Array: {10, 9, 2, 5, 3, 7, 101, 18}\n// Find the length of the LONGEST strictly increasing subsequence\n// (recall Longest Common Subsequence: elements don't need to be contiguous, order must be preserved)"
+    },
+    {
+      "type": "heading",
+      "text": "3. Defining the State"
+    },
+    {
+      "type": "definition",
+      "term": "dp[i] for LIS",
+      "text": "dp[i] represents the length of the longest increasing subsequence that ENDS exactly at index i (using arr[i] as its last element)."
+    },
+    {
+      "type": "note",
+      "text": "This 'must end here' framing is the key idea — it's different from House Robber's dp[i], which was the best answer using houses 0 through i in general, not one required to end at house i specifically."
+    },
+    {
+      "type": "heading",
+      "text": "4. The Recurrence"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// For every earlier index j < i where arr[j] < arr[i]:\n// arr[i] could EXTEND that subsequence, giving length dp[j] + 1\n// dp[i] takes the BEST such extension found across all valid j\n\n// dp[i] = max( dp[j] + 1 )  for every j < i where arr[j] < arr[i]\n// dp[i] = 1  if no such j exists (arr[i] starts its own subsequence)"
+    },
+    {
+      "type": "heading",
+      "text": "5. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint lengthOfLIS(vector<int> &arr)\n{\n    int n = arr.size();\n    vector<int> dp(n, 1); // every element is at least a subsequence of length 1 by itself\n\n    for (int i = 0; i < n; i++)\n    {\n        for (int j = 0; j < i; j++)\n        {\n            if (arr[j] < arr[i])\n            {\n                dp[i] = max(dp[i], dp[j] + 1);\n            }\n        }\n    }\n\n    int best = 0;\n    for (int i = 0; i < n; i++)\n    {\n        best = max(best, dp[i]);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> arr = {10, 9, 2, 5, 3, 7, 101, 18};\n\n    cout << lengthOfLIS(arr) << endl;\n\n    return 0;\n}",
+      "output": "4",
+      "retypePractice": true,
+      "retypeId": "dsa-lis-01"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing the dp array",
+      "points": [
+        "dp = [1, 1, 1, 1, 1, 1, 1, 1] to start — every element alone is length 1",
+        "dp[3] (value 5): only 2 (index 2) is smaller and earlier -> dp[3] = dp[2]+1 = 2",
+        "dp[5] (value 7): 2, 5, and 3 are smaller and earlier; best is dp[3]=2 or dp[4]=2, so dp[5] = 3",
+        "dp[6] (value 101): every earlier value is smaller; best earlier dp is dp[5]=3, so dp[6] = 4",
+        "The overall best across the whole dp array is 4 — e.g. the subsequence 2, 3, 7, 101 or 2, 5, 7, 101"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Why the Double Loop"
+    },
+    {
+      "type": "note",
+      "text": "This is O(n²): for each index i, the inner loop checks every earlier index j. Unlike House Robber's fixed dp[i-1]/dp[i-2] lookback, LIS's best extension could come from ANY earlier index — there's no way to know which one without checking them all (a faster O(n log n) approach exists using binary search, but the O(n²) DP is the foundational version to master first)."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Finding the longest stretch of years with rising sales, skipping bad years",
+      "text": "Looking at a company's yearly sales figures and finding the longest run of years (not necessarily consecutive calendar years) where each chosen year's sales beat the previous chosen year's is exactly Longest Increasing Subsequence — at each year, the best streak ending there depends on the best streak ending at any earlier, lower-selling year."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to initialize every dp[i] to 1 — every single element is trivially an increasing subsequence of length 1 on its own.",
+        "Returning dp[n-1] instead of the maximum across the WHOLE dp array — unlike House Robber, the longest subsequence doesn't necessarily end at the last index.",
+        "Using <= instead of < when comparing arr[j] and arr[i] — LIS here is strictly increasing, so equal values don't extend the subsequence.",
+        "Confusing dp[i] = 'best subsequence using indices 0..i' with the correct meaning 'best subsequence ending exactly at index i' — mixing these up breaks the recurrence."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does dp[i] represent in the LIS problem?",
+          "answer": "The length of the longest increasing subsequence that ends exactly at index i, using arr[i] as its last element."
+        },
+        {
+          "question": "What is the LIS recurrence?",
+          "answer": "dp[i] = max(dp[j] + 1) for every j < i where arr[j] < arr[i]; dp[i] = 1 if no such j exists."
+        },
+        {
+          "question": "Why does the final answer require scanning the whole dp array instead of just returning dp[n-1]?",
+          "answer": "Because the longest increasing subsequence doesn't have to end at the last element — the maximum could occur at any index, so every dp[i] must be checked."
+        }
+      ],
+      "thirtySecondAnswer": "Longest Increasing Subsequence uses 1D DP with dp[i] defined as the length of the longest increasing subsequence ending exactly at index i. For each i, an inner loop checks every earlier index j: if arr[j] < arr[i], arr[i] could extend that subsequence, giving a candidate length of dp[j] + 1, and dp[i] takes the best such candidate (or 1, if no smaller earlier element exists). This double loop makes the approach O(n²). Unlike House Robber, the final answer isn't simply the last entry — since the longest subsequence can end anywhere, the answer is the maximum value found across the entire dp array."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember LIS",
+      "text": "LIS: dp[i] = best subsequence ENDING at i. Check every earlier smaller element, extend the best one, +1. Answer = max of the whole dp array, not just the last cell."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-lis-01", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint lengthOfLIS(vector<int> &arr)\n{\n    int n = arr.size();\n    vector<int> dp(n, 1);\n\n    for (int i = 0; i < n; i++)\n    {\n        for (int j = 0; j < i; j++)\n        {\n            if (arr[j] < arr[i])\n            {\n                dp[i] = max(dp[i], dp[j] + 1);\n            }\n        }\n    }\n\n    int best = 0;\n    for (int i = 0; i < n; i++)\n    {\n        best = max(best, dp[i]);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> arr = {10, 9, 2, 5, 3, 7, 101, 18};\n\n    cout << lengthOfLIS(arr) << endl;\n\n    return 0;\n}", "output": "4" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-lis-01",
+      "reference": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nint lengthOfLIS(vector<int> &arr)\n{\n    int n = arr.size();\n    vector<int> dp(n, 1);\n\n    for (int i = 0; i < n; i++)\n    {\n        for (int j = 0; j < i; j++)\n        {\n            if (arr[j] < arr[i])\n            {\n                dp[i] = max(dp[i], dp[j] + 1);\n            }\n        }\n    }\n\n    int best = 0;\n    for (int i = 0; i < n; i++)\n    {\n        best = max(best, dp[i]);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> arr = {10, 9, 2, 5, 3, 7, 101, 18};\n\n    cout << lengthOfLIS(arr) << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-lis-01"]
+  }
+}
