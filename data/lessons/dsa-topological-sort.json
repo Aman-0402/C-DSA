@@ -195,6 +195,42 @@
           "spaceComplexity": "O(vertices + edges) for the adjacency list and queue"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-802",
+      "number": 802,
+      "title": "Find Eventual Safe States",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/find-eventual-safe-states/",
+      "problemStatement": "Given a directed graph, a node is 'safe' if every path starting there eventually reaches a terminal node (no path from it loops forever). Return all safe nodes in ascending order.",
+      "examples": [
+        { "input": "graph = [[1,2],[2,3],[5],[0],[5],[],[]]", "output": "[2,4,5,6]" }
+      ],
+      "constraints": ["1 <= graph.length <= 10^4"],
+      "hints": [
+        "A node is safe exactly when it is NOT part of any cycle and does NOT lead into one — this is LC 207's cycle detection, generalized to report which specific nodes are safe.",
+        "Use 3-state coloring: 0 = unvisited, 1 = visiting (on the current DFS path), 2 = confirmed safe.",
+        "A node is safe only if every one of its neighbors is safe; hitting a 'visiting' (color 1) neighbor means a cycle, so the current node is unsafe."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each node, run a fresh DFS with a local visited-on-path set to check whether ANY path from it revisits a node currently on that path.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool isSafe(int node, vector<vector<int>>& graph, vector<bool>& onPath, vector<int>& memo)\n{\n    if (memo[node] != -1) return memo[node] == 1;\n    if (onPath[node]) return false;\n\n    onPath[node] = true;\n    bool safe = true;\n    for (int next : graph[node])\n        if (!isSafe(next, graph, onPath, memo)) { safe = false; break; }\n    onPath[node] = false;\n\n    memo[node] = safe ? 1 : 0;\n    return safe;\n}\n\nvector<int> eventualSafeNodes(vector<vector<int>>& graph)\n{\n    int n = graph.size();\n    vector<int> result;\n\n    for (int node = 0; node < n; node++)\n    {\n        vector<bool> onPath(n, false);\n        vector<int> memo(n, -1);\n        if (isSafe(node, graph, onPath, memo)) result.push_back(node);\n    }\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> graph = {{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}};\n    vector<int> result = eventualSafeNodes(graph);\n    for (int n : result) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "2 4 5 6 ",
+          "timeComplexity": "O(vertices * (vertices + edges)) — a fresh DFS per node",
+          "spaceComplexity": "O(vertices) per call for onPath and memo"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Single pass with 3-state coloring shared across all DFS calls — each node's safety is computed once and reused.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool dfs(int node, vector<vector<int>>& graph, vector<int>& color)\n{\n    if (color[node] != 0) return color[node] == 2;\n\n    color[node] = 1; // visiting\n    for (int next : graph[node])\n        if (!dfs(next, graph, color)) return false;\n\n    color[node] = 2; // confirmed safe\n    return true;\n}\n\nvector<int> eventualSafeNodes(vector<vector<int>>& graph)\n{\n    int n = graph.size();\n    vector<int> color(n, 0);\n    vector<int> result;\n\n    for (int node = 0; node < n; node++)\n        if (dfs(node, graph, color)) result.push_back(node);\n\n    return result;\n}\n\nint main()\n{\n    vector<vector<int>> graph = {{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}};\n    vector<int> result = eventualSafeNodes(graph);\n    for (int n : result) cout << n << \" \";\n\n    return 0;\n}",
+          "output": "2 4 5 6 ",
+          "timeComplexity": "O(vertices + edges) — each node's color is finalized once",
+          "spaceComplexity": "O(vertices) for the color array plus recursion stack"
+        }
+      ]
     }
   ],
   "codeExamples": [
