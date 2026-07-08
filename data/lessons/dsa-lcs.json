@@ -1,0 +1,148 @@
+{
+  "id": "dsa-lcs",
+  "moduleId": "greedy-dp",
+  "title": "Longest Common Subsequence",
+  "description": "2D DP applied to two STRINGS instead of a grid or an item list: finding the longest subsequence common to both.",
+  "objectives": [
+    "Solve the Longest Common Subsequence (LCS) problem using 2D dynamic programming",
+    "Define a DP state over two string positions",
+    "Derive the match / no-match recurrence",
+    "Distinguish a subsequence from a substring"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: Two Indices, Now Both Into Strings"
+    },
+    {
+      "type": "paragraph",
+      "text": "Knapsack's two indices were an item and a capacity. LCS's two indices are positions in two different strings — the two-index 2D DP pattern keeps reappearing with a new meaning each time."
+    },
+    {
+      "type": "heading",
+      "text": "2. Subsequence, Not Substring"
+    },
+    {
+      "type": "definition",
+      "term": "Subsequence",
+      "text": "A subsequence keeps characters in their original relative order but does NOT require them to be contiguous — unlike a substring, which must be an unbroken run of characters (recall Strings)."
+    },
+    {
+      "type": "note",
+      "text": "\"ACE\" is a subsequence of \"ABCDE\" (skip B and D) but is NOT a substring of it, since those characters aren't contiguous in the original string."
+    },
+    {
+      "type": "heading",
+      "text": "3. The Problem"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// Given two strings: \"ABCDE\" and \"ACE\"\n// Find the length of their LONGEST COMMON SUBSEQUENCE"
+    },
+    {
+      "type": "heading",
+      "text": "4. Defining the State"
+    },
+    {
+      "type": "definition",
+      "term": "dp[i][j] for LCS",
+      "text": "dp[i][j] represents the length of the longest common subsequence between the first i characters of string s1 and the first j characters of string s2."
+    },
+    {
+      "type": "heading",
+      "text": "5. The Recurrence"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "// If the CURRENT characters match, they can both extend a shared subsequence:\n// s1[i-1] == s2[j-1]  ->  dp[i][j] = dp[i-1][j-1] + 1\n\n// If they DON'T match, the best is whichever of the two smaller subproblems is longer:\n// s1[i-1] != s2[j-1]  ->  dp[i][j] = max(dp[i-1][j], dp[i][j-1])"
+    },
+    {
+      "type": "note",
+      "text": "A matching character always extends a diagonal-neighbor answer by exactly one. A non-match never adds length — it just carries forward the best of dropping one character from either string."
+    },
+    {
+      "type": "heading",
+      "text": "6. Full Example"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint longestCommonSubsequence(string s1, string s2)\n{\n    int n = s1.size();\n    int m = s2.size();\n    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));\n\n    for (int i = 1; i <= n; i++)\n    {\n        for (int j = 1; j <= m; j++)\n        {\n            if (s1[i - 1] == s2[j - 1])\n            {\n                dp[i][j] = dp[i - 1][j - 1] + 1;\n            }\n            else\n            {\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n\n    return dp[n][m];\n}\n\nint main()\n{\n    cout << longestCommonSubsequence(\"ABCDE\", \"ACE\") << endl;\n\n    return 0;\n}",
+      "output": "3",
+      "retypePractice": true,
+      "retypeId": "dsa-lcs-01"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Why the answer is 3",
+      "points": [
+        "A matches A: dp[1][1] = dp[0][0] + 1 = 1",
+        "C matches C: continuing along the diagonal, dp[3][2] = dp[2][1] + 1 = 1 + 1 = 2",
+        "E matches E: dp[5][3] = dp[4][2] + 1 = 2 + 1 = 3",
+        "The shared subsequence is literally \"ACE\" — dp[5][3] = 3 confirms its length"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "Diffing two documents to see what content survived between edits",
+      "text": "A document diff tool comparing an old and new version of a file finds the longest sequence of lines common to both, in the same order, even if lines were inserted or deleted in between — that shared backbone is exactly a Longest Common Subsequence, letting the tool highlight only the lines that actually changed."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Confusing subsequence with substring — LCS does NOT require the matching characters to be contiguous in either string.",
+        "Writing dp[i][j] = dp[i-1][j-1] + 1 unconditionally, without checking s1[i-1] == s2[j-1] first.",
+        "Forgetting the max(dp[i-1][j], dp[i][j-1]) fallback on a non-match — skipping this loses the best answer found so far along either string.",
+        "Off-by-one errors between the 1-indexed dp table and the 0-indexed strings — s1[i-1] and s2[j-1] are the characters dp[i][j] is currently comparing, not s1[i] and s2[j]."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What does dp[i][j] represent in the LCS problem?",
+          "answer": "The length of the longest common subsequence between the first i characters of s1 and the first j characters of s2."
+        },
+        {
+          "question": "What is the LCS recurrence?",
+          "answer": "If s1[i-1] == s2[j-1], dp[i][j] = dp[i-1][j-1] + 1. Otherwise, dp[i][j] = max(dp[i-1][j], dp[i][j-1])."
+        },
+        {
+          "question": "What is the difference between a subsequence and a substring?",
+          "answer": "A subsequence preserves relative order but doesn't need to be contiguous; a substring must be an unbroken, contiguous run of characters."
+        }
+      ],
+      "thirtySecondAnswer": "Longest Common Subsequence applies the two-index 2D DP pattern to a pair of strings: dp[i][j] is the length of the longest common subsequence between the first i characters of s1 and the first j characters of s2. When the current characters match, dp[i][j] = dp[i-1][j-1] + 1, extending a shared subsequence diagonally. When they don't match, dp[i][j] = max(dp[i-1][j], dp[i][j-1]), carrying forward the best result found by dropping a character from either string. Unlike a substring, a subsequence doesn't need contiguous characters — only preserved relative order — which is what makes this DP formulation necessary rather than a simple substring scan."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember LCS",
+      "text": "LCS: characters match → go diagonal, +1. Characters don't match → take the best of up or left. Subsequence = order kept, gaps allowed."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-lcs-01", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint longestCommonSubsequence(string s1, string s2)\n{\n    int n = s1.size();\n    int m = s2.size();\n    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));\n\n    for (int i = 1; i <= n; i++)\n    {\n        for (int j = 1; j <= m; j++)\n        {\n            if (s1[i - 1] == s2[j - 1])\n            {\n                dp[i][j] = dp[i - 1][j - 1] + 1;\n            }\n            else\n            {\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n\n    return dp[n][m];\n}\n\nint main()\n{\n    cout << longestCommonSubsequence(\"ABCDE\", \"ACE\") << endl;\n\n    return 0;\n}", "output": "3" }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-lcs-01",
+      "reference": "#include <iostream>\n#include <vector>\n#include <string>\n\nusing namespace std;\n\nint longestCommonSubsequence(string s1, string s2)\n{\n    int n = s1.size();\n    int m = s2.size();\n    vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));\n\n    for (int i = 1; i <= n; i++)\n    {\n        for (int j = 1; j <= m; j++)\n        {\n            if (s1[i - 1] == s2[j - 1])\n            {\n                dp[i][j] = dp[i - 1][j - 1] + 1;\n            }\n            else\n            {\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n    }\n\n    return dp[n][m];\n}\n\nint main()\n{\n    cout << longestCommonSubsequence(\"ABCDE\", \"ACE\") << endl;\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-lcs-01"]
+  }
+}

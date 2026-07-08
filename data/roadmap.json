@@ -261,7 +261,8 @@
         { "id": "dsa-tabulation", "title": "Tabulation", "lesson": "dsa-tabulation" },
         { "id": "dsa-1d-dp", "title": "1D DP", "lesson": "dsa-1d-dp" },
         { "id": "dsa-2d-dp", "title": "2D DP", "lesson": "dsa-2d-dp" },
-        { "id": "dsa-knapsack", "title": "Knapsack", "lesson": "dsa-knapsack" }
+        { "id": "dsa-knapsack", "title": "Knapsack", "lesson": "dsa-knapsack" },
+        { "id": "dsa-lcs", "title": "Longest Common Subsequence", "lesson": "dsa-lcs" }
       ]
     }
   ]
