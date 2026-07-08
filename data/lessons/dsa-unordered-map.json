@@ -262,6 +262,43 @@
           "spaceComplexity": "O(k)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-383",
+      "number": 383,
+      "title": "Ransom Note",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/ransom-note/",
+      "problemStatement": "Given strings ransomNote and magazine, return true if ransomNote can be constructed using the letters in magazine, each letter used at most as many times as it appears in magazine.",
+      "examples": [
+        { "input": "ransomNote = \"a\", magazine = \"b\"", "output": "false" },
+        { "input": "ransomNote = \"aa\", magazine = \"aab\"", "output": "true" }
+      ],
+      "constraints": ["1 <= ransomNote.length, magazine.length <= 10^5"],
+      "hints": [
+        "This is a 'do I have ENOUGH of each letter' question — a frequency tally of magazine answers it directly.",
+        "Tally every letter's count in magazine first, using unordered_map<char, int>.",
+        "Then walk ransomNote, decrementing the count for each letter used — if a needed letter's count ever hits 0 (or was never available), it's impossible."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "For each character in ransomNote, count its occurrences fresh in both strings and compare.",
+          "code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nusing namespace std;\n\nbool canConstruct(string ransomNote, string magazine)\n{\n    for (char c : ransomNote)\n    {\n        int needed = count(ransomNote.begin(), ransomNote.end(), c);\n        int available = count(magazine.begin(), magazine.end(), c);\n        if (available < needed) return false;\n    }\n    return true;\n}\n\nint main()\n{\n    cout << (canConstruct(\"aa\", \"aab\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n × m)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "Tally magazine's letters once with unordered_map, then decrement while scanning ransomNote, failing fast if any letter runs out.",
+          "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nusing namespace std;\n\nbool canConstruct(string ransomNote, string magazine)\n{\n    unordered_map<char, int> counts;\n    for (char c : magazine) counts[c]++;\n\n    for (char c : ransomNote)\n    {\n        if (counts[c] <= 0) return false;\n        counts[c]--;\n    }\n\n    return true;\n}\n\nint main()\n{\n    cout << (canConstruct(\"aa\", \"aab\") ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n + m)",
+          "spaceComplexity": "O(k) for the count map"
+        }
+      ]
     }
   ],
   "codeExamples": [
