@@ -99,6 +99,46 @@
       "type": "memoryTrick",
       "title": "Trick to Remember unordered_set (DSA)",
       "text": "Contains Duplicate = a bouncer's quick-check list, flag the repeat instantly. Longest Consecutive = only start counting from a number with no left-neighbor — the true start of its run."
+    },
+    {
+      "type": "heading",
+      "text": "5. LeetCode: unordered_set in Practice"
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-217-unordered-set",
+      "number": 217,
+      "title": "Contains Duplicate",
+      "difficulty": "Easy",
+      "link": "https://leetcode.com/problems/contains-duplicate/",
+      "problemStatement": "Given an integer array nums, return true if any value appears at least twice.",
+      "examples": [
+        { "input": "nums = [1,2,3,1]", "output": "true" }
+      ],
+      "constraints": ["1 <= nums.length <= 10^5"],
+      "hints": [
+        "unordered_set's count() gives an O(1) average 'have I seen this' check — no index or extra value needs to be remembered, just presence.",
+        "Insert each value as it's scanned; check BEFORE inserting.",
+        "The moment a value is already in the set, that's the duplicate."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Nested loops checking every pair.",
+          "code": "#include <iostream>\n#include <vector>\n\nusing namespace std;\n\nbool containsDuplicate(vector<int> &nums)\n{\n    for (int i = 0; i < nums.size(); i++)\n        for (int j = i + 1; j < nums.size(); j++)\n            if (nums[i] == nums[j]) return true;\n    return false;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 1};\n\n    cout << (containsDuplicate(nums) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n²)",
+          "spaceComplexity": "O(1)"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "unordered_set with a check-before-insert pattern.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nbool containsDuplicate(vector<int> &nums)\n{\n    unordered_set<int> seen;\n\n    for (int n : nums)\n    {\n        if (seen.count(n)) return true;\n        seen.insert(n);\n    }\n    return false;\n}\n\nint main()\n{\n    vector<int> nums = {1, 2, 3, 1};\n\n    cout << (containsDuplicate(nums) ? \"true\" : \"false\") << endl;\n\n    return 0;\n}",
+          "output": "true",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n)"
+        }
+      ]
     }
   ],
   "codeExamples": [
