@@ -191,6 +191,13 @@
         { "id": "dsa-recursion-in-dsa", "title": "Recursion in DSA", "lesson": "dsa-recursion-in-dsa" },
         { "id": "dsa-backtracking", "title": "Backtracking", "lesson": "dsa-backtracking" }
       ]
+    },
+    {
+      "id": "linked-list",
+      "title": "Linked List",
+      "topics": [
+        { "id": "dsa-linked-list", "title": "Linked List", "lesson": "dsa-linked-list" }
+      ]
     }
   ]
 }

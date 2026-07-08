@@ -1,0 +1,147 @@
+{
+  "id": "dsa-linked-list",
+  "moduleId": "linked-list",
+  "title": "Linked List",
+  "description": "Building the real structure behind STL's list by hand: a Node struct, pointers connecting them, and manual traversal.",
+  "objectives": [
+    "Define a Node struct with data and a next pointer",
+    "Build a linked list by hand using new",
+    "Traverse a linked list using a pointer",
+    "Understand what list was actually doing internally all along"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "1. Recap: STL Gave Us list — Now Build the Real Thing"
+    },
+    {
+      "type": "paragraph",
+      "text": "list handed us push_front(), push_back(), and iterators, without showing what's actually happening underneath. Now, using Pointers, new, and a simple struct, we build the real structure ourselves."
+    },
+    {
+      "type": "heading",
+      "text": "2. What is a Linked List, Structurally?"
+    },
+    {
+      "type": "definition",
+      "term": "Linked list",
+      "text": "A linked list is a sequence of nodes, each storing a value and a pointer to the next node, chained together without needing contiguous memory the way an array does."
+    },
+    {
+      "type": "heading",
+      "text": "3. Defining a Node"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "struct Node\n{\n    int data;\n    Node *next; // a pointer to the NEXT node in the chain\n};"
+    },
+    {
+      "type": "note",
+      "text": "struct works like class from Classes and Objects, but with public members by default (recall the class-vs-struct default from Access Specifiers). Node *next is the crucial piece: each node holds the address of the next one, exactly the pointer mechanics from Pointers."
+    },
+    {
+      "type": "heading",
+      "text": "4. Building a Simple Linked List by Hand"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "code": "Node *head = new Node{1, nullptr}; // first node, created on the heap (recall new)\nhead->next = new Node{2, nullptr}; // second node, linked from the first\nhead->next->next = new Node{3, nullptr}; // third node, linked from the second"
+    },
+    {
+      "type": "note",
+      "text": "head->next (recall -> from this Pointer, accessing a member through a pointer) is what actually forms the chain. Each new Node lives independently on the heap (recall Heap Memory) — nothing requires them to sit next to each other in memory, unlike an array."
+    },
+    {
+      "type": "heading",
+      "text": "5. Traversing a Linked List"
+    },
+    {
+      "type": "code",
+      "lang": "cpp",
+      "filename": "main.cpp",
+      "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nint main()\n{\n    Node *head = new Node{1, nullptr};\n    head->next = new Node{2, nullptr};\n    head->next->next = new Node{3, nullptr};\n\n    Node *current = head;\n    while (current != nullptr)\n    {\n        cout << current->data << \" \";\n        current = current->next; // move to the next node\n    }\n\n    return 0;\n}",
+      "output": "1 2 3 ",
+      "retypePractice": true,
+      "retypeId": "dsa-linked-list-basic"
+    },
+    {
+      "type": "keyPoints",
+      "title": "Tracing it",
+      "points": [
+        "current starts at head (the node holding 1)",
+        "Print current->data, then move: current = current->next",
+        "This repeats until current becomes nullptr — the natural 'end of the list' marker, since the last node's next was never set to point anywhere",
+        "This while (current != nullptr) traversal is precisely what list's begin()/end() iterators do automatically underneath"
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "6. Why This Matters"
+    },
+    {
+      "type": "note",
+      "text": "Recall list's trade-offs from earlier: no [] indexing, but cheap insertion/removal anywhere, because relinking a couple of next pointers is all that's needed — no shifting like an array. Now that trade-off is visible directly: inserting a node just means creating one new Node and rewiring two next pointers, never touching the other nodes at all."
+    },
+    {
+      "type": "heading",
+      "text": "7. Real-Life Example"
+    },
+    {
+      "type": "realLifeExample",
+      "title": "A scavenger hunt, one clue per box",
+      "text": "Recall list's treasure hunt analogy — this is that treasure hunt, made literal. Each box (Node) holds a prize (data) and a note telling you which box to open next (next). The boxes don't need to be sitting next to each other on a shelf; a note can point anywhere. Reaching a box with no further note (nullptr) means the hunt is over."
+    },
+    {
+      "type": "commonMistakes",
+      "title": "Common Beginner Mistakes",
+      "items": [
+        "Forgetting to initialize a new node's next to nullptr — an uninitialized pointer is dangerous to dereference later, exactly the garbage-value risk from Variables applied to pointers.",
+        "Losing the head pointer while traversing — always traverse with a separate variable (like current), never overwrite head itself, or the list becomes unreachable.",
+        "Forgetting the loop-termination condition current != nullptr — without it, traversal runs past the last real node into undefined memory.",
+        "Confusing . and -> — a Node object uses ., but current, being a pointer to a Node, must use -> to reach its members."
+      ]
+    },
+    {
+      "type": "interviewQuestions",
+      "title": "Interview Questions",
+      "questions": [
+        {
+          "question": "What are the two pieces of data a linked list node typically holds?",
+          "answer": "The actual value (data) and a pointer to the next node in the chain (next)."
+        },
+        {
+          "question": "Why doesn't a linked list need contiguous memory, unlike an array?",
+          "answer": "Because each node is independently allocated (commonly on the heap with new) and connected purely through pointers, rather than relying on physical adjacency in memory."
+        },
+        {
+          "question": "How do you know when you've reached the end of a linked list while traversing it?",
+          "answer": "The current pointer becomes nullptr, since the last node's next was never set to point to another node."
+        }
+      ],
+      "thirtySecondAnswer": "A linked list is built from Node structs, each holding a value and a next pointer to the following node, connected with new and traversed with ->, exactly the pointer mechanics from earlier lessons. Unlike an array, nodes don't need to be stored contiguously — each is independently allocated, commonly on the heap. Traversal walks a separate pointer (current) from the head, printing each node's data and following next, until reaching nullptr, the natural end-of-list marker. This is exactly what STL's list container was doing automatically underneath its begin()/end() iterators all along, and it's what makes insertion/removal cheap: just rewiring a couple of next pointers, never shifting other nodes."
+    },
+    {
+      "type": "memoryTrick",
+      "title": "Trick to Remember Linked List",
+      "text": "Node = a box with a prize (data) and a note pointing to the next box (next). nullptr = the hunt ends here. -> reaches through a pointer to its box's contents."
+    }
+  ],
+  "codeExamples": [
+    { "id": "dsa-linked-list-basic", "lang": "cpp", "filename": "main.cpp", "code": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nint main()\n{\n    Node *head = new Node{1, nullptr};\n    head->next = new Node{2, nullptr};\n    head->next->next = new Node{3, nullptr};\n\n    Node *current = head;\n    while (current != nullptr)\n    {\n        cout << current->data << \" \";\n        current = current->next;\n    }\n\n    return 0;\n}", "output": "1 2 3 " }
+  ],
+  "retypePractice": [
+    {
+      "id": "dsa-linked-list-basic",
+      "reference": "#include <iostream>\n\nusing namespace std;\n\nstruct Node\n{\n    int data;\n    Node *next;\n};\n\nint main()\n{\n    Node *head = new Node{1, nullptr};\n    head->next = new Node{2, nullptr};\n    head->next->next = new Node{3, nullptr};\n\n    Node *current = head;\n    while (current != nullptr)\n    {\n        cout << current->data << \" \";\n        current = current->next;\n    }\n\n    return 0;\n}"
+    }
+  ],
+  "practiceQuestions": [],
+  "interviewQuestions": true,
+  "leetcode": [],
+  "completionRules": {
+    "requireAllSectionsViewed": true,
+    "requireRetypeIds": ["dsa-linked-list-basic"]
+  }
+}
