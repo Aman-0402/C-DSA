@@ -432,6 +432,43 @@
           "spaceComplexity": "O(n × k)"
         }
       ]
+    },
+    {
+      "type": "leetcode",
+      "id": "lc-128-hashing",
+      "number": 128,
+      "title": "Longest Consecutive Sequence",
+      "difficulty": "Medium",
+      "link": "https://leetcode.com/problems/longest-consecutive-sequence/",
+      "problemStatement": "Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence, in O(n) time.",
+      "examples": [
+        { "input": "nums = [100,4,200,1,3,2]", "output": "4", "explanation": "The sequence 1,2,3,4 is the longest." },
+        { "input": "nums = [0,3,7,2,5,8,4,6,0,1]", "output": "9" }
+      ],
+      "constraints": ["0 <= nums.length <= 10^5", "-10^9 <= nums[i] <= 10^9"],
+      "hints": [
+        "O(n) time rules out sorting first (that's O(n log n)) — a hash set is needed instead, for O(1) 'does this number exist' checks.",
+        "A number can only be the START of a sequence if num - 1 is NOT in the set — otherwise it's the middle or end of a longer run starting earlier.",
+        "For each number that IS a sequence start, count forward (num+1, num+2, ...) using the hash set, until the run breaks — every number ends up counted only once across the whole algorithm, keeping it O(n) overall."
+      ],
+      "approaches": [
+        {
+          "label": "Brute Force",
+          "explanation": "Sort the array first, then scan for the longest run of consecutive values.",
+          "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n\nint longestConsecutive(vector<int> &nums)\n{\n    if (nums.empty()) return 0;\n\n    sort(nums.begin(), nums.end());\n\n    int best = 1, current = 1;\n    for (int i = 1; i < nums.size(); i++)\n    {\n        if (nums[i] == nums[i - 1]) continue; // skip duplicates\n        if (nums[i] == nums[i - 1] + 1)\n        {\n            current++;\n        }\n        else\n        {\n            current = 1;\n        }\n        best = max(best, current);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {100, 4, 200, 1, 3, 2};\n\n    cout << longestConsecutive(nums) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n log n)",
+          "spaceComplexity": "O(1) extra beyond the sort"
+        },
+        {
+          "label": "Optimal",
+          "explanation": "A hash set for O(1) lookups; only start counting from true sequence starts (where num-1 isn't present), so every number is visited a constant number of times overall.",
+          "code": "#include <iostream>\n#include <vector>\n#include <unordered_set>\n\nusing namespace std;\n\nint longestConsecutive(vector<int> &nums)\n{\n    unordered_set<int> numSet(nums.begin(), nums.end());\n    int best = 0;\n\n    for (int num : numSet)\n    {\n        if (numSet.count(num - 1)) continue; // not a sequence start\n\n        int length = 1;\n        int current = num;\n        while (numSet.count(current + 1))\n        {\n            current++;\n            length++;\n        }\n\n        best = max(best, length);\n    }\n\n    return best;\n}\n\nint main()\n{\n    vector<int> nums = {100, 4, 200, 1, 3, 2};\n\n    cout << longestConsecutive(nums) << endl;\n\n    return 0;\n}",
+          "output": "4",
+          "timeComplexity": "O(n)",
+          "spaceComplexity": "O(n) for the hash set"
+        }
+      ]
     }
   ],
   "codeExamples": [
