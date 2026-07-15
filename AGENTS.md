@@ -8,15 +8,18 @@ Frontend-only interactive learning platform for C++, Data Structures & Algorithm
 
 **Content generation rule (updated):** the user gives a topic name only. The agent writes the full lesson content itself — explanations, analogies, code examples, common mistakes, interview Q&A, memory tricks — matching the established teaching style of prior lessons (beginner-first, explicitly flags concepts "not learned yet" rather than front-loading unintroduced syntax, one topic per lesson, DSA/interview-oriented). Practice questions and LeetCode problems are still only added when the user explicitly asks or supplies them — do not invent graded practice/LeetCode content on your own.
 
+**LeetCode integration (live):** every DSA topic lesson (45 topics, `trees` module onward through `greedy-dp`) has one or more `"leetcode"` sections appended to `sections`, per the schema below — 247 problem instances total, cross-referenced from the user's roadmap table. The same LeetCode number may appear in multiple lesson files (different `id` suffix, e.g. `lc-70`, `lc-70-dp`, `lc-70-memo`) when one problem teaches multiple patterns — this is intentional, not a duplicate bug. When adding more LeetCode problems to a lesson: append after the last existing section, before `codeExamples`; write a Brute Force → Optimal `approaches` pair with real, hand-traced-correct C++ output; validate JSON with `node -e "JSON.parse(require('fs').readFileSync('data/lessons/<file>.json'))"` before every commit; **one commit per problem** (not batched) unless the user says otherwise for that session.
+
 ## Tech Stack (frontend-only, no backend)
 
 - HTML5, CSS3, Vanilla JavaScript ES6+ (ESM, modular files — no framework)
-- Monaco Editor — code-writing/practice areas
+- Monaco Editor — two editor modes: `createRetypeEditor` (paste-blocked, checked against a reference, for concept-lesson retype practice) and `createScratchEditor` (freeform, no paste-block, no reference-checking, for LeetCode "Try It Yourself")
 - Prism.js — syntax highlighting for displayed code
-- Lucide Icons
+- Lucide Icons (+ two hotlinked brand images for the social-float LinkedIn/GitHub links, see `index.html`)
 - JSON — all lesson content
-- localStorage — all persistence (progress, notes, bookmarks, mistakes, theme, etc.)
+- localStorage — all persistence (progress, notes, bookmarks, mistakes, theme, LeetCode solved-state, etc.)
 - Fonts: Inter (UI), JetBrains Mono (code)
+- Deployed via GitHub Pages: <https://aman-0402.github.io/C-DSA/>
 
 **Never add:** React/Vue/Angular/Next.js, Node/Express backend, any database, auth backend, real C++ compilation/execution. This is a static frontend site — no server-side code of any kind.
 
@@ -25,7 +28,7 @@ Frontend-only interactive learning platform for C++, Data Structures & Algorithm
 ```
 /
 ├── index.html
-├── css/        style.css, layout.css, sidebar.css, lesson.css, code.css, practice.css, responsive.css
+├── css/        style.css, layout.css, sidebar.css, lesson.css, code.css, practice.css, leetcode.css, responsive.css
 ├── js/         app.js, router.js, content-loader.js, sidebar.js, code-editor.js,
 │               retype-checker.js, practice-checker.js, progress.js, storage.js,
 │               search.js, bookmarks.js, notes.js, theme.js
@@ -53,7 +56,9 @@ Keep JS modular — one concern per file. Never dump everything into one giant H
 
 Lesson: `id, moduleId, title, description, objectives, sections, codeExamples, retypePractice, practiceQuestions, interviewQuestions, leetcode, completionRules`
 
-Section content types: `paragraph, heading, definition, what, why, how, note, warning, tip, syntax, code, output, table, keyPoints, memoryTrick, commonMistakes, dryRun, pointerVisualization, recursionVisualization, stlVisualization`
+Section content types: `paragraph, heading, definition, what, why, how, note, warning, tip, syntax, code, output, table, keyPoints, memoryTrick, commonMistakes, dryRun, pointerVisualization, recursionVisualization, stlVisualization, leetcode`
+
+`"leetcode"` section shape: `{ type: "leetcode", id, number, title, difficulty, link, problemStatement, examples: [{input, output, explanation?}], constraints: [], hints: [], approaches: [{label: "Brute Force"|"Better"|"Optimal", explanation, code, output, timeComplexity, spaceComplexity}] }`. Rendered as a card with problem statement, examples/constraints, a freeform "Try It Yourself" Monaco scratchpad, a progressive hints accordion, and a Brute Force → Optimal solutions accordion — plus a per-problem "Mark as Solved" toggle tracked in `localStorage` against the sitewide `X / total` LeetCode counter shown in the sidebar (see `js/progress.js`, `js/content-loader.js#allLeetcodeIds`).
 
 Practice-question validation config lives in JSON, e.g.:
 ```json
@@ -66,7 +71,7 @@ Practice-question validation config lives in JSON, e.g.:
 - Retype editor: paste disabled (Ctrl+V, context-menu paste, paste event blocked). Typing never blocked.
 - Displayed learning code: copy-discouraged (selection/copy/context-menu disabled) but never claimed as un-copyable/secure.
 - Hints are progressive (clue → approach → pseudocode) — never reveal the full solution automatically.
-- LeetCode solutions: never auto-revealed; only shown via explicit "Reveal Solution" and only if solution content was provided or explicitly requested.
+- LeetCode `approaches` (Brute Force → Optimal solutions) live in a collapsed-by-default accordion under the hints, not gated behind a separate "prove you tried" reveal — the hints above it are the progressive-disclosure layer.
 
 ## Design Direction
 
