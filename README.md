@@ -58,7 +58,7 @@ Each LeetCode entry includes:
 ```
 /
 ├── index.html
-├── css/        style.css, layout.css, sidebar.css, lesson.css, code.css, practice.css, responsive.css
+├── css/        style.css, layout.css, sidebar.css, lesson.css, code.css, practice.css, leetcode.css, responsive.css
 ├── js/         app.js, router.js, content-loader.js, sidebar.js, code-editor.js,
 │               retype-checker.js, practice-checker.js, progress.js, storage.js,
 │               search.js, bookmarks.js, notes.js, theme.js
@@ -84,4 +84,13 @@ New lessons are added by supplying raw content (explanations, code, questions). 
 
 ## Status
 
-🚧 In progress — content and features are added incrementally as lessons are provided.
+- ✅ C++ + DSA lesson content: 148 lessons across 20 modules
+- ✅ LeetCode integration: 247 problems wired into their DSA topics
+- 🚧 Ongoing — content and features are still added incrementally
+
+## Connect
+
+- GitHub: [Aman-0402](https://github.com/Aman-0402)
+- LinkedIn: [Aman Raj](https://www.linkedin.com/in/aman-raj-081905211/)
+
+If this helped you, consider ⭐ [starring the repo](https://github.com/Aman-0402/C-DSA).
